@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "articshift-7f9cd": {
+      "hosting": {
+        "articshift-angular": [
+          "articshift-7f9cd"
+        ]
+      }
+    }
+  }
+}

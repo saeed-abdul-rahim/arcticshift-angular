@@ -1,12 +1,14 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports":true,
+    "noUnusedLocals": true,
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
@@ -14,7 +16,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@environment": ["environments/environment.ts"],
+      "@utils/*": ["app/utils/*"],
+      "@components/*": ["app/components/*"],
+      "@services/*": ["app/services/*"],
+      "@models/*": ["app/models/*"],
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
