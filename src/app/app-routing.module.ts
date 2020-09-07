@@ -9,7 +9,7 @@ const routes: Routes = [
     loadChildren: () => import('./shop/shop.module').then(m => m.ShopModule)
   },
   {
-    path: 'dashboard',
+    path: 'admin',
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
     canLoad: [AdminGuard],
     runGuardsAndResolvers: 'always'
