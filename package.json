@@ -1,13 +1,14 @@
 {
-  "name": "articshift-angular",
+  "name": "arcticshift-angular",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve & ngtw watch",
+    "build": "ngtw build && ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "prestart": "ngtw build"
   },
   "private": true,
   "dependencies": {
@@ -22,14 +23,14 @@
     "@angular/router": "~9.1.11",
     "@angular/service-worker": "~9.1.11",
     "browser-image-compression": "^1.0.12",
-    "firebase": "^7.19.1",
+    "firebase": "^7.13.1",
     "module-alias": "^2.2.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^10.0.0",
+    "@angular-devkit/architect": ">= 0.900 < 0.1100",
     "@angular-devkit/build-angular": "~0.901.9",
     "@angular/cli": "~9.1.9",
     "@angular/compiler-cli": "~9.1.11",
@@ -37,7 +38,10 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
-    "dotenv": "^8.2.0",
+    "firebase-tools": "^8.0.0",
+    "fuzzy": "^0.1.3",
+    "inquirer": "^6.2.2",
+    "inquirer-autocomplete-prompt": "^1.0.1",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~5.0.0",
@@ -45,20 +49,16 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~3.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
+    "ng-tailwindcss": "^2.3.1",
+    "open": "^7.0.3",
     "postcss-import": "^12.0.1",
-    "postcss-loader": "^3.0.0",
+    "postcss-loader": "^4.0.0",
     "postcss-scss": "^2.1.1",
     "protractor": "~7.0.0",
-    "tailwindcss": "^1.7.6",
+    "tailwindcss": "^1.8.4",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~3.8.3",
-    "@angular-devkit/architect": ">= 0.900 < 0.1100",
-    "firebase-tools": "^8.0.0",
-    "fuzzy": "^0.1.3",
-    "inquirer": "^6.2.2",
-    "inquirer-autocomplete-prompt": "^1.0.1",
-    "open": "^7.0.3"
+    "typescript": "~3.8.3"
   },
   "_moduleAliases": {
     "@environment": "dist/environments/environment.ts",

@@ -2,7 +2,7 @@
   "targets": {
     "articshift-7f9cd": {
       "hosting": {
-        "articshift-angular": [
+        "arcticshift-angular": [
           "articshift-7f9cd"
         ]
       }
