@@ -9,6 +9,6 @@ import { TileComponent } from './tile/tile.component';
   imports: [
     CommonModule
   ],
-  exports: []
+  exports: [TileComponent]
 })
 export class AdminComponentsModule { }
