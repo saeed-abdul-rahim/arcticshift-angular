@@ -265,12 +265,6 @@ svg {
   background-color: rgba(254, 235, 200, var(--bg-opacity));
 }
 
-.bg-orange-500 {
-  --bg-opacity: 1;
-  background-color: #ed8936;
-  background-color: rgba(237, 137, 54, var(--bg-opacity));
-}
-
 .bg-green-200 {
   --bg-opacity: 1;
   background-color: #c6f6d5;
@@ -311,12 +305,6 @@ svg {
   --bg-opacity: 1;
   background-color: #9f7aea;
   background-color: rgba(159, 122, 234, var(--bg-opacity));
-}
-
-.bg-pink-500 {
-  --bg-opacity: 1;
-  background-color: #ed64a6;
-  background-color: rgba(237, 100, 166, var(--bg-opacity));
 }
 
 .bg-pink-600 {
