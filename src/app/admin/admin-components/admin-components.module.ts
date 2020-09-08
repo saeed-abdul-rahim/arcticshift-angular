@@ -10,6 +10,6 @@ import { CardComponent } from './card/card.component';
   imports: [
     CommonModule
   ],
-  exports: [TileComponent]
+  exports: [TileComponent,CardComponent]
 })
 export class AdminComponentsModule { }
