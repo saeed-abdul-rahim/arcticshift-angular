@@ -11,6 +11,7 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AdminComponentsModule } from './admin-components/admin-components.module';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { NavbarComponent } from './navbar/navbar.component';
   imports: [
     CommonModule,
     AdminRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    AdminComponentsModule
   ]
 })
 export class AdminModule { }
