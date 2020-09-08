@@ -12,6 +12,7 @@ import { DiscountComponent } from './discount/discount.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
+import { TileComponent } from './admin-components/tile/tile.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
     DiscountComponent,
     SidebarComponent,
     NavbarComponent
+   
   ],
   imports: [
     CommonModule,
