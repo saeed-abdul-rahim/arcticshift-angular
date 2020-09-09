@@ -5,6 +5,7 @@ import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TileComponent } from './admin-components/tile/tile.component';
 import { CardComponent } from './admin-components/card/card.component';
+import {AddComponent} from './dashboard/add/add.component';
 
 
 const routes: Routes = [
@@ -19,7 +20,9 @@ const routes: Routes = [
   },
 
   { path: 'tile', component: TileComponent },
-  { path: 'card', component: CardComponent }
+  { path: 'card', component: CardComponent },
+  { path: 'add', component: AddComponent }
+  
 
 ];
 
