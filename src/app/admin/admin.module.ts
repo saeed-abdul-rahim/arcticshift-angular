@@ -13,6 +13,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { TileComponent } from './admin-components/tile/tile.component';
+import { AddComponent } from './dashboard/add/add.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { TileComponent } from './admin-components/tile/tile.component';
     WarehouseComponent,
     DiscountComponent,
     SidebarComponent,
-    NavbarComponent
+    NavbarComponent,
+    AddComponent
    
   ],
   imports: [
