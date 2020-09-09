@@ -1,4 +1,65 @@
+@import "starter.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-@import "starter.css";
+
+
+.arc-input {
+    @apply px-3;
+    @apply py-3;
+    @apply text-gray-700;
+    @apply bg-white;
+    @apply rounded;
+    @apply text-sm;
+    @apply shadow;
+    transition: all 0.15s ease 0s;
+}
+
+.arc-input:focus {
+    @apply outline-none;
+    @apply shadow-outline;
+}
+
+.arc-label {
+    @apply block;
+    @apply uppercase;
+    @apply text-gray-700;
+    @apply text-xs;
+    @apply font-bold;
+    @apply mb-2;
+}
+
+.arc-button {
+    @apply inline-flex;
+    @apply justify-center;
+    @apply bg-gray-900;
+    @apply text-white;
+    @apply text-sm;
+    @apply font-bold;
+    @apply uppercase;
+    @apply px-6;
+    @apply py-3;
+    @apply rounded;
+    @apply shadow;
+    @apply outline-none;
+    @apply mr-1;
+    @apply mb-1;
+    transition: all 0.15s ease 0s;
+}
+
+.arc-button:active {
+    @apply bg-gray-700;
+}
+
+.arc-button:hover {
+    @apply shadow-lg;
+}
+
+.arc-button:focus {
+    @apply outline-none;
+}
+
+.border-red {
+    @apply border;
+    @apply border-red-500;
+}

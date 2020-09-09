@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ComponentsModule } from '@components/components.module';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -29,7 +31,10 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
     CommonModule,
     AdminRoutingModule,
     ComponentsModule,
-    AdminComponentsModule
+    AdminComponentsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FontAwesomeModule
   ]
 })
 export class AdminModule { }

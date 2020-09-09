@@ -4,6 +4,18 @@
 
 export const environment = {
   production: false,
+  url: '',
+  localStorageKey: 'urPWO0zFGXSBeQAzaCOfIrMjXFDyLSMecf06iD2d7bc',
+  api: {
+    url: 'https://asia-east2-articshift-7f9cd.cloudfunctions.net/api/v1',
+    user: '/user',
+    product: '/product'
+  },
+  db: {
+    version: 'v1',
+    name: 'db',
+    users: 'users',
+  },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',
     authDomain: 'articshift-7f9cd.firebaseapp.com',
