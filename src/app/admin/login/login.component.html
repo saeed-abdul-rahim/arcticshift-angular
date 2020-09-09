@@ -1,3 +1,20 @@
+<nav
+  class="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg"
+>
+  <div
+    class="container px-4 mx-auto flex flex-wrap items-center justify-between"
+  >
+    <div
+      class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start"
+    >
+      <a
+        class="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase text-white"
+        href=""
+        >Arcticshift</a
+      >
+    </div>
+  </div>
+</nav>
 <section class="absolute w-full h-full">
   <div class="absolute top-0 w-full h-full bg-gray-900"></div>
   <div class="container mx-auto px-4 h-full">
@@ -10,32 +27,34 @@
             
           </div>
           <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
-            <form>
+            <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
               <div class="relative w-full mb-3">
                 <label
-                  class="block uppercase text-gray-700 text-xs font-bold mb-2"
+                  class="arc-label"
                   for="grid-password"
                   >Email</label
                 ><input
                   type="email"
-                  class="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+                  class="arc-input placeholder-gray-400 w-full"
                   placeholder="Email"
-                  style="transition: all 0.15s ease 0s;"
+                  [ngClass]="emailDanger ? 'border-red' : ''"
+                  formControlName="email"
                 />
               </div>
               <div class="relative w-full mb-3">
                 <label
-                  class="block uppercase text-gray-700 text-xs font-bold mb-2"
+                  class="arc-label"
                   for="grid-password"
                   >Password</label
                 ><input
                   type="password"
-                  class="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+                  class="arc-input placeholder-gray-400 w-full"
                   placeholder="Password"
-                  style="transition: all 0.15s ease 0s;"
+                  [ngClass]="passwordDanger ? 'border-red' : ''"
+                  formControlName="password"
                 />
               </div>
-              <div>
+              <!-- <div>
                 <label class="inline-flex items-center cursor-pointer"
                   ><input
                     id="customCheckLogin"
@@ -46,15 +65,27 @@
                     >Remember me</span
                   ></label
                 >
-              </div>
+              </div> -->
               <div class="text-center mt-6">
                 <button
-                  class="inline-flex justify-center bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-                  type="button"
-                  style="transition: all 0.15s ease 0s;"
+                  class="arc-button w-full"
+                  type="submit"
+                  [attr.disabled]="success || loading ? true : null"
+                  [ngClass]="success || loading ? 'cursor-not-allowed' : ''"
                 >
-                <div *ngIf="!loading">Sign In</div>
-                <app-spinner *ngIf="loading" [color]="'currentColor'" [size]="'5'"></app-spinner>
+                <div *ngIf="!loading && !success" [@inOutAnimation]>Sign In</div>
+                <app-spinner
+                  *ngIf="loading"
+                  [color]="'currentColor'"
+                  [size]="'5'"
+                  [@inOutAnimation]
+                ></app-spinner>
+                <fa-icon
+                  *ngIf="success"
+                  [icon]="faCheckCircle"
+                  size="lg"
+                  [@inOutAnimation]
+                ></fa-icon>
                 </button>
               </div>
             </form>
@@ -76,3 +107,37 @@
     </div>
   </div>
 </section>
+
+<!--FOOTER-->
+<footer class="absolute w-full bottom-0 bg-gray-900 pb-6">
+  <div class="container mx-auto px-4">
+    <hr class="mb-6 border-b-1 border-gray-700" />
+    <div
+      class="flex flex-wrap items-center md:justify-between justify-center"
+    >
+      <div class="w-full md:w-4/12 px-4">
+        <div class="flex flex-wrap text-sm text-white font-semibold py-1 justify-center">
+          Copyright © {{currentDate | date: 'yyyy'}} &nbsp;
+          <a
+            href=""
+            class="hover:text-gray-400"
+            >Arcticshift</a
+          >
+        </div>
+      </div>
+      <div class="w-full md:w-8/12 px-4">
+        <ul
+          class="flex flex-wrap list-none md:justify-end justify-center"
+        >
+          <li>
+            <a
+              href=""
+              class="text-white hover:text-gray-400 text-sm font-semibold block py-1 px-3"
+              >Go to Shop</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ComponentsModule } from '@components/components.module';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -13,7 +15,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { TileComponent } from './admin-components/tile/tile.component';
-import { AddComponent } from './dashboard/add/add.component';
+
 
 
 @NgModule({
@@ -25,15 +27,16 @@ import { AddComponent } from './dashboard/add/add.component';
     WarehouseComponent,
     DiscountComponent,
     SidebarComponent,
-    NavbarComponent,
-    AddComponent
-   
+    NavbarComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     ComponentsModule,
-    AdminComponentsModule
+    AdminComponentsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FontAwesomeModule
   ]
 })
 export class AdminModule { }
