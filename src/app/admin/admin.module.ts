@@ -12,8 +12,7 @@ import { ProductComponent } from './product/product.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
-import { TileComponent } from './admin-components/tile/tile.component';
-import { AddproductComponent } from './addproduct/addproduct.component';
+import { AddProductComponent } from './add-product/add-product.component';
 
 
 
@@ -25,7 +24,7 @@ import { AddproductComponent } from './addproduct/addproduct.component';
     ProductComponent,
     WarehouseComponent,
     DiscountComponent,
-    AddproductComponent
+    AddProductComponent
   ],
   imports: [
     CommonModule,

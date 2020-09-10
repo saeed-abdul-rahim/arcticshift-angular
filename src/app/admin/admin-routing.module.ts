@@ -4,7 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
-import { AddproductComponent } from './addproduct/addproduct.component';
+import { AddProductComponent } from './add-product/add-product.component';
 
 
 const routes: Routes = [
@@ -26,7 +26,7 @@ const routes: Routes = [
             children: [
               { path: '', redirectTo: 'list', pathMatch: 'full' },
               { path: 'list' },
-              { path: 'add' },
+              { path: 'add', component: AddProductComponent },
               { path: 'detail/:id' }
             ]
           },
@@ -145,8 +145,7 @@ const routes: Routes = [
           { path: 'add' },
           { path: 'detail/:id' }
         ]
-      },
-      { path: 'addproduct', component: AddproductComponent }
+      }
     ]
   }
 ];

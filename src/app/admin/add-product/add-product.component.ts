@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { inOut } from 'app/animations/inOut';
 
 @Component({
-  selector: 'app-addproduct',
-  templateUrl: './addproduct.component.html',
-  styleUrls: ['./addproduct.component.css']
+  selector: 'app-add-product',
+  templateUrl: './add-product.component.html',
+  styleUrls: ['./add-product.component.css'],
+  animations: [inOut]
 })
-export class AddproductComponent implements OnInit {
+export class AddProductComponent implements OnInit {
 
   faCheckCircle = faCheckCircle;
 
@@ -24,13 +26,13 @@ export class AddproductComponent implements OnInit {
       type: ['', Validators.required]
     });
   }
-  get addProductFormControls() { return this.addProductForm.controls }
+  get addProductFormControls() { return this.addProductForm.controls; }
 
  async onSubmit() {
     const { name, type } = this.addProductFormControls;
     if (this.addProductForm.invalid) {
       if (name.errors) {
-        this.nameDanger = true
+        this.nameDanger = true;
       }
       if (type.errors) {
         this.typeDanger = true;
