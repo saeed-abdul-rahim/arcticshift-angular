@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
+import { AddproductComponent } from './addproduct/addproduct.component';
 
 
 const routes: Routes = [
@@ -144,7 +145,8 @@ const routes: Routes = [
           { path: 'add' },
           { path: 'detail/:id' }
         ]
-      }
+      },
+      { path: 'addproduct', component: AddproductComponent }
     ]
   }
 ];
