@@ -6,10 +6,16 @@ import { CardComponent } from './card/card.component';
 
 
 @NgModule({
-  declarations: [TileComponent, CardComponent],
+  declarations: [
+    TileComponent,
+    CardComponent
+  ],
   imports: [
     CommonModule
   ],
-  exports: [TileComponent,CardComponent]
+  exports: [
+    TileComponent,
+    CardComponent
+  ]
 })
 export class AdminComponentsModule { }
