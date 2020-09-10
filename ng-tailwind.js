@@ -5,7 +5,7 @@ module.exports = {
   outputCSS: 'src/styles.css',
   watchRelatedFiles: [],
   // Sass
-  sass: false,
+  sass: false,  
   // PurgeCSS Settings
   purge: false,
   keyframes: false,
