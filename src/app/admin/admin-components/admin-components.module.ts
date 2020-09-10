@@ -8,7 +8,9 @@ import { CardComponent } from './card/card.component';
 @NgModule({
   declarations: [TileComponent, CardComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    ComponentsModule,
+    FontAwesomeModule
   ],
   exports: [TileComponent,CardComponent]
 })

@@ -11,8 +11,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProductComponent } from './product/product.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { TileComponent } from './admin-components/tile/tile.component';
 
@@ -25,9 +23,7 @@ import { TileComponent } from './admin-components/tile/tile.component';
     DashboardComponent,
     ProductComponent,
     WarehouseComponent,
-    DiscountComponent,
-    SidebarComponent,
-    NavbarComponent
+    DiscountComponent
   ],
   imports: [
     CommonModule,

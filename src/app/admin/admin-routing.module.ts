@@ -11,10 +11,58 @@ import { CardComponent } from './admin-components/card/card.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
-    path: '', canLoad: [AdminGuard],
+    path: '',
+    component: AdminComponent,
+    canActivate: [AdminGuard],
+    canActivateChild: [AdminGuard],
     children: [
-      { path: '', redirectTo: 'dashboard' },
-      { path: 'dashboard', component: DashboardComponent }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'catalog',
+        children: [
+          { path: '', redirectTo: 'product', pathMatch: 'full' },
+          {
+            path: 'product',
+            children: [
+              { path: '', redirectTo: 'list', pathMatch: 'full' },
+              { path: 'list' },
+              { path: 'add' },
+              { path: 'detail/:id' }
+            ]
+          },
+          {
+            path: 'category',
+            children: [
+              { path: '', redirectTo: 'list', pathMatch: 'full' },
+              { path: 'list' },
+              { path: 'add' },
+              { path: 'detail/:id' }
+            ]
+          },
+          {
+            path: 'collection',
+            children: [
+              { path: '', redirectTo: 'list', pathMatch: 'full' },
+              { path: 'list' },
+              { path: 'add' },
+              { path: 'detail/:id' }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'orders',
+        children: [
+          { path: ':id' }
+        ]
+      },
+      {
+        path: 'customers',
+        children: [
+          { path: ':id' }
+        ]
+      }
     ]
   },
 
