@@ -4,9 +4,12 @@ import { LoginComponent } from './login/login.component';
 import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
+import { AddProductComponent } from './add-product/add-product.component';
+import { CardComponent } from './admin-components/card/card.component';
 
 
 const routes: Routes = [
+  { path: 'card', component: CardComponent },
   { path: 'login', component: LoginComponent },
   {
     path: '',
@@ -25,7 +28,7 @@ const routes: Routes = [
             children: [
               { path: '', redirectTo: 'list', pathMatch: 'full' },
               { path: 'list' },
-              { path: 'add' },
+              { path: 'add', component: AddProductComponent },
               { path: 'detail/:id' }
             ]
           },
@@ -52,13 +55,97 @@ const routes: Routes = [
       {
         path: 'orders',
         children: [
-          { path: ':id' }
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          // { path: 'add' },
+          { path: 'detail/:id' }
         ]
       },
       {
         path: 'customers',
         children: [
-          { path: ':id' }
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          // { path: 'add' },
+          { path: 'detail/:id' }
+        ]
+      },
+      {
+        path: 'discounts',
+        children: [
+          { path: '', redirectTo: 'sales', pathMatch: 'full' },
+          {
+            path: 'sales',
+            children: [
+              { path: '', redirectTo: 'list', pathMatch: 'full' },
+              { path: 'list' },
+              { path: 'add' },
+              { path: 'detail/:id' }
+            ]
+          },
+          {
+            path: 'vouchers',
+            children: [
+              { path: '', redirectTo: 'list', pathMatch: 'full' },
+              { path: 'list' },
+              { path: 'add' },
+              { path: 'detail/:id' }
+            ]
+          },
+          {
+            path: 'gift-cards',
+            children: [
+              { path: '', redirectTo: 'list', pathMatch: 'full' },
+              { path: 'list' },
+              { path: 'add' },
+              { path: 'detail/:id' }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'product-attributes',
+        children: [
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          { path: 'add' },
+          { path: 'detail/:id' }
+        ]
+      },
+      {
+        path: 'product-types',
+        children: [
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          { path: 'add' },
+          { path: 'detail/:id' }
+        ]
+      },
+      {
+        path: 'shipping',
+        children: [
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          { path: 'add' },
+          { path: 'detail/:id' }
+        ]
+      },
+      {
+        path: 'warehouse',
+        children: [
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          { path: 'add' },
+          { path: 'detail/:id' }
+        ]
+      },
+      {
+        path: 'staff',
+        children: [
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list' },
+          { path: 'add' },
+          { path: 'detail/:id' }
         ]
       }
     ]

@@ -12,6 +12,8 @@ import { ProductComponent } from './product/product.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
+import { AddProductComponent } from './add-product/add-product.component';
+
 
 
 @NgModule({
@@ -21,7 +23,8 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
     DashboardComponent,
     ProductComponent,
     WarehouseComponent,
-    DiscountComponent
+    DiscountComponent,
+    AddProductComponent
   ],
   imports: [
     CommonModule,

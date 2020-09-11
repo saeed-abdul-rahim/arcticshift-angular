@@ -6,6 +6,11 @@ export interface TimestampInterface {
     updatedAt?: number;
 }
 
+export type ContentStorage = {
+    path: string
+    url: string
+};
+
 export type AuthType = {
     [key in Role]?: string[];
 };
