@@ -63,3 +63,13 @@
     @apply border;
     @apply border-red-500;
 }
+
+.ng-select {
+    @apply arc-input;
+}
+
+.ng-dropdown-panel {
+    @apply arc-input;
+    @apply mt-4;
+    @apply -ml-3;
+}
