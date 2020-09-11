@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ComponentsModule } from '@components/components.module';
@@ -31,6 +32,7 @@ import { AddProductComponent } from './add-product/add-product.component';
     AdminRoutingModule,
     ComponentsModule,
     AdminComponentsModule,
+    NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule
