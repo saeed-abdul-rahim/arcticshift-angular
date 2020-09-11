@@ -13,8 +13,9 @@ export class AddProductComponent implements OnInit {
 
   faCheckCircle = faCheckCircle;
 
+  loading: boolean;
+  success: boolean;
   nameDanger: boolean;
-  typeDanger: boolean;
 
   addProductForm: FormGroup;
 
@@ -22,20 +23,16 @@ export class AddProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.addProductForm = this.formbuilder.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]],
-      type: ['', Validators.required]
+      name: ['', [Validators.required, Validators.maxLength(50)]]
     });
   }
   get addProductFormControls() { return this.addProductForm.controls; }
 
  async onSubmit() {
-    const { name, type } = this.addProductFormControls;
+    const { name } = this.addProductFormControls;
     if (this.addProductForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
-      }
-      if (type.errors) {
-        this.typeDanger = true;
       }
       return;
     }

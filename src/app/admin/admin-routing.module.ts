@@ -5,9 +5,11 @@ import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
 import { AddProductComponent } from './add-product/add-product.component';
+import { CardComponent } from './admin-components/card/card.component';
 
 
 const routes: Routes = [
+  { path: 'card', component: CardComponent },
   { path: 'login', component: LoginComponent },
   {
     path: '',
