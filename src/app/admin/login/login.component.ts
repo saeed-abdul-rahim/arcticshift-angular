@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 
 import { AuthService } from '@services/auth/auth.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { inOut } from 'app/animations/inOut';
 
 @Component({
@@ -25,8 +25,13 @@ export class LoginComponent implements OnInit {
 
   currentDate = new Date();
 
-  constructor(private formbuilder: FormBuilder, private auth: AuthService,
-              private router: Router, private route: ActivatedRoute) {}
+  constructor(private formbuilder: FormBuilder, private auth: AuthService, private router: Router) {
+    this.isShopUser().then(user => {
+      if (user) {
+        this.toDashboard();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.signInForm = this.formbuilder.group({
@@ -36,32 +41,60 @@ export class LoginComponent implements OnInit {
   }
 
   get signInFormControls() { return this.signInForm.controls; }
+  get emailControl() { return this.signInForm.controls.email; }
+  get passwordControl() { return this.signInForm.controls.password; }
+
+  validForm() {
+    const { email, password } = this.signInFormControls;
+    if (email.errors) {
+      this.emailDanger = true;
+      return false;
+    }
+    if (password.errors) {
+      this.passwordDanger = true;
+      return false;
+    }
+    return { email, password };
+  }
 
   async onSubmit() {
-    const { email, password } = this.signInFormControls;
-    if (this.signInForm.invalid) {
-      if (email.errors) {
-        this.emailDanger = true;
-      }
-      if (password.errors) {
-        this.passwordDanger = true;
-      }
-      return;
-    }
+    const isValidForm = this.validForm();
+    if (!isValidForm) { return; }
+    const { email, password } = isValidForm;
     this.loading = true;
     try {
       await this.auth.signIn(email.value, password.value);
-      await this.auth.getUser();
-      const user = await this.auth.getCurrentUser();
-      if (user.shopId) {
-      // this.router.navigate(['dashboard'], { relativeTo: this.route });
+      const isShopUser = await this.isShopUser();
+      if (isShopUser) {
+        this.success = true;
+        setTimeout(() => this.success = false, 2000);
+        this.toDashboard();
+      } else {
+        this.emailDanger = true;
+        this.passwordDanger = true;
       }
-      this.success = true;
-      setTimeout(() => this.success = false, 2000);
     } catch (err) {
       this.success = false;
+      this.emailDanger = true;
+      this.passwordDanger = true;
     }
     this.loading = false;
+  }
+
+  async isShopUser() {
+    console.log('hi');
+    this.loading = true;
+    try {
+      this.loading = false;
+      return this.auth.isShopUser();
+    } catch (_) {
+      this.loading = false;
+      return false;
+    }
+  }
+
+  toDashboard() {
+    this.router.navigateByUrl('admin');
   }
 
 }

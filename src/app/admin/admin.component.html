@@ -1,5 +1,13 @@
-<app-sidebar></app-sidebar>
-<div class="relative md:ml-64 bg-gray-200">
-    <app-navbar></app-navbar>
-    <router-outlet></router-outlet>
+<div *ngIf="loading" class="w-full h-full fixed block top-0 left-0 bg-gray-300 z-50">
+    <span class="text-gray-900 top-1/2 my-0 mx-auto block relative w-0 h-0" style="
+      top: 50%;">
+        <app-spinner [color]="'currentColor'" [size]="'10'"></app-spinner>
+    </span>
+</div>
+<div *ngIf="!loading">
+    <app-sidebar></app-sidebar>
+    <div class="relative md:ml-64 bg-gray-200">
+        <app-navbar></app-navbar>
+        <router-outlet></router-outlet>
+    </div>
 </div>

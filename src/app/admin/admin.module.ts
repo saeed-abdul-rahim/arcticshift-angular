@@ -14,6 +14,7 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { AddProductComponent } from './add-product/add-product.component';
+import { AdminGuard } from '@guards/admin/admin.guard';
 
 
 
@@ -36,6 +37,9 @@ import { AddProductComponent } from './add-product/add-product.component';
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule
+  ],
+  providers: [
+    AdminGuard
   ]
 })
 export class AdminModule { }

@@ -37,8 +37,10 @@
                   type="email"
                   class="arc-input placeholder-gray-400 w-full"
                   placeholder="Email"
-                  [ngClass]="emailDanger ? 'border-red' : ''"
+                  [ngClass]="emailDanger || emailControl.touched && emailControl.invalid ? 'border-red' : ''"
                   formControlName="email"
+                  [ngModel]="emailControl.value"
+                  (ngModelChange)="emailDanger=false"
                 />
               </div>
               <div class="relative w-full mb-3">
@@ -50,8 +52,10 @@
                   type="password"
                   class="arc-input placeholder-gray-400 w-full"
                   placeholder="Password"
-                  [ngClass]="passwordDanger ? 'border-red' : ''"
+                  [ngClass]="passwordDanger || passwordControl.touched && passwordControl.invalid ? 'border-red' : ''"
                   formControlName="password"
+                  [ngModel]="passwordControl.value"
+                  (ngModelChange)="passwordDanger=false"
                 />
               </div>
               <!-- <div>

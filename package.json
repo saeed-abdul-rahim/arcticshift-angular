@@ -71,6 +71,7 @@
     "@utils/*": "dist/app/utils",
     "@components/*": "dist/app/components",
     "@services/*": "dist/app/services",
+    "@guards/*": "dist/app/guards",
     "@models/*": "dist/app/models"
   }
 }
