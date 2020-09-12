@@ -47,6 +47,14 @@
     transition: all 0.15s ease 0s;
 }
 
+.arc-checkbox {
+    @apply text-gray-800;
+    @apply ml-1;
+    @apply w-5;
+    @apply h-5;
+    transition: all 0.15s ease 0s;
+}
+
 .arc-button:active {
     @apply bg-gray-700;
 }

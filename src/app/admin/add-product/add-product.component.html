@@ -1,63 +1,73 @@
-<div>
-  <form class="flex flex-col h-screen justify-between" [formGroup]="addProductForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="addProductForm" (ngSubmit)="onSubmit()">
 
-    <ng-template #productNameDesc>
+  <!-- TEMPLATES -->
 
-      <div class="flex flex-wrap items-center">
-        <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+  <ng-template #productNameDesc>
 
-          <div class="w-full mb-3">
-            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
-              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-          </div>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
 
+        <div class="w-full mb-3">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
+            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
         </div>
-      </div>
 
-    </ng-template>
-
-    <div class="relative bg-blue-300 md:pt-32 pb-32 pt-12">
-      <div class="px-4 md:px-10 mx-auto w-full">
-        <div class="flex flex-wrap mt-4">
-          <app-card
-            class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4"
-            [heading]="'General Information'"
-            [body]="productNameDesc"
-          ></app-card>
-        </div>
       </div>
     </div>
+
+  </ng-template>
 
   <ng-template #productPrice>
 
-    <div>
-      <label class="inline-flex items-center cursor-pointer"
-        ><input
-          id="customCheckPrice"
-          type="checkbox"
-          class="form-checkbox text-gray-800 ml-1 w-5 h-5"
-          style="transition: all 0.15s ease 0s;"
-        /><span class="ml-2 text-sm font-semibold text-gray-700"
-          >Charge taxes for this item</span
-        ></label
-      >
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" class="form-checkbox arc-checkbox"/>
+          <span class="ml-2 text-sm font-semibold text-gray-700">Charge taxes for this item</span>
+        </label>
+        <div class="w-full mb-3">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="price"
+            [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price" />
+        </div>
+      </div>
     </div>
 
-    <div class="w-full mb-3">
-      <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="price"
-        [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price" />
-    </div>
   </ng-template>
-  
-  <div class="relative bg-green-600 md:pt-32 pb-32 pt-12">
+
+  <ng-template #organizeProduct>
+
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3">
+          <ng-select formControlName="productType" placeholder="Product Type"></ng-select>
+        </div>
+        <div class="w-full mb-3">
+          <ng-select formControlName="category" placeholder="Category"></ng-select>
+        </div>
+        <div class="w-full mb-3">
+          <ng-select formControlName="collection" placeholder="Collection"></ng-select>
+        </div>
+      </div>
+    </div>
+
+  </ng-template>
+
+  <!-- BODY -->
+
+  <div class="relative md:pt-32 pt-12">
     <div class="px-4 md:px-10 mx-auto w-full">
       <div class="flex flex-wrap mt-4">
-        <app-card
-          class="w-full xl:w-8/12 mb-12 xl:mb-0 px-5"
-          [heading]="'pricing'"
-          [body]="productPrice"
-        ></app-card>
+        <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+          <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
+          <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
+        </div>
+        <div class="w-full xl:w-4/12 px-4">
+          <app-card [heading]="'Organize Product'" [body]="organizeProduct"></app-card>
+        </div>
       </div>
     </div>
   </div>
+
+  <app-footer-form></app-footer-form>
+
 </form>

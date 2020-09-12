@@ -16,7 +16,7 @@ export class AddProductComponent implements OnInit {
   loading: boolean;
   success: boolean;
   nameDanger: boolean;
-  priceDanger:boolean;
+  priceDanger: boolean;
 
   addProductForm: FormGroup;
 
@@ -24,7 +24,11 @@ export class AddProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.addProductForm = this.formbuilder.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]]
+      name: ['', [Validators.required, Validators.maxLength(50)]],
+      price: ['', Validators.required],
+      productType: ['', Validators.required],
+      category: ['', Validators.required],
+      collection: ['', Validators.required]
     });
   }
   get addProductFormControls() { return this.addProductForm.controls; }
