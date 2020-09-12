@@ -16,6 +16,7 @@ export class AddProductComponent implements OnInit {
   loading: boolean;
   success: boolean;
   nameDanger: boolean;
+  priceDanger:boolean;
 
   addProductForm: FormGroup;
 

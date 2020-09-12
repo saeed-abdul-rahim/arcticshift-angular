@@ -33,4 +33,36 @@
     </div>
   </div>
 
+  <ng-template #productPrice>
+
+    <div>
+      <label class="inline-flex items-center cursor-pointer"
+        ><input
+          id="customCheckPrice"
+          type="checkbox"
+          class="form-checkbox text-gray-800 ml-1 w-5 h-5"
+          style="transition: all 0.15s ease 0s;"
+        /><span class="ml-2 text-sm font-semibold text-gray-700"
+          >Charge taxes for this item</span
+        ></label
+      >
+    </div>
+
+    <div class="w-full mb-3">
+      <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="price"
+        [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price" />
+    </div>
+  </ng-template>
+  
+  <div class="relative bg-green-600 md:pt-32 pb-32 pt-12">
+    <div class="px-4 md:px-10 mx-auto w-full">
+      <div class="flex flex-wrap mt-4">
+        <app-card
+          class="w-full xl:w-8/12 mb-12 xl:mb-0 px-5"
+          [heading]="'pricing'"
+          [body]="productPrice"
+        ></app-card>
+      </div>
+    </div>
+  </div>
 </form>
