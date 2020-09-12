@@ -20,6 +20,7 @@
       "@utils/*": ["app/utils/*"],
       "@components/*": ["app/components/*"],
       "@services/*": ["app/services/*"],
+      "@guards/*": ["app/guards/*"],
       "@models/*": ["app/models/*"],
     }
   },

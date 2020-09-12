@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
-import { first } from 'rxjs/operators';
+import { first, retry } from 'rxjs/operators';
 import { User, UserClaim, UserInterface } from '@models/User';
 import { environment } from '@environment';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -84,9 +84,7 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     try {
-      const result = await this.afAuth.signInWithEmailAndPassword(email, password);
-      if (!result.user.emailVerified) { throw new Error('Email not verified'); }
-      return result;
+      return await this.afAuth.signInWithEmailAndPassword(email, password);
     } catch (err) {
       throw err.message;
     }
@@ -213,6 +211,35 @@ export class AuthService {
       return true;
     }
     return false;
+  }
+
+  async getAuthenticatedUser() {
+    const authenticated = await this.isLoggedIn();
+    if (!authenticated) { return false; }
+    let user = await this.getCurrentUser();
+    if (!user) {
+      await this.getUser();
+      user = await this.getCurrentUser();
+    }
+    return user;
+  }
+
+  async isShopUser() {
+    const user = await this.getAuthenticatedUser();
+    if (!user) {
+      return false;
+    } else if (user && user.role !== 'admin' && user.role !== 'staff') {
+      return false;
+    }
+    return true;
+  }
+
+  async isAdmin() {
+    const user = await this.getAuthenticatedUser();
+    if (user && user.role !== 'admin') {
+      return false;
+    }
+    return true;
   }
 
   async setPassword(code: string, password: string) {

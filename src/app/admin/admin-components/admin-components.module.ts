@@ -6,6 +6,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ComponentsModule } from '@components/components.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FooterFormComponent } from './footer-form/footer-form.component';
 
 
 
@@ -14,7 +15,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TileComponent,
     CardComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    FooterFormComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TileComponent,
     CardComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    FooterFormComponent
   ]
 })
 export class AdminComponentsModule { }

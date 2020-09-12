@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ComponentsModule } from '@components/components.module';
@@ -13,6 +14,7 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { AddProductComponent } from './add-product/add-product.component';
+import { AdminGuard } from '@guards/admin/admin.guard';
 
 
 
@@ -31,9 +33,13 @@ import { AddProductComponent } from './add-product/add-product.component';
     AdminRoutingModule,
     ComponentsModule,
     AdminComponentsModule,
+    NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule
+  ],
+  providers: [
+    AdminGuard
   ]
 })
 export class AdminModule { }

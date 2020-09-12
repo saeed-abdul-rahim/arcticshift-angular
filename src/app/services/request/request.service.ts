@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 // import { User } from '@models/User';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '@models/User';
+import { AuthService } from '@services/auth/auth.service';
 
 export interface SuccessResponse {
     data: any;
@@ -11,22 +13,22 @@ export interface SuccessResponse {
 @Injectable()
 export class RequestService {
 
-    // private user: User;
+    private user: User;
 
-    constructor(private http: HttpClient, private router: Router) {
-        // this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+    constructor(private http: HttpClient, private router: Router, private auth: AuthService) {
+        this.auth.getCurrentUserStream().subscribe(user => this.user = user);
     }
 
     private async setDefaultHeaders() {
         try {
-            // if (this.user.expiry < Date.now()) {
-            //     // await this.auth.getUser();
-            // }
-            // const { token, shopId } = this.user;
-            // return {
-            //     Authorization: `Bearer ${token}`,
-            //     groupId: shopId ? shopId : '',
-            // };
+            if (this.user.expiry < Date.now()) {
+                await this.auth.getUser();
+            }
+            const { token, shopId } = this.user;
+            return {
+                Authorization: `Bearer ${token}`,
+                groupId: shopId ? shopId : '',
+            };
             return {};
         } catch (err) {
             throw err;
