@@ -9,7 +9,7 @@ import { inOut } from 'app/animations/inOut';
   styleUrls: ['./add-product.component.css'],
   animations: [inOut]
 })
-export class AddProductComponent implements OnInit {
+export class ProductFormComponent implements OnInit {
 
   faCheckCircle = faCheckCircle;
 

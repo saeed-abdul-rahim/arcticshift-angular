@@ -9,11 +9,10 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ProductComponent } from './product/product.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
-import { AddProductComponent } from './add-product/add-product.component';
+import { ProductFormComponent } from './product-form/product-form.component';
 import { AdminGuard } from '@guards/admin/admin.guard';
 
 
@@ -23,10 +22,9 @@ import { AdminGuard } from '@guards/admin/admin.guard';
     AdminComponent,
     LoginComponent,
     DashboardComponent,
-    ProductComponent,
     WarehouseComponent,
     DiscountComponent,
-    AddProductComponent
+    ProductFormComponent
   ],
   imports: [
     CommonModule,

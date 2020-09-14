@@ -4,7 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
-import { AddProductComponent } from './add-product/add-product.component';
+import { ProductFormComponent } from './product-form/product-form.component';
 
 
 const routes: Routes = [
@@ -26,7 +26,7 @@ const routes: Routes = [
             children: [
               { path: '', redirectTo: 'list', pathMatch: 'full' },
               { path: 'list' },
-              { path: 'add', component: AddProductComponent },
+              { path: 'add', component: ProductFormComponent },
               { path: 'detail/:id' }
             ]
           },
