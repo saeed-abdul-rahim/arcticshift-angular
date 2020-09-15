@@ -1,5 +1,6 @@
 export type Role = 'admin' | 'staff';
 export type Status = 'active' | 'inactive';
+export type ContentType = 'image' | 'video' | 'document' | '';
 
 export interface TimestampInterface {
     createdAt?: number;

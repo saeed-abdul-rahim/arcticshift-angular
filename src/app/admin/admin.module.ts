@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
+import { DragAndDropDirective } from '@directives/DragAndDrop.directive';
 import { ComponentsModule } from '@components/components.module';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
@@ -19,6 +20,7 @@ import { AdminGuard } from '@guards/admin/admin.guard';
 
 @NgModule({
   declarations: [
+    DragAndDropDirective,
     AdminComponent,
     LoginComponent,
     DashboardComponent,
