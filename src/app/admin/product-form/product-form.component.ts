@@ -25,6 +25,8 @@ export class ProductFormComponent implements OnInit {
 
   file: File;
   fileType: ContentType;
+  previewUrl: string | ArrayBuffer | null;
+  previewBlob: Blob | null;
   invalidFile = false;
   isUploaded = false;
 
