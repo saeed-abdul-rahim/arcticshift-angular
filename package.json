@@ -70,6 +70,7 @@
     "@environment": "dist/environments/environment.ts",
     "@utils/*": "dist/app/utils",
     "@components/*": "dist/app/components",
+    "@directives/*": "dist/app/directives",
     "@services/*": "dist/app/services",
     "@guards/*": "dist/app/guards",
     "@models/*": "dist/app/models"
