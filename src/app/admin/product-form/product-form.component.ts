@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { inOut } from 'app/animations/inOut';
+import { inOut } from '@animations/inOut';
 import { ContentType } from '@models/Common';
+import Thumbnail from '@services/media/Thumbnail';
+import { MediaService } from '@services/media/media.service';
 
 @Component({
   selector: 'app-product-form',
@@ -26,7 +28,7 @@ export class ProductFormComponent implements OnInit {
   invalidFile = false;
   isUploaded = false;
 
-  constructor(private formbuilder: FormBuilder) { }
+  constructor(private formbuilder: FormBuilder, private mediaService: MediaService) { }
 
   ngOnInit(): void {
     this.addProductForm = this.formbuilder.group({

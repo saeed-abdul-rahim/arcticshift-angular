@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
-import { inOut } from 'app/animations/inOut';
+import { inOut } from '@animations/inOut';
 
 @Component({
   selector: 'app-submit-button',

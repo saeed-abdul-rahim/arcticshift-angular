@@ -69,6 +69,7 @@
   "_moduleAliases": {
     "@environment": "dist/environments/environment.ts",
     "@utils/*": "dist/app/utils",
+    "@animations/*": "dist/app/animations",
     "@components/*": "dist/app/components",
     "@directives/*": "dist/app/directives",
     "@services/*": "dist/app/services",

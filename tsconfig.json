@@ -19,6 +19,7 @@
     "paths": {
       "@environment": ["environments/environment.ts"],
       "@utils/*": ["app/utils/*"],
+      "@animations/*": ["app/animations/*"],
       "@components/*": ["app/components/*"],
       "@directives/*": ["app/directives/*"],
       "@services/*": ["app/services/*"],
