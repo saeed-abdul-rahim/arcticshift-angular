@@ -4,7 +4,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 
 import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
-import { inOut } from 'app/animations/inOut';
+import { inOut } from '@animations/inOut';
 
 @Component({
   selector: 'app-login',
