@@ -26,6 +26,12 @@
   </div>
   </ng-template>
 
+  <ng-template #attributes>
+    <div class="w-full mb-3">
+      <ng-select formControlName="productTypes" placeholder="Value"></ng-select>
+    </div>
+  </ng-template>
+
   <ng-template #productPrice>
 
     <div class="flex flex-wrap items-center">
@@ -83,6 +89,7 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
           <app-card [heading]="'Images'" [body]="imageUpload"></app-card>
+          <app-card [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
