@@ -18,8 +18,8 @@
   </ng-template>
 
   <ng-template #imageUpload>
-    <div class="flex w-full  justify-center bg-grey-lighter">
-      <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-white">
+    <div class="flex w-full justify-center bg-grey-lighter">
+      <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-900 hover:text-white">
           <span class="mt-2 text-base leading-normal ">UPLOAD IMAGE</span>
           <input type='file' class="hidden" />
       </label>
@@ -88,7 +88,7 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
-          <app-card [heading]="'Images'" [body]="imageUpload"></app-card>
+          <app-card [heading]="'Images'" [actions]="imageUpload"></app-card>
           <app-card [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
         </div>

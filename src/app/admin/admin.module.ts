@@ -15,6 +15,7 @@ import { DiscountComponent } from './discount/discount.component';
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { AdminGuard } from '@guards/admin/admin.guard';
+import { MediaService } from '@services/media/media.service';
 
 
 
@@ -39,7 +40,8 @@ import { AdminGuard } from '@guards/admin/admin.guard';
     FontAwesomeModule
   ],
   providers: [
-    AdminGuard
+    AdminGuard,
+    MediaService
   ]
 })
 export class AdminModule { }
