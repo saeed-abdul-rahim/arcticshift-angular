@@ -6,15 +6,12 @@
 
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-
         <div class="w-full mb-3">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
             [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
         </div>
-
       </div>
     </div>
-
   </ng-template>
 
   <ng-template #imageUpload>
@@ -52,7 +49,7 @@
     <div class="flex w-full justify-center bg-grey-lighter">
       <label class="w-64 flex flex-col items-center px-2 py-2 bg-white text-blue-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
           <span class="mt-2 text-base leading-normal "></span>
-          <a routerLink="/variants"> CREATE VARIANT</a>
+          <a routerLink="/variants"> CREATE VARIANT</a>      
           <!-- <input type='file' class="hidden" /> -->
       </label>
   </div>
@@ -100,7 +97,7 @@
           <app-card [heading]="'Images'" [actions]="imageUpload"></app-card>
           <app-card [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
-          <app-card [heading]="'Variants'" [actions]="variants"></app-card>
+          <app-card [heading]="'Variants'" [actions]="variants" ></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Organize Product'" [body]="organizeProduct"></app-card>
