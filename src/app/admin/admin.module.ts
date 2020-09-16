@@ -16,6 +16,7 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
 import { ProductFormComponent } from './product-form/product-form.component';
 import { AdminGuard } from '@guards/admin/admin.guard';
 import { MediaService } from '@services/media/media.service';
+import { VariantFormComponent } from './variant-form/variant-form.component';
 
 
 
@@ -27,7 +28,8 @@ import { MediaService } from '@services/media/media.service';
     DashboardComponent,
     WarehouseComponent,
     DiscountComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    VariantFormComponent
   ],
   imports: [
     CommonModule,

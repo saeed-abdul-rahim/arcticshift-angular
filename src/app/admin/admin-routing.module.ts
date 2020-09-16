@@ -5,10 +5,12 @@ import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
 import { ProductFormComponent } from './product-form/product-form.component';
+import {VariantFormComponent} from './variant-form/variant-form.component'
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'variants', component: VariantFormComponent},
   {
     path: '',
     component: AdminComponent,
