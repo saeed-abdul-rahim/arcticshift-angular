@@ -1,9 +1,12 @@
+<form class="flex flex-col h-screen justify-between" [formGroup]="addVariantForm" (ngSubmit)="onSubmit()">
 
 <ng-template #productType>
+
     <div class="flex flex-wrap items-center">
         <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
           <div class="w-half mb-3">
-            <ng-select formControlName="productType" placeholder="size"></ng-select>
+            <ng-select formControlName="productType" placeholder="size"
+            [ngClass]="sizeDanger ? 'border-red' : ''" formControlName="size"></ng-select>
           </div>
         </div>
     </div>
@@ -13,9 +16,29 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-half mb-3">
-          <input type="number" class="arc-input placeholder-gray-400 w-half" placeholder="selling price override">
+          <input type="number" class="arc-input placeholder-gray-400 w-half" placeholder="selling price override"
+          [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
         </div>
-        <input type="number" class="arc-input placeholder-gray-400 w-half" placeholder="cost price override">
+        <input type="number" class="arc-input placeholder-gray-400 w-half" placeholder="cost price override"
+        [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #inventory>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="SKU(stock keeping unit)"
+            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="inventory" />
+        </div>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" class="form-checkbox arc-checkbox" />
+          <span class="ml-2 text-sm font-semibold text-gray-700">Track Inventory</span>
+        </label>
+        <div>
+
+        </div>
       </div>
     </div>
   </ng-template>
@@ -26,8 +49,11 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productType"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
+          <app-card [heading]="'Inventory'" [body]="inventory"></app-card>
         </div>
       </div>
     </div>
   </div>
   
+<app-footer-form></app-footer-form>
+</form>
