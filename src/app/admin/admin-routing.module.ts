@@ -158,7 +158,8 @@ const routes: Routes = [
           { path: 'add' },
           { path: 'detail/:id' }
         ]
-      }
+      },
+      { path: 'variants', component: VariantFormComponent}
     ]
   }
 ];
