@@ -22,8 +22,9 @@
         <input type='file' class="hidden" />
       </label>
     </div>
-    <div appDragAndDrop (fileDropped)="onFileDropped()">
-
+    <div appDragAndDrop (fileDropped)="onFileDropped($event)">
+  
+      
     </div>
   </ng-template>
 

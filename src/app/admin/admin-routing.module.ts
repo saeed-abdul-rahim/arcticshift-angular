@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { VariantFormComponent } from './variant-form/variant-form.component';
+import { CollectionFormComponent } from './collection-form/collection-form.component';
 
 
 const routes: Routes = [
@@ -159,7 +160,7 @@ const routes: Routes = [
           { path: 'detail/:id' }
         ]
       },
-      { path: 'variants', component: VariantFormComponent}
+      { path: 'collection', component: CollectionFormComponent}
     ]
   }
 ];

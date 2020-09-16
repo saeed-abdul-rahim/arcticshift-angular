@@ -17,6 +17,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { AdminGuard } from '@guards/admin/admin.guard';
 import { MediaService } from '@services/media/media.service';
 import { VariantFormComponent } from './variant-form/variant-form.component';
+import { CollectionFormComponent } from './collection-form/collection-form.component';
 
 
 
@@ -29,7 +30,8 @@ import { VariantFormComponent } from './variant-form/variant-form.component';
     WarehouseComponent,
     DiscountComponent,
     ProductFormComponent,
-    VariantFormComponent
+    VariantFormComponent,
+    CollectionFormComponent
   ],
   imports: [
     CommonModule,
