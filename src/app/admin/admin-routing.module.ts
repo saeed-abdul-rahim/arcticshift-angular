@@ -10,7 +10,7 @@ import {VariantFormComponent} from './variant-form/variant-form.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'variants', component: VariantFormComponent},
+  
   {
     path: '',
     component: AdminComponent,
@@ -147,7 +147,8 @@ const routes: Routes = [
           { path: 'add' },
           { path: 'detail/:id' }
         ]
-      }
+      },
+      { path: 'variants', component: VariantFormComponent}
     ]
   }
 ];
