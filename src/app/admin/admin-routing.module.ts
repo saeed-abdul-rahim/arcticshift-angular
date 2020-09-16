@@ -5,12 +5,11 @@ import { AdminGuard } from 'app/guards/admin/admin.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
 import { ProductFormComponent } from './product-form/product-form.component';
-import {VariantFormComponent} from './variant-form/variant-form.component';
+import { VariantFormComponent } from './variant-form/variant-form.component';
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'variants', component: VariantFormComponent},
   {
     path: '',
     component: AdminComponent,
@@ -29,7 +28,19 @@ const routes: Routes = [
               { path: '', redirectTo: 'list', pathMatch: 'full' },
               { path: 'list' },
               { path: 'add', component: ProductFormComponent },
-              { path: 'detail/:id' }
+              {
+                path: 'detail/:id',
+                children: [
+                  {
+                    path: 'variant',
+                    children: [
+                      { path: '', redirectTo: 'add', pathMatch: 'full' },
+                      { path: 'add', component: VariantFormComponent },
+                      { path: 'detail/:id', component: VariantFormComponent }
+                    ]
+                  }
+                ]
+              },
             ]
           },
           {

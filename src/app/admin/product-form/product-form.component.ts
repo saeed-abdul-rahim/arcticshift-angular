@@ -5,6 +5,7 @@ import { inOut } from '@animations/inOut';
 import { ContentType } from '@models/Common';
 import Thumbnail from '@services/media/Thumbnail';
 import { MediaService } from '@services/media/media.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-form',
@@ -30,7 +31,8 @@ export class ProductFormComponent implements OnInit {
   invalidFile = false;
   isUploaded = false;
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService) { }
+  constructor(private formbuilder: FormBuilder, private mediaService: MediaService,
+              private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.addProductForm = this.formbuilder.group({
@@ -93,6 +95,11 @@ export class ProductFormComponent implements OnInit {
     this.fileType = null;
     this.isUploaded = false;
     this.invalidFile = true;
+  }
+
+  toAddVariant() {
+    // TEMPORARY
+    this.router.navigateByUrl('admin/catalog/product/detail/id/variant', { relativeTo: this.route });
   }
 
 }

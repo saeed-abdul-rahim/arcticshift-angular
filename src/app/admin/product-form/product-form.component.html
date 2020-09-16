@@ -16,11 +16,12 @@
 
   <ng-template #imageUpload>
     <div class="flex w-full justify-center bg-grey-lighter">
-      <label class="w-64 flex flex-col items-center px-2 py-2 bg-white text-blue-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
-          <span class="mt-2 text-base leading-normal ">UPLOAD IMAGE</span>
-          <input type='file' class="hidden" />
+      <label
+        class="w-64 flex flex-col items-center px-2 py-2 bg-white text-blue-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
+        <span class="mt-2 text-base leading-normal ">UPLOAD IMAGE</span>
+        <input type='file' class="hidden" />
       </label>
-  </div>
+    </div>
   </ng-template>
 
   <ng-template #attributes>
@@ -34,7 +35,7 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="form-checkbox arc-checkbox"/>
+          <input type="checkbox" class="form-checkbox arc-checkbox" />
           <span class="ml-2 text-sm font-semibold text-gray-700">Charge taxes for this item</span>
         </label>
         <div class="w-full mb-3">
@@ -47,12 +48,13 @@
 
   <ng-template #variants>
     <div class="flex w-full justify-center bg-grey-lighter">
-      <label class="w-64 flex flex-col items-center px-2 py-2 bg-white text-blue-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
-          <span class="mt-2 text-base leading-normal "></span>
-          <a routerLink="/variants"> CREATE VARIANT</a>      
-          <!-- <input type='file' class="hidden" /> -->
+      <label
+        class="w-64 flex flex-col items-center px-2 py-2 bg-white text-blue-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
+        <span class="mt-2 text-base leading-normal "></span>
+        <a (click)="toAddVariant()"> CREATE VARIANT</a>
+        <!-- <input type='file' class="hidden" /> -->
       </label>
-  </div>
+    </div>
   </ng-template>
 
   <ng-template #organizeProduct>
@@ -75,16 +77,16 @@
     <div class="flex items-center ml-4 mb-4 p-1">
       <input id="radio1" type="radio" name="radio" class="hidden" checked />
       <label for="radio1" class="flex items-center cursor-pointer">
-       <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-       Visible</label>
-      </div>
-       <div class="flex items-center ml-4 mb-4 p-1">
-        <input id="radio2" type="radio" name="radio" class="hidden" />
-        <label for="radio2" class="flex items-center cursor-pointer">
-         <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-         Hidden</label>
-       </div>
-     
+        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+        Visible</label>
+    </div>
+    <div class="flex items-center ml-4 mb-4 p-1">
+      <input id="radio2" type="radio" name="radio" class="hidden" />
+      <label for="radio2" class="flex items-center cursor-pointer">
+        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+        Hidden</label>
+    </div>
+
   </ng-template>
 
   <!-- BODY -->
@@ -97,7 +99,7 @@
           <app-card [heading]="'Images'" [actions]="imageUpload"></app-card>
           <app-card [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
-          <app-card [heading]="'Variants'" [actions]="variants" ></app-card>
+          <app-card [heading]="'Variants'" [actions]="variants"></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Organize Product'" [body]="organizeProduct"></app-card>
