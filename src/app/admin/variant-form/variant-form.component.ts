@@ -9,8 +9,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class VariantFormComponent implements OnInit {
 
   nameDanger: boolean;
-  sizeDanger:boolean;
-  priceDanger:boolean;
+  sizeDanger: boolean;
+  priceDanger: boolean;
 
   addVariantForm: FormGroup;
 
@@ -19,8 +19,9 @@ export class VariantFormComponent implements OnInit {
    ngOnInit(): void {
     this.addVariantForm = this.formbuilder.group({
       size: ['', Validators.required],
-      price: ['', Validators.required]
-     
+      price: ['', Validators.required],
+      strikePrice: [''],
+      sku: ['', Validators.required]
     });
   }
 
