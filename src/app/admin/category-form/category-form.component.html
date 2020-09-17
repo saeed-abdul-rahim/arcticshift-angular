@@ -1,12 +1,12 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addCollectionForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="addCategoryForm" (ngSubmit)="onSubmit()">
 
     <!-- TEMPLATES -->
   
-    <ng-template #collection>
+    <ng-template #Category>
       <div class="flex flex-wrap items-center">
         <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
           <div class="w-full mb-3">
-            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Category Name"
               [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
           </div>
         </div>
@@ -31,34 +31,15 @@
       </div>
     </ng-template>
 
-    <ng-template #visibility>
-      <div class="flex items-center ml-4 mb-4 p-1">
-        <input id="radio1" type="radio" name="radio" class="hidden" checked />
-        <label for="radio1" class="flex items-center cursor-pointer">
-          <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-          Visible</label>
-      </div>
-      <div class="flex items-center ml-4 mb-4 p-1">
-        <input id="radio2" type="radio" name="radio" class="hidden" />
-        <label for="radio2" class="flex items-center cursor-pointer">
-          <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-          Hidden</label>
-      </div>
-    </ng-template>
-  
-  
     <!-- BODY -->
   
     <div class="relative md:pt-32 pt-12">
       <div class="px-4 md:px-10 mx-auto w-full">
         <div class="flex flex-wrap mt-4">
           <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-            <app-card [heading]="'General Information'" [body]="collection"></app-card>
+            <app-card [heading]="'General Information'" [body]="Category"></app-card>
             <app-card [heading]="'Images'"  [actions]="imageUpload" ></app-card>
             <app-card [heading]="''"  [body]="textArea" ></app-card>
-          </div>
-          <div class="w-full xl:w-4/12 px-4">
-            <app-card [heading]="'Visibility'" [body]="visibility"></app-card>
           </div>
         </div>
       </div>

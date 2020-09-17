@@ -18,6 +18,7 @@ import { AdminGuard } from '@guards/admin/admin.guard';
 import { MediaService } from '@services/media/media.service';
 import { VariantFormComponent } from './variant-form/variant-form.component';
 import { CollectionFormComponent } from './collection-form/collection-form.component';
+import { CategoryFormComponent } from './category-form/category-form.component';
 
 
 
@@ -31,7 +32,8 @@ import { CollectionFormComponent } from './collection-form/collection-form.compo
     DiscountComponent,
     ProductFormComponent,
     VariantFormComponent,
-    CollectionFormComponent
+    CollectionFormComponent,
+    CategoryFormComponent
   ],
   imports: [
     CommonModule,

@@ -7,6 +7,7 @@ import { AdminComponent } from './admin.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { VariantFormComponent } from './variant-form/variant-form.component';
 import { CollectionFormComponent } from './collection-form/collection-form.component';
+import { CategoryFormComponent } from './category-form/category-form.component';
 
 
 const routes: Routes = [
@@ -160,7 +161,8 @@ const routes: Routes = [
           { path: 'detail/:id' }
         ]
       },
-      { path: 'collection', component: CollectionFormComponent}
+      { path: 'collection', component: CollectionFormComponent},
+      { path: 'category', component: CategoryFormComponent}
     ]
   }
 ];
