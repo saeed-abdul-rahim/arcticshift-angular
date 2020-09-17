@@ -23,9 +23,9 @@ export class CollectionFormComponent implements OnInit {
   get addCollectionFormControls() { return this.addCollectionForm.controls; }
 
   async onSubmit() {
-    const { size } = this.addCollectionFormControls;
+    const { name } = this.addCollectionFormControls;
     if (this.addCollectionForm.invalid) {
-      if (size.errors) {
+      if (name.errors) {
         this.nameDanger = true;
       }
       return;

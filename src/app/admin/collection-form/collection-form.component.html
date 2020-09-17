@@ -1,69 +1,68 @@
 <form class="flex flex-col h-screen justify-between" [formGroup]="addCollectionForm" (ngSubmit)="onSubmit()">
 
-    <!-- TEMPLATES -->
-  
-    <ng-template #collection>
-      <div class="flex flex-wrap items-center">
-        <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-          <div class="w-full mb-3">
-            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
-              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-          </div>
-        </div>
-      </div>
-    </ng-template>
-  
-    <ng-template #imageUpload>
-      <div class="flex w-full justify-center bg-grey-lighter">
-       <label 
-       class="text-blue-400 background-transparent font-semibold uppercase px-3 py-1 text-xs outline-none focus:outline-none mr-1 mb-1 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
-          <span class="mt-2 text-base leading-normal ">UPLOAD IMAGE</span>
-          <input type='file' class="hidden" />
-        </label>
-      </div>
-      <!-- <div appDragAndDrop (fileDropped)="onFileDropped($event)">
-      </div> -->
-    </ng-template>
+  <!-- TEMPLATES -->
 
-    <ng-template #textArea>
-      <div class="flex w-full justify-center">
-        <textarea class="w-1/2 h-32 mb-3 resize border rounded focus:outline-none focus:shadow-outline"></textarea>
-      </div>
-    </ng-template>
-
-    <ng-template #visibility>
-      <div class="flex items-center ml-4 mb-4 p-1">
-        <input id="radio1" type="radio" name="radio" class="hidden" checked />
-        <label for="radio1" class="flex items-center cursor-pointer">
-          <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-          Visible</label>
-      </div>
-      <div class="flex items-center ml-4 mb-4 p-1">
-        <input id="radio2" type="radio" name="radio" class="hidden" />
-        <label for="radio2" class="flex items-center cursor-pointer">
-          <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-          Hidden</label>
-      </div>
-    </ng-template>
-  
-  
-    <!-- BODY -->
-  
-    <div class="relative md:pt-32 pt-12">
-      <div class="px-4 md:px-10 mx-auto w-full">
-        <div class="flex flex-wrap mt-4">
-          <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-            <app-card [heading]="'General Information'" [body]="collection"></app-card>
-            <app-card [heading]="'Images'"  [actions]="imageUpload" ></app-card>
-            <app-card [heading]="''"  [body]="textArea" ></app-card>
-          </div>
-          <div class="w-full xl:w-4/12 px-4">
-            <app-card [heading]="'Visibility'" [body]="visibility"></app-card>
-          </div>
+  <ng-template #collection>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
+            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
         </div>
       </div>
     </div>
+  </ng-template>
 
-    <app-footer-form></app-footer-form>
-  
-  </form>
+  <ng-template #imageUpload>
+    <div class="flex w-full justify-center bg-grey-lighter">
+      <label
+        class="text-blue-400 background-transparent font-semibold uppercase px-3 py-1 text-xs outline-none focus:outline-none mr-1 mb-1 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
+        <span class="mt-2 text-base leading-normal ">UPLOAD IMAGE</span>
+        <input type='file' class="hidden" />
+      </label>
+    </div>
+    <!-- <div appDragAndDrop (fileDropped)="onFileDropped($event)">
+      </div> -->
+  </ng-template>
+
+  <ng-template #textArea>
+    <div class="flex w-full justify-center">
+      <textarea class="w-1/2 h-32 mb-3 resize border rounded focus:outline-none focus:shadow-outline"></textarea>
+    </div>
+  </ng-template>
+
+  <ng-template #visibility>
+    <div class="flex items-center ml-4 mb-4 p-1">
+      <input id="radio1" type="radio" name="radio" class="hidden" checked />
+      <label for="radio1" class="flex items-center cursor-pointer">
+        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+        Visible</label>
+    </div>
+    <div class="flex items-center ml-4 mb-4 p-1">
+      <input id="radio2" type="radio" name="radio" class="hidden" />
+      <label for="radio2" class="flex items-center cursor-pointer">
+        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+        Hidden</label>
+    </div>
+  </ng-template>
+
+  <!-- BODY -->
+
+  <div class="relative md:pt-32 pt-12">
+    <div class="px-4 md:px-10 mx-auto w-full">
+      <div class="flex flex-wrap mt-4">
+        <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+          <app-card [heading]="'General Information'" [body]="collection"></app-card>
+          <app-card [heading]="'Images'" [actions]="imageUpload"></app-card>
+          <app-card [heading]="''" [body]="textArea"></app-card>
+        </div>
+        <div class="w-full xl:w-4/12 px-4">
+          <app-card [heading]="'Visibility'" [body]="visibility"></app-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer-form></app-footer-form>
+
+</form>

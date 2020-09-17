@@ -23,9 +23,9 @@ export class CategoryFormComponent implements OnInit {
   get addCategoryFormControls() { return this.addCategoryForm.controls; }
 
   async onSubmit() {
-    const { size } = this.addCategoryFormControls;
+    const { name } = this.addCategoryFormControls;
     if (this.addCategoryForm.invalid) {
-      if (size.errors) {
+      if (name.errors) {
         this.nameDanger = true;
       }
       return;
