@@ -19,6 +19,8 @@ import { MediaService } from '@services/media/media.service';
 import { VariantFormComponent } from './variant-form/variant-form.component';
 import { CollectionFormComponent } from './collection-form/collection-form.component';
 import { CategoryFormComponent } from './category-form/category-form.component';
+import { SaleFormComponent } from './sale-form/sale-form.component';
+import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 
 
 
@@ -33,7 +35,9 @@ import { CategoryFormComponent } from './category-form/category-form.component';
     ProductFormComponent,
     VariantFormComponent,
     CollectionFormComponent,
-    CategoryFormComponent
+    CategoryFormComponent,
+    SaleFormComponent,
+    VoucherFormComponent
   ],
   imports: [
     CommonModule,

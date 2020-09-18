@@ -8,6 +8,8 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { VariantFormComponent } from './variant-form/variant-form.component';
 import { CollectionFormComponent } from './collection-form/collection-form.component';
 import { CategoryFormComponent } from './category-form/category-form.component';
+import { SaleFormComponent } from './sale-form/sale-form.component';
+import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 
 
 const routes: Routes = [
@@ -162,7 +164,9 @@ const routes: Routes = [
         ]
       },
       { path: 'collection', component: CollectionFormComponent},
-      { path: 'category', component: CategoryFormComponent}
+      { path: 'category', component: CategoryFormComponent},
+      { path: 'sale', component: SaleFormComponent},
+      { path: 'voucher', component: VoucherFormComponent}
     ]
   }
 ];
