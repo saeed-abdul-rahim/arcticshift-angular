@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AdminService } from '@services/admin/admin.service';
 import { SuccessResponse } from '@services/request/request.service';
 
 @Component({
@@ -18,7 +19,7 @@ export class VariantFormComponent implements OnInit {
 
   addVariantForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder) { }
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
    ngOnInit(): void {
     this.addVariantForm = this.formbuilder.group({
@@ -39,6 +40,19 @@ export class VariantFormComponent implements OnInit {
       }
       return;
     }
+    this.loading = true;
+    try {
+      await this.adminService.createVariant({
+        size: size.value,
+        
+      });
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+    } catch (err) {
+      this.success = false;
+      console.log(err);
+    }
+    this.loading = false;
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AdminService } from '@services/admin/admin.service';
 
 @Component({
   selector: 'app-category-form',
@@ -8,12 +9,14 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class CategoryFormComponent implements OnInit {
 
+  loading = false;
+  success = false;
   nameDanger: boolean;
 
 
   addCategoryForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder) { }
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
   ngOnInit(): void {
     this.addCategoryForm = this.formbuilder.group({
@@ -30,7 +33,21 @@ export class CategoryFormComponent implements OnInit {
       }
       return;
     }
+  
+  this.loading = true;
+  try {
+    await this.adminService.createCategory({
+      name: name.value,
+      
+    });
+    this.success = true;
+    setTimeout(() => this.success = false, 2000);
+  } catch (err) {
+    this.success = false;
+    console.log(err);
   }
+  this.loading = false;
+}
 
 }
 

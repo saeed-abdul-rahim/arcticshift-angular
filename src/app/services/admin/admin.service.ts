@@ -4,6 +4,9 @@ import { RequestService } from '@services/request/request.service';
 import { ProductInterface} from '@models/Product';
 import { CollectionInterface} from '@models/Collection';
 import { CategoryType} from '@models/Category';
+import { VoucherInterface } from '@models/Voucher';
+import { SaleDiscountInterface } from '@models/SaleDiscount';
+import { VariantInterface } from '@models/Variant';
 
 @Injectable()
 export class AdminService {
@@ -35,6 +38,31 @@ export class AdminService {
   }
 
   async createCategory(data: CategoryType) {
+    const { apiProduct } = this;
+    try {
+      return await this.req.post(apiProduct, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async createSale(data: SaleDiscountInterface) {
+    const { apiProduct } = this;
+    try {
+      return await this.req.post(apiProduct, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createVariant(data: VariantInterface) {
+    const { apiProduct } = this;
+    try {
+      return await this.req.post(apiProduct, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async createVoucher(data: VoucherInterface) {
     const { apiProduct } = this;
     try {
       return await this.req.post(apiProduct, { data });
