@@ -51,14 +51,12 @@
   </ng-template>
 
   <ng-template #variants>
-    <div class="flex w-full justify-center bg-grey-lighter">
-      <label
-        class="text-blue-500 background-transparent font-bold uppercase px-3 py-1 text-xs outline-none focus:outline-none mr-1 mb-1 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
-        <span class="mt-2 text-base leading-normal "></span>
-        <a (click)="toAddVariant()"> CREATE VARIANT</a>
-        <!-- <input type='file' class="hidden" /> -->
-      </label>
-    </div>
+    <label
+      class="text-blue-500 background-transparent font-bold uppercase px-3 py-1 text-xs outline-none focus:outline-none mr-1 mb-1 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white">
+      <span class="mt-2 text-base leading-normal "></span>
+      <a (click)="toAddVariant()"> CREATE VARIANT</a>
+      <!-- <input type='file' class="hidden" /> -->
+    </label>
   </ng-template>
 
   <ng-template #organizeProduct>
@@ -112,6 +110,6 @@
     </div>
   </div>
 
-  <app-footer-form></app-footer-form>
+  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
 
 </form>
