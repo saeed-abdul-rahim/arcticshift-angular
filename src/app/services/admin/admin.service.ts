@@ -12,11 +12,22 @@ import { VariantInterface } from '@models/Variant';
 export class AdminService {
 
   apiProduct: string;
+  apiCategory: string;
+  apiCollection: string;
+  apiSale: string;
+  apiVariant: string;
+  apiVoucher: string;
+
 
   constructor(private req: RequestService) {
     const { api } = environment;
-    const { url, product } = api;
+    const { url, product,category,collection,sale,variant,voucher } = api;
     this.apiProduct = url + product;
+    this.apiCategory = url + category;
+    this.apiCollection = url + collection;
+    this.apiSale = url + sale;
+    this.apiVariant = url + variant;
+    this.apiVoucher = url + voucher;
   }
 
   async createProduct(data: ProductInterface) {
@@ -29,43 +40,43 @@ export class AdminService {
   }
 
   async createCollection(data: CollectionInterface) {
-    const { apiProduct } = this;
+    const { apiCollection } = this;
     try {
-      return await this.req.post(apiProduct, { data });
+      return await this.req.post(apiCollection { data });
     } catch (err) {
       throw err;
     }
   }
 
   async createCategory(data: CategoryType) {
-    const { apiProduct } = this;
+    const { apiCategory } = this;
     try {
-      return await this.req.post(apiProduct, { data });
+      return await this.req.post(apiCategory, { data });
     } catch (err) {
       throw err;
     }
   }
   async createSale(data: SaleDiscountInterface) {
-    const { apiProduct } = this;
+    const { apiSale } = this;
     try {
-      return await this.req.post(apiProduct, { data });
+      return await this.req.post(apiSale, { data });
     } catch (err) {
       throw err;
     }
   }
 
   async createVariant(data: VariantInterface) {
-    const { apiProduct } = this;
+    const { apiVariant } = this;
     try {
-      return await this.req.post(apiProduct, { data });
+      return await this.req.post(apiVariant, { data });
     } catch (err) {
       throw err;
     }
   }
   async createVoucher(data: VoucherInterface) {
-    const { apiProduct } = this;
+    const { apiVoucher } = this;
     try {
-      return await this.req.post(apiProduct, { data });
+      return await this.req.post(apiVoucher, { data });
     } catch (err) {
       throw err;
     }
