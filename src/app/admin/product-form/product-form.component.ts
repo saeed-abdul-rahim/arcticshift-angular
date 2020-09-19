@@ -18,8 +18,8 @@ export class ProductFormComponent implements OnInit {
 
   faCheckCircle = faCheckCircle;
 
-  loading: boolean;
-  success: boolean;
+  loading = false;
+  success = false;
   nameDanger: boolean;
   priceDanger: boolean;
 
@@ -60,10 +60,19 @@ export class ProductFormComponent implements OnInit {
       }
       return;
     }
-    await this.adminService.createProduct({
-      name: name.value,
-      price: price.value
-    });
+    this.loading = true;
+    try {
+      await this.adminService.createProduct({
+        name: name.value,
+        price: price.value
+      });
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+    } catch (err) {
+      this.success = false;
+      console.log(err);
+    }
+    this.loading = false;
   }
 
   async onFileDropped($event) {
