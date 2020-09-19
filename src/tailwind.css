@@ -3,6 +3,9 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+.arc-transition {
+    transition: all 0.15s ease 0s;
+}
 
 .arc-input {
     @apply px-3;
@@ -12,7 +15,7 @@
     @apply rounded;
     @apply text-sm;
     @apply shadow;
-    transition: all 0.15s ease 0s;
+    @apply arc-transition;
 }
 
 .arc-input:focus {
@@ -44,7 +47,31 @@
     @apply outline-none;
     @apply mr-1;
     @apply mb-1;
-    transition: all 0.15s ease 0s;
+    @apply arc-transition;
+}
+
+.arc-link-button {
+    @apply text-blue-500;
+    @apply bg-transparent;
+    @apply font-bold;
+    @apply uppercase;
+    @apply px-3;
+    @apply py-1;
+    @apply text-xs;
+    @apply outline-none;
+    @apply mr-1;
+    @apply mb-1;
+    @apply rounded-lg;
+    @apply cursor-pointer;
+    @apply arc-transition;
+}
+
+.arc-link-button:hover {
+    @apply shadow-md;
+}
+
+.arc-link-button:focus {
+    @apply outline-none;
 }
 
 .arc-checkbox {
@@ -52,7 +79,7 @@
     @apply ml-1;
     @apply w-5;
     @apply h-5;
-    transition: all 0.15s ease 0s;
+    @apply arc-transition;
 }
 
 .arc-button:active {
@@ -80,4 +107,21 @@
     @apply arc-input;
     @apply mt-4;
     @apply -ml-3;
+}
+
+input[type="radio"] + label span {
+    transition: background .2s transform .2s;
+}
+
+input[type="radio"] + label span:hover,
+input[type="radio"] + label:hover span{
+  transform: scale(1.2);
+} 
+
+input[type="radio"]:checked + label span {
+  @apply bg-blue-500;
+}
+
+input[type="radio"]:checked + label{
+    @apply text-blue-500;
 }
