@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SuccessResponse } from '@services/request/request.service';
 
 @Component({
   selector: 'app-variant-form',
@@ -7,10 +8,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./variant-form.component.css']
 })
 export class VariantFormComponent implements OnInit {
-
+  
+  loading: boolean;
+  success: boolean;
   nameDanger: boolean;
   sizeDanger: boolean;
   priceDanger: boolean;
+  
 
   addVariantForm: FormGroup;
 

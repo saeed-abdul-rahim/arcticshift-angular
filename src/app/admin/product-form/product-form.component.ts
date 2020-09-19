@@ -66,6 +66,8 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
+
+  
   async onFileDropped($event) {
     this.file = $event[0];
     this.fileType = this.checkFileType(this.file);

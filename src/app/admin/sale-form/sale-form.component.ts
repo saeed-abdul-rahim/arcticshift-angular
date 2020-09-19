@@ -8,8 +8,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class SaleFormComponent implements OnInit {
 
+  loading: boolean;
+  success: boolean;
   nameDanger: boolean;
-
 
   addSaleForm: FormGroup;
 
