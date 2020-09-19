@@ -19,6 +19,16 @@ export type Tax = {
     type: ValueType
 };
 
+export type Datetime = {
+    date: string
+    time: string
+    zone: string
+};
+
+export type AttributeValue = {
+    [key: string]: boolean
+} | null;
+
 export type AuthType = {
     [key in Role]?: string[];
 };
