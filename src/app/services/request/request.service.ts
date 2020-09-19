@@ -27,7 +27,7 @@ export class RequestService {
             const { token, shopId } = this.user;
             return {
                 Authorization: `Bearer ${token}`,
-                groupId: shopId ? shopId : '',
+                shopId: shopId ? shopId : '',
             };
             return {};
         } catch (err) {

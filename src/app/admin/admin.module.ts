@@ -21,6 +21,7 @@ import { CollectionFormComponent } from './collection-form/collection-form.compo
 import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
+import { AdminService } from '@services/admin/admin.service';
 
 
 
@@ -51,7 +52,8 @@ import { VoucherFormComponent } from './voucher-form/voucher-form.component';
   ],
   providers: [
     AdminGuard,
-    MediaService
+    MediaService,
+    AdminService
   ]
 })
 export class AdminModule { }

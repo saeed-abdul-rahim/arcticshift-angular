@@ -1,6 +1,7 @@
 export type Role = 'admin' | 'staff';
 export type Status = 'active' | 'inactive';
 export type ContentType = 'image' | 'video' | 'document' | '';
+export type ValueType = 'fixed' | 'percent';
 
 export interface TimestampInterface {
     createdAt?: number;
@@ -10,6 +11,12 @@ export interface TimestampInterface {
 export type ContentStorage = {
     path: string
     url: string
+};
+
+export type Tax = {
+    name: string
+    value: number
+    type: ValueType
 };
 
 export type AuthType = {

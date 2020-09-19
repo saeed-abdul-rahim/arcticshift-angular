@@ -30,7 +30,7 @@
 
   <ng-template #attributes>
     <div class="w-full mb-3">
-      <ng-select formControlName="productTypes" placeholder="Value"></ng-select>
+      <ng-select placeholder="Value"></ng-select>
     </div>
   </ng-template>
 
@@ -44,7 +44,7 @@
         </label>
         <div class="w-full mb-3">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="price"
-            [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price" />
+            [ngClass]="priceDanger ? 'border-red' : ''" formControlName="price" />
         </div>
       </div>
     </div>

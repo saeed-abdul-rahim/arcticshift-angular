@@ -17,7 +17,7 @@ export class AdminService {
   async createProduct(data: ProductInterface) {
     const { apiProduct } = this;
     try {
-      return await this.req.post(apiProduct, data);
+      return await this.req.post(apiProduct, { data });
     } catch (err) {
       throw err;
     }

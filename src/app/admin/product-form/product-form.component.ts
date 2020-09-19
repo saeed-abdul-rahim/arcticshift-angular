@@ -6,6 +6,7 @@ import { ContentType } from '@models/Common';
 import Thumbnail from '@services/media/Thumbnail';
 import { MediaService } from '@services/media/media.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AdminService } from '@services/admin/admin.service';
 
 @Component({
   selector: 'app-product-form',
@@ -31,28 +32,38 @@ export class ProductFormComponent implements OnInit {
   invalidFile = false;
   isUploaded = false;
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService,
+  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
               private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.addProductForm = this.formbuilder.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
+      description: [''],
       price: ['', Validators.required],
-      productType: ['', Validators.required],
-      category: ['', Validators.required],
-      collection: ['', Validators.required]
+      productType: [''],
+      category: [''],
+      collection: [''],
+      hidden: [false],
+      tax: [false],
     });
   }
   get addProductFormControls() { return this.addProductForm.controls; }
 
  async onSubmit() {
-    const { name } = this.addProductFormControls;
+    const { name, price } = this.addProductFormControls;
     if (this.addProductForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }
+      if (price.errors) {
+        this.priceDanger = true;
+      }
       return;
     }
+    await this.adminService.createProduct({
+      name: name.value,
+      price: price.value
+    });
   }
 
   async onFileDropped($event) {
