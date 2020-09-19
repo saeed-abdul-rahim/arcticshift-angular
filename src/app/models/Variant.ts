@@ -1,8 +1,10 @@
-import { TimestampInterface, Status, ContentStorage, Tax, AttributeValue } from './Common';
+import { TimestampInterface, Status, ContentStorage, AttributeValue } from './Common';
 
-export interface ProductInterface extends TimestampInterface {
-    shopId?: string;
+export interface VariantInterface extends TimestampInterface {
+    shopId: string;
     productId?: string;
+    variantId?: string;
+    sku?: string;
     name?: string;
     description?: string;
     keywords?: string[];
@@ -16,13 +18,14 @@ export interface ProductInterface extends TimestampInterface {
     collectionId?: string[];
     prices?: Price[];
     price?: number;
-    tax?: Tax | null;
-    variantId?: string[];
-    saleDiscountId?: string;
-    voucherId?: string;
+    variantIds?: string[];
     status?: Status;
     like?: number;
     rating?: number;
+    trackInventory?: boolean;
+    warehouse?: WarehouseInventory[];
+    quantity?: number;
+    bookedQuantity?: number;
 }
 
 type Price = {
@@ -33,4 +36,9 @@ type Price = {
 type Thumbnail = {
     size: string
     image: ContentStorage | null
+};
+
+type WarehouseInventory = {
+    warehouseId: string
+    quantity: number
 };
