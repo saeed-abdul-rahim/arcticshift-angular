@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
-import { first, retry } from 'rxjs/operators';
-import { User, UserClaim, UserInterface } from '@models/User';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { Observable } from 'rxjs/internal/Observable';
+import { first } from 'rxjs/internal/operators/first';
+
 import { environment } from '@environment';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { User, UserClaim, UserInterface } from '@models/User';
 import { FirebaseError } from '@utils/FirebaseError';
 import localStorageHelper from '@utils/localStorageHelper';
 import { getDataFromDocument } from '@utils/getFirestoreData';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 
 @Injectable()
 export class AuthService {

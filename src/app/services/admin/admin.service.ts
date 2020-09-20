@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environment';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+
 import { RequestService } from '@services/request/request.service';
+import { User } from '@models/User';
 import { ProductInterface } from '@models/Product';
 import { CollectionInterface } from '@models/Collection';
 import { CategoryInterface } from '@models/Category';
@@ -18,6 +21,7 @@ export class AdminService {
   apiVariant: string;
   apiVoucher: string;
 
+  private user: User;
 
   constructor(private req: RequestService) {
     const { api } = environment;

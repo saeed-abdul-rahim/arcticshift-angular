@@ -21,23 +21,27 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.getRoute();
   }
 
-  getRoute() {
+  async getRoute() {
     this.loading = true;
-    this.auth.getUser().then(user$ => {
-      if (!user$) {
-        this.toLogin();
-      } else {
-        this.userSubscription = user$.subscribe(user => {
-          if (!user) {
-            this.toLogin();
-          } else if (user.role !== 'admin' && user.role !== 'staff') {
-            this.toLogin();
-          } else {
-            this.loading = false;
-          }
-        });
-      }
-    });
+    try {
+      await this.auth.getUser().then(user$ => {
+        if (!user$) {
+          this.toLogin();
+        } else {
+          this.userSubscription = user$.subscribe(user => {
+            if (!user) {
+              this.toLogin();
+            } else if (user.role !== 'admin' && user.role !== 'staff') {
+              this.toLogin();
+            } else {
+              this.loading = false;
+            }
+          });
+        }
+      });
+    } catch (_) {
+      this.toLogin();
+    }
   }
 
   ngOnDestroy(): void {

@@ -10,17 +10,22 @@ export const environment = {
     url: 'https://asia-east2-articshift-7f9cd.cloudfunctions.net/api/v1',
     user: '/user',
     product: '/product',
-    category:'/category',
-    collection:'/collection',
-    sale:'/sale',
-    variant:'/variant',
-    voucher:'/voucher'
+    category: '/category',
+    collection: '/collection',
+    sale: '/sale-discount',
+    variant: '/variant',
+    voucher: '/voucher'
 
   },
   db: {
     version: 'v1',
     name: 'db',
     users: 'users',
+    products: 'products',
+    collections: 'collections',
+    categories: 'categories',
+    vouchers: 'vouchers',
+    saleDiscounts: 'saleDiscounts'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',

@@ -94,6 +94,39 @@
     @apply outline-none;
 }
 
+.arc-button-regular {
+    @apply bg-indigo-500;
+    @apply text-white;
+    @apply font-bold;
+    @apply uppercase;
+    @apply text-xs;
+    @apply px-4;
+    @apply py-2;
+    @apply rounded;
+    @apply shadow;
+    @apply outline-none;
+    @apply mr-1;
+    @apply mb-1;
+    @apply arc-transition;
+}
+
+.arc-button-regular:active {
+    @apply bg-blue-600;
+}
+
+.arc-button-regular:hover {
+    @apply shadow-md;
+}
+
+.arc-button-regular:focus {
+    @apply outline-none;
+}
+
+.disabled {
+    @apply cursor-not-allowed;
+    @apply opacity-50;
+}
+
 .border-red {
     @apply border;
     @apply border-red-500;
@@ -124,4 +157,76 @@ input[type="radio"]:checked + label span {
 
 input[type="radio"]:checked + label{
     @apply text-blue-500;
+}
+
+table {
+    @apply px-1;
+    @apply items-center;
+    @apply w-full;
+    @apply bg-transparent;
+    @apply border-collapse;
+}
+
+thead tr th {
+    @apply px-6;
+    @apply bg-gray-100;
+    @apply text-gray-600;
+    @apply align-middle;
+    @apply border;
+    @apply border-solid;
+    @apply border-gray-200;
+    @apply py-3;
+    @apply text-xs;
+    @apply uppercase;
+    @apply border-l-0;
+    @apply border-r-0;
+    @apply whitespace-no-wrap;
+    @apply font-semibold;
+    @apply text-left;
+}
+
+tbody tr th {
+    @apply border-t-0;
+    @apply px-6;
+    @apply align-middle;
+    @apply border-l-0;
+    @apply border-r-0;
+    @apply text-xs;
+    @apply whitespace-no-wrap;
+    @apply p-4;
+    @apply text-left;
+}
+
+tbody tr td {
+    @apply border-t-0;
+    @apply px-6;
+    @apply align-middle;
+    @apply border-l-0;
+    @apply border-r-0;
+    @apply text-xs;
+    @apply whitespace-no-wrap;
+    @apply p-4;
+}
+
+tbody tr:hover {
+    @apply bg-gray-100;
+    @apply cursor-pointer;
+}
+
+h5 {
+    @apply text-2xl;
+    @apply font-normal;
+    @apply leading-normal;
+    @apply mt-0;
+    @apply mb-2;
+}
+
+.mat-table, .mat-paginator, .mat-form-field {
+    font-family: inherit;
+}
+.mat-sort-header-button {
+    @apply uppercase;
+}
+.mat-header-cell {
+    @apply p-4;
 }

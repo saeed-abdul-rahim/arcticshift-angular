@@ -14,6 +14,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { RequestService } from '@services/request/request.service';
+import { PaginationService } from '@services/pagination/pagination.service';
+import { ShopService } from '@services/shop/shop.service';
 
 @NgModule({
   declarations: [
@@ -33,8 +35,10 @@ import { RequestService } from '@services/request/request.service';
   ],
   providers: [
     ScreenTrackingService,
+    AuthService,
     RequestService,
-    AuthService
+    PaginationService,
+    ShopService
   ],
   bootstrap: [AppComponent]
 })
