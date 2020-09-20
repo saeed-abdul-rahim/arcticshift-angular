@@ -1,6 +1,6 @@
 import { ContentStorage, TimestampInterface } from './Common';
 
-export interface CategoryType extends TimestampInterface {
+export interface CategoryInterface extends TimestampInterface {
     shopId?: string;
     categoryId?: string;
     parentCategoryId?: string;

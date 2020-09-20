@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environment';
 import { RequestService } from '@services/request/request.service';
-import { ProductInterface} from '@models/Product';
-import { CollectionInterface} from '@models/Collection';
-import { CategoryType} from '@models/Category';
+import { ProductInterface } from '@models/Product';
+import { CollectionInterface } from '@models/Collection';
+import { CategoryInterface } from '@models/Category';
 import { VoucherInterface } from '@models/Voucher';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
@@ -21,7 +21,7 @@ export class AdminService {
 
   constructor(private req: RequestService) {
     const { api } = environment;
-    const { url, product,category,collection,sale,variant,voucher } = api;
+    const { url, product, category, collection, sale, variant, voucher } = api;
     this.apiProduct = url + product;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;
@@ -42,13 +42,13 @@ export class AdminService {
   async createCollection(data: CollectionInterface) {
     const { apiCollection } = this;
     try {
-      return await this.req.post(apiCollection { data });
+      return await this.req.post(apiCollection, { data });
     } catch (err) {
       throw err;
     }
   }
 
-  async createCategory(data: CategoryType) {
+  async createCategory(data: CategoryInterface) {
     const { apiCategory } = this;
     try {
       return await this.req.post(apiCategory, { data });
@@ -56,6 +56,7 @@ export class AdminService {
       throw err;
     }
   }
+
   async createSale(data: SaleDiscountInterface) {
     const { apiSale } = this;
     try {
@@ -73,6 +74,7 @@ export class AdminService {
       throw err;
     }
   }
+
   async createVoucher(data: VoucherInterface) {
     const { apiVoucher } = this;
     try {
