@@ -28,6 +28,8 @@ import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ShopService } from '@services/shop/shop.service';
+import { ProductTypeComponent } from './product-type/product-type.component';
+import { AttributesComponent } from './attributes/attributes.component';
 
 
 @NgModule({
@@ -44,7 +46,9 @@ import { ShopService } from '@services/shop/shop.service';
     CollectionFormComponent,
     CategoryFormComponent,
     SaleFormComponent,
-    VoucherFormComponent
+    VoucherFormComponent,
+    ProductTypeComponent,
+    AttributesComponent
   ],
   imports: [
     CommonModule,

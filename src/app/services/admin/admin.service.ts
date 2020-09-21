@@ -10,6 +10,8 @@ import { CategoryInterface } from '@models/Category';
 import { VoucherInterface } from '@models/Voucher';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
+import { ProductTypeInterface } from '@models/productType';
+import { AttributeInterface } from '@models/attribute';
 
 @Injectable()
 export class AdminService {
@@ -20,18 +22,22 @@ export class AdminService {
   apiSale: string;
   apiVariant: string;
   apiVoucher: string;
+  apiProductType: string;
+  apiAttribute: string;
 
   private user: User;
 
   constructor(private req: RequestService) {
     const { api } = environment;
-    const { url, product, category, collection, sale, variant, voucher } = api;
+    const { url, product, category, collection, sale, variant, voucher,productType,attribute } = api;
     this.apiProduct = url + product;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;
     this.apiSale = url + sale;
     this.apiVariant = url + variant;
     this.apiVoucher = url + voucher;
+    this.apiProductType = url + productType;
+    this.apiAttribute = url + attribute;
   }
 
   async createProduct(data: ProductInterface) {
@@ -83,6 +89,22 @@ export class AdminService {
     const { apiVoucher } = this;
     try {
       return await this.req.post(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async createProductType(data: ProductTypeInterface) {
+    const { apiProductType } = this;
+    try {
+      return await this.req.post(apiProductType, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async createAttributes(data: AttributeInterface) {
+    const { apiAttribute } = this;
+    try {
+      return await this.req.post(apiAttribute, { data });
     } catch (err) {
       throw err;
     }

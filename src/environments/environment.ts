@@ -14,7 +14,9 @@ export const environment = {
     collection: '/collection',
     sale: '/sale-discount',
     variant: '/variant',
-    voucher: '/voucher'
+    voucher: '/voucher',
+    productType:'/productType',
+    attribute:'/attribute'
 
   },
   db: {
