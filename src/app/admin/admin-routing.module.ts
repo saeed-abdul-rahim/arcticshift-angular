@@ -142,7 +142,7 @@ const routes: Routes = [
         path: 'warehouse',
         children: [
           { path: '' },
-          { path: 'add' },
+          { path: 'add', component: WarehouseComponent },
           { path: ':id' }
         ]
       },
@@ -154,9 +154,8 @@ const routes: Routes = [
           { path: ':id' }
         ]
       },
-      { path: 'producttype', component: ProductTypeFormComponent },
-      { path: 'attribute', component: AttributeFormComponent },
-      { path: 'warehouse', component: WarehouseComponent }
+      { path: 'product-type', component: ProductTypeFormComponent },
+      { path: 'attribute', component: AttributeFormComponent }
     ]
   }
 ];

@@ -1,6 +1,5 @@
 import { Datetime, TimestampInterface, ValueType } from './Common';
 
-export interface AttributeInterface extends TimestampInterface
-{
+export interface ProductTypeInterface extends TimestampInterface {
     name?: string;
 }

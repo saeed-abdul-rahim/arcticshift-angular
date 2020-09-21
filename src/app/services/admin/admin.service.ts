@@ -10,10 +10,9 @@ import { CategoryInterface } from '@models/Category';
 import { VoucherInterface } from '@models/Voucher';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
-import { ProductTypeInterface } from '@models/productType';
-import { AttributeInterface } from '@models/attribute';
-import { WarehouseInterface } from '@models/warehouse';
-import { WarehouseComponent } from 'app/admin/warehouse/warehouse.component';
+import { ProductTypeInterface } from '@models/ProductType';
+import { AttributeInterface } from '@models/Attribute';
+import { WarehouseInterface } from '@models/Warehouse';
 
 @Injectable()
 export class AdminService {
@@ -32,7 +31,17 @@ export class AdminService {
 
   constructor(private req: RequestService) {
     const { api } = environment;
-    const { url, product, category, collection, sale, variant, voucher,productType,attribute,warehouse } = api;
+    const { url,
+      product,
+      category,
+      collection,
+      sale,
+      variant,
+      voucher,
+      productType,
+      attribute,
+      warehouse
+    } = api;
     this.apiProduct = url + product;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;

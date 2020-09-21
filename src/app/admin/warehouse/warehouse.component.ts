@@ -15,7 +15,7 @@ export class WarehouseComponent implements OnInit {
 
   addWarehouseForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder,private adminService: AdminService) { }
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
   ngOnInit(): void {
     this.addWarehouseForm = this.formbuilder.group({
@@ -36,7 +36,7 @@ export class WarehouseComponent implements OnInit {
     try {
       await this.adminService.createWarehouse({
         name: name.value,
-        
+
       });
       this.success = true;
       setTimeout(() => this.success = false, 2000);
