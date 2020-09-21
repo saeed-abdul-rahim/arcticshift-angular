@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs/internal/Subscription';
 
 import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
-import { ProductInterface } from '@models/Product';
 
 export interface UserData {
   id: string;
@@ -33,16 +32,18 @@ const NAMES: string[] = [
 })
 export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  loading: boolean;
   shopId: string;
   heading: string;
   urlSplit: string[];
-  data: ProductInterface[];
+  data: any[];
 
   userSubscription: Subscription;
   dataSubscription: Subscription;
 
   displayedColumns: string[];
-  dataSource: MatTableDataSource<ProductInterface>;
+  displayedColumnsDataKeys: string[];
+  dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -64,8 +65,6 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -87,18 +86,20 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   switchNavItems(urlSplit: string[]) {
+    this.loading = true;
     const { shopId, shopService } = this;
     if (urlSplit.includes('product')) {
       this.heading = 'Product';
       this.dataSubscription = shopService.getAllProductsByShopId(shopId).subscribe(data => {
         if (data) {
           this.displayedColumns = ['Name', 'Price'];
+          this.displayedColumnsDataKeys = ['name', 'price'];
           const filteredData = data.map(d => {
             return { name: d.name, price: d.price };
           });
-          console.log(filteredData);
           this.fillTable(filteredData);
         }
+        this.loading = false;
       });
     }
   }
@@ -108,6 +109,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource = new MatTableDataSource(data);
       this.cdr.detectChanges();
       this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     } catch (err) {
     }
   }

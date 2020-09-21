@@ -54,3 +54,10 @@ export class Timestamp implements TimestampInterface {
         };
     }
 }
+
+export type Condition = {
+    field: string | firebase.firestore.FieldPath,
+    type: firebase.firestore.WhereFilterOp,
+    value: any
+    parentFields?: string[]
+};

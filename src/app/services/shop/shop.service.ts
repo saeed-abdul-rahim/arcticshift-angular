@@ -5,8 +5,10 @@ import { Observable } from 'rxjs/internal/Observable';
 import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
-import { ProductInterface } from '@models/Product';
+import { ProductCondition, ProductInterface } from '@models/Product';
 import { getDataFromCollection } from '@utils/getFirestoreData';
+import { setCondition } from '@utils/setFirestoreCondition';
+import { Condition } from '@models/Common';
 
 @Injectable({
   providedIn: 'root'
@@ -19,25 +21,49 @@ export class ShopService {
   private products: AngularFirestoreCollection;
 
   private dbProductsRoute: string;
+  private dbCollectionsRoute: string;
+  private dbCategoriesRoute: string;
 
   private user: User;
 
   constructor(private afs: AngularFirestore, private auth: AuthService) {
     const { db } = environment;
-    const { version, name, products } = db;
+    const {
+      version,
+      name,
+      products,
+      categories,
+      collections,
+      vouchers,
+      saleDiscounts
+    } = db;
     this.db = this.afs.collection(version).doc(name);
     this.dbProductsRoute = products;
     this.getCurrentUser();
   }
 
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
-    this.products = this.db.collection(this.dbProductsRoute, ref => ref.where('shopId', '==', shopId));
+    this.products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
     this.products$ = getDataFromCollection(this.products);
     return this.products$;
   }
 
   private getCurrentUser() {
     this.auth.getCurrentUserStream().subscribe((user: User) => this.user = user);
+  }
+
+  private queryProducts(conditions?: ProductCondition[]) {
+    const { dbProductsRoute } = this;
+    return this.query(dbProductsRoute, conditions);
+  }
+
+  private query(dbRoute: string, conditions?: Condition[]) {
+    const { db } = this;
+    if (conditions && conditions.length > 0) {
+      return setCondition(db, dbRoute, conditions);
+    } else {
+      return db.collection(dbRoute);
+    }
   }
 
 }
