@@ -27,9 +27,8 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
-import { ShopService } from '@services/shop/shop.service';
-import { ProductTypeFormComponent } from './product-type/product-type.component';
-import { AttributeFormComponent } from './attributes/attribute-form.component';
+import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
+import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 
 
 @NgModule({
