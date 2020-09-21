@@ -11,8 +11,9 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
-import { ProductTypeComponent } from './product-type/product-type.component';
-import { AttributesComponent } from './attributes/attributes.component';
+import { WarehouseComponent } from './warehouse/warehouse.component';
+import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
+import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 
 
 const routes: Routes = [
@@ -153,8 +154,9 @@ const routes: Routes = [
           { path: ':id' }
         ]
       },
-      { path: 'producttype', component: ProductTypeComponent },
-      { path: 'attribute', component: AttributesComponent }
+      { path: 'producttype', component: ProductTypeFormComponent },
+      { path: 'attribute', component: AttributeFormComponent },
+      { path: 'warehouse', component: WarehouseComponent }
     ]
   }
 ];

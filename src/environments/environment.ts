@@ -16,7 +16,8 @@ export const environment = {
     variant: '/variant',
     voucher: '/voucher',
     productType:'/productType',
-    attribute:'/attribute'
+    attribute:'/attribute',
+    warehouse:'/warehouse'
 
   },
   db: {

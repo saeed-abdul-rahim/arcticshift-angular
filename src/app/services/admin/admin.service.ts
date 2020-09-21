@@ -12,6 +12,8 @@ import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
 import { ProductTypeInterface } from '@models/productType';
 import { AttributeInterface } from '@models/attribute';
+import { WarehouseInterface } from '@models/warehouse';
+import { WarehouseComponent } from 'app/admin/warehouse/warehouse.component';
 
 @Injectable()
 export class AdminService {
@@ -24,12 +26,13 @@ export class AdminService {
   apiVoucher: string;
   apiProductType: string;
   apiAttribute: string;
+  apiWarehouse: string;
 
   private user: User;
 
   constructor(private req: RequestService) {
     const { api } = environment;
-    const { url, product, category, collection, sale, variant, voucher,productType,attribute } = api;
+    const { url, product, category, collection, sale, variant, voucher,productType,attribute,warehouse } = api;
     this.apiProduct = url + product;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;
@@ -38,6 +41,7 @@ export class AdminService {
     this.apiVoucher = url + voucher;
     this.apiProductType = url + productType;
     this.apiAttribute = url + attribute;
+    this.apiWarehouse = url + warehouse;
   }
 
   async createProduct(data: ProductInterface) {
@@ -105,6 +109,14 @@ export class AdminService {
     const { apiAttribute } = this;
     try {
       return await this.req.post(apiAttribute, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async createWarehouse(data: WarehouseInterface) {
+    const { apiWarehouse } = this;
+    try {
+      return await this.req.post(apiWarehouse, { data });
     } catch (err) {
       throw err;
     }

@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AdminService } from '@services/admin/admin.service';
 
 @Component({
-  selector: 'app-attributes',
+  selector: 'app-attribute',
   templateUrl: './attribute-form.component.html',
   styleUrls: ['./attribute-form.component.css']
 })
@@ -14,20 +14,20 @@ export class AttributeFormComponent implements OnInit {
   nameDanger: boolean;
   codeDanger: boolean;
 
-  addAttributesForm: FormGroup;
+  addAttributeForm: FormGroup;
 
   constructor(private formbuilder: FormBuilder,private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.addAttributesForm = this.formbuilder.group({
+    this.addAttributeForm = this.formbuilder.group({
       name: ['', Validators.required],
     });
   }
-  get addAttributesFormControls() { return this.addAttributesForm.controls; }
+  get addAttributeFormControls() { return this.addAttributeForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addAttributesFormControls;
-    if (this.addAttributesForm.invalid) {
+    const { name } = this.addAttributeFormControls;
+    if (this.addAttributeForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }
