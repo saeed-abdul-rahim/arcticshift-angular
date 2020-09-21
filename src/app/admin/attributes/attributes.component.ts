@@ -12,6 +12,7 @@ export class AttributesComponent implements OnInit {
   loading: boolean;
   success: boolean;
   nameDanger: boolean;
+  codeDanger: boolean;
 
   addAttributesForm: FormGroup;
 
@@ -19,7 +20,7 @@ export class AttributesComponent implements OnInit {
 
   ngOnInit(): void {
     this.addAttributesForm = this.formbuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
     });
   }
   get addAttributesFormControls() { return this.addAttributesForm.controls; }
@@ -34,7 +35,7 @@ export class AttributesComponent implements OnInit {
     }
     this.loading = true;
     try {
-      await this.adminService.createAttributes({
+      await this.adminService.createAttribute({
         name: name.value,
         
       });

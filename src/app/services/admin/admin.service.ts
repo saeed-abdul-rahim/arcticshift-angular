@@ -101,7 +101,7 @@ export class AdminService {
       throw err;
     }
   }
-  async createAttributes(data: AttributeInterface) {
+  async createAttribute(data: AttributeInterface) {
     const { apiAttribute } = this;
     try {
       return await this.req.post(apiAttribute, { data });
