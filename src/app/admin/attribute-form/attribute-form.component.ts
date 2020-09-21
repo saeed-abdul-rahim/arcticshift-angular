@@ -4,10 +4,10 @@ import { AdminService } from '@services/admin/admin.service';
 
 @Component({
   selector: 'app-attributes',
-  templateUrl: './attributes.component.html',
-  styleUrls: ['./attributes.component.css']
+  templateUrl: './attribute-form.component.html',
+  styleUrls: ['./attribute-form.component.css']
 })
-export class AttributesComponent implements OnInit {
+export class AttributeFormComponent implements OnInit {
 
   loading: boolean;
   success: boolean;

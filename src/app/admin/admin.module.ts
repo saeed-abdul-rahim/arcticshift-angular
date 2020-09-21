@@ -12,8 +12,8 @@ import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { AdminGuard } from '@guards/admin/admin.guard';
 import { ComponentsModule } from '@components/components.module';
-import { AdminComponentsModule } from './admin-components/admin-components.module';
 
+import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { LoginComponent } from './login/login.component';
@@ -28,8 +28,8 @@ import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ShopService } from '@services/shop/shop.service';
-import { ProductTypeComponent } from './product-type/product-type.component';
-import { AttributesComponent } from './attributes/attributes.component';
+import { ProductTypeFormComponent } from './product-type/product-type.component';
+import { AttributeFormComponent } from './attributes/attribute-form.component';
 
 
 @NgModule({
@@ -47,8 +47,8 @@ import { AttributesComponent } from './attributes/attributes.component';
     CategoryFormComponent,
     SaleFormComponent,
     VoucherFormComponent,
-    ProductTypeComponent,
-    AttributesComponent
+    ProductTypeFormComponent,
+    AttributeFormComponent,
   ],
   imports: [
     CommonModule,

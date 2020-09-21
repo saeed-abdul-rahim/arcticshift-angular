@@ -4,10 +4,10 @@ import { AdminService } from '@services/admin/admin.service';
 
 @Component({
   selector: 'app-product-type',
-  templateUrl: './product-type.component.html',
-  styleUrls: ['./product-type.component.css']
+  templateUrl: './product-type-form.component.html',
+  styleUrls: ['./product-type-form.component.css']
 })
-export class ProductTypeComponent implements OnInit {
+export class ProductTypeFormComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
