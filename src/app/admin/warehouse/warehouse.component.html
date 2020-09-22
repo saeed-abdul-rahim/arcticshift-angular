@@ -18,34 +18,39 @@
               <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Company"
                 [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
             </div>
+
             <div class="w-full mb-3 pt-5">
                 <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="address line 1"
                   [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
               </div>
+
               <div class="w-full mb-3 pt-5">
                 <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="address line 2"
                   [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
               </div>
 
-              
-                <div class="w-full mb-3 pt-5">
-                  <input type="text" class="arc-input placeholder-gray-400 w-7/12 flex " placeholder="City"
+              <div class="flex">
+                <div class="w-full flex-1  mb-3 pt-5">
+                  <input type="text" class="arc-input placeholder-gray-400 w-full " placeholder="City"
                     [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
                 </div>
-                <div class="w-full mb-3 pt-5">
-                  <input type="text" class="arc-input placeholder-gray-400 w-4/12 flex" placeholder="ZIP / Postal Code"
+                <div class=" flex-1 mb-3 pt-5 px-4">
+                  <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="ZIP / Postal Code"
                     [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
                 </div>
-              
-              
-              <div class="w-full mb-3 pt-5">
+              </div>
+                
+              <div class="flex"> 
+                <div class="w-full flex-1 mb-3 pt-5">
                 <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country"
                   [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
               </div>
-              <div class="w-full mb-3 pt-5">
+              <div class="w-full flex-1 mb-3 pt-5 px-4">
                 <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country Area"
                   [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
               </div>
+            </div>
+             
           </div>
         </div>
       </ng-template>
