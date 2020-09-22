@@ -6,8 +6,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { scan } from 'rxjs/internal/operators/scan';
 import { tap } from 'rxjs/internal/operators/tap';
 import { environment } from '@environment';
-import { AuthService } from '@services/auth/auth.service';
-import { User } from '@models/User';
+import { Condition } from '@models/Common';
 
 interface QueryConfig {
   path: string; //  path to collection
@@ -33,13 +32,11 @@ export class PaginationService {
   data: Observable<any>;
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
-  where: any;
+  where: Condition[];
   dbPath: string;
-  user: User;
-  limit = 8;
+  limit = 20;
 
-  constructor(private afs: AngularFirestore, private auth: AuthService) {
-    this.getCurrentUser();
+  constructor(private afs: AngularFirestore) {
     const { db } = environment;
     const { version, name } = db;
     this.dbPath = `${version}/${name}`;
@@ -55,7 +52,7 @@ export class PaginationService {
     });
   }
 
-  init(path: string, field: string, where?: any, opts?: any) {
+  init(path: string, field: string, where?: Condition[], opts?: any) {
     this.data = null;
     this._data.next([]);
     this._done.next(false);
@@ -107,10 +104,9 @@ export class PaginationService {
   }
 
   setWhere(ref: Query) {
-    const { shopId } = this.user;
-    this.where = { shopId, ...this.where };
-    Object.keys(this.where).forEach(c => {
-      ref = ref.where(c, '==', this.where[c]);
+    this.where.forEach(condition => {
+      const { field, type, value } = condition;
+      ref = ref.where(field, type, value);
     });
     return ref;
   }
@@ -151,10 +147,6 @@ export class PaginationService {
     ).subscribe(() => {}, (err) => err);
     this.colSubscriptions.push(colSubscription);
     return colSubscription;
-  }
-
-  private getCurrentUser() {
-    this.auth.getCurrentUserStream().subscribe((user: User) => this.user = user);
   }
 
 }

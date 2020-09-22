@@ -6,9 +6,10 @@ import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
 import { ProductCondition, ProductInterface } from '@models/Product';
-import { getDataFromCollection } from '@utils/getFirestoreData';
+import { getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreData';
 import { setCondition } from '@utils/setFirestoreCondition';
 import { Condition } from '@models/Common';
+import { CollectionCondition, CollectionInterface } from '@models/Collection';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,11 @@ import { Condition } from '@models/Common';
 export class ShopService {
 
   products$: Observable<ProductInterface[]>;
+  collections$: Observable<CollectionInterface[]>;
 
   private db: AngularFirestoreDocument;
   private products: AngularFirestoreCollection;
+  private collections: AngularFirestoreCollection;
 
   private dbProductsRoute: string;
   private dbCollectionsRoute: string;
@@ -39,7 +42,14 @@ export class ShopService {
     } = db;
     this.db = this.afs.collection(version).doc(name);
     this.dbProductsRoute = products;
+    this.dbCategoriesRoute = categories;
+    this.dbCollectionsRoute = collections;
     this.getCurrentUser();
+  }
+
+  getProductById(productId: string): Observable<ProductInterface> {
+    const productRef =  this.db.collection(this.dbProductsRoute).doc(productId);
+    return getDataFromDocument(productRef);
   }
 
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
@@ -48,8 +58,19 @@ export class ShopService {
     return this.products$;
   }
 
+  getAllCollectionsByShopId(shopId: string): Observable<CollectionInterface[]> {
+    const collection = this.queryCollection([{ field: 'shopId', type: '==', value: shopId }]);
+    this.collections$ = getDataFromCollection(collection);
+    return this.collections$;
+  }
+
   private getCurrentUser() {
     this.auth.getCurrentUserStream().subscribe((user: User) => this.user = user);
+  }
+
+  private queryCollection(conditions?: CollectionCondition[]) {
+    const { dbCollectionsRoute } = this;
+    return this.query(dbCollectionsRoute, conditions);
   }
 
   private queryProducts(conditions?: ProductCondition[]) {

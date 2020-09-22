@@ -58,7 +58,7 @@ const routes: Routes = [
           {
             path: 'collection',
             children: [
-              { path: '' },
+              { path: '', component: ListPageComponent },
               { path: 'add', component: CollectionFormComponent },
               { path: ':id' }
             ]

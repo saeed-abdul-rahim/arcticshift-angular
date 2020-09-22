@@ -10,7 +10,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="{{row.id}}"></tr>
   
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
@@ -29,7 +29,7 @@
                     <h5 class="text-gray-800 uppercase">{{heading}}s</h5>
                 </div>
                 <div class="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                    <button class="arc-button-regular">Create {{heading}}</button>
+                    <button class="arc-button-regular" routerLink="add">Create {{heading}}</button>
                 </div>
                 <div class="w-full px-4">
                     <app-card [heading]="'All ' + heading + 's'" [body]="tableData"></app-card>

@@ -5,25 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 
+import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
-
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
-}
-
-/** Constants used to fill up our data base. */
-const COLORS: string[] = [
-  'maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple', 'fuchsia', 'lime', 'teal',
-  'aqua', 'blue', 'navy', 'black', 'gray'
-];
-const NAMES: string[] = [
-  'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
-  'Isabella', 'Jasper', 'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'
-];
 
 @Component({
   selector: 'app-list-page',
@@ -48,8 +32,23 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  private productsPath: string;
+  private categoriesPath: string;
+  private collectionsPath: string;
+  private saleDiscountsPath: string;
+  private vouchersPath: string;
+
   constructor(private router: Router, private authService: AuthService, private shopService: ShopService,
               private cdr: ChangeDetectorRef) {
+    const { db } = environment;
+    const {
+      products,
+      categories,
+      collections,
+      saleDiscounts,
+      vouchers
+    } = db;
+    this.productsPath = products;
   }
 
   ngOnInit(): void {
@@ -68,8 +67,12 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    if (this.dataSubscription && !this.dataSubscription.closed) { this.dataSubscription.unsubscribe(); }
+    this.unsubscribeData();
     this.unsubscribeUser();
+  }
+
+  unsubscribeData() {
+    if (this.dataSubscription && !this.dataSubscription.closed) { this.dataSubscription.unsubscribe(); }
   }
 
   unsubscribeUser() {
@@ -87,7 +90,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   switchNavItems(urlSplit: string[]) {
     this.loading = true;
+    this.unsubscribeData();
     const { shopId, shopService } = this;
+
     if (urlSplit.includes('product')) {
       this.heading = 'Product';
       this.dataSubscription = shopService.getAllProductsByShopId(shopId).subscribe(data => {
@@ -95,13 +100,39 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
           this.displayedColumns = ['Name', 'Price'];
           this.displayedColumnsDataKeys = ['name', 'price'];
           const filteredData = data.map(d => {
-            return { name: d.name, price: d.price };
+            return { id: d.id, name: d.name, price: d.price };
           });
           this.fillTable(filteredData);
+          // this.getData(data, this.displayedColumnsDataKeys, this.displayedColumns);
+        }
+        this.loading = false;
+      });
+    } else if (urlSplit.includes('collection')) {
+      this.heading = 'Collection';
+      this.dataSubscription = shopService.getAllCollectionsByShopId(shopId).subscribe(data => {
+        if (data) {
+          this.displayedColumns = ['Name'];
+          this.displayedColumnsDataKeys = ['name'];
+          const filteredData = data.map(d => {
+            return { id: d.id, name: d.name };
+          });
+          this.fillTable(filteredData);
+          // this.getData(data, this.displayedColumnsDataKeys, this.displayedColumns);
         }
         this.loading = false;
       });
     }
+
+  }
+
+  getData(data: any, ids: string[], cols: string[]) {
+    this.displayedColumns = cols;
+    this.displayedColumnsDataKeys = ids;
+    console.log(data);
+    const filteredData = data.map((d: any) => {
+      return ids.reduce((a, b) => (a[b] = data[b], a), {});
+    });
+    this.fillTable(filteredData);
   }
 
   fillTable(data: any[]) {
