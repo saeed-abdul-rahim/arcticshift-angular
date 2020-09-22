@@ -1,6 +1,7 @@
-import { ContentStorage, TimestampInterface } from './Common';
+import { Condition, ContentStorage, TimestampInterface } from './Common';
 
 export interface CollectionInterface extends TimestampInterface {
+    id?: string;
     shopId?: string;
     collectionId?: string;
     name?: string;
@@ -12,3 +13,10 @@ export interface CollectionInterface extends TimestampInterface {
     saleDiscountId?: string;
     voucherId?: string;
 }
+
+export type CollectionCondition = Condition & {
+    field: CollectionFields
+    parentFields?: (keyof CollectionInterface)[]
+};
+
+type CollectionFields = keyof (CollectionInterface & ContentStorage);

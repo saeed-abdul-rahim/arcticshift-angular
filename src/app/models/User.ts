@@ -22,6 +22,7 @@ export interface UserClaim {
 }
 
 export interface UserInterface extends CommonInterface {
+    id?: string;
     uid?: string;
     name?: string;
     email?: string;

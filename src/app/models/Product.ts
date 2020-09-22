@@ -1,6 +1,7 @@
 import { TimestampInterface, Status, ContentStorage, Tax, AttributeValue, Condition } from './Common';
 
 export interface ProductInterface extends TimestampInterface {
+    id?: string;
     shopId?: string;
     productId?: string;
     name?: string;
@@ -12,6 +13,7 @@ export interface ProductInterface extends TimestampInterface {
     productInterfaceId?: string;
     attribute?: AttributeValue;
     attributeValue?: AttributeValue;
+    productTypeId?: string;
     categoryId?: string;
     collectionId?: string[];
     prices?: Price[];

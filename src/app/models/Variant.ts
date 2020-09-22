@@ -1,6 +1,7 @@
 import { TimestampInterface, Status, ContentStorage, AttributeValue } from './Common';
 
 export interface VariantInterface extends TimestampInterface {
+    id?: string;
     shopId?: string;
     productId?: string;
     variantId?: string;

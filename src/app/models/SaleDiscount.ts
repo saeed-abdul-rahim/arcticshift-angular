@@ -1,6 +1,7 @@
 import { Datetime, TimestampInterface, ValueType } from './Common';
 
 export interface SaleDiscountInterface extends TimestampInterface {
+    id?: string;
     shopId?: string;
     saleDiscountId?: string;
     name?: string;

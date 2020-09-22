@@ -1,11 +1,5 @@
 import { AngularFirestoreDocument, Query } from '@angular/fire/firestore';
-
-export type Condition = {
-    field: string | firebase.firestore.FieldPath,
-    type: firebase.firestore.WhereFilterOp,
-    value: any
-    parentFields?: string[]
-};
+import { Condition } from '@models/Common';
 
 export function setCondition(dbRef: AngularFirestoreDocument, collectionName: string, conditions: Condition[]) {
     return dbRef.collection(collectionName, ref => {
