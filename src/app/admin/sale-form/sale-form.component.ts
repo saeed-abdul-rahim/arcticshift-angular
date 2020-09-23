@@ -25,10 +25,10 @@ export class SaleFormComponent implements OnInit {
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
     private router: Router, private route: ActivatedRoute, private shopService: ShopService)
    {
-    const productId = this.router.url.split('/').pop();
-    if (productId !== 'add') {
-      this.saleSubscription = this.shopService.getSaleById(productId).subscribe(product => {
-        const { name, value } = product;
+    const saleId = this.router.url.split('/').pop();
+    if (saleId !== 'add') {
+      this.saleSubscription = this.shopService.getSaleById(saleId).subscribe(sale => {
+        const { name, value } = sale;
         this.addSaleForm.patchValue({
           name, value
         
@@ -42,6 +42,13 @@ export class SaleFormComponent implements OnInit {
       name: ['', Validators.required]
     });
   }
+
+  ngOnDestroy(): void {
+    if (this.saleSubscription && !this.saleSubscription.closed) {
+      this.saleSubscription.unsubscribe();
+    }
+  }
+
   get addSaleFormControls() { return this.addSaleForm.controls; }
 
   async onSubmit() {

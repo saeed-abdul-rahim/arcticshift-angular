@@ -25,6 +25,7 @@ export const environment = {
     name: 'db',
     users: 'users',
     products: 'products',
+    productTypes:'productTypes',
     collections: 'collections',
     categories: 'categories',
     vouchers: 'vouchers',

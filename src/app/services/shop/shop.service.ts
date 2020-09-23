@@ -12,6 +12,7 @@ import { Condition } from '@models/Common';
 import { CollectionCondition, CollectionInterface } from '@models/Collection';
 import { CategoryInterface } from '@models/Category';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
+import { ProductTypeInterface } from '@models/ProductType';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class ShopService {
   private collections: AngularFirestoreCollection;
 
   private dbProductsRoute: string;
+  private dbProductTypesRoute: string;
   private dbCollectionsRoute: string;
   private dbCategoriesRoute: string;
   private dbSalesRoute: string;
@@ -41,6 +43,7 @@ export class ShopService {
       version,
       name,
       products,
+      productTypes,
       categories,
       collections,
       vouchers,
@@ -53,12 +56,18 @@ export class ShopService {
     this.dbCollectionsRoute = collections;
     this.dbSalesRoute= saleDiscounts;
     this.dbAttributesRoute= attributes;
+    this.dbProductTypesRoute=productTypes;
     this.getCurrentUser();
   }
 
   getProductById(productId: string): Observable<ProductInterface> {
     const productRef =  this.db.collection(this.dbProductsRoute).doc(productId);
     return getDataFromDocument(productRef);
+  }
+
+  getProductTypeById(productTypeId: string): Observable<ProductTypeInterface> {
+    const productTypeRef =  this.db.collection(this.dbProductsRoute).doc(productTypeId);
+    return getDataFromDocument(productTypeRef);
   }
 
   getCollectionById(collectionId: string): Observable<CollectionInterface> {

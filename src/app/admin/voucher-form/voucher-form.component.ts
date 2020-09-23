@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
+import { MediaService } from '@services/media/media.service';
+import { ShopService } from '@services/shop/shop.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-voucher-form',
@@ -13,16 +17,38 @@ export class VoucherFormComponent implements OnInit {
   success = false;
   nameDanger: boolean;
 
-
   addVoucherForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
+  voucherSubscription: Subscription;
+
+  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
+    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
+   {
+    const voucherId = this.router.url.split('/').pop();
+    if (voucherId !== 'add') {
+      this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
+        const { name, value } = voucher;
+        this.addVoucherForm.patchValue({
+          name, value
+        
+        });
+      });
+    }
+  }
 
   ngOnInit(): void {
     this.addVoucherForm = this.formbuilder.group({
       name: ['', Validators.required]
     });
   }
+
+
+  ngOnDestroy(): void {
+    if (this.voucherSubscription && !this.voucherSubscription.closed) {
+      this.voucherSubscription.unsubscribe();
+    }
+  }
+
   get addvoucherFormControls() { return this.addVoucherForm.controls; }
 
   async onSubmit() {

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
+import { MediaService } from '@services/media/media.service';
+import { ShopService } from '@services/shop/shop.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-category-form',
@@ -15,14 +19,35 @@ export class CategoryFormComponent implements OnInit {
 
 
   addCategoryForm: FormGroup;
+  categorySubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
+  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
+    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
+   {
+    const categoryId = this.router.url.split('/').pop();
+    if (categoryId !== 'add') {
+      this.categorySubscription = this.shopService.getCollectionById(categoryId).subscribe(category => {
+        const { name } = category;
+        this.addCategoryForm.patchValue({
+          name, 
+        
+        });
+      });
+    }
+  }
 
   ngOnInit(): void {
     this.addCategoryForm = this.formbuilder.group({
       name: ['', Validators.required]
     });
   }
+
+  ngOnDestroy(): void {
+    if (this.categorySubscription && !this.categorySubscription.closed) {
+      this.categorySubscription.unsubscribe();
+    }
+  }
+
   get addCategoryFormControls() { return this.addCategoryForm.controls; }
 
   async onSubmit() {
