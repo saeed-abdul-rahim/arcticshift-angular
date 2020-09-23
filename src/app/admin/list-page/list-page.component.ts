@@ -119,7 +119,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.displayedColumns.push(v as string);
     });
     this.dataSubscription = this.page.data.subscribe(data => {
-      console.log(data);
+      this.data = data;
       if (data && data.length > 0) {
         this.fillTable(data);
       }
