@@ -8,7 +8,6 @@ import { CardComponent } from './card/card.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterFormComponent } from './footer-form/footer-form.component';
-import { DescriptionComponent } from './description/description.component';
 
 
 @NgModule({
@@ -18,7 +17,6 @@ import { DescriptionComponent } from './description/description.component';
     NavbarComponent,
     SidebarComponent,
     FooterFormComponent,
-    DescriptionComponent
   ],
   imports: [
     CommonModule,
