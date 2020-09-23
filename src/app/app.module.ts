@@ -17,6 +17,7 @@ import { RequestService } from '@services/request/request.service';
 import { PaginationService } from '@services/pagination/pagination.service';
 import { ShopService } from '@services/shop/shop.service';
 
+
 @NgModule({
   declarations: [
     AppComponent
@@ -31,7 +32,8 @@ import { ShopService } from '@services/shop/shop.service';
     AngularFireAnalyticsModule,
     AngularFireAuthModule,
     AngularFireStorageModule,
-    HttpClientModule
+    HttpClientModule,
+    
   ],
   providers: [
     ScreenTrackingService,

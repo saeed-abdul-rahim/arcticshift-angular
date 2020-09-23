@@ -8,6 +8,8 @@ import { CardComponent } from './card/card.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterFormComponent } from './footer-form/footer-form.component';
+import { DescriptionComponent } from './description/description.component';
+import { QuillModule } from 'ngx-quill';
 
 
 @NgModule({
@@ -16,12 +18,14 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
     CardComponent,
     NavbarComponent,
     SidebarComponent,
-    FooterFormComponent
+    FooterFormComponent,
+    DescriptionComponent
   ],
   imports: [
     CommonModule,
     ComponentsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    QuillModule.forRoot()
   ],
   exports: [
     TileComponent,
