@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,18 +7,19 @@ import { Subscription } from 'rxjs/internal/Subscription';
 
 import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
-import { ShopService } from '@services/shop/shop.service';
+import { PaginationService } from '@services/pagination/pagination.service';
 
 @Component({
   selector: 'app-list-page',
   templateUrl: './list-page.component.html',
   styleUrls: ['./list-page.component.css']
 })
-export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ListPageComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   shopId: string;
   heading: string;
+  label: string;
   urlSplit: string[];
   data: any[];
 
@@ -26,30 +27,14 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSubscription: Subscription;
 
   displayedColumns: string[];
-  displayedColumnsDataKeys: string[];
+  dataKeys: string[];
   dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  private productsPath: string;
-  private categoriesPath: string;
-  private collectionsPath: string;
-  private saleDiscountsPath: string;
-  private vouchersPath: string;
-
-  constructor(private router: Router, private authService: AuthService, private shopService: ShopService,
-              private cdr: ChangeDetectorRef) {
-    const { db } = environment;
-    const {
-      products,
-      categories,
-      collections,
-      saleDiscounts,
-      vouchers
-    } = db;
-    this.productsPath = products;
-  }
+  constructor(private router: Router, private authService: AuthService,
+              private cdr: ChangeDetectorRef, private page: PaginationService) { }
 
   ngOnInit(): void {
     this.unsubscribeUser();
@@ -61,9 +46,6 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.switchNavItems(this.urlSplit);
       }
     });
-  }
-
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {
@@ -89,50 +71,95 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   switchNavItems(urlSplit: string[]) {
-    this.loading = true;
+
     this.unsubscribeData();
-    const { shopId, shopService } = this;
+    const { db } = environment;
+    const {
+      products,
+      productTypes,
+      attributes,
+      collections,
+      categories,
+      users,
+      saleDiscounts,
+      vouchers,
+      warehouse,
+      orders,
+
+    } = db;
 
     if (urlSplit.includes('product')) {
-      this.heading = 'Product';
-      this.dataSubscription = shopService.getAllProductsByShopId(shopId).subscribe(data => {
-        if (data) {
-          this.displayedColumns = ['Name', 'Price'];
-          this.displayedColumnsDataKeys = ['name', 'price'];
-          const filteredData = data.map(d => {
-            return { id: d.id, name: d.name, price: d.price };
-          });
-          this.fillTable(filteredData);
-          // this.getData(data, this.displayedColumnsDataKeys, this.displayedColumns);
-        }
-        this.loading = false;
+
+      this.heading = 'Products';
+      this.label = 'Product';
+      this.getData(products, {
+        name: 'Name',
+        price: 'Price'
       });
+
     } else if (urlSplit.includes('collection')) {
-      this.heading = 'Collection';
-      this.dataSubscription = shopService.getAllCollectionsByShopId(shopId).subscribe(data => {
-        if (data) {
-          this.displayedColumns = ['Name'];
-          this.displayedColumnsDataKeys = ['name'];
-          const filteredData = data.map(d => {
-            return { id: d.id, name: d.name };
-          });
-          this.fillTable(filteredData);
-          // this.getData(data, this.displayedColumnsDataKeys, this.displayedColumns);
-        }
-        this.loading = false;
+
+      this.heading = 'Collections';
+      this.label = 'Collection';
+      this.getData(collections, {
+        name: 'Name',
+        productId: 'No. of products',
+        status: 'Status'
       });
+
+    } else if (urlSplit.includes('category')) {
+
+      this.heading = 'Categories';
+      this.label = 'Category';
+      this.getData(collections, {
+        name: 'Name',
+        subCategoryId: 'Subcategories',
+        productId: 'No. of products'
+      });
+
+    } else if (urlSplit.includes('product-type')) {
+
+      this.heading = 'Product Types';
+      this.label = 'Product Type';
+      this.getData(productTypes, {
+        name: 'Name'
+      });
+
+    } else if (urlSplit.includes('attribute')) {
+
+      this.heading = 'Attributes';
+      this.label = 'Attribute';
+      this.getData(attributes, {
+        name: 'Name',
+        code: 'Code',
+        status: 'Status'
+      });
+
     }
 
   }
 
-  getData(data: any, ids: string[], cols: string[]) {
-    this.displayedColumns = cols;
-    this.displayedColumnsDataKeys = ids;
-    console.log(data);
-    const filteredData = data.map((d: any) => {
-      return ids.reduce((a, b) => (a[b] = data[b], a), {});
+  getData(path: string, displayData: any) {
+    this.loading = true;
+    this.displayedColumns = [];
+    this.dataKeys = [];
+    this.page.init(path, {
+      field: 'createdAt',
+      reverse: true,
+      where: [{ field: 'shopId', type: '==', value: this.shopId }],
+      limit: 2
     });
-    this.fillTable(filteredData);
+    Object.entries(displayData).forEach(([k, v]) => {
+      this.dataKeys.push(k);
+      this.displayedColumns.push(v as string);
+    });
+    this.dataSubscription = this.page.data.subscribe(data => {
+      this.data = data;
+      if (data && data.length > 0) {
+        this.fillTable(data);
+      }
+      this.loading = false;
+    });
   }
 
   fillTable(data: any[]) {
@@ -141,7 +168,14 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cdr.detectChanges();
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-    } catch (err) {
+    } catch (err) { }
+  }
+
+  getValue(data: string | number | any[]) {
+    if (Array.isArray(data)) {
+      return data.length;
+    } else {
+      return data;
     }
   }
 

@@ -3,17 +3,19 @@ import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fi
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { scan } from 'rxjs/internal/operators/scan';
 import { tap } from 'rxjs/internal/operators/tap';
 import { environment } from '@environment';
 import { Condition } from '@models/Common';
 
 interface QueryConfig {
-  path: string; //  path to collection
-  field: string; // field to orderBy
-  limit: number; // limit per query
-  reverse: boolean; // reverse order?
-  prepend: boolean; // prepend to source?
+  path?: string; //  path to collection
+  field?: string; // field to orderBy
+  where?: Condition[]; // where query
+  limit?: number; // limit per query
+  reverse?: boolean; // reverse order?
+  prepend?: boolean; // prepend to source?
+  join?: string; // join collection
+  joinId?: string; // join ID
 }
 
 @Injectable()
@@ -29,12 +31,12 @@ export class PaginationService {
   private query: QueryConfig;
 
   colSubscriptions: Subscription[] = [];
-  data: Observable<any>;
+  data = this._data.asObservable();
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
   where: Condition[];
   dbPath: string;
-  limit = 20;
+  limit = 10;
 
   constructor(private afs: AngularFirestore) {
     const { db } = environment;
@@ -52,25 +54,21 @@ export class PaginationService {
     });
   }
 
-  init(path: string, field: string, where?: Condition[], opts?: any) {
-    this.data = null;
+  init(path: string, opts?: QueryConfig) {
     this._data.next([]);
     this._done.next(false);
     this.unsubscribe();
     path = `${this.dbPath}/${path}`;
     this.query = {
       path,
-      field,
       limit: this.limit,
-      reverse: false,
-      prepend: false,
       ...opts
     };
 
     const first = this.afs.collection(this.query.path, ref => {
       let newRef: Query = ref;
-      if (where) {
-        this.where = where;
+      if (this.query.where) {
+        this.where = this.query.where;
         newRef = this.setWhere(newRef);
       }
       return newRef
@@ -80,10 +78,6 @@ export class PaginationService {
 
     this.mapAndUpdate(first);
 
-    this.data = this._data.asObservable().pipe(
-        scan( (acc, val) => {
-          return this.query.prepend ? val.concat(acc) : acc.concat(val);
-        }));
   }
 
   more() {
@@ -132,7 +126,7 @@ export class PaginationService {
           const data = snap.payload.doc.data();
           const doc = snap.payload.doc;
           const id = snap.payload.doc.id;
-          return { id, ...data, doc };
+          return { ...data, id, doc };
         });
 
         values = this.query.prepend ? values.reverse() : values;
@@ -144,7 +138,7 @@ export class PaginationService {
           this._done.next(true);
         }
       })
-    ).subscribe(() => {}, (err) => err);
+    ).subscribe(() => {}, (err) => console.log(err));
     this.colSubscriptions.push(colSubscription);
     return colSubscription;
   }

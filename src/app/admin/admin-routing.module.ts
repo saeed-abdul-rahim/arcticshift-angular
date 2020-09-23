@@ -24,7 +24,6 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     canActivateChild: [AdminGuard],
     children: [
-      { path: 'list-page', component: ListPageComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       {
@@ -53,9 +52,9 @@ const routes: Routes = [
           {
             path: 'category',
             children: [
-              { path: '' },
+              { path: '', component: ListPageComponent },
               { path: 'add', component: CategoryFormComponent },
-              { path: ':id' }
+              { path: ':id', component: CategoryFormComponent }
             ]
           },
           {
@@ -63,7 +62,7 @@ const routes: Routes = [
             children: [
               { path: '', component: ListPageComponent },
               { path: 'add', component: CollectionFormComponent },
-              { path: ':id' }
+              { path: ':id', component: CollectionFormComponent }
             ]
           }
         ]
@@ -71,7 +70,7 @@ const routes: Routes = [
       {
         path: 'orders',
         children: [
-          { path: '' },
+          { path: '', component: ListPageComponent },
           // { path: 'add' },
           { path: ':id' }
         ]
@@ -79,7 +78,7 @@ const routes: Routes = [
       {
         path: 'customers',
         children: [
-          { path: 'list' },
+          { path: '', component: ListPageComponent },
           // { path: 'add' },
           { path: ':id' }
         ]
@@ -91,23 +90,23 @@ const routes: Routes = [
           {
             path: 'sales',
             children: [
-              { path: '' },
+              { path: '', component: ListPageComponent },
               { path: 'add', component: SaleFormComponent },
-              { path: ':id' }
+              { path: ':id', component: SaleFormComponent }
             ]
           },
           {
             path: 'vouchers',
             children: [
-              { path: '' },
+              { path: '', component: ListPageComponent },
               { path: 'add', component: VoucherFormComponent },
-              { path: ':id' }
+              { path: ':id', component: VoucherFormComponent }
             ]
           },
           {
             path: 'gift-cards',
             children: [
-              { path: '' },
+              { path: '', component: ListPageComponent },
               { path: 'add' },
               { path: ':id' }
             ]
@@ -117,7 +116,7 @@ const routes: Routes = [
       {
         path: 'product-attributes',
         children: [
-          { path: '' },
+          { path: '', component: ListPageComponent },
           { path: 'add' },
           { path: ':id' }
         ]
@@ -125,7 +124,7 @@ const routes: Routes = [
       {
         path: 'product-types',
         children: [
-          { path: '' },
+          { path: '', component: ListPageComponent },
           { path: 'add' },
           { path: ':id' }
         ]
@@ -133,7 +132,7 @@ const routes: Routes = [
       {
         path: 'shipping',
         children: [
-          { path: '' },
+          { path: '', component: ListPageComponent },
           { path: 'add' },
           { path: ':id' }
         ]
@@ -141,15 +140,20 @@ const routes: Routes = [
       {
         path: 'warehouse',
         children: [
+<<<<<<< HEAD
           { path: '' },
           { path: 'add', component: WarehouseComponent },
+=======
+          { path: '', component: ListPageComponent },
+          { path: 'add' },
+>>>>>>> 3bcb7af53fc395db055343c8dbf2e66f68f616b8
           { path: ':id' }
         ]
       },
       {
         path: 'staff',
         children: [
-          { path: '' },
+          { path: '', component: ListPageComponent },
           { path: 'add' },
           { path: ':id' }
         ]

@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./collection-form.component.css']
 })
 export class CollectionFormComponent implements OnInit {
-  
+
   loading = false;
   success = false;
   nameDanger: boolean;
@@ -58,20 +58,20 @@ export class CollectionFormComponent implements OnInit {
       }
       return;
     }
- 
-  this.loading = true;
-  try {
-    await this.adminService.createCollection({
-      name: name.value,
-      
-    });
-    this.success = true;
-    setTimeout(() => this.success = false, 2000);
-  } catch (err) {
-    this.success = false;
-    console.log(err);
+
+    this.loading = true;
+    try {
+      await this.adminService.createCollection({
+        name: name.value,
+
+      });
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+    } catch (err) {
+      this.success = false;
+      console.log(err);
+    }
+    this.loading = false;
   }
-  this.loading = false;
-}
 
 }
