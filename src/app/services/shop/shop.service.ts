@@ -10,6 +10,8 @@ import { getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreD
 import { setCondition } from '@utils/setFirestoreCondition';
 import { Condition } from '@models/Common';
 import { CollectionCondition, CollectionInterface } from '@models/Collection';
+import { CategoryInterface } from '@models/Category';
+import { SaleDiscountInterface } from '@models/SaleDiscount';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +28,10 @@ export class ShopService {
   private dbProductsRoute: string;
   private dbCollectionsRoute: string;
   private dbCategoriesRoute: string;
+  private dbSalesRoute: string;
+  private dbWarehousesRoute: string;
+  private dbVouchersRoute: string;
+  private dbAttributesRoute: string;
 
   private user: User;
 
@@ -38,12 +44,15 @@ export class ShopService {
       categories,
       collections,
       vouchers,
-      saleDiscounts
+      saleDiscounts,
+      attributes
     } = db;
     this.db = this.afs.collection(version).doc(name);
     this.dbProductsRoute = products;
     this.dbCategoriesRoute = categories;
     this.dbCollectionsRoute = collections;
+    this.dbSalesRoute= saleDiscounts;
+    this.dbAttributesRoute= attributes;
     this.getCurrentUser();
   }
 
@@ -51,6 +60,35 @@ export class ShopService {
     const productRef =  this.db.collection(this.dbProductsRoute).doc(productId);
     return getDataFromDocument(productRef);
   }
+
+  getCollectionById(collectionId: string): Observable<CollectionInterface> {
+    const collectionRef =  this.db.collection(this.dbCollectionsRoute).doc(collectionId);
+    return getDataFromDocument(collectionRef);
+  }
+
+  getCategoryById(categoryId: string): Observable<CategoryInterface> {
+    const categoryRef =  this.db.collection(this.dbCategoriesRoute).doc(categoryId);
+    return getDataFromDocument(categoryRef);
+  }
+
+  getSaleById(saleId: string): Observable<SaleDiscountInterface> {
+    const saleRef =  this.db.collection(this.dbSalesRoute).doc(saleId);
+    return getDataFromDocument(saleRef);
+  }
+  getWarehouseById(WarehouseId: string): Observable<SaleDiscountInterface> {
+    const saleRef =  this.db.collection(this.dbWarehousesRoute).doc(WarehouseId);
+    return getDataFromDocument(saleRef);
+  }
+
+  getVoucherById(saleId: string): Observable<SaleDiscountInterface> {
+    const saleRef =  this.db.collection(this.dbVouchersRoute).doc(saleId);
+    return getDataFromDocument(saleRef);
+  }
+  getAttributeById(attributeId: string): Observable<SaleDiscountInterface> {
+    const attributeRef =  this.db.collection(this.dbAttributesRoute).doc(attributeId);
+    return getDataFromDocument(attributeRef);
+  }
+
 
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     this.products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);

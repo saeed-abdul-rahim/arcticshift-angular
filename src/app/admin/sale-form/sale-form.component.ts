@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
+import { MediaService } from '@services/media/media.service';
+import { ShopService } from '@services/shop/shop.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-sale-form',
@@ -15,7 +19,23 @@ export class SaleFormComponent implements OnInit {
 
   addSaleForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder,private adminService: AdminService) { }
+  
+  saleSubscription: Subscription;
+
+  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
+    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
+   {
+    const productId = this.router.url.split('/').pop();
+    if (productId !== 'add') {
+      this.saleSubscription = this.shopService.getSaleById(productId).subscribe(product => {
+        const { name, value } = product;
+        this.addSaleForm.patchValue({
+          name, value
+        
+        });
+      });
+    }
+  }
 
   ngOnInit(): void {
     this.addSaleForm = this.formbuilder.group({

@@ -28,7 +28,8 @@ export const environment = {
     collections: 'collections',
     categories: 'categories',
     vouchers: 'vouchers',
-    saleDiscounts: 'saleDiscounts'
+    saleDiscounts: 'saleDiscounts',
+    attributes:'attributes'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',
