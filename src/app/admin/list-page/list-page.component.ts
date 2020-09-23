@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { PaginationService } from '@services/pagination/pagination.service';
+import { Condition } from '@models/Common';
 
 @Component({
   selector: 'app-list-page',
@@ -83,9 +84,9 @@ export class ListPageComponent implements OnInit, OnDestroy {
       users,
       saleDiscounts,
       vouchers,
+      shipping,
       warehouse,
       orders,
-
     } = db;
 
     if (urlSplit.includes('product')) {
@@ -111,7 +112,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
       this.heading = 'Categories';
       this.label = 'Category';
-      this.getData(collections, {
+      this.getData(categories, {
         name: 'Name',
         subCategoryId: 'Subcategories',
         productId: 'No. of products'
@@ -135,18 +136,93 @@ export class ListPageComponent implements OnInit, OnDestroy {
         status: 'Status'
       });
 
+    } else if (urlSplit.includes('sales')) {
+
+      this.heading = 'Sale Discounts';
+      this.label = 'Sale Discount';
+      this.getData(saleDiscounts, {
+        name: 'Name',
+        code: 'Code',
+        value: 'Value',
+        status: 'Status'
+      });
+
+    } else if (urlSplit.includes('vouchers')) {
+
+      this.heading = 'Vouchers';
+      this.label = 'Voucher';
+      this.getData(vouchers, {
+        code: 'Code',
+        value: 'Value',
+        status: 'Status'
+      });
+
+    } else if (urlSplit.includes('shipping')) {
+
+      this.heading = 'Shipping';
+      this.label = 'Shipping';
+      this.getData(shipping, {
+        name: 'Name',
+        countries: 'Countries',
+      });
+
+    } else if (urlSplit.includes('warehouse')) {
+
+      this.heading = 'Warehouse';
+      this.label = 'Warehouse';
+      this.getData(warehouse, {
+        name: 'Name',
+        shippingId: 'Shipping Zones',
+      });
+
+    } else if (urlSplit.includes('orders')) {
+
+      this.heading = 'Orders';
+      this.label = '';
+      this.getData(users, {
+        orderNo: 'Order No.',
+        customerName: 'Customer Name',
+        orderStatus: 'Order Status',
+        orderId: 'No. of Orders',
+        total: 'Total'
+      });
+
+    } else if (urlSplit.includes('users')) {
+
+      this.heading = 'Users';
+      this.label = '';
+      this.getData(users, {
+        name: 'Name',
+        email: 'Email',
+        phone: 'Phone',
+        orderId: 'No. of Orders'
+      });
+
+    } else if (urlSplit.includes('staff')) {
+
+      this.heading = 'Staff';
+      this.label = '';
+      this.getData(users, {
+        name: 'Name',
+        email: 'Email',
+      }, [{
+        field: 'shopId',
+        type: 'array-contains',
+        value: this.shopId
+      }]);
+
     }
 
   }
 
-  getData(path: string, displayData: any) {
+  getData(path: string, displayData: any, where?: Condition[]) {
     this.loading = true;
     this.displayedColumns = [];
     this.dataKeys = [];
     this.page.init(path, {
       field: 'createdAt',
       reverse: true,
-      where: [{ field: 'shopId', type: '==', value: this.shopId }],
+      where: [{ field: 'shopId', type: '==', value: this.shopId }, ...where],
       limit: 2
     });
     Object.entries(displayData).forEach(([k, v]) => {
