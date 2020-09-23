@@ -85,8 +85,8 @@ export class ShopService {
     return getDataFromDocument(saleRef);
   }
   getWarehouseById(WarehouseId: string): Observable<SaleDiscountInterface> {
-    const saleRef =  this.db.collection(this.dbWarehousesRoute).doc(WarehouseId);
-    return getDataFromDocument(saleRef);
+    const warehouseRef =  this.db.collection(this.dbWarehousesRoute).doc(WarehouseId);
+    return getDataFromDocument(warehouseRef);
   }
 
   getVoucherById(saleId: string): Observable<SaleDiscountInterface> {
