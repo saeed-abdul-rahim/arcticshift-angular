@@ -21,11 +21,22 @@ export const environment = {
     version: 'v1',
     name: 'db',
     users: 'users',
+    shops: 'shops',
     products: 'products',
+    variants: 'variants',
+    productTypes: 'productTypes',
+    attributes: 'attributes',
     collections: 'collections',
     categories: 'categories',
+    shipping: 'shipping',
+    inventory: 'inventory',
+    warehouse: 'warehouse',
     vouchers: 'vouchers',
-    saleDiscounts: 'saleDiscounts'
+    saleDiscounts: 'saleDiscounts',
+    giftCards: 'giftCards',
+    orders: 'orders',
+    taxes: 'taxes',
+    adverts: 'adverts'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',

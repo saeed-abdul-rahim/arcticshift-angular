@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,16 +7,14 @@ import { Subscription } from 'rxjs/internal/Subscription';
 
 import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
-import { ShopService } from '@services/shop/shop.service';
 import { PaginationService } from '@services/pagination/pagination.service';
-import { Condition } from '@models/Common';
 
 @Component({
   selector: 'app-list-page',
   templateUrl: './list-page.component.html',
   styleUrls: ['./list-page.component.css']
 })
-export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ListPageComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   shopId: string;
@@ -50,9 +48,6 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-  }
-
   ngOnDestroy(): void {
     this.unsubscribeData();
     this.unsubscribeUser();
@@ -79,7 +74,19 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.unsubscribeData();
     const { db } = environment;
-    const { products, collections } = db;
+    const {
+      products,
+      productTypes,
+      attributes,
+      collections,
+      categories,
+      users,
+      saleDiscounts,
+      vouchers,
+      warehouse,
+      orders,
+
+    } = db;
 
     if (urlSplit.includes('product')) {
 
@@ -97,6 +104,34 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.getData(collections, {
         name: 'Name',
         productId: 'No. of products',
+        status: 'Status'
+      });
+
+    } else if (urlSplit.includes('category')) {
+
+      this.heading = 'Categories';
+      this.label = 'Category';
+      this.getData(collections, {
+        name: 'Name',
+        subCategoryId: 'Subcategories',
+        productId: 'No. of products'
+      });
+
+    } else if (urlSplit.includes('product-type')) {
+
+      this.heading = 'Product Types';
+      this.label = 'Product Type';
+      this.getData(productTypes, {
+        name: 'Name'
+      });
+
+    } else if (urlSplit.includes('attribute')) {
+
+      this.heading = 'Attributes';
+      this.label = 'Attribute';
+      this.getData(attributes, {
+        name: 'Name',
+        code: 'Code',
         status: 'Status'
       });
 

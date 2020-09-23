@@ -3,7 +3,6 @@ import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fi
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { scan } from 'rxjs/internal/operators/scan';
 import { tap } from 'rxjs/internal/operators/tap';
 import { environment } from '@environment';
 import { Condition } from '@models/Common';
@@ -15,6 +14,8 @@ interface QueryConfig {
   limit?: number; // limit per query
   reverse?: boolean; // reverse order?
   prepend?: boolean; // prepend to source?
+  join?: string; // join collection
+  joinId?: string; // join ID
 }
 
 @Injectable()
