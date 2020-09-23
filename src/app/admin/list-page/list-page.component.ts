@@ -179,7 +179,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
       this.heading = 'Orders';
       this.label = '';
-      this.getData(users, {
+      this.getData(orders, {
         orderNo: 'Order No.',
         customerName: 'Customer Name',
         orderStatus: 'Order Status',
