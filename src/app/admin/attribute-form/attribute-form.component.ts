@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './attribute-form.component.html',
   styleUrls: ['./attribute-form.component.css']
 })
-export class AttributeFormComponent implements OnInit {
+export class AttributeFormComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
@@ -22,15 +22,13 @@ export class AttributeFormComponent implements OnInit {
   attributeSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
-   {
+              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const attributeId = this.router.url.split('/').pop();
     if (attributeId !== 'add') {
       this.attributeSubscription = this.shopService.getAttributeById(attributeId).subscribe(category => {
         const { name } = category;
         this.addAttributeForm.patchValue({
-          name, 
-        
+          name,
         });
       });
     }
@@ -62,7 +60,7 @@ export class AttributeFormComponent implements OnInit {
     try {
       await this.adminService.createAttribute({
         name: name.value,
-        
+
       });
       this.success = true;
       setTimeout(() => this.success = false, 2000);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
@@ -11,8 +11,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './collection-form.component.html',
   styleUrls: ['./collection-form.component.css']
 })
-export class CollectionFormComponent implements OnInit {
-  
+export class CollectionFormComponent implements OnInit, OnDestroy {
+
   loading = false;
   success = false;
   nameDanger: boolean;
@@ -22,15 +22,13 @@ export class CollectionFormComponent implements OnInit {
   collectionSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
-   {
+              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const collectionId = this.router.url.split('/').pop();
     if (collectionId !== 'add') {
       this.collectionSubscription = this.shopService.getCollectionById(collectionId).subscribe(collection => {
         const { name } = collection;
         this. addCollectionForm.patchValue({
-          name, 
-        
+          name,
         });
       });
     }
@@ -58,20 +56,19 @@ export class CollectionFormComponent implements OnInit {
       }
       return;
     }
- 
-  this.loading = true;
-  try {
-    await this.adminService.createCollection({
-      name: name.value,
-      
-    });
-    this.success = true;
-    setTimeout(() => this.success = false, 2000);
-  } catch (err) {
-    this.success = false;
-    console.log(err);
+
+    this.loading = true;
+    try {
+      await this.adminService.createCollection({
+        name: name.value,
+      });
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+    } catch (err) {
+      this.success = false;
+      console.log(err);
+    }
+    this.loading = false;
   }
-  this.loading = false;
-}
 
 }
