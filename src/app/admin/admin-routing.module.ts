@@ -140,13 +140,8 @@ const routes: Routes = [
       {
         path: 'warehouse',
         children: [
-<<<<<<< HEAD
-          { path: '' },
-          { path: 'add', component: WarehouseComponent },
-=======
           { path: '', component: ListPageComponent },
           { path: 'add' },
->>>>>>> 3bcb7af53fc395db055343c8dbf2e66f68f616b8
           { path: ':id' }
         ]
       },

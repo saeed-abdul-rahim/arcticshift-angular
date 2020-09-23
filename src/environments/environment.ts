@@ -26,13 +26,9 @@ export const environment = {
     users: 'users',
     shops: 'shops',
     products: 'products',
-<<<<<<< HEAD
-    productTypes:'productTypes',
-=======
     variants: 'variants',
     productTypes: 'productTypes',
     attributes: 'attributes',
->>>>>>> 3bcb7af53fc395db055343c8dbf2e66f68f616b8
     collections: 'collections',
     categories: 'categories',
     shipping: 'shipping',
@@ -40,14 +36,10 @@ export const environment = {
     warehouse: 'warehouse',
     vouchers: 'vouchers',
     saleDiscounts: 'saleDiscounts',
-<<<<<<< HEAD
-    attributes:'attributes'
-=======
     giftCards: 'giftCards',
     orders: 'orders',
     taxes: 'taxes',
     adverts: 'adverts'
->>>>>>> 3bcb7af53fc395db055343c8dbf2e66f68f616b8
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',
