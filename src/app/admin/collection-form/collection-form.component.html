@@ -44,6 +44,13 @@
         Hidden</label>
     </div>
   </ng-template>
+  <!-- <ng-template #description>
+    <div class="field">
+      <div class="control">
+        <angular-editor formControlName="description" [config]="editorConfig"></angular-editor>
+      </div>
+    </div>
+  </ng-template> -->
 
   <!-- BODY -->
 
@@ -53,6 +60,7 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="collection"></app-card>
           <app-card [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
+          <!-- <app-card [heading]="'Description'"  [body]="description"></app-card> -->
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Visibility'" [body]="visibility"></app-card>

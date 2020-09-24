@@ -29,6 +29,7 @@ import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
+import { AngularEditorModule } from '@kolkov/angular-editor/lib/angular-editor.module';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { AttributeFormComponent } from './attribute-form/attribute-form.componen
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    AngularEditorModule
   ],
   providers: [
     AdminGuard,
