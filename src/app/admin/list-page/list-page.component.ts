@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,7 +15,7 @@ import { Condition } from '@models/Common';
   templateUrl: './list-page.component.html',
   styleUrls: ['./list-page.component.css']
 })
-export class ListPageComponent implements OnInit, OnDestroy {
+export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loading: boolean;
   shopId: string;
@@ -52,6 +52,10 @@ export class ListPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribeData();
     this.unsubscribeUser();
+  }
+
+  ngAfterViewInit(): void {
+    // this.page.more();
   }
 
   unsubscribeData() {
@@ -215,7 +219,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
   }
 
-  getData(path: string, displayData: any, where?: Condition[]) {
+  getData(path: string, displayData: any, where: Condition[] = []) {
     this.loading = true;
     this.displayedColumns = [];
     this.dataKeys = [];
