@@ -11,11 +11,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './collection-form.component.html',
   styleUrls: ['./collection-form.component.css']
 })
-<<<<<<< HEAD
-export class CollectionFormComponent implements OnInit {
-=======
 export class CollectionFormComponent implements OnInit, OnDestroy {
->>>>>>> 02f8681dacb279f9b347b7d7c7cf4b0b3e97121a
 
   loading = false;
   success = false;
@@ -90,10 +86,6 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
     try {
       await this.adminService.createCollection({
         name: name.value,
-<<<<<<< HEAD
-
-=======
->>>>>>> 02f8681dacb279f9b347b7d7c7cf4b0b3e97121a
       });
       this.success = true;
       setTimeout(() => this.success = false, 2000);
