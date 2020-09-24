@@ -54,9 +54,10 @@ export class ShopService {
     this.dbProductsRoute = products;
     this.dbCategoriesRoute = categories;
     this.dbCollectionsRoute = collections;
-    this.dbSalesRoute= saleDiscounts;
-    this.dbAttributesRoute= attributes;
-    this.dbProductTypesRoute=productTypes;
+    this.dbSalesRoute = saleDiscounts;
+    this.dbAttributesRoute = attributes;
+    this.dbProductTypesRoute = productTypes;
+    this.dbVouchersRoute = vouchers;
     this.getCurrentUser();
   }
 
@@ -66,7 +67,7 @@ export class ShopService {
   }
 
   getProductTypeById(productTypeId: string): Observable<ProductTypeInterface> {
-    const productTypeRef =  this.db.collection(this.dbProductsRoute).doc(productTypeId);
+    const productTypeRef =  this.db.collection(this.dbProductTypesRoute).doc(productTypeId);
     return getDataFromDocument(productTypeRef);
   }
 
@@ -84,6 +85,7 @@ export class ShopService {
     const saleRef =  this.db.collection(this.dbSalesRoute).doc(saleId);
     return getDataFromDocument(saleRef);
   }
+
   getWarehouseById(WarehouseId: string): Observable<SaleDiscountInterface> {
     const warehouseRef =  this.db.collection(this.dbWarehousesRoute).doc(WarehouseId);
     return getDataFromDocument(warehouseRef);
@@ -93,11 +95,11 @@ export class ShopService {
     const saleRef =  this.db.collection(this.dbVouchersRoute).doc(saleId);
     return getDataFromDocument(saleRef);
   }
+
   getAttributeById(attributeId: string): Observable<SaleDiscountInterface> {
     const attributeRef =  this.db.collection(this.dbAttributesRoute).doc(attributeId);
     return getDataFromDocument(attributeRef);
   }
-
 
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     this.products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);

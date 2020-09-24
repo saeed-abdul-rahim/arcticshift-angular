@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
@@ -11,7 +11,11 @@ import { Subscription } from 'rxjs';
   templateUrl: './collection-form.component.html',
   styleUrls: ['./collection-form.component.css']
 })
+<<<<<<< HEAD
 export class CollectionFormComponent implements OnInit {
+=======
+export class CollectionFormComponent implements OnInit, OnDestroy {
+>>>>>>> 02f8681dacb279f9b347b7d7c7cf4b0b3e97121a
 
   loading = false;
   success = false;
@@ -47,15 +51,13 @@ export class CollectionFormComponent implements OnInit {
   };
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
-   {
+              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const collectionId = this.router.url.split('/').pop();
     if (collectionId !== 'add') {
       this.collectionSubscription = this.shopService.getCollectionById(collectionId).subscribe(collection => {
         const { name } = collection;
         this. addCollectionForm.patchValue({
-          name, 
-        
+          name,
         });
       });
     }
@@ -88,7 +90,10 @@ export class CollectionFormComponent implements OnInit {
     try {
       await this.adminService.createCollection({
         name: name.value,
+<<<<<<< HEAD
 
+=======
+>>>>>>> 02f8681dacb279f9b347b7d7c7cf4b0b3e97121a
       });
       this.success = true;
       setTimeout(() => this.success = false, 2000);
