@@ -10,6 +10,11 @@
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
             [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
         </div>
+        <div class="field pt-3">
+          <div class="control">
+            <angular-editor formControlName="description" [config]="editorConfig"></angular-editor>
+          </div>
+        </div>
       </div>
     </div>
   </ng-template>

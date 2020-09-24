@@ -38,6 +38,32 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   productSubscription: Subscription;
 
+  editorConfig = {
+    editable: true,
+    placeholder: 'Description',
+    toolbarHiddenButtons: [
+      ['insertImage'],
+      ['insertVideo'],
+      ['backgroundColor'],
+      ['customClasses'],
+      ['link'],
+      ['unlink'],
+      ['insertHorizontalRule'],
+      ['removeFormat'],
+      ['toggleEditorMode'],
+      ['undo'],
+      ['redo'],
+      ['strikeThrough'],
+      ['subscript'],
+      ['superscript'],
+      ['indent'],
+      ['outdent'], 
+      ['textColor'],
+      ['fontSize'],
+      ['fontName']
+    ]
+  };
+
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const productId = this.router.url.split('/').pop();

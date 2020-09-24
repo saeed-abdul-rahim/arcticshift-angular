@@ -17,9 +17,34 @@ export class CollectionFormComponent implements OnInit {
   success = false;
   nameDanger: boolean;
 
-
   addCollectionForm: FormGroup;
   collectionSubscription: Subscription;
+
+  editorConfig = {
+    editable: true,
+    placeholder: 'Description',
+    toolbarHiddenButtons: [
+      ['insertImage'],
+      ['insertVideo'],
+      ['backgroundColor'],
+      ['customClasses'],
+      ['link'],
+      ['unlink'],
+      ['insertHorizontalRule'],
+      ['removeFormat'],
+      ['toggleEditorMode'],
+      ['undo'],
+      ['redo'],
+      ['strikeThrough'],
+      ['subscript'],
+      ['superscript'],
+      ['indent'],
+      ['outdent'], 
+      ['textColor'],
+      ['fontSize'],
+      ['fontName']
+    ]
+  };
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
     private router: Router, private route: ActivatedRoute, private shopService: ShopService)
