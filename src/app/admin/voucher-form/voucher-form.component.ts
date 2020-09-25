@@ -15,6 +15,7 @@ export class VoucherFormComponent implements OnInit {
 
   loading = false;
   success = false;
+  edit=true;
   nameDanger: boolean;
 
   addVoucherForm: FormGroup;

@@ -65,7 +65,7 @@ export class AdminService {
   async updateProduct(data: ProductInterface) {
     const { apiProduct } = this;
     try {
-      return await this.req.post(apiProduct, { data });
+      return await this.req.patch(apiProduct, { data });
     } catch (err) {
       throw err;
     }
@@ -83,7 +83,7 @@ export class AdminService {
   async updateCollection(data: CollectionInterface) {
     const { apiCollection } = this;
     try {
-      return await this.req.post(apiCollection, { data });
+      return await this.req.patch(apiCollection, { data });
     } catch (err) {
       throw err;
     }
@@ -102,7 +102,7 @@ export class AdminService {
   async updateCategory(data: CategoryInterface) {
     const { apiCategory } = this;
     try {
-      return await this.req.post(apiCategory, { data });
+      return await this.req.patch(apiCategory, { data });
     } catch (err) {
       throw err;
     }
@@ -122,7 +122,7 @@ export class AdminService {
   async updateSale(data: SaleDiscountInterface) {
     const { apiSale } = this;
     try {
-      return await this.req.post(apiSale, { data });
+      return await this.req.patch(apiSale, { data });
     } catch (err) {
       throw err;
     }
@@ -140,7 +140,7 @@ export class AdminService {
   async updateVariant(data: VariantInterface) {
     const { apiVariant } = this;
     try {
-      return await this.req.post(apiVariant, { data });
+      return await this.req.patch(apiVariant, { data });
     } catch (err) {
       throw err;
     }
@@ -158,7 +158,7 @@ export class AdminService {
   async updateVoucher(data: VoucherInterface) {
     const { apiVoucher } = this;
     try {
-      return await this.req.post(apiVoucher, { data });
+      return await this.req.patch(apiVoucher, { data });
     } catch (err) {
       throw err;
     }
@@ -176,7 +176,7 @@ export class AdminService {
   async updateProductType(data: ProductTypeInterface) {
     const { apiProductType } = this;
     try {
-      return await this.req.post(apiProductType, { data });
+      return await this.req.patch(apiProductType, { data });
     } catch (err) {
       throw err;
     }
@@ -194,7 +194,7 @@ export class AdminService {
   async updateAttribute(data: AttributeInterface) {
     const { apiAttribute } = this;
     try {
-      return await this.req.post(apiAttribute, { data });
+      return await this.req.patch(apiAttribute, { data });
     } catch (err) {
       throw err;
     }
@@ -212,7 +212,7 @@ export class AdminService {
   async updateWarehouse(data: WarehouseInterface) {
     const { apiWarehouse } = this;
     try {
-      return await this.req.post(apiWarehouse, { data });
+      return await this.req.patch(apiWarehouse, { data });
     } catch (err) {
       throw err;
     }
