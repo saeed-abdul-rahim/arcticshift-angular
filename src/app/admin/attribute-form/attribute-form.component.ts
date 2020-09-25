@@ -15,6 +15,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
+  edit= true;
   nameDanger: boolean;
   codeDanger: boolean;
 
@@ -58,10 +59,18 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      await this.adminService.createAttribute({
+      if(this.edit=true)
+      { 
+        await this.adminService.updateAttribute({
         name: name.value,
-
       });
+    }
+    else{
+        await this.adminService.createAttribute({
+        name: name.value,
+      });
+    }
+      
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

@@ -21,9 +21,11 @@ import { ProductInterface } from '@models/Product';
 export class ProductFormComponent implements OnInit, OnDestroy {
 
   faCheckCircle = faCheckCircle;
-
+  
   loading = false;
   success = false;
+  edit = false;
+
   nameDanger: boolean;
   priceDanger: boolean;
 
@@ -116,10 +118,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      await this.adminService.createProduct({
+      if(this.edit=true){
+        await this.adminService.updateProduct({
+          name: name.value,
+          price: price.value
+        });
+      }
+      else{
+        await this.adminService.createProduct({
         name: name.value,
         price: price.value
       });
+    }
+      
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

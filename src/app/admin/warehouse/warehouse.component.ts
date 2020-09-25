@@ -15,6 +15,7 @@ export class WarehouseComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
+  edit=true;
   nameDanger: boolean;
 
   addWarehouseForm: FormGroup;
@@ -60,10 +61,18 @@ export class WarehouseComponent implements OnInit {
     }
     this.loading = true;
     try {
-      await this.adminService.createWarehouse({
-        name: name.value,
-
-      });
+      if(this.edit=true){
+        await this.adminService.updateWarehouse({
+          name: name.value,
+  
+        });
+      }else{
+        await this.adminService.createWarehouse({
+          name: name.value,
+  
+        });
+      }
+      
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

@@ -15,6 +15,8 @@ export class CategoryFormComponent implements OnInit {
 
   loading = false;
   success = false;
+  edit= true;
+
   nameDanger: boolean;
 
 
@@ -87,10 +89,18 @@ export class CategoryFormComponent implements OnInit {
   
   this.loading = true;
   try {
-    await this.adminService.createCategory({
-      name: name.value,
-      
-    });
+    if(this.edit=true){
+      await this.adminService.updateCategory({
+        name: name.value,
+        
+      });
+    }else{
+      await this.adminService.createCategory({
+        name: name.value,
+        
+      });
+    }
+  
     this.success = true;
     setTimeout(() => this.success = false, 2000);
   } catch (err) {

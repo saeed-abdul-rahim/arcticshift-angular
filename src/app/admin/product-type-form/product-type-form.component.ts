@@ -15,6 +15,7 @@ export class ProductTypeFormComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
+  edit = true;
   nameDanger: boolean;
 
   addProductTypeForm: FormGroup;
@@ -59,10 +60,18 @@ export class ProductTypeFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      await this.adminService.createProductType({
-        name: name.value,
-        
-      });
+      if(this.edit=true){
+        await this.adminService.updateProductType({
+          name: name.value,
+          
+        });
+      }else{
+        await this.adminService.createProductType({
+          name: name.value,
+          
+        });
+      }
+    
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

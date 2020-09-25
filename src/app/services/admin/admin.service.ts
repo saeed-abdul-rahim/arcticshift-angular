@@ -62,7 +62,25 @@ export class AdminService {
     }
   }
 
+  async updateProduct(data: ProductInterface) {
+    const { apiProduct } = this;
+    try {
+      return await this.req.post(apiProduct, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createCollection(data: CollectionInterface) {
+    const { apiCollection } = this;
+    try {
+      return await this.req.post(apiCollection, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateCollection(data: CollectionInterface) {
     const { apiCollection } = this;
     try {
       return await this.req.post(apiCollection, { data });
@@ -80,7 +98,28 @@ export class AdminService {
     }
   }
 
+  
+  async updateCategory(data: CategoryInterface) {
+    const { apiCategory } = this;
+    try {
+      return await this.req.post(apiCategory, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+
   async createSale(data: SaleDiscountInterface) {
+    const { apiSale } = this;
+    try {
+      return await this.req.post(apiSale, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  
+  async updateSale(data: SaleDiscountInterface) {
     const { apiSale } = this;
     try {
       return await this.req.post(apiSale, { data });
@@ -98,6 +137,15 @@ export class AdminService {
     }
   }
 
+  async updateVariant(data: VariantInterface) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.post(apiVariant, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createVoucher(data: VoucherInterface) {
     const { apiVoucher } = this;
     try {
@@ -106,6 +154,16 @@ export class AdminService {
       throw err;
     }
   }
+
+  async updateVoucher(data: VoucherInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.post(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createProductType(data: ProductTypeInterface) {
     const { apiProductType } = this;
     try {
@@ -114,6 +172,16 @@ export class AdminService {
       throw err;
     }
   }
+
+  async updateProductType(data: ProductTypeInterface) {
+    const { apiProductType } = this;
+    try {
+      return await this.req.post(apiProductType, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createAttribute(data: AttributeInterface) {
     const { apiAttribute } = this;
     try {
@@ -122,7 +190,26 @@ export class AdminService {
       throw err;
     }
   }
+
+  async updateAttribute(data: AttributeInterface) {
+    const { apiAttribute } = this;
+    try {
+      return await this.req.post(apiAttribute, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createWarehouse(data: WarehouseInterface) {
+    const { apiWarehouse } = this;
+    try {
+      return await this.req.post(apiWarehouse, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateWarehouse(data: WarehouseInterface) {
     const { apiWarehouse } = this;
     try {
       return await this.req.post(apiWarehouse, { data });

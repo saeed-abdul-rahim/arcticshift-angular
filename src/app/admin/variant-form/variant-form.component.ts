@@ -12,6 +12,7 @@ export class VariantFormComponent implements OnInit {
   
   loading: boolean;
   success: boolean;
+  edit=true;
   nameDanger: boolean;
   sizeDanger: boolean;
   priceDanger: boolean;
@@ -42,10 +43,18 @@ export class VariantFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      await this.adminService.createVariant({
-        size: size.value,
-        
-      });
+      if(this.edit=true){
+        await this.adminService.updateVariant({
+          size: size.value,
+          
+        });
+      }else{
+        await this.adminService.createVariant({
+          size: size.value,
+          
+        });
+      }
+    
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

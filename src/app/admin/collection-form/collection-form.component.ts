@@ -15,6 +15,8 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  edit = true;
+
   nameDanger: boolean;
 
   addCollectionForm: FormGroup;
@@ -84,9 +86,17 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     try {
-      await this.adminService.createCollection({
-        name: name.value,
-      });
+      if(this.edit=true){
+        await this.adminService.updateCollection({
+          name: name.value,
+        });
+      }
+      else{
+        await this.adminService.createCollection({
+          name: name.value,
+        });
+      }
+      
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

@@ -61,10 +61,18 @@ export class VoucherFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      await this.adminService.createSale({
-        name: name.value,
-        
-      });
+      if(this.edit=true){
+        await this.adminService.updateSale({
+          name: name.value,
+          
+        });
+      }else{
+        await this.adminService.createSale({
+          name: name.value,
+          
+        });
+      }
+     
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
