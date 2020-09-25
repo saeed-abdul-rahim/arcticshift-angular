@@ -11,6 +11,9 @@ import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
 import {  getDataFromDocument } from '@utils/getFirestoreData';
 import { AuthService } from '@services/auth/auth.service';
+import { WarehouseInterface } from '@models/Warehouse';
+import { AttributeInterface } from '@models/Attribute';
+import { ProductTypeInterface } from '@models/ProductType';
 
 @Injectable()
 export class AdminService {
@@ -139,6 +142,67 @@ export class AdminService {
     const { apiVoucher } = this;
     try {
       return await this.req.post(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateVoucher(data: VoucherInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.patch(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createWarehouse(data: WarehouseInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.post(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateWarehouse(data: WarehouseInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.patch(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createAttribute(data: AttributeInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.post(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateAttribute(data: AttributeInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.patch(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async createProductType(data: ProductTypeInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.post(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+  async updateProductType(data: ProductTypeInterface) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.patch(apiVoucher, { data });
     } catch (err) {
       throw err;
     }
