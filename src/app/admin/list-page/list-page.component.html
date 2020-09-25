@@ -16,8 +16,14 @@
         <td class="mat-cell" colspan="2">No data matching the filter "{{input.value}}"</td>
       </tr>
 
-    </table>    
-    <mat-paginator [pageSizeOptions]="[2]" showFirstLastButtons></mat-paginator>
+    </table>
+    <mat-paginator
+      [length]="resultLength"
+      [pageSizeOptions]="[4]"
+      [pageSize]="pageSize"
+      [pageIndex]="pageNo"
+      (page)="pageEvents($event)">
+    </mat-paginator>
   </div>
 </ng-template>
 

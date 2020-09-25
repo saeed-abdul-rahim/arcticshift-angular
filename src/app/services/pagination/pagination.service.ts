@@ -4,19 +4,9 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { tap } from 'rxjs/internal/operators/tap';
+import { scan } from 'rxjs/internal/operators/scan';
 import { environment } from '@environment';
-import { Condition } from '@models/Common';
-
-interface QueryConfig {
-  path?: string; //  path to collection
-  field?: string; // field to orderBy
-  where?: Condition[]; // where query
-  limit?: number; // limit per query
-  reverse?: boolean; // reverse order?
-  prepend?: boolean; // prepend to source?
-  join?: string; // join collection
-  joinId?: string; // join ID
-}
+import { Condition, QueryConfig } from '@models/Common';
 
 @Injectable()
 export class PaginationService {
@@ -31,7 +21,7 @@ export class PaginationService {
   private query: QueryConfig;
 
   colSubscriptions: Subscription[] = [];
-  data = this._data.asObservable();
+  data: Observable<any>;
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
   where: Condition[];
@@ -55,6 +45,7 @@ export class PaginationService {
   }
 
   init(path: string, opts?: QueryConfig) {
+    this.data = null;
     this._data.next([]);
     this._done.next(false);
     this.unsubscribe();
@@ -72,11 +63,16 @@ export class PaginationService {
         newRef = this.setWhere(newRef);
       }
       return newRef
-              .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
+              .orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc')
               .limit(this.query.limit);
     });
 
     this.mapAndUpdate(first);
+
+    this.data = this._data.asObservable().pipe(
+      scan( (acc, val) => {
+        return this.query.prepend ? val.concat(acc) : acc.concat(val);
+    }));
 
   }
 
@@ -90,7 +86,7 @@ export class PaginationService {
         newRef = this.setWhere(newRef);
       }
       return newRef
-              .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
+              .orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc')
               .limit(this.query.limit)
               .startAfter(cursor);
     });

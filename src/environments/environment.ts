@@ -36,7 +36,8 @@ export const environment = {
     giftCards: 'giftCards',
     orders: 'orders',
     taxes: 'taxes',
-    adverts: 'adverts'
+    adverts: 'adverts',
+    analytics: 'analytics'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',

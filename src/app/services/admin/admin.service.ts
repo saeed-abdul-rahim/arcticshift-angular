@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environment';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, Query } from '@angular/fire/firestore';
 
 import { RequestService } from '@services/request/request.service';
-import { User } from '@models/User';
 import { ProductInterface } from '@models/Product';
 import { CollectionInterface } from '@models/Collection';
 import { CategoryInterface } from '@models/Category';
 import { VoucherInterface } from '@models/Voucher';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
+import {  getDataFromDocument } from '@utils/getFirestoreData';
+import { AuthService } from '@services/auth/auth.service';
 
 @Injectable()
 export class AdminService {
@@ -21,17 +22,21 @@ export class AdminService {
   apiVariant: string;
   apiVoucher: string;
 
-  private user: User;
+  private db: AngularFirestoreDocument;
+  private dbAnalytics: AngularFirestoreCollection;
 
-  constructor(private req: RequestService) {
-    const { api } = environment;
+  constructor(private req: RequestService, private afs: AngularFirestore, private auth: AuthService) {
+    const { api, db } = environment;
     const { url, product, category, collection, sale, variant, voucher } = api;
+    const { version, name, products, analytics } = db;
     this.apiProduct = url + product;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;
     this.apiSale = url + sale;
     this.apiVariant = url + variant;
     this.apiVoucher = url + voucher;
+    this.db = this.afs.collection(version).doc(name);
+    this.dbAnalytics = this.db.collection(analytics);
   }
 
   async createProduct(data: ProductInterface) {
@@ -86,6 +91,10 @@ export class AdminService {
     } catch (err) {
       throw err;
     }
+  }
+
+  getCollectionAnalytics(path: string) {
+    return getDataFromDocument(this.dbAnalytics.doc(path));
   }
 
 }
