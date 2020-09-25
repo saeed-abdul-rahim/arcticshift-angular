@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -9,13 +9,14 @@ import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { PaginationService } from '@services/pagination/pagination.service';
 import { Condition } from '@models/Common';
+import { AdminService } from '@services/admin/admin.service';
 
 @Component({
   selector: 'app-list-page',
   templateUrl: './list-page.component.html',
   styleUrls: ['./list-page.component.css']
 })
-export class ListPageComponent implements OnInit, OnDestroy {
+export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loading: boolean;
   shopId: string;
@@ -23,18 +24,23 @@ export class ListPageComponent implements OnInit, OnDestroy {
   label: string;
   urlSplit: string[];
   data: any[];
+  resultLength = 0;
 
   userSubscription: Subscription;
   dataSubscription: Subscription;
+  analyticsSubscription: Subscription;
 
+  displayData: any[] = [];
   displayedColumns: string[];
   dataKeys: string[];
   dataSource: MatTableDataSource<any>;
+  pageNo: number;
+  pageSize = 4;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private router: Router, private authService: AuthService,
+  constructor(private router: Router, private authService: AuthService, private admin: AdminService,
               private cdr: ChangeDetectorRef, private page: PaginationService) { }
 
   ngOnInit(): void {
@@ -54,8 +60,13 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.unsubscribeUser();
   }
 
+  ngAfterViewInit(): void {
+    // this.page.more();
+  }
+
   unsubscribeData() {
     if (this.dataSubscription && !this.dataSubscription.closed) { this.dataSubscription.unsubscribe(); }
+    if (this.analyticsSubscription && !this.analyticsSubscription.closed) { this.analyticsSubscription.unsubscribe(); }
   }
 
   unsubscribeUser() {
@@ -68,6 +79,12 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  pageEvents(event: PageEvent) {
+    if (event.previousPageIndex < event.pageIndex) {
+      this.page.more();
     }
   }
 
@@ -97,6 +114,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         price: 'Price'
       });
+      this.getPageLength(products, 'totalProducts');
 
     } else if (urlSplit.includes('collection')) {
 
@@ -107,6 +125,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         productId: 'No. of products',
         status: 'Status'
       });
+      this.getPageLength(collections, 'totalCollections');
 
     } else if (urlSplit.includes('category')) {
 
@@ -117,6 +136,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         subCategoryId: 'Subcategories',
         productId: 'No. of products'
       });
+      this.getPageLength(categories, 'totalCategories');
 
     } else if (urlSplit.includes('product-type')) {
 
@@ -125,6 +145,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
       this.getData(productTypes, {
         name: 'Name'
       });
+      this.getPageLength(productTypes, 'totalProductTypes');
 
     } else if (urlSplit.includes('attribute')) {
 
@@ -135,6 +156,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         code: 'Code',
         status: 'Status'
       });
+      this.getPageLength(attributes, 'totalAttributes');
 
     } else if (urlSplit.includes('sales')) {
 
@@ -146,6 +168,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         value: 'Value',
         status: 'Status'
       });
+      this.getPageLength(saleDiscounts, 'totalSaleDiscounts');
 
     } else if (urlSplit.includes('vouchers')) {
 
@@ -156,6 +179,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         value: 'Value',
         status: 'Status'
       });
+      this.getPageLength(vouchers, 'totalVouchers');
 
     } else if (urlSplit.includes('shipping')) {
 
@@ -165,6 +189,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         countries: 'Countries',
       });
+      this.getPageLength(shipping, 'totalShippingZones');
 
     } else if (urlSplit.includes('warehouse')) {
 
@@ -174,6 +199,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         shippingId: 'Shipping Zones',
       });
+      this.getPageLength(warehouse, 'totalWarehouse');
 
     } else if (urlSplit.includes('orders')) {
 
@@ -186,6 +212,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         orderId: 'No. of Orders',
         total: 'Total'
       });
+      this.getPageLength(orders, 'totalOrders');
 
     } else if (urlSplit.includes('users')) {
 
@@ -197,6 +224,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         phone: 'Phone',
         orderId: 'No. of Orders'
       });
+      this.getPageLength(users, 'totalUsers');
 
     } else if (urlSplit.includes('staff')) {
 
@@ -210,29 +238,49 @@ export class ListPageComponent implements OnInit, OnDestroy {
         type: 'array-contains',
         value: this.shopId
       }]);
+      this.getPageLength(users, 'totalStaff');
 
     }
 
   }
 
-  getData(path: string, displayData: any, where?: Condition[]) {
+  getPageLength(path: string, key: string) {
+    this.analyticsSubscription = this.admin.getCollectionAnalytics(path).subscribe(data => {
+      if (data && data[key]) {
+        this.resultLength = data[key];
+      }
+    });
+  }
+
+  getData(path: string, displayCols: any, where: Condition[] = []) {
     this.loading = true;
     this.displayedColumns = [];
     this.dataKeys = [];
     this.page.init(path, {
-      field: 'createdAt',
+      orderBy: 'createdAt',
       reverse: true,
       where: [{ field: 'shopId', type: '==', value: this.shopId }, ...where],
-      limit: 2
+      limit: this.pageSize
     });
-    Object.entries(displayData).forEach(([k, v]) => {
+    Object.entries(displayCols).forEach(([k, v]) => {
       this.dataKeys.push(k);
       this.displayedColumns.push(v as string);
     });
     this.dataSubscription = this.page.data.subscribe(data => {
       this.data = data;
-      if (data && data.length > 0) {
-        this.fillTable(data);
+      if (data && data.length > 0 && this.displayData.length > 0) {
+        data.forEach((d: any) => {
+          if (this.displayData.some(ed => ed.id === d.id)) {
+            const idx = this.displayData.findIndex(ed => ed.id === d.id);
+            this.displayData[idx] = d;
+          } else {
+            this.displayData.push(d);
+          }
+        });
+        this.fillTable(this.displayData);
+      } else if (data && data.length > 0) {
+        this.displayData = data;
+        this.fillTable(this.displayData);
       }
       this.loading = false;
     });

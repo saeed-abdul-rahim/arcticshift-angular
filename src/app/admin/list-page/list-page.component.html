@@ -13,11 +13,17 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="{{row.id}}"></tr>
   
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        <td class="mat-cell" colspan="2">No data matching the filter "{{input.value}}"</td>
       </tr>
 
-    </table>    
-    <mat-paginator [pageSizeOptions]="[2]"></mat-paginator>
+    </table>
+    <mat-paginator
+      [length]="resultLength"
+      [pageSizeOptions]="[4]"
+      [pageSize]="pageSize"
+      [pageIndex]="pageNo"
+      (page)="pageEvents($event)">
+    </mat-paginator>
   </div>
 </ng-template>
 

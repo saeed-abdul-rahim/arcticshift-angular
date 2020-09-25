@@ -4,9 +4,10 @@ import { Observable } from 'rxjs';
 export function getDataFromCollection(dbRef: any): Observable<any[]> {
     return dbRef.snapshotChanges().pipe(
       map((actions: Array<any>) => actions.map(a => {
-        const data = a.payload.doc.data();
-        const id = a.payload.doc.id;
-        return { id, ...data };
+        const { doc } = a.payload;
+        const { id } = doc;
+        const data = doc.data();
+        return { ...data, id, doc };
       }))
     );
 }

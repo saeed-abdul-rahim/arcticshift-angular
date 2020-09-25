@@ -3,6 +3,17 @@ export type Status = 'active' | 'inactive';
 export type ContentType = 'image' | 'video' | 'document' | '';
 export type ValueType = 'fixed' | 'percent';
 
+export interface QueryConfig {
+    path?: string;
+    orderBy?: string;
+    where?: Condition[];
+    limit?: number;
+    reverse?: boolean;
+    prepend?: boolean;
+    join?: string;
+    joinId?: string;
+}
+
 export interface TimestampInterface {
     createdAt?: number;
     updatedAt?: number;
