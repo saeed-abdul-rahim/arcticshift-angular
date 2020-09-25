@@ -45,14 +45,10 @@ export class ShopService {
       products,
       productTypes,
       categories,
-<<<<<<< HEAD
       collections,
       vouchers,
       saleDiscounts,
       attributes
-=======
-      collections
->>>>>>> 4b55895facfeae1303155c608651b8c25d909d9f
     } = db;
     this.db = this.afs.collection(version).doc(name);
     this.dbProductsRoute = products;
