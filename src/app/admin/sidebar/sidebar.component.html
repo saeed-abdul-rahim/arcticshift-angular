@@ -1,0 +1,155 @@
+<nav
+  class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6 scrollbar">
+  <div
+    class="md:flex-col md:items-stretch md:min-h-full md:flex-no-wrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
+    <!-- Toggler -->
+    <button
+      class="relative cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
+      type="button" (click)="toggleCollapseShow('bg-white m-2 py-3 px-6')">
+      <fa-icon [icon]="faBars" size="1x"></fa-icon>
+    </button>
+    <!-- Brand -->
+    <a class="md:block text-left md:pb-2 text-gray-700 mr-0 inline-block whitespace-no-wrap text-sm uppercase font-bold p-4 px-0 link-text">
+      Arcticshift
+    </a>
+    <!-- User -->
+    <ul class="md:hidden items-center flex flex-wrap list-none">
+      <li class="inline-block relative">
+        <app-notification-dropdown></app-notification-dropdown>
+      </li>
+      <li class="inline-block relative">
+        <app-user-dropdown></app-user-dropdown>
+      </li>
+    </ul>
+    <!-- Collapse -->
+    <div
+      class="md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none shadow absolute top-0 left-0 right-0 z-40 overflow-y-auto overflow-x-hidden h-auto items-center flex-1 rounded"
+      [ngClass]="collapseShow">
+      <!-- Collapse header -->
+      <div class="md:min-w-full md:hidden block pb-4 mb-4 border-b border-solid border-gray-300">
+        <div class="flex flex-wrap">
+          <div class="w-6/12">
+            <a class="md:block text-left md:pb-2 text-gray-700 mr-0 inline-block whitespace-no-wrap text-sm uppercase font-bold p-4 px-0">
+              Arcticshift
+            </a>
+          </div>
+          <div class="w-6/12 flex justify-end">
+            <button type="button"
+              class="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
+              (click)="toggleCollapseShow('hidden')">
+              <fa-icon [icon]="faTimes" size="1x"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Navigation -->
+      <ul class="md:flex-col md:min-w-full flex flex-col list-none">
+        <li class="items-center">
+          <a class="link-bold" (click)="navigate('dashboard')" [ngClass]="currentPath==='dashboard' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faTv"></fa-icon>
+            Dashboard
+          </a>
+        </li>
+        <li class="items-center">
+          <a class="link-bold" (click)="navigate('order')" [ngClass]="currentPath==='order' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faShoppingCart"></fa-icon>
+            Orders
+          </a>
+        </li>
+        <li class="items-center">
+          <a class="link-bold" (click)="navigate('customer')" [ngClass]="currentPath==='customer' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faUsers"></fa-icon>
+            Customers
+          </a>
+        </li>
+      </ul>
+      <!-- Divider -->
+      <hr class="my-4 md:min-w-full" />
+      <!-- Heading -->
+      <h6 class="sidebar-heading" (click)="toggleCatalog()" [ngClass]="!showCatalog ? 'pb-1' : 'pb-4'">
+        Catalog
+      </h6>
+      <!-- Navigation -->
+      <ul class="md:flex-col md:min-w-full flex flex-col list-none slider" [ngClass]="!showCatalog ? 'closed' : ''">
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('product')" [ngClass]="currentPath==='product' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faBoxOpen"></fa-icon>
+            Products
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('category')" [ngClass]="currentPath==='category' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faBox"></fa-icon>
+            Categories
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('collection')" [ngClass]="currentPath==='collection' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faBoxes"></fa-icon>
+            Collections
+          </a>
+        </li>
+      </ul>
+      <!-- Divider -->
+      <hr class="my-4 md:min-w-full" />
+      <!-- Heading -->
+      <h6 class="sidebar-heading" (click)="toggleDiscount()" [ngClass]="!showDiscount ? 'pb-1' : 'pb-4'">
+        Discounts
+      </h6>
+      <!-- Navigation -->
+      <ul class="md:flex-col md:min-w-full flex flex-col list-none slider" [ngClass]="!showDiscount ? 'closed' : ''">
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('sale')" [ngClass]="currentPath==='sale' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faPercent"></fa-icon>
+            Sale Discounts
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('voucher')" [ngClass]="currentPath==='voucher' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faTag"></fa-icon>
+            Vouchers
+          </a>
+        </li>
+      </ul>
+      <!-- Divider -->
+      <hr class="my-4 md:min-w-full" />
+      <!-- Heading -->
+      <h6 class="sidebar-heading" (click)="toggleConfiguration()" [ngClass]="!showConfiguration ? 'pb-1' : 'pb-4'">
+        Configuration
+      </h6>
+      <!-- Navigation -->
+      <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4 slider" [ngClass]="!showConfiguration ? 'closed' : ''">
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('product-attribute')" [ngClass]="currentPath==='product-attribute' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faShapes"></fa-icon>
+            Product Attributes
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('product-type')" [ngClass]="currentPath==='product-type' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faSquare"></fa-icon>
+            Product Types
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('shipping')" [ngClass]="currentPath==='shipping' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faShippingFast"></fa-icon>
+            Shipping
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('warehouse')" [ngClass]="currentPath==='warehouse' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faWarehouse"></fa-icon>
+            Warehouse
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate('staff')" [ngClass]="currentPath==='staff' ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faIdBadge"></fa-icon>
+            Staff
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

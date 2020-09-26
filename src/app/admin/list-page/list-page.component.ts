@@ -35,7 +35,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   dataKeys: string[];
   dataSource: MatTableDataSource<any>;
   pageNo: number;
-  pageSize = 4;
+  pageSize = 30;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -50,7 +50,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.shopId = user.shopId;
         const url = this.router.url;
         this.urlSplit = url.split('/');
-        this.switchNavItems(this.urlSplit);
+        this.initData();
       }
     });
   }
@@ -58,10 +58,10 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.unsubscribeData();
     this.unsubscribeUser();
+    this.page.destroy();
   }
 
   ngAfterViewInit(): void {
-    // this.page.more();
   }
 
   unsubscribeData() {
@@ -86,11 +86,15 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (event.previousPageIndex < event.pageIndex) {
       this.page.more();
     }
+    if (this.pageSize !== event.pageSize) {
+      this.initData();
+    }
   }
 
-  switchNavItems(urlSplit: string[]) {
+  initData() {
 
     this.unsubscribeData();
+    const { urlSplit } = this;
     const { db } = environment;
     const {
       products,
@@ -147,7 +151,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       this.getPageLength(productTypes, 'totalProductTypes');
 
-    } else if (urlSplit.includes('attribute')) {
+    } else if (urlSplit.includes('product-attribute')) {
 
       this.heading = 'Attributes';
       this.label = 'Attribute';
@@ -158,7 +162,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       this.getPageLength(attributes, 'totalAttributes');
 
-    } else if (urlSplit.includes('sales')) {
+    } else if (urlSplit.includes('sale')) {
 
       this.heading = 'Sale Discounts';
       this.label = 'Sale Discount';
@@ -170,7 +174,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       this.getPageLength(saleDiscounts, 'totalSaleDiscounts');
 
-    } else if (urlSplit.includes('vouchers')) {
+    } else if (urlSplit.includes('voucher')) {
 
       this.heading = 'Vouchers';
       this.label = 'Voucher';
@@ -201,7 +205,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       this.getPageLength(warehouse, 'totalWarehouse');
 
-    } else if (urlSplit.includes('orders')) {
+    } else if (urlSplit.includes('order')) {
 
       this.heading = 'Orders';
       this.label = '';
@@ -214,9 +218,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       this.getPageLength(orders, 'totalOrders');
 
-    } else if (urlSplit.includes('users')) {
+    } else if (urlSplit.includes('customer')) {
 
-      this.heading = 'Users';
+      this.heading = 'Customers';
       this.label = '';
       this.getData(users, {
         name: 'Name',

@@ -17,6 +17,7 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { LoginComponent } from './login/login.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
@@ -27,10 +28,15 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
+<<<<<<< HEAD
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
+=======
+import { ShopService } from '@services/shop/shop.service';
+import { AdminNavService } from '@services/admin-nav/admin-nav.service';
+>>>>>>> 9a22d235eeb1195ad76f6e89c426ec97ab11aaac
 
 
 @NgModule({
@@ -38,6 +44,7 @@ import { CustomerFormComponent } from './customer-form/customer-form.component';
     DragAndDropDirective,
     AdminComponent,
     LoginComponent,
+    SidebarComponent,
     DashboardComponent,
     ListPageComponent,
     WarehouseComponent,
@@ -69,7 +76,9 @@ import { CustomerFormComponent } from './customer-form/customer-form.component';
   providers: [
     AdminGuard,
     MediaService,
-    AdminService
+    AdminService,
+    ShopService,
+    AdminNavService
   ]
 })
 export class AdminModule { }

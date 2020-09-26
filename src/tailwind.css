@@ -7,6 +7,57 @@
     transition: all 0.15s ease 0s;
 }
 
+.scrollbar {
+	float: left;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.scrollbar::-webkit-scrollbar {
+	width: 5px;
+	background-color: #F5F5F5;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+	background-color: #0ae;	
+	background-image: -webkit-gradient(linear, 0 0, 0 100%,
+	                   color-stop(.5, rgba(255, 255, 255, .2)),
+					   color-stop(.5, transparent), to(transparent));
+}
+
+
+.slider {
+	overflow-y: hidden;
+	max-height: 500px;
+    box-sizing: border-box;
+
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: ease;
+}
+.slider.closed {
+	max-height: 0;
+}
+
+.sidebar-heading {
+    @apply text-gray-600;
+    @apply text-xs;
+    @apply uppercase;
+    @apply font-bold;
+    @apply block;
+    @apply pt-1;
+    @apply no-underline;
+    @apply cursor-pointer;
+    @apply arc-transition;
+}
+
+@screen md {
+    @apply min-w-full; 
+}
+
 .arc-input {
     @apply px-3;
     @apply py-3;
@@ -130,6 +181,24 @@
 .border-red {
     @apply border;
     @apply border-red-500;
+}
+
+.link-semibold {
+    @apply text-sm;
+    @apply block;
+    @apply mb-4;
+    @apply no-underline;
+    @apply font-semibold;
+    @apply cursor-pointer;
+}
+
+.link-bold {
+    @apply text-xs;
+    @apply uppercase;
+    @apply py-3;
+    @apply font-bold;
+    @apply block;
+    @apply cursor-pointer;
 }
 
 .ng-select {

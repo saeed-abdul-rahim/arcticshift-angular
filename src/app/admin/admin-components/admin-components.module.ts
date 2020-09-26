@@ -6,7 +6,6 @@ import { ComponentsModule } from '@components/components.module';
 import { TileComponent } from './tile/tile.component';
 import { CardComponent } from './card/card.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterFormComponent } from './footer-form/footer-form.component';
 
 
@@ -15,8 +14,12 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
     TileComponent,
     CardComponent,
     NavbarComponent,
+<<<<<<< HEAD
     SidebarComponent,
     FooterFormComponent,
+=======
+    FooterFormComponent
+>>>>>>> 9a22d235eeb1195ad76f6e89c426ec97ab11aaac
   ],
   imports: [
     CommonModule,
@@ -28,7 +31,6 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
     TileComponent,
     CardComponent,
     NavbarComponent,
-    SidebarComponent,
     FooterFormComponent
   ]
 })

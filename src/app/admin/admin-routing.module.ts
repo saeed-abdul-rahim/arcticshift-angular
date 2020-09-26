@@ -69,7 +69,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'orders',
+        path: 'order',
         children: [
           { path: '', component: ListPageComponent },
           // { path: 'add' },
@@ -77,7 +77,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'customers',
+        path: 'customer',
         children: [
           { path: '', component: ListPageComponent },
           // { path: 'add' },
@@ -85,11 +85,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'discounts',
+        path: 'discount',
         children: [
           { path: '', redirectTo: 'sales', pathMatch: 'full' },
           {
-            path: 'sales',
+            path: 'sale',
             children: [
               { path: '', component: ListPageComponent },
               { path: 'add', component: SaleFormComponent },
@@ -97,7 +97,7 @@ const routes: Routes = [
             ]
           },
           {
-            path: 'vouchers',
+            path: 'voucher',
             children: [
               { path: '', component: ListPageComponent },
               { path: 'add', component: VoucherFormComponent },
@@ -105,7 +105,7 @@ const routes: Routes = [
             ]
           },
           {
-            path: 'gift-cards',
+            path: 'gift-card',
             children: [
               { path: '', component: ListPageComponent },
               { path: 'add' },
@@ -115,7 +115,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'product-attributes',
+        path: 'product-attribute',
         children: [
           { path: '', component: ListPageComponent },
           { path: 'add' },
@@ -123,7 +123,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'product-types',
+        path: 'product-type',
         children: [
           { path: '', component: ListPageComponent },
           { path: 'add' },
