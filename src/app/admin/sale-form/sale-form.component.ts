@@ -15,7 +15,7 @@ export class SaleFormComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
-
+  edit=false;
 
   nameDanger: boolean;
 
@@ -29,10 +29,11 @@ export class SaleFormComponent implements OnInit {
    {
     const saleId = this.router.url.split('/').pop();
     if (saleId !== 'add') {
+      this.edit=true;
       this.saleSubscription = this.shopService.getSaleById(saleId).subscribe(sale => {
-        const { name, value } = sale;
+        const { name ,value} = sale;
         this.addSaleForm.patchValue({
-          name, value
+          name,value
         
         });
       });
@@ -54,7 +55,7 @@ export class SaleFormComponent implements OnInit {
   get addSaleFormControls() { return this.addSaleForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addSaleFormControls;
+    const { name,value } = this.addSaleFormControls;
     if (this.addSaleForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -63,11 +64,17 @@ export class SaleFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      
+      if(this.edit){
+        await this.adminService.updateSale({
+          name: name.value,
+          value: value.value
+        });
+      }else{
         await this.adminService.createSale({
           name: name.value,
+          value: value.value
         });
-      
+      }
      
       this.success = true;
       setTimeout(() => this.success = false, 2000);

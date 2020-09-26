@@ -14,6 +14,7 @@ import { ListPageComponent } from './list-page/list-page.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
+import { CustomerFormComponent } from './customer-form/customer-form.component';
 
 
 const routes: Routes = [
@@ -141,7 +142,7 @@ const routes: Routes = [
         path: 'warehouse',
         children: [
           { path: '', component: ListPageComponent },
-          { path: 'add' },
+          { path: 'add',component:WarehouseComponent },
           { path: ':id' }
         ]
       },
@@ -154,7 +155,8 @@ const routes: Routes = [
         ]
       },
       { path: 'product-type', component: ProductTypeFormComponent },
-      { path: 'attribute', component: AttributeFormComponent }
+      { path: 'attribute', component: AttributeFormComponent },
+      { path: 'customer', component: CustomerFormComponent }
     ]
   }
 ];

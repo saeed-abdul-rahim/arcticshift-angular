@@ -30,6 +30,7 @@ import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import { CustomerFormComponent } from './customer-form/customer-form.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     VoucherFormComponent,
     ProductTypeFormComponent,
     AttributeFormComponent,
+    CustomerFormComponent,
   ],
   imports: [
     CommonModule,

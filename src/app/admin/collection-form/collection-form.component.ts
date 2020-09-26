@@ -15,7 +15,7 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
-  edit = true;
+  edit = false;
 
   nameDanger: boolean;
 
@@ -52,6 +52,7 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const collectionId = this.router.url.split('/').pop();
     if (collectionId !== 'add') {
+      this.edit=true;
       this.collectionSubscription = this.shopService.getCollectionById(collectionId).subscribe(collection => {
         const { name } = collection;
         this. addCollectionForm.patchValue({
@@ -86,7 +87,7 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     try {
-      if(this.edit=true){
+      if(this.edit){
         await this.adminService.updateCollection({
           name: name.value,
         });

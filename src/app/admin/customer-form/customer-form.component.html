@@ -1,0 +1,97 @@
+<form class="flex flex-col h-screen justify-between" [formGroup]="addCustomerForm" (ngSubmit)="onSubmit()">
+
+
+    <ng-template #customer>
+        <div class="flex flex-wrap items-center">
+          <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+              <div class="flex">
+            <div class="flex-1 w-full mb-3 px-4">
+              <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="First Name"
+                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="firstname" />
+            </div>
+            <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Last Name"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="lastname" />
+              </div>
+              </div>
+              <div class="w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="E-mail Address"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="email" />
+              </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #address>
+        <div class="flex flex-wrap items-center">
+          <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+              <div class=flex> 
+            <div class="flex-1 w-full mb-3 px-4">
+              <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="First Name"
+                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+            </div>
+            <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Last Name"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+            </div>
+            <div class=flex> 
+              <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Company"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+              <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Phone"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+           </div>
+              <div class="w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Address Line 1"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+              <div class="w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Address Line 2"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+              <div class="flex"> 
+              <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="City"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+              <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="ZIP / Postal Code"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+            </div>
+            <div class="flex">
+              <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+              <div class="flex-1 w-full mb-3 px-4">
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country Area"
+                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="relative md:pt-32 pt-12">
+        <div class="px-4 md:px-10 mx-auto w-full">
+          <div class="flex flex-wrap mt-4">
+            <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+              <app-card [heading]="'Customer Overview'" [body]="customer"></app-card>
+              <app-card [heading]="'Primary Address'" [body]="address"></app-card>
+              
+            </div>
+            <div class="w-full xl:w-4/12 px-4">
+             
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+
+</form>
