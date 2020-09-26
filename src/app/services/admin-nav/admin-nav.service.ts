@@ -4,6 +4,25 @@ import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 import { Subscription } from 'rxjs/internal/Subscription';
 
+import {
+  ADMIN,
+  CATALOG,
+  CATEGORY,
+  COLLECTION,
+  CUSTOMER,
+  DASHBOARD,
+  DISCOUNT,
+  ORDER,
+  PRODUCT,
+  PRODUCTATTRIBUTE,
+  PRODUCTTYPE,
+  SALE,
+  SHIPPING,
+  STAFF,
+  VOUCHER,
+  WAREHOUSE
+} from '@constants/adminRoutes';
+
 export type Url = {
   endPath: string,
   split: string[],
@@ -14,7 +33,6 @@ export type Url = {
 export class AdminNavService {
 
   private urlSubscription: Subscription;
-  private adminPath = '/admin';
   private url: BehaviorSubject<Url> = new BehaviorSubject<Url> (null);
 
   url$ = this.url.asObservable();
@@ -45,12 +63,12 @@ export class AdminNavService {
   }
 
   getRoute(type: string) {
-    if (type === 'product' || type === 'category' || type === 'collection') {
-      return `${this.adminPath}/catalog/${type}`;
-    } else if (type === 'sale' || type === 'voucher') {
-      return `${this.adminPath}/discount/${type}`;
+    if (type === PRODUCT || type === CATEGORY || type === COLLECTION) {
+      return `/${ADMIN}/${CATALOG}/${type}`;
+    } else if (type === SALE || type === VOUCHER) {
+      return `/${ADMIN}/${DISCOUNT}/${type}`;
     } else {
-      return `${this.adminPath}/${type}`;
+      return `/${ADMIN}/${type}`;
     }
   }
 
@@ -60,8 +78,8 @@ export class AdminNavService {
 
   getNavRoutes() {
     return [
-      'dashboard', 'order', 'customer', 'product', 'category', 'collection', 'sale', 'voucher',
-      'product-attribute', 'product-type', 'shipping', 'warehouse', 'staff'
+      DASHBOARD, ORDER, CUSTOMER, PRODUCT, CATEGORY, COLLECTION, SALE, VOUCHER, PRODUCTATTRIBUTE,
+      PRODUCTTYPE, SHIPPING, WAREHOUSE, STAFF
     ];
   }
 

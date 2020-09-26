@@ -11,32 +11,53 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
+import {
+  ADD,
+  CATALOG,
+  CATEGORY,
+  COLLECTION,
+  CUSTOMER,
+  DASHBOARD,
+  DISCOUNT,
+  GIFTCARD,
+  LOGIN,
+  ORDER,
+  PRODUCT,
+  PRODUCTATTRIBUTE,
+  PRODUCTTYPE,
+  SALE,
+  SHIPPING,
+  STAFF,
+  VARIANT,
+  VOUCHER,
+  WAREHOUSE
+} from '@constants/adminRoutes';
 
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: LOGIN, component: LoginComponent },
   {
     path: '',
     component: AdminComponent,
     canActivate: [AdminGuard],
     canActivateChild: [AdminGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
+      { path: '', redirectTo: DASHBOARD, pathMatch: 'full' },
+      { path: DASHBOARD, component: DashboardComponent },
       {
-        path: 'catalog',
+        path: CATALOG,
         children: [
-          { path: '', redirectTo: 'product', pathMatch: 'full' },
+          { path: '', redirectTo: PRODUCT, pathMatch: 'full' },
           {
-            path: 'product',
+            path: PRODUCT,
             children: [
               { path: '', component: ListPageComponent },
-              { path: 'add', component: ProductFormComponent },
+              { path: ADD, component: ProductFormComponent },
               {
                 path: ':id', component: ProductFormComponent,
                 children: [
                   {
-                    path: 'variant',
+                    path: VARIANT,
                     children: [
                       { path: '', component: VariantFormComponent },
                       { path: ':id', component: VariantFormComponent }
@@ -47,15 +68,15 @@ const routes: Routes = [
             ]
           },
           {
-            path: 'category',
+            path: CATEGORY,
             children: [
               { path: '', component: ListPageComponent },
-              { path: 'add', component: CategoryFormComponent },
+              { path: ADD, component: CategoryFormComponent },
               { path: ':id', component: CategoryFormComponent }
             ]
           },
           {
-            path: 'collection',
+            path: COLLECTION,
             children: [
               { path: '', component: ListPageComponent },
               { path: 'add', component: CollectionFormComponent },
@@ -65,7 +86,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'order',
+        path: ORDER,
         children: [
           { path: '', component: ListPageComponent },
           // { path: 'add' },
@@ -73,7 +94,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'customer',
+        path: CUSTOMER,
         children: [
           { path: '', component: ListPageComponent },
           // { path: 'add' },
@@ -81,72 +102,72 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'discount',
+        path: DISCOUNT,
         children: [
-          { path: '', redirectTo: 'sales', pathMatch: 'full' },
+          { path: '', redirectTo: 'sale', pathMatch: 'full' },
           {
-            path: 'sale',
+            path: SALE,
             children: [
               { path: '', component: ListPageComponent },
-              { path: 'add', component: SaleFormComponent },
+              { path: ADD, component: SaleFormComponent },
               { path: ':id', component: SaleFormComponent }
             ]
           },
           {
-            path: 'voucher',
+            path: VOUCHER,
             children: [
               { path: '', component: ListPageComponent },
-              { path: 'add', component: VoucherFormComponent },
+              { path: ADD, component: VoucherFormComponent },
               { path: ':id', component: VoucherFormComponent }
             ]
           },
           {
-            path: 'gift-card',
+            path: GIFTCARD,
             children: [
               { path: '', component: ListPageComponent },
-              { path: 'add' },
+              { path: ADD },
               { path: ':id' }
             ]
           }
         ]
       },
       {
-        path: 'product-attribute',
+        path: PRODUCTATTRIBUTE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: 'add' },
+          { path: ADD },
           { path: ':id' }
         ]
       },
       {
-        path: 'product-type',
+        path: PRODUCTTYPE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: 'add' },
+          { path: ADD },
           { path: ':id' }
         ]
       },
       {
-        path: 'shipping',
+        path: SHIPPING,
         children: [
           { path: '', component: ListPageComponent },
-          { path: 'add' },
+          { path: ADD },
           { path: ':id' }
         ]
       },
       {
-        path: 'warehouse',
+        path: WAREHOUSE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: 'add' },
+          { path: ADD },
           { path: ':id' }
         ]
       },
       {
-        path: 'staff',
+        path: STAFF,
         children: [
           { path: '', component: ListPageComponent },
-          { path: 'add' },
+          { path: ADD },
           { path: ':id' }
         ]
       }
