@@ -11,34 +11,10 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
-<<<<<<< HEAD
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
-=======
-import {
-  ADD,
-  CATALOG,
-  CATEGORY,
-  COLLECTION,
-  CUSTOMER,
-  DASHBOARD,
-  DISCOUNT,
-  GIFTCARD,
-  LOGIN,
-  ORDER,
-  PRODUCT,
-  PRODUCTATTRIBUTE,
-  PRODUCTTYPE,
-  SALE,
-  SHIPPING,
-  STAFF,
-  VARIANT,
-  VOUCHER,
-  WAREHOUSE
-} from '@constants/adminRoutes';
->>>>>>> 72169a17a4b68d545e78677f7aae3d16c9dcdac5
 
 
 const routes: Routes = [
@@ -166,11 +142,7 @@ const routes: Routes = [
         path: WAREHOUSE,
         children: [
           { path: '', component: ListPageComponent },
-<<<<<<< HEAD
           { path: 'add',component:WarehouseComponent },
-=======
-          { path: ADD },
->>>>>>> 72169a17a4b68d545e78677f7aae3d16c9dcdac5
           { path: ':id' }
         ]
       },
