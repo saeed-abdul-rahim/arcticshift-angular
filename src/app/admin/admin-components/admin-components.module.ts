@@ -5,7 +5,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ComponentsModule } from '@components/components.module';
 import { TileComponent } from './tile/tile.component';
 import { CardComponent } from './card/card.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { FooterFormComponent } from './footer-form/footer-form.component';
 
 
@@ -13,7 +12,6 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
   declarations: [
     TileComponent,
     CardComponent,
-    NavbarComponent,
     FooterFormComponent
   ],
   imports: [
@@ -25,7 +23,6 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
   exports: [
     TileComponent,
     CardComponent,
-    NavbarComponent,
     FooterFormComponent
   ]
 })

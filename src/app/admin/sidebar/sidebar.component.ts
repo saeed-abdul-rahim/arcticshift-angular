@@ -20,7 +20,6 @@ import { faWarehouse } from '@fortawesome/free-solid-svg-icons/faWarehouse';
 import { faIdBadge } from '@fortawesome/free-solid-svg-icons/faIdBadge';
 
 import {
-  ADMIN,
   CATALOG,
   CATEGORY,
   COLLECTION,
