@@ -28,15 +28,12 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
-<<<<<<< HEAD
-import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
-import { AttributeFormComponent } from './attribute-form/attribute-form.component';
-import { AngularEditorModule } from '@kolkov/angular-editor';
-import { CustomerFormComponent } from './customer-form/customer-form.component';
-=======
 import { ShopService } from '@services/shop/shop.service';
 import { AdminNavService } from '@services/admin-nav/admin-nav.service';
->>>>>>> 9a22d235eeb1195ad76f6e89c426ec97ab11aaac
+import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
+import { AttributeFormComponent } from './attribute-form/attribute-form.component';
+import { CustomerFormComponent } from './customer-form/customer-form.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 
 @NgModule({
