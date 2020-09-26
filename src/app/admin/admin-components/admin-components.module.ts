@@ -14,12 +14,7 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
     TileComponent,
     CardComponent,
     NavbarComponent,
-<<<<<<< HEAD
-    SidebarComponent,
-    FooterFormComponent,
-=======
     FooterFormComponent
->>>>>>> 9a22d235eeb1195ad76f6e89c426ec97ab11aaac
   ],
   imports: [
     CommonModule,
