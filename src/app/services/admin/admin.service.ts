@@ -90,7 +90,6 @@ export class AdminService {
     }
   }
 
-  
   async updateCategory(data: CategoryInterface) {
     const { apiCategory } = this;
     try {
@@ -110,7 +109,6 @@ export class AdminService {
     }
   }
 
-  
   async updateSale(data: SaleDiscountInterface) {
     const { apiSale } = this;
     try {
