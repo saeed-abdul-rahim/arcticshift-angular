@@ -17,6 +17,7 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { LoginComponent } from './login/login.component';
+import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
@@ -37,6 +38,7 @@ import { AdminNavService } from '@services/admin-nav/admin-nav.service';
     DragAndDropDirective,
     AdminComponent,
     LoginComponent,
+    NavbarComponent,
     SidebarComponent,
     DashboardComponent,
     ListPageComponent,
