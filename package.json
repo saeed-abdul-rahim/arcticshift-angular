@@ -76,6 +76,7 @@
     "@directives/*": "dist/app/directives",
     "@services/*": "dist/app/services",
     "@guards/*": "dist/app/guards",
-    "@models/*": "dist/app/models"
+    "@models/*": "dist/app/models",
+    "@constants/*": "dist/app/constants"
   }
 }

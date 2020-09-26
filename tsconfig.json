@@ -25,6 +25,7 @@
       "@services/*": ["app/services/*"],
       "@guards/*": ["app/guards/*"],
       "@models/*": ["app/models/*"],
+      "@constants/*": ["app/constants/*"],
     }
   },
   "angularCompilerOptions": {

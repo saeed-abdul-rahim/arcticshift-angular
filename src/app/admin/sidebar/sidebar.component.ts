@@ -19,6 +19,25 @@ import { faShippingFast } from '@fortawesome/free-solid-svg-icons/faShippingFast
 import { faWarehouse } from '@fortawesome/free-solid-svg-icons/faWarehouse';
 import { faIdBadge } from '@fortawesome/free-solid-svg-icons/faIdBadge';
 
+import {
+  ADMIN,
+  CATALOG,
+  CATEGORY,
+  COLLECTION,
+  CUSTOMER,
+  DASHBOARD,
+  DISCOUNT,
+  ORDER,
+  PRODUCT,
+  PRODUCTATTRIBUTE,
+  PRODUCTTYPE,
+  SALE,
+  SHIPPING,
+  STAFF,
+  VOUCHER,
+  WAREHOUSE
+} from '@constants/adminRoutes';
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -42,6 +61,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
   faWarehouse = faWarehouse;
   faIdBadge = faIdBadge;
 
+  dashboardRoute = DASHBOARD;
+  orderRoute = ORDER;
+  customerRoute = CUSTOMER;
+  productRoute = PRODUCT;
+  categoryRoute = CATEGORY;
+  collectionRoute = COLLECTION;
+  saleRoute = SALE;
+  voucherRoute = VOUCHER;
+  productAttributeRoute = PRODUCTATTRIBUTE;
+  productTypeRoute = PRODUCTTYPE;
+  shippingRoute = SHIPPING;
+  warehouseRoute = WAREHOUSE;
+  staffRoute = STAFF;
+
   currentUrl: Url;
   currentPath: string;
   urlSubscription: Subscription;
@@ -56,11 +89,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.currentUrl = url;
       this.setCurrentPath();
       const { split } = this.currentUrl;
-      if (split.includes('catalog')) {
+      if (split.includes(CATALOG)) {
         this.showCatalog = true;
-      } else if (split.includes('discount')) {
+      } else if (split.includes(DISCOUNT)) {
         this.showDiscount = true;
-      } else if (!split.includes('dashboard') && !split.includes('customer') && !split.includes('order')) {
+      } else if (!split.includes(DASHBOARD) && !split.includes(CUSTOMER) && !split.includes(ORDER)) {
         this.showConfiguration = true;
       }
     });
