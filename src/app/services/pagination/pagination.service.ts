@@ -34,7 +34,7 @@ export class PaginationService {
     this.dbPath = `${version}/${name}`;
   }
 
-  onDestroy() {
+  destroy() {
     this.unsubscribe();
   }
 

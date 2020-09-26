@@ -17,6 +17,7 @@ import { AdminComponentsModule } from './admin-components/admin-components.modul
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { LoginComponent } from './login/login.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { DiscountComponent } from './discount/discount.component';
@@ -28,6 +29,7 @@ import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ShopService } from '@services/shop/shop.service';
+import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 
 
 @NgModule({
@@ -35,6 +37,7 @@ import { ShopService } from '@services/shop/shop.service';
     DragAndDropDirective,
     AdminComponent,
     LoginComponent,
+    SidebarComponent,
     DashboardComponent,
     ListPageComponent,
     WarehouseComponent,
@@ -62,7 +65,9 @@ import { ShopService } from '@services/shop/shop.service';
   providers: [
     AdminGuard,
     MediaService,
-    AdminService
+    AdminService,
+    ShopService,
+    AdminNavService
   ]
 })
 export class AdminModule { }

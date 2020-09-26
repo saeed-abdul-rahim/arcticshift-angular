@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 import { AuthService } from '@services/auth/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -14,11 +15,18 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   userSubscription: Subscription;
 
-  constructor(private auth: AuthService, private router: Router) {
+  constructor(private auth: AuthService, private router: Router, private adminNavService: AdminNavService) {
   }
 
   ngOnInit(): void {
     this.getRoute();
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
+    this.adminNavService.destroy();
   }
 
   async getRoute() {
@@ -41,12 +49,6 @@ export class AdminComponent implements OnInit, OnDestroy {
       });
     } catch (_) {
       this.toLogin();
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.userSubscription && !this.userSubscription.closed) {
-      this.userSubscription.unsubscribe();
     }
   }
 
