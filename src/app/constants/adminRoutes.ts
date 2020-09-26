@@ -1,3 +1,4 @@
+type ADMIN = 'admin';
 type LOGIN = 'login';
 type DASHBOARD = 'dashboard';
 type CATALOG = 'catalog';
@@ -18,6 +19,7 @@ type WAREHOUSE = 'warehouse';
 type STAFF = 'staff';
 type ADD = 'add';
 
+export const ADMIN: ADMIN = 'admin';
 export const LOGIN: LOGIN = 'login';
 export const DASHBOARD: DASHBOARD = 'dashboard';
 export const CATALOG: CATALOG = 'catalog';
