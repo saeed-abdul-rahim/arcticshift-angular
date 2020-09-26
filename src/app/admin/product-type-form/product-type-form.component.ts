@@ -26,6 +26,7 @@ export class ProductTypeFormComponent implements OnInit {
    {
     const productTypeId = this.router.url.split('/').pop();
     if (productTypeId !== 'add') {
+      this.edit=true;
       this. productTypeSubscription = this.shopService.getCollectionById(productTypeId).subscribe(productType => {
         const { name } = productType;
         this. addProductTypeForm.patchValue({
@@ -60,7 +61,7 @@ export class ProductTypeFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit=true){
+      if(this.edit){
         await this.adminService.updateProductType({
           name: name.value,
           

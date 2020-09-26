@@ -27,6 +27,7 @@ export class VoucherFormComponent implements OnInit {
    {
     const voucherId = this.router.url.split('/').pop();
     if (voucherId !== 'add') {
+      this.edit=true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
         const { name, value } = voucher;
         this.addVoucherForm.patchValue({
@@ -62,7 +63,7 @@ export class VoucherFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit=true){
+      if(this.edit){
         await this.adminService.updateSale({
           name: name.value,
           

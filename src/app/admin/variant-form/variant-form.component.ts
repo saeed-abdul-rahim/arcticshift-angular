@@ -43,7 +43,7 @@ export class VariantFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit=true){
+      if(this.edit){
         await this.adminService.updateVariant({
           size: size.value,
           

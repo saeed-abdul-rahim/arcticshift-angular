@@ -15,7 +15,7 @@ export class CategoryFormComponent implements OnInit {
 
   loading = false;
   success = false;
-  edit= true;
+  edit= false;
 
   nameDanger: boolean;
 
@@ -54,6 +54,7 @@ export class CategoryFormComponent implements OnInit {
    {
     const categoryId = this.router.url.split('/').pop();
     if (categoryId !== 'add') {
+      this.edit=true;
       this.categorySubscription = this.shopService.getCollectionById(categoryId).subscribe(category => {
         const { name } = category;
         this.addCategoryForm.patchValue({
@@ -89,7 +90,7 @@ export class CategoryFormComponent implements OnInit {
   
   this.loading = true;
   try {
-    if(this.edit=true){
+    if(this.edit){
       await this.adminService.updateCategory({
         name: name.value,
         

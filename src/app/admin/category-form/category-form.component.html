@@ -30,7 +30,7 @@
   </ng-template>
 
   <ng-template #textArea>
-    <div class="flex w-full justify-center">
+    <div class="flex w-full justify-center pt-3">
       <textarea class="w-1/2 h-32 mb-3 resize border rounded focus:outline-none focus:shadow-outline"></textarea>
     </div>
   </ng-template>
@@ -42,8 +42,7 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="Category"></app-card>
-          <app-card [heading]="'Images'" [actions]="imageUpload"></app-card>
-          <app-card [heading]="''" [body]="textArea"></app-card>
+          <app-card [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
         </div>
       </div>
     </div>

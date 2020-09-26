@@ -15,7 +15,7 @@ export class WarehouseComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
-  edit=true;
+  edit=false;
   nameDanger: boolean;
 
   addWarehouseForm: FormGroup;
@@ -26,6 +26,7 @@ export class WarehouseComponent implements OnInit {
    {
     const warehousenId = this.router.url.split('/').pop();
     if (warehousenId !== 'add') {
+      this.edit=true;
       this.warehouseSubscription = this.shopService.getCollectionById(warehousenId).subscribe(warehouse => {
         const { name } = warehouse;
         this. addWarehouseForm.patchValue({
@@ -61,7 +62,7 @@ export class WarehouseComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit=true){
+      if(this.edit){
         await this.adminService.updateWarehouse({
           name: name.value,
   

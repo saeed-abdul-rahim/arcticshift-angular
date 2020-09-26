@@ -15,7 +15,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
-  edit= true;
+  edit= false;
   nameDanger: boolean;
   codeDanger: boolean;
 
@@ -26,6 +26,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const attributeId = this.router.url.split('/').pop();
     if (attributeId !== 'add') {
+      this.edit=true;
       this.attributeSubscription = this.shopService.getAttributeById(attributeId).subscribe(category => {
         const { name } = category;
         this.addAttributeForm.patchValue({
@@ -59,7 +60,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      if(this.edit=true)
+      if(this.edit)
       { 
         await this.adminService.updateAttribute({
         name: name.value,
