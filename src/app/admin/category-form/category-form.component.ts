@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
@@ -11,11 +11,11 @@ import { Subscription } from 'rxjs';
   templateUrl: './category-form.component.html',
   styleUrls: ['./category-form.component.css']
 })
-export class CategoryFormComponent implements OnInit {
+export class CategoryFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
-  edit= false;
+  edit = false;
 
   nameDanger: boolean;
 
@@ -42,7 +42,7 @@ export class CategoryFormComponent implements OnInit {
       ['subscript'],
       ['superscript'],
       ['indent'],
-      ['outdent'], 
+      ['outdent'],
       ['textColor'],
       ['fontSize'],
       ['fontName']
@@ -50,16 +50,15 @@ export class CategoryFormComponent implements OnInit {
   };
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
-   {
+              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const categoryId = this.router.url.split('/').pop();
     if (categoryId !== 'add') {
-      this.edit=true;
+      this.edit = true;
       this.categorySubscription = this.shopService.getCollectionById(categoryId).subscribe(category => {
         const { name } = category;
         this.addCategoryForm.patchValue({
-          name, 
-        
+          name,
+
         });
       });
     }
@@ -87,29 +86,29 @@ export class CategoryFormComponent implements OnInit {
       }
       return;
     }
-  
-  this.loading = true;
-  try {
-    if(this.edit){
-      await this.adminService.updateCategory({
-        name: name.value,
-        
-      });
-    }else{
-      await this.adminService.createCategory({
-        name: name.value,
-        
-      });
+
+    this.loading = true;
+    try {
+      if (this.edit) {
+        await this.adminService.updateCategory({
+          name: name.value,
+
+        });
+      } else {
+        await this.adminService.createCategory({
+          name: name.value,
+
+        });
+      }
+
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+    } catch (err) {
+      this.success = false;
+      console.log(err);
     }
-  
-    this.success = true;
-    setTimeout(() => this.success = false, 2000);
-  } catch (err) {
-    this.success = false;
-    console.log(err);
+    this.loading = false;
   }
-  this.loading = false;
-}
 
 }
 

@@ -21,7 +21,7 @@ import { ProductInterface } from '@models/Product';
 export class ProductFormComponent implements OnInit, OnDestroy {
 
   faCheckCircle = faCheckCircle;
-  
+
   loading = false;
   success = false;
   edit = false;
@@ -59,7 +59,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       ['subscript'],
       ['superscript'],
       ['indent'],
-      ['outdent'], 
+      ['outdent'],
       ['textColor'],
       ['fontSize'],
       ['fontName']
@@ -70,7 +70,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const productId = this.router.url.split('/').pop();
     if (productId !== 'add') {
-      this.edit=true;
+      this.edit = true;
       this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
         const { name, description, price, productTypeId, categoryId, collectionId, status, tax } = product;
         this.addProductForm.patchValue({
@@ -119,19 +119,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      if(this.edit){
+      if (this.edit) {
         await this.adminService.updateProduct({
           name: name.value,
           price: price.value
         });
       }
-      else{
+      else {
         await this.adminService.createProduct({
-        name: name.value,
-        price: price.value
-      });
-    }
-      
+          name: name.value,
+          price: price.value
+        });
+      }
+
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

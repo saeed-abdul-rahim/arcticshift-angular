@@ -41,7 +41,7 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
       ['subscript'],
       ['superscript'],
       ['indent'],
-      ['outdent'], 
+      ['outdent'],
       ['textColor'],
       ['fontSize'],
       ['fontName']
@@ -52,10 +52,10 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const collectionId = this.router.url.split('/').pop();
     if (collectionId !== 'add') {
-      this.edit=true;
+      this.edit = true;
       this.collectionSubscription = this.shopService.getCollectionById(collectionId).subscribe(collection => {
         const { name } = collection;
-        this. addCollectionForm.patchValue({
+        this.addCollectionForm.patchValue({
           name,
         });
       });
@@ -87,17 +87,17 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     try {
-      if(this.edit){
+      if (this.edit) {
         await this.adminService.updateCollection({
           name: name.value,
         });
       }
-      else{
+      else {
         await this.adminService.createCollection({
           name: name.value,
         });
       }
-      
+
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

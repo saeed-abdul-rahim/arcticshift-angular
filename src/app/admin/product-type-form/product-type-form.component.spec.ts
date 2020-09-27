@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductTypeFormComponent } from './product-type.component';
+import { ProductTypeFormComponent } from './product-type-form.component';
 
 describe('ProductTypeFormComponent', () => {
   let component: ProductTypeFormComponent;

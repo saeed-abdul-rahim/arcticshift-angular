@@ -17,8 +17,7 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
   imports: [
     CommonModule,
     ComponentsModule,
-    FontAwesomeModule,
-    
+    FontAwesomeModule
   ],
   exports: [
     TileComponent,

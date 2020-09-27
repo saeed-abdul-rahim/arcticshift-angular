@@ -9,20 +9,20 @@ import { SuccessResponse } from '@services/request/request.service';
   styleUrls: ['./variant-form.component.css']
 })
 export class VariantFormComponent implements OnInit {
-  
+
   loading: boolean;
   success: boolean;
-  edit=true;
+  edit = true;
   nameDanger: boolean;
   sizeDanger: boolean;
   priceDanger: boolean;
-  
+
 
   addVariantForm: FormGroup;
 
   constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.addVariantForm = this.formbuilder.group({
       size: ['', Validators.required],
       price: ['', Validators.required],
@@ -43,18 +43,18 @@ export class VariantFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit){
+      if (this.edit) {
         await this.adminService.updateVariant({
           size: size.value,
-          
+
         });
-      }else{
+      } else {
         await this.adminService.createVariant({
           size: size.value,
-          
+
         });
       }
-    
+
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
