@@ -11,6 +11,22 @@ import { PaginationService } from '@services/pagination/pagination.service';
 import { Condition } from '@models/Common';
 import { AdminService } from '@services/admin/admin.service';
 
+import {
+  CATEGORY,
+  COLLECTION,
+  CUSTOMER,
+  ORDER,
+  PRODUCT,
+  PRODUCTATTRIBUTE,
+  PRODUCTTYPE,
+  SALE,
+  SHIPPING,
+  STAFF,
+  VOUCHER,
+  WAREHOUSE
+} from '@constants/adminRoutes';
+
+
 @Component({
   selector: 'app-list-page',
   templateUrl: './list-page.component.html',
@@ -25,6 +41,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
   urlSplit: string[];
   data: any[];
   resultLength = 0;
+  dataLengthKey = 'totalDocs';
 
   userSubscription: Subscription;
   dataSubscription: Subscription;
@@ -110,7 +127,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       orders,
     } = db;
 
-    if (urlSplit.includes('product')) {
+    if (urlSplit.includes(PRODUCT)) {
 
       this.heading = 'Products';
       this.label = 'Product';
@@ -118,9 +135,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         name: 'Name',
         price: 'Price'
       });
-      this.getPageLength(products, 'totalProducts');
+      this.getPageLength(products, this.dataLengthKey);
 
-    } else if (urlSplit.includes('collection')) {
+    } else if (urlSplit.includes(COLLECTION)) {
 
       this.heading = 'Collections';
       this.label = 'Collection';
@@ -129,9 +146,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         productId: 'No. of products',
         status: 'Status'
       });
-      this.getPageLength(collections, 'totalCollections');
+      this.getPageLength(collections, this.dataLengthKey);
 
-    } else if (urlSplit.includes('category')) {
+    } else if (urlSplit.includes(CATEGORY)) {
 
       this.heading = 'Categories';
       this.label = 'Category';
@@ -140,18 +157,18 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         subCategoryId: 'Subcategories',
         productId: 'No. of products'
       });
-      this.getPageLength(categories, 'totalCategories');
+      this.getPageLength(categories, this.dataLengthKey);
 
-    } else if (urlSplit.includes('product-type')) {
+    } else if (urlSplit.includes(PRODUCTTYPE)) {
 
       this.heading = 'Product Types';
       this.label = 'Product Type';
       this.getData(productTypes, {
         name: 'Name'
       });
-      this.getPageLength(productTypes, 'totalProductTypes');
+      this.getPageLength(productTypes, this.dataLengthKey);
 
-    } else if (urlSplit.includes('product-attribute')) {
+    } else if (urlSplit.includes(PRODUCTATTRIBUTE)) {
 
       this.heading = 'Attributes';
       this.label = 'Attribute';
@@ -160,9 +177,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         code: 'Code',
         status: 'Status'
       });
-      this.getPageLength(attributes, 'totalAttributes');
+      this.getPageLength(attributes, this.dataLengthKey);
 
-    } else if (urlSplit.includes('sale')) {
+    } else if (urlSplit.includes(SALE)) {
 
       this.heading = 'Sale Discounts';
       this.label = 'Sale Discount';
@@ -172,9 +189,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         value: 'Value',
         status: 'Status'
       });
-      this.getPageLength(saleDiscounts, 'totalSaleDiscounts');
+      this.getPageLength(saleDiscounts, this.dataLengthKey);
 
-    } else if (urlSplit.includes('voucher')) {
+    } else if (urlSplit.includes(VOUCHER)) {
 
       this.heading = 'Vouchers';
       this.label = 'Voucher';
@@ -183,9 +200,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         value: 'Value',
         status: 'Status'
       });
-      this.getPageLength(vouchers, 'totalVouchers');
+      this.getPageLength(vouchers, this.dataLengthKey);
 
-    } else if (urlSplit.includes('shipping')) {
+    } else if (urlSplit.includes(SHIPPING)) {
 
       this.heading = 'Shipping';
       this.label = 'Shipping';
@@ -193,9 +210,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         name: 'Name',
         countries: 'Countries',
       });
-      this.getPageLength(shipping, 'totalShippingZones');
+      this.getPageLength(shipping, this.dataLengthKey);
 
-    } else if (urlSplit.includes('warehouse')) {
+    } else if (urlSplit.includes(WAREHOUSE)) {
 
       this.heading = 'Warehouse';
       this.label = 'Warehouse';
@@ -203,9 +220,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         name: 'Name',
         shippingId: 'Shipping Zones',
       });
-      this.getPageLength(warehouse, 'totalWarehouse');
+      this.getPageLength(warehouse, this.dataLengthKey);
 
-    } else if (urlSplit.includes('order')) {
+    } else if (urlSplit.includes(ORDER)) {
 
       this.heading = 'Orders';
       this.label = '';
@@ -216,9 +233,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         orderId: 'No. of Orders',
         total: 'Total'
       });
-      this.getPageLength(orders, 'totalOrders');
+      this.getPageLength(orders, this.dataLengthKey);
 
-    } else if (urlSplit.includes('customer')) {
+    } else if (urlSplit.includes(CUSTOMER)) {
 
       this.heading = 'Customers';
       this.label = '';
@@ -228,9 +245,9 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         phone: 'Phone',
         orderId: 'No. of Orders'
       });
-      this.getPageLength(users, 'totalUsers');
+      this.getPageLength(users, this.dataLengthKey);
 
-    } else if (urlSplit.includes('staff')) {
+    } else if (urlSplit.includes(STAFF)) {
 
       this.heading = 'Staff';
       this.label = '';
@@ -242,7 +259,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         type: 'array-contains',
         value: this.shopId
       }]);
-      this.getPageLength(users, 'totalStaff');
+      this.getPageLength(users, this.dataLengthKey);
 
     }
 
