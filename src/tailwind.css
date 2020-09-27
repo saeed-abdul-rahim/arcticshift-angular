@@ -173,6 +173,37 @@
     @apply outline-none;
 }
 
+.arc-dropdown-panel {
+    @apply rounded-md;
+    @apply bg-white;
+    @apply shadow-lg;
+    @apply absolute;
+}
+
+.arc-dropdown-panel-items {
+    @apply py-1;
+}
+
+.arc-dropdown-item {
+    @apply block;
+    @apply px-4;
+    @apply py-2;
+    @apply text-sm;
+    @apply leading-5;
+    @apply text-gray-700;
+}
+
+.arc-dropdown-item:hover {
+    @apply bg-gray-100;
+    @apply text-gray-900;
+}
+
+.arc-dropdown-item:focus {
+    @apply outline-none;
+    @apply bg-gray-100;
+    @apply text-gray-900;
+}
+
 .disabled {
     @apply cursor-not-allowed;
     @apply opacity-50;
@@ -199,16 +230,6 @@
     @apply font-bold;
     @apply block;
     @apply cursor-pointer;
-}
-
-.ng-select {
-    @apply arc-input;
-}
-
-.ng-dropdown-panel {
-    @apply arc-input;
-    @apply mt-4;
-    @apply -ml-3;
 }
 
 input[type="radio"] + label span {
@@ -288,6 +309,30 @@ h5 {
     @apply leading-normal;
     @apply mt-0;
     @apply mb-2;
+}
+
+
+.ng-select {
+    @apply arc-input;
+    @apply relative;
+}
+
+.ng-dropdown-panel {
+    @apply arc-dropdown-panel;
+    @apply mt-4;
+    @apply -ml-3;
+}
+
+.ng-dropdown-panel-items {
+    @apply arc-dropdown-panel-items;
+}
+
+.ng-option {
+    @apply arc-dropdown-item;
+}
+.ng-option:hover {
+    @apply bg-gray-100;
+    @apply text-gray-900;
 }
 
 .mat-table, .mat-paginator, .mat-form-field {
