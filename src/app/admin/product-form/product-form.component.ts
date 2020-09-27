@@ -3,20 +3,18 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-import { inOut } from '@animations/inOut';
 import { ContentType } from '@models/Common';
 import Thumbnail from '@services/media/Thumbnail';
 import { MediaService } from '@services/media/media.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
-import { ProductInterface } from '@models/Product';
+import { editorConfig } from '@settings/editorConfig';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
-  styleUrls: ['./product-form.component.css'],
-  animations: [inOut]
+  styleUrls: ['./product-form.component.css']
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
 
@@ -41,29 +39,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   productSubscription: Subscription;
 
   editorConfig = {
-    editable: true,
+    ...editorConfig,
     placeholder: 'Description',
-    toolbarHiddenButtons: [
-      ['insertImage'],
-      ['insertVideo'],
-      ['backgroundColor'],
-      ['customClasses'],
-      ['link'],
-      ['unlink'],
-      ['insertHorizontalRule'],
-      ['removeFormat'],
-      ['toggleEditorMode'],
-      ['undo'],
-      ['redo'],
-      ['strikeThrough'],
-      ['subscript'],
-      ['superscript'],
-      ['indent'],
-      ['outdent'],
-      ['textColor'],
-      ['fontSize'],
-      ['fontName']
-    ]
   };
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,

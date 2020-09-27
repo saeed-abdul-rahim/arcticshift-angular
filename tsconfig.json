@@ -26,6 +26,7 @@
       "@guards/*": ["app/guards/*"],
       "@models/*": ["app/models/*"],
       "@constants/*": ["app/constants/*"],
+      "@settings/*": ["app/settings/*"],
     }
   },
   "angularCompilerOptions": {

@@ -299,3 +299,30 @@ h5 {
 .mat-header-cell {
     @apply p-4;
 }
+
+.angular-editor-toolbar {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.angular-editor-button {
+    background-color: transparent !important;
+    border-radius: 0.2rem;
+}
+
+.angular-editor-textarea, .ae-picker-options {
+    border: none !important;
+    @apply arc-input;
+}
+
+
+.ae-picker-label {
+    border-radius: 0.2rem;
+}
+
+.ae-picker-item.focused, .ae-picker-item:hover {
+    background-color: unset !important;
+    color: unset;
+    @apply bg-blue-100;
+}

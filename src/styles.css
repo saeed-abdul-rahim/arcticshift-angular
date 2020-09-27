@@ -20441,6 +20441,47 @@ h5 {
   padding: 1rem;
 }
 
+.angular-editor-toolbar {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.angular-editor-button {
+  background-color: transparent !important;
+  border-radius: 0.2rem;
+}
+
+.angular-editor-textarea, .ae-picker-options {
+  border: none !important;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  --text-opacity: 1;
+  color: #4a5568;
+  color: rgba(74, 85, 104, var(--text-opacity));
+  --bg-opacity: 1;
+  background-color: #fff;
+  background-color: rgba(255, 255, 255, var(--bg-opacity));
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.15s ease 0s;
+}
+
+.ae-picker-label {
+  border-radius: 0.2rem;
+}
+
+.ae-picker-item.focused, .ae-picker-item:hover {
+  background-color: unset !important;
+  color: unset;
+  --bg-opacity: 1;
+  background-color: #ebf8ff;
+  background-color: rgba(235, 248, 255, var(--bg-opacity));
+}
+
 @media (min-width: 640px){
   .sm\:container{
     width: 100%;

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AdminService } from '@services/admin/admin.service';
-import { SuccessResponse } from '@services/request/request.service';
 
 @Component({
   selector: 'app-variant-form',

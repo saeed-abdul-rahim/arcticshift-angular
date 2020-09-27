@@ -4,7 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
-import { Subscription } from 'rxjs';
+import { editorConfig } from '@settings/editorConfig';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-collection-form',
@@ -23,29 +24,8 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
   collectionSubscription: Subscription;
 
   editorConfig = {
-    editable: true,
+    ...editorConfig,
     placeholder: 'Description',
-    toolbarHiddenButtons: [
-      ['insertImage'],
-      ['insertVideo'],
-      ['backgroundColor'],
-      ['customClasses'],
-      ['link'],
-      ['unlink'],
-      ['insertHorizontalRule'],
-      ['removeFormat'],
-      ['toggleEditorMode'],
-      ['undo'],
-      ['redo'],
-      ['strikeThrough'],
-      ['subscript'],
-      ['superscript'],
-      ['indent'],
-      ['outdent'],
-      ['textColor'],
-      ['fontSize'],
-      ['fontName']
-    ]
   };
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
