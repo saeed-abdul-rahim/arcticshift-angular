@@ -22,6 +22,7 @@ export class VariantFormComponent implements OnInit {
   constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
   ngOnInit(): void {
+    console.log('variant');
     this.addVariantForm = this.formbuilder.group({
       size: ['', Validators.required],
       price: ['', Validators.required],

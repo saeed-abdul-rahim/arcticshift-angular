@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
+import { ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
 
 @Component({
   selector: 'app-product-form',
@@ -103,10 +104,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         });
       }
       else {
-        await this.adminService.createProduct({
+        const data = await this.adminService.createProduct({
           name: name.value,
           price: price.value
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${PRODUCT}/${id}`);
+        }
       }
 
       this.success = true;
@@ -165,8 +170,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   toAddVariant() {
-    // TEMPORARY
-    this.router.navigateByUrl('admin/catalog/product/detail/id/variant', { relativeTo: this.route });
+    this.router.navigate(['variant'], { relativeTo: this.route });
   }
 
 }
