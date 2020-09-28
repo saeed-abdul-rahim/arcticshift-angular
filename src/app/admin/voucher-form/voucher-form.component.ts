@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-voucher-form',
   templateUrl: './voucher-form.component.html',
   styleUrls: ['./voucher-form.component.css']
 })
-export class VoucherFormComponent implements OnInit {
+export class VoucherFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
-  edit=true;
+  edit = true;
   nameDanger: boolean;
 
   addVoucherForm: FormGroup;
@@ -23,16 +23,15 @@ export class VoucherFormComponent implements OnInit {
   voucherSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
-   {
+              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const voucherId = this.router.url.split('/').pop();
     if (voucherId !== 'add') {
-      this.edit=true;
+      this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
         const { name, value } = voucher;
         this.addVoucherForm.patchValue({
           name, value
-        
+
         });
       });
     }
@@ -63,18 +62,18 @@ export class VoucherFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit){
+      if (this.edit) {
         await this.adminService.updateSale({
           name: name.value,
-          
+
         });
-      }else{
+      } else {
         await this.adminService.createSale({
           name: name.value,
-          
+
         });
       }
-     
+
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

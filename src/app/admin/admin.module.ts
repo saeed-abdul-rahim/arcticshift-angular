@@ -21,7 +21,6 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
-import { DiscountComponent } from './discount/discount.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { VariantFormComponent } from './variant-form/variant-form.component';
 import { CollectionFormComponent } from './collection-form/collection-form.component';
@@ -47,7 +46,6 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     DashboardComponent,
     ListPageComponent,
     WarehouseComponent,
-    DiscountComponent,
     ProductFormComponent,
     VariantFormComponent,
     CollectionFormComponent,

@@ -1,37 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-warehouse',
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.css']
 })
-export class WarehouseComponent implements OnInit {
+export class WarehouseComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
-  edit=false;
+  edit = false;
   nameDanger: boolean;
 
   addWarehouseForm: FormGroup;
   warehouseSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-    private router: Router, private route: ActivatedRoute, private shopService: ShopService)
-   {
+              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const warehousenId = this.router.url.split('/').pop();
     if (warehousenId !== 'add') {
-      this.edit=true;
+      this.edit = true;
       this.warehouseSubscription = this.shopService.getCollectionById(warehousenId).subscribe(warehouse => {
         const { name } = warehouse;
-        this. addWarehouseForm.patchValue({
-          name, 
-        
+        this.addWarehouseForm.patchValue({
+          name,
+
         });
       });
     }
@@ -45,8 +44,8 @@ export class WarehouseComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this. warehouseSubscription && !this.warehouseSubscription.closed) {
-      this. warehouseSubscription.unsubscribe();
+    if (this.warehouseSubscription && !this.warehouseSubscription.closed) {
+      this.warehouseSubscription.unsubscribe();
     }
   }
 
@@ -62,18 +61,18 @@ export class WarehouseComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit){
+      if (this.edit) {
         await this.adminService.updateWarehouse({
           name: name.value,
-  
+
         });
-      }else{
+      } else {
         await this.adminService.createWarehouse({
           name: name.value,
-  
+
         });
       }
-      
+
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {

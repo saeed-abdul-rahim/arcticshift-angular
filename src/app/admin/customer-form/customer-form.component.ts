@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormBuilder, Validators  } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AdminService } from '@services/admin/admin.service';
 
 @Component({
@@ -11,7 +11,7 @@ export class CustomerFormComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
-  edit=false;
+  edit = false;
   nameDanger: boolean;
 
   addCustomerForm: FormGroup;
@@ -33,18 +33,18 @@ export class CustomerFormComponent implements OnInit {
     }
     this.loading = true;
     try {
-      if(this.edit){
+      if (this.edit) {
         await this.adminService.updateVariant({
           name: name.value,
-          
+
         });
-      }else{
+      } else {
         await this.adminService.createVariant({
           name: name.value,
-          
+
         });
       }
-    
+
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
