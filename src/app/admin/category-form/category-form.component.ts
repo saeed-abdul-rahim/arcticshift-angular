@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ADMIN, CATALOG, CATEGORY } from '@constants/adminRoutes';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -75,10 +76,14 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
         });
       } else {
-        await this.adminService.createCategory({
+        const data = await this.adminService.createCategory({
           name: name.value,
 
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${CATEGORY}/${id}`);
+        }
       }
 
       this.success = true;

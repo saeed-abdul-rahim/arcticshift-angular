@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ADMIN, CATALOG, SALE } from '@constants/adminRoutes';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -69,10 +70,14 @@ export class SaleFormComponent implements OnInit, OnDestroy {
           value: value.value
         });
       } else {
-        await this.adminService.createSale({
+       const data = await this.adminService.createSale({
           name: name.value,
           value: value.value
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${SALE}/${id}`);
+        }
       }
 
       this.success = true;

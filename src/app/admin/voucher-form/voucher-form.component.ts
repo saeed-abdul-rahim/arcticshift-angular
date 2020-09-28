@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ADMIN, CATALOG, VOUCHER } from '@constants/adminRoutes';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -68,10 +69,14 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
 
         });
       } else {
-        await this.adminService.createSale({
+       const data =  await this.adminService.createSale({
           name: name.value,
 
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${VOUCHER}/${id}`);
+        }
       }
 
       this.success = true;

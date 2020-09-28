@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ADMIN, CATALOG, COLLECTION } from '@constants/adminRoutes';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -73,9 +74,13 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
         });
       }
       else {
-        await this.adminService.createCollection({
+       const data = await this.adminService.createCollection({
           name: name.value,
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${COLLECTION}/${id}`);
+        }
       }
 
       this.success = true;
