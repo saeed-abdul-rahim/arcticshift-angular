@@ -25,8 +25,8 @@
       <input type='file' class="hidden" />
     </label>
     <div appDragAndDrop (fileDropped)="onFileDropped($event)">
-  
-      
+
+
     </div>
   </ng-template>
 
@@ -58,7 +58,7 @@
 
   <ng-template #variants>
     <label class="arc-link-button" type="button">
-      <a (click)="toAddVariant()">Create Variant</a>
+      <a routerLink="variant">Create Variant</a>
     </label>
   </ng-template>
 
@@ -100,10 +100,10 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
-          <app-card [heading]="'Images'" [actions]="imageUpload"></app-card>
-          <app-card [heading]="'Attributes'" [body]="attributes"></app-card>
+          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUpload"></app-card>
+          <app-card *ngIf="edit" [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
-          <app-card [heading]="'Variants'" [actions]="variants"></app-card>
+          <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variants"></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Organize Product'" [body]="organizeProduct"></app-card>

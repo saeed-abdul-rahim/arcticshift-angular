@@ -53,18 +53,9 @@ const routes: Routes = [
             children: [
               { path: '', component: ListPageComponent },
               { path: ADD, component: ProductFormComponent },
-              {
-                path: ':id', component: ProductFormComponent,
-                children: [
-                  {
-                    path: VARIANT,
-                    children: [
-                      { path: '', component: VariantFormComponent },
-                      { path: ':id', component: VariantFormComponent }
-                    ]
-                  }
-                ]
-              },
+              { path: ':id', component: ProductFormComponent },
+              { path: `:id/${VARIANT}/add`, component: VariantFormComponent },
+              { path: `:id/${VARIANT}/:id`, component: VariantFormComponent },
             ]
           },
           {
@@ -79,7 +70,7 @@ const routes: Routes = [
             path: COLLECTION,
             children: [
               { path: '', component: ListPageComponent },
-              { path: 'add', component: CollectionFormComponent },
+              { path: ADD, component: CollectionFormComponent },
               { path: ':id', component: CollectionFormComponent }
             ]
           }
@@ -97,7 +88,7 @@ const routes: Routes = [
         path: CUSTOMER,
         children: [
           { path: '', component: ListPageComponent },
-          // { path: 'add' },
+          // { path: 'add', component: CustomerFormComponent },
           { path: ':id' }
         ]
       },
