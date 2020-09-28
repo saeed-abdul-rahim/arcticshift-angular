@@ -54,7 +54,7 @@ const routes: Routes = [
               { path: '', component: ListPageComponent },
               { path: ADD, component: ProductFormComponent },
               { path: ':id', component: ProductFormComponent },
-              { path: `:id/${VARIANT}/add`, component: VariantFormComponent },
+              { path: `:id/${VARIANT}/${ADD}`, component: VariantFormComponent },
               { path: `:id/${VARIANT}/:id`, component: VariantFormComponent },
             ]
           },
