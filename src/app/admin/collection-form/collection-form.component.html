@@ -65,7 +65,7 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="collection"></app-card>
-          <app-card [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
+          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
           <!-- <app-card [heading]="'Description'"  [body]="description"></app-card> -->
         </div>
         <div class="w-full xl:w-4/12 px-4">
