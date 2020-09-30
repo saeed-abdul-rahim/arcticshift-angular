@@ -25,8 +25,16 @@
         <input type='file' class="hidden" />
       </label>
     </div>
-    <!-- <div appDragAndDrop (fileDropped)="onFileDropped($event)">
-      </div> -->
+  </ng-template>
+
+  <ng-template #imageUpload>
+    <app-upload
+      [uploadProgress]="uploadProgress"
+      [thumbnails]="thumbnails"
+      (fileClickedCallback)="onFileClicked($event)"
+      (fileDroppedCallback)="onFileDropped($event)"
+      (deleteImageCallback)="deleteCollectionImage($event)"
+    ></app-upload>
   </ng-template>
 
   <ng-template #textArea>

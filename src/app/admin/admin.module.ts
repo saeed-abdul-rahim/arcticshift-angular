@@ -35,11 +35,7 @@ import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
-<<<<<<< HEAD
-import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
-=======
->>>>>>> 3e85aa400bfc66b2a62815efce9d700ede0381a1
 
 
 @NgModule({

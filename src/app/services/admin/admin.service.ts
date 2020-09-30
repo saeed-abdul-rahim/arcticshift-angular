@@ -90,6 +90,15 @@ export class AdminService {
     }
   }
 
+  async deleteCollectionImage(id: string, path: string) {
+    const { apiCollection } = this;
+    try {
+      return await this.req.patch(`${apiCollection}/${id}/image`, { path });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createCategory(data: CategoryInterface) {
     const { apiCategory } = this;
     try {
@@ -103,6 +112,16 @@ export class AdminService {
     const { apiCategory } = this;
     try {
       return await this.req.patch(apiCategory, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  
+  async deleteCategoryImage(id: string, path: string) {
+    const { apiCategory } = this;
+    try {
+      return await this.req.patch(`${apiCategory}/${id}/image`, { path });
     } catch (err) {
       throw err;
     }
