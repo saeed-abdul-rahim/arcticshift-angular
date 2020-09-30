@@ -33,7 +33,7 @@ export class ShippingFormComponent implements OnInit {
       // }
       // return;
     }
-  }
+  
     // this.loading = true;
     // try {
       // if (this.edit) {
@@ -60,6 +60,5 @@ export class ShippingFormComponent implements OnInit {
   //     console.log(err);
   //   }
   //   this.loading = false;
-  // }
-
-// }
+   }
+}
