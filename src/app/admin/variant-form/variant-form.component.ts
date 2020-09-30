@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ADMIN, CATALOG, VARIANT } from '@constants/adminRoutes';
 import { AdminService } from '@services/admin/admin.service';
 
 @Component({
@@ -19,7 +21,7 @@ export class VariantFormComponent implements OnInit {
 
   addVariantForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService,private router: Router) { }
 
   ngOnInit(): void {
     console.log('variant');
@@ -49,10 +51,13 @@ export class VariantFormComponent implements OnInit {
 
         });
       } else {
-        await this.adminService.createVariant({
+      const data = await this.adminService.createVariant({
           size: size.value,
-
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${VARIANT}/${id}`);
+        }
       }
 
       this.success = true;

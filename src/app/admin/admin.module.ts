@@ -34,6 +34,7 @@ import { ProductTypeFormComponent } from './product-type-form/product-type-form.
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import { ShippingFormComponent } from './shipping-form/shipping-form.component';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     ProductTypeFormComponent,
     AttributeFormComponent,
     CustomerFormComponent,
+    ShippingFormComponent,
   ],
   imports: [
     CommonModule,
