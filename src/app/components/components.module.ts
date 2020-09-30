@@ -5,6 +5,7 @@ import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
 import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
 import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SpinnerComponent,
     UserDropdownComponent,
     NotificationDropdownComponent,
-    SubmitButtonComponent
+    SubmitButtonComponent,
+    ProgressBarComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +24,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SpinnerComponent,
     UserDropdownComponent,
     NotificationDropdownComponent,
-    SubmitButtonComponent
+    SubmitButtonComponent,
+    ProgressBarComponent
   ]
 })
 export class ComponentsModule { }

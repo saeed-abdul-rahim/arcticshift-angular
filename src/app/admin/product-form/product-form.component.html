@@ -19,15 +19,21 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
+  <ng-template #imageUploadAction>
     <label class="arc-link-button" type="button">
       Upload Image
-      <input type='file' class="hidden" />
+      <input type='file' class="hidden" (change)="onFileClicked($event)" />
     </label>
-    <div appDragAndDrop (fileDropped)="onFileDropped($event)">
+  </ng-template>
 
-
-    </div>
+  <ng-template #imageUpload>
+    <app-upload
+      [uploadProgress]="uploadProgress"
+      [thumbnails]="thumbnails"
+      (fileClickedCallback)="onFileClicked($event)"
+      (fileDroppedCallback)="onFileDropped($event)"
+      (deleteImageCallback)="deleteProductImage($event)"
+    ></app-upload>
   </ng-template>
 
   <ng-template #attributes>
@@ -58,7 +64,7 @@
 
   <ng-template #variants>
     <label class="arc-link-button" type="button">
-      <a routerLink="variant">Create Variant</a>
+      <a (click)="toAddVariant()">Create Variant</a>
     </label>
   </ng-template>
 
@@ -100,7 +106,7 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUpload"></app-card>
+          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
           <app-card *ngIf="edit" [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
           <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variants"></app-card>

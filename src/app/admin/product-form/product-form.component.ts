@@ -3,7 +3,8 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-import { ContentType } from '@models/Common';
+import { ContentStorage, ContentType } from '@models/Common';
+import { ProductInterface } from '@models/Product';
 import Thumbnail from '@services/media/Thumbnail';
 import { MediaService } from '@services/media/media.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +12,8 @@ import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
 import { ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
+import { IMAGE_L, IMAGE_M, IMAGE_S, IMAGE_SM, IMAGE_XL, IMAGE_XS } from '@constants/imageSize';
+import { StorageService } from '@services/storage/storage.service';
 
 @Component({
   selector: 'app-product-form',
@@ -28,14 +31,18 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   nameDanger: boolean;
   priceDanger: boolean;
 
+  product: ProductInterface;
   addProductForm: FormGroup;
 
   file: File;
   fileType: ContentType;
   previewUrl: string | ArrayBuffer | null;
   previewBlob: Blob | null;
+  generatedThumbnails: Thumbnail[];
+  thumbnails: ContentStorage[] = [];
   invalidFile = false;
   isUploaded = false;
+  uploadProgress = 0;
 
   productSubscription: Subscription;
 
@@ -44,21 +51,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     placeholder: 'Description',
   };
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
+  constructor(private formbuilder: FormBuilder, private storageService: StorageService, private adminService: AdminService,
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const productId = this.router.url.split('/').pop();
     if (productId !== 'add') {
       this.edit = true;
       this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
-        const { name, description, price, productTypeId, categoryId, collectionId, status, tax } = product;
-        this.addProductForm.patchValue({
-          name, description, price,
-          productType: productTypeId,
-          category: categoryId,
-          collection: collectionId,
-          hidden: status && status === 'active' ? true : false,
-          tax: tax ? true : false
-        });
+        this.product = product;
+        this.getPreviewImages();
+        this.setFormValue();
       });
     }
   }
@@ -123,14 +124,30 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  getData() {
-
+  onFileDropped($event: Event) {
+    this.file = $event[0];
+    this.processFile();
   }
 
-  async onFileDropped($event) {
-    this.file = $event[0];
+  onFileClicked(fileInput: Event){
+    this.file = (fileInput.target as HTMLInputElement).files[0];
+    this.processFile();
+  }
+
+  async processFile() {
     this.fileType = this.checkFileType(this.file);
-    await this.generateThumbnail(this.file, this.fileType);
+    if (this.fileType === 'image'){
+      this.storageService.upload(this.file, this.fileType, {
+        id: this.product.productId,
+        type: 'product'
+      });
+      this.storageService.getUploadProgress().subscribe(progress =>
+        this.uploadProgress = progress,
+        () => {},
+        () => this.uploadProgress = 0);
+    } else {
+      this.removeFile();
+    }
   }
 
   checkFileType(file: File) {
@@ -147,26 +164,45 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  async generateThumbnail(file: File, fileType: ContentType) {
-    let preview: Thumbnail;
-    try {
-      if (fileType === 'image') {
-        preview = await this.mediaService.generateImageThumbnail(file);
-      } else {
-        preview = { url: null, blob: null };
-      }
-      this.previewUrl = preview.url;
-      this.previewBlob = preview.blob;
-    } catch (_) {
-      this.invalidFile = true;
-    }
-  }
-
   removeFile() {
     this.file = null;
     this.fileType = null;
     this.isUploaded = false;
     this.invalidFile = true;
+  }
+
+  async deleteProductImage(path: string) {
+    try {
+      const { product } = this;
+      const { productId, images } = product;
+      const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
+      await this.adminService.deleteProductImage(productId, image.content.path);
+    } catch (_) { }
+  }
+
+  getPreviewImages() {
+    const { product } = this;
+    if (product.images) {
+      const { images } = product;
+      this.thumbnails = images.map(img => {
+        if (img.thumbnails) {
+          const { thumbnails } = img;
+          return thumbnails.find(thumb => thumb.dimension === IMAGE_SM);
+        }
+      });
+    }
+  }
+
+  setFormValue() {
+    const { name, description, price, productTypeId, categoryId, collectionId, status, tax } = this.product;
+    this.addProductForm.patchValue({
+      name, description, price,
+      productType: productTypeId,
+      category: categoryId,
+      collection: collectionId,
+      hidden: status && status === 'active' ? true : false,
+      tax: tax ? true : false
+    });
   }
 
   toAddVariant() {

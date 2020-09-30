@@ -6,10 +6,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { DragAndDropDirective } from '@directives/DragAndDrop.directive';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
+import { StorageService } from '@services/storage/storage.service';
+import { ShopService } from '@services/shop/shop.service';
+import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 import { AdminGuard } from '@guards/admin/admin.guard';
 import { ComponentsModule } from '@components/components.module';
 
@@ -28,13 +32,14 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
-import { ShopService } from '@services/shop/shop.service';
-import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
+<<<<<<< HEAD
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
+=======
+>>>>>>> 3e85aa400bfc66b2a62815efce9d700ede0381a1
 
 
 @NgModule({
@@ -77,7 +82,8 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     MediaService,
     AdminService,
     ShopService,
-    AdminNavService
+    AdminNavService,
+    StorageService
   ]
 })
 export class AdminModule { }
