@@ -52,10 +52,10 @@ export class MediaService {
     });
   }
 
-  public async generateImageThumbnail(imageFile: Blob): Promise<Thumbnail> {
+  public async generateImageThumbnail(imageFile: Blob, maxWidthOrHeight?: number): Promise<Thumbnail> {
     const options = {
-      maxSizeMB: 0.5,
-      maxWidthOrHeight: 480,
+      maxSizeMB: 0.07,
+      maxWidthOrHeight: maxWidthOrHeight ? maxWidthOrHeight : 1024,
       useWebWorker: true,
     };
     const blob = await imageCompression(imageFile, options);

@@ -63,6 +63,15 @@ export class AdminService {
     }
   }
 
+  async deleteProductImage(id: string, path: string) {
+    const { apiProduct } = this;
+    try {
+      return await this.req.patch(`${apiProduct}/${id}/image`, { path });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createCollection(data: CollectionInterface) {
     const { apiCollection } = this;
     try {

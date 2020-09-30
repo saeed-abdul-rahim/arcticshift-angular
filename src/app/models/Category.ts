@@ -1,4 +1,4 @@
-import { Condition, ContentStorage, TimestampInterface } from './Common';
+import { Condition, Content, TimestampInterface } from './Common';
 
 export interface CategoryInterface extends TimestampInterface {
     id?: string;
@@ -7,7 +7,7 @@ export interface CategoryInterface extends TimestampInterface {
     parentCategoryId?: string;
     name?: string;
     description?: string;
-    images?: ContentStorage[];
+    images?: Content[];
     subCategoryId?: string[];
     parentCategoryIds?: string[];
     productId?: string[];
@@ -20,4 +20,4 @@ export type CategoryCondition = Condition & {
     parentFields?: (keyof CategoryInterface)[]
 };
 
-type CategoryFields = keyof (CategoryInterface & ContentStorage);
+type CategoryFields = keyof (CategoryInterface & Content);

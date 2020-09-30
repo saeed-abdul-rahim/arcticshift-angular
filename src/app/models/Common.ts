@@ -20,8 +20,15 @@ export interface TimestampInterface {
 }
 
 export type ContentStorage = {
-    path: string
-    url: string
+    path: string;
+    url: string;
+    name?: string;
+    dimension?: number;
+};
+
+export type Content = {
+    content: ContentStorage;
+    thumbnails: ContentStorage[];
 };
 
 export type Tax = {

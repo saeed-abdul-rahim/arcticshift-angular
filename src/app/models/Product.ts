@@ -1,4 +1,4 @@
-import { TimestampInterface, Status, ContentStorage, Tax, AttributeValue, Condition } from './Common';
+import { TimestampInterface, Status, Tax, AttributeValue, Condition, Content } from './Common';
 
 export interface ProductInterface extends TimestampInterface {
     id?: string;
@@ -8,8 +8,7 @@ export interface ProductInterface extends TimestampInterface {
     description?: string;
     keywords?: string[];
     url?: string;
-    image?: ContentStorage | null;
-    thumbnailUrls?: Thumbnail[];
+    images?: Content[];
     productInterfaceId?: string;
     attribute?: AttributeValue;
     attributeValue?: AttributeValue;
@@ -32,14 +31,9 @@ export type ProductCondition = Condition & {
     parentFields?: (keyof ProductInterface)[]
 };
 
-type ProductFields = keyof (ProductInterface & Thumbnail & Price & AttributeValue);
+type ProductFields = keyof (ProductInterface & Content & Price & AttributeValue);
 
 type Price = {
     name: string
     value: string
-};
-
-type Thumbnail = {
-    size: string
-    image: ContentStorage | null
 };
