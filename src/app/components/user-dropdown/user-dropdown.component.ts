@@ -10,9 +10,15 @@ export class UserDropdownComponent implements OnInit {
 
   faUser = faUser;
 
+  show
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  toggleDropdown() {
+
   }
 
 }
