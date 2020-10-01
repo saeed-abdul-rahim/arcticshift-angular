@@ -47,7 +47,7 @@
             <div class="w-full xl:w-8/12 xl:mb-0 px-4">
               <app-card [heading]="'General Information'" [body]="sale"></app-card>
               <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
-              <app-card *ngIf="edit" [heading]="'Value'" [body]="value"></app-card>
+              <app-card [heading]="'Value'" [body]="value"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit"[heading]="'Summary'" [body]="summary"></app-card>
@@ -56,6 +56,13 @@
         </div>
       </div>
 
-      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+      <app-footer-form
+      [loading]="loading"
+      [success]="success"
+      [showDelete]="edit"
+      [loadingDelete]="loadingDelete"
+      [successDelete]="successDelete"
+      (deleteCallback)="deleteSale()"
+    ></app-footer-form>
 
 </form>

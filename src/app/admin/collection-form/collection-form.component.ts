@@ -22,10 +22,13 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  loadingDelete = false;
+  successDelete = false;
   edit = false;
 
   nameDanger: boolean;
 
+  CollectionRoute = `/${ADMIN}/${CATALOG}/${COLLECTION}`;
   collection: CollectionInterface;
   addCollectionForm: FormGroup;
    
@@ -108,6 +111,20 @@ constructor(private formbuilder: FormBuilder, private mediaService: MediaService
       console.log(err);
     }
     this.loading = false;
+  }
+
+  async deleteCollection() {
+    this.loadingDelete = true;
+    try {
+      const { collectionId } = this.collection;
+      await this.adminService.deleteCollection(collectionId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.CollectionRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
   }
 
   onFileDropped($event: Event) {

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ADMIN, CATALOG, SALE } from '@constants/adminRoutes';
+import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -16,10 +17,14 @@ export class SaleFormComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
+  loadingDelete = false;
+  successDelete = false;
   edit = false;
 
   nameDanger: boolean;
 
+  saleRoute = `/${ADMIN}/${CATALOG}/${SALE}`;
+  sale: SaleDiscountInterface;
   addSaleForm: FormGroup;
 
 
@@ -87,6 +92,20 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       console.log(err);
     }
     this.loading = false;
+  }
+
+  async deleteSale() {
+    this.loadingDelete = true;
+    try {
+      const { saleDiscountId } = this.sale;
+      await this.adminService.deleteSale(saleDiscountId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.saleRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
   }
 
 }
