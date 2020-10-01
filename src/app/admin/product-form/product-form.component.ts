@@ -6,13 +6,12 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { ContentStorage, ContentType } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import Thumbnail from '@services/media/Thumbnail';
-import { MediaService } from '@services/media/media.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
 import { ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
-import { IMAGE_L, IMAGE_M, IMAGE_S, IMAGE_SM, IMAGE_XL, IMAGE_XS } from '@constants/imageSize';
+import { IMAGE_SM } from '@constants/imageSize';
 import { StorageService } from '@services/storage/storage.service';
 
 @Component({
@@ -26,11 +25,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  loadingDelete = false;
+  successDelete = false;
   edit = false;
 
   nameDanger: boolean;
   priceDanger: boolean;
 
+  productRoute = `/${ADMIN}/${CATALOG}/${PRODUCT}`;
   product: ProductInterface;
   addProductForm: FormGroup;
 
@@ -100,6 +102,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     try {
       if (this.edit) {
         await this.adminService.updateProduct({
+          productId: this.product.productId,
           name: name.value,
           price: price.value
         });
@@ -111,7 +114,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${PRODUCT}/${id}`);
+          this.router.navigateByUrl(`/${this.productRoute}/${id}`);
         }
       }
 
@@ -124,12 +127,21 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  async deleteProduct(id: string) {
+    try {
+      await this.adminService.deleteProduct(id);
+      this.router.navigateByUrl(this.productRoute);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   onFileDropped($event: Event) {
     this.file = $event[0];
     this.processFile();
   }
 
-  onFileClicked(fileInput: Event){
+  onFileClicked(fileInput: Event) {
     this.file = (fileInput.target as HTMLInputElement).files[0];
     this.processFile();
   }

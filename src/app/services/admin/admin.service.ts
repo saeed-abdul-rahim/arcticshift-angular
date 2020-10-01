@@ -72,6 +72,15 @@ export class AdminService {
     }
   }
 
+  async deleteProduct(id: string) {
+    const { apiProduct } = this;
+    try {
+      return await this.req.delete(`${apiProduct}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createCollection(data: CollectionInterface) {
     const { apiCollection } = this;
     try {

@@ -10,6 +10,10 @@ export class FooterFormComponent implements OnInit {
   @Input() loading: boolean;
   @Input() success: boolean;
 
+  @Input() loadingDelete: boolean;
+  @Input() successDelete: boolean;
+  @Input() deleteFn: () => void;
+
   constructor() { }
 
   ngOnInit(): void {
