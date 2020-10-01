@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
-import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
-import { SubmitButtonComponent } from './submit-button/submit-button.component';
+import { ButtonComponent } from './button/button.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 
@@ -12,8 +11,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
   declarations: [
     SpinnerComponent,
     UserDropdownComponent,
-    NotificationDropdownComponent,
-    SubmitButtonComponent,
+    ButtonComponent,
     ProgressBarComponent
   ],
   imports: [
@@ -23,8 +21,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
   exports: [
     SpinnerComponent,
     UserDropdownComponent,
-    NotificationDropdownComponent,
-    SubmitButtonComponent,
+    ButtonComponent,
     ProgressBarComponent
   ]
 })

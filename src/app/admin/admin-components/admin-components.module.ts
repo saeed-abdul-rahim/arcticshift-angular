@@ -7,6 +7,7 @@ import { TileComponent } from './tile/tile.component';
 import { CardComponent } from './card/card.component';
 import { FooterFormComponent } from './footer-form/footer-form.component';
 import { UploadComponent } from './upload/upload.component';
+import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { UploadComponent } from './upload/upload.component';
     TileComponent,
     CardComponent,
     FooterFormComponent,
-    UploadComponent
+    UploadComponent,
+    NotificationDropdownComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { UploadComponent } from './upload/upload.component';
     TileComponent,
     CardComponent,
     FooterFormComponent,
-    UploadComponent
+    UploadComponent,
+    NotificationDropdownComponent
   ]
 })
 export class AdminComponentsModule { }

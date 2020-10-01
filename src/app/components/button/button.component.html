@@ -1,0 +1,6 @@
+<button class="arc-button relative text-center bg-{{color}}-500 active:bg-{{color}}-600" [attr.type]="submit ? 'submit' : 'button'" [ngClass]="fullWidth ? 'w-full' : ''">
+    <div class="text-transparent">{{label}}</div>
+    <div class="absolute" *ngIf="!loading && !success">{{label}}</div>
+    <app-spinner class="absolute" *ngIf="loading" [color]="'currentColor'" [size]="'5'" [@inOutAnimation]></app-spinner>
+    <fa-icon class="absolute" *ngIf="success" [icon]="faCheckCircle" size="lg" [@inOutAnimation]></fa-icon>
+</button>

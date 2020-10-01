@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
 
 @Component({
   selector: 'app-user-dropdown',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserDropdownComponent implements OnInit {
 
+  faUser = faUser;
+
+  show
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  toggleDropdown() {
+
   }
 
 }
