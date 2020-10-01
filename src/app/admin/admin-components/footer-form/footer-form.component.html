@@ -2,7 +2,7 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-2 max-w-full flex flex-grow flex-1">
         <div class="flex-1 flex md:ml-64">
-          <app-button *ngIf="deleteFn"
+          <app-button *ngIf="showDelete"
             (click)="deleteFn()"
             [loading]="loadingDelete"
             [success]="successDelete"

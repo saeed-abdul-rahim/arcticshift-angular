@@ -59,9 +59,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     if (productId !== 'add') {
       this.edit = true;
       this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
-        this.product = product;
-        this.getPreviewImages();
-        this.setFormValue();
+        if (product) {
+          this.product = product;
+          this.getPreviewImages();
+          this.setFormValue();
+        }
       });
     }
   }
@@ -88,7 +90,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   get addProductFormControls() { return this.addProductForm.controls; }
 
   async onSubmit() {
-    const { name, price } = this.addProductFormControls;
+    const { name, price, description } = this.addProductFormControls;
     if (this.addProductForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -104,6 +106,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         await this.adminService.updateProduct({
           productId: this.product.productId,
           name: name.value,
+          description: description.value,
           price: price.value
         });
       }
@@ -117,7 +120,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(`/${this.productRoute}/${id}`);
         }
       }
-
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
@@ -127,13 +129,18 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  async deleteProduct(id: string) {
+  async deleteProduct() {
+    this.loadingDelete = true;
     try {
-      await this.adminService.deleteProduct(id);
+      const { productId } = this.product;
+      await this.adminService.deleteProduct(productId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
       this.router.navigateByUrl(this.productRoute);
     } catch (err) {
       console.log(err);
     }
+    this.loadingDelete = false;
   }
 
   onFileDropped($event: Event) {

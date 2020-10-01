@@ -122,9 +122,10 @@
   <app-footer-form
     [loading]="loading"
     [success]="success"
+    [showDelete]="product && product.productId"
     [loadingDelete]="loadingDelete"
     [successDelete]="successDelete"
-    [deleteFn]="deleteProduct(product.productId)"
+    (deleteCallback)="deleteProduct()"
   ></app-footer-form>
 
 </form>
