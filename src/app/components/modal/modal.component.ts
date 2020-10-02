@@ -7,11 +7,17 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@an
 })
 export class ModalComponent implements OnInit {
 
-  @Output() modalChange = new EventEmitter<boolean>();
   @Input() showModal: boolean;
   @Input() size: 'small' | 'medium' | 'large';
+
+  @Input() loading: boolean;
+  @Input() success: boolean;
+
   @Input() heading: string;
   @Input() bodyTemplate: TemplateRef<any>;
+
+  @Output() showModalChange = new EventEmitter<boolean>();
+  @Output() modalCallback = new EventEmitter<any>();
 
   constructor() { }
 
@@ -20,7 +26,12 @@ export class ModalComponent implements OnInit {
 
   toggleModal() {
     this.showModal = !this.showModal;
-    this.modalChange.emit(this.showModal);
+    this.showModalChange.emit(this.showModal);
+  }
+
+  modalFn() {
+    this.toggleModal();
+    this.modalCallback.emit();
   }
 
 }

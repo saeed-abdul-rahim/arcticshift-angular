@@ -74,10 +74,9 @@
     @apply mb-2;
 }
 
-.arc-button {
+.arc-button-base {
     @apply inline-flex;
     @apply justify-center;
-    @apply text-white;
     @apply text-sm;
     @apply font-bold;
     @apply uppercase;
@@ -90,10 +89,25 @@
     @apply mb-1;
     @apply arc-transition;
 }
+
+.arc-button {
+    @apply arc-button-base;
+    @apply text-white;
+}
 .arc-button:hover {
     @apply shadow-lg;
 }
 .arc-button:focus {
+    @apply outline-none;
+}
+
+.arc-button-secondary {
+    @apply arc-button-base;
+}
+.arc-button-secondary:hover {
+    @apply shadow-lg;
+}
+.arc-button-secondary:focus {
     @apply outline-none;
 }
 

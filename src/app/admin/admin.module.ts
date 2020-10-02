@@ -53,7 +53,7 @@ import { CustomerFormComponent } from './customer-form/customer-form.component';
     VoucherFormComponent,
     ProductTypeFormComponent,
     AttributeFormComponent,
-    CustomerFormComponent,
+    CustomerFormComponent
   ],
   imports: [
     CommonModule,

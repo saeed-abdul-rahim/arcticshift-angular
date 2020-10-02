@@ -20150,12 +20150,9 @@ video {
   margin-bottom: 0.5rem;
 }
 
-.arc-button {
+.arc-button-base {
   display: inline-flex;
   justify-content: center;
-  --text-opacity: 1;
-  color: #fff;
-  color: rgba(255, 255, 255, var(--text-opacity));
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -20171,11 +20168,58 @@ video {
   transition: all 0.15s ease 0s;
 }
 
+.arc-button {
+  display: inline-flex;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  outline: 0;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.15s ease 0s;
+  --text-opacity: 1;
+  color: #fff;
+  color: rgba(255, 255, 255, var(--text-opacity));
+}
+
 .arc-button:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .arc-button:focus {
+  outline: 0;
+}
+
+.arc-button-secondary {
+  display: inline-flex;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  outline: 0;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.15s ease 0s;
+}
+
+.arc-button-secondary:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.arc-button-secondary:focus {
   outline: 0;
 }
 
