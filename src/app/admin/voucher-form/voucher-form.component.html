@@ -83,5 +83,12 @@
         </div>
       </div>
 
-      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+      <app-footer-form
+      [loading]="loading"
+      [success]="success"
+      [showDelete]="edit"
+      [loadingDelete]="loadingDelete"
+      [successDelete]="successDelete"
+      (deleteCallback)="deleteVoucher()"
+    ></app-footer-form>
 </form>

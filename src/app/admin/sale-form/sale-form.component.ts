@@ -47,7 +47,8 @@ export class SaleFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.addSaleForm = this.formbuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      value: ['', Validators.required]
     });
   }
 

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ADMIN, CATALOG, VOUCHER } from '@constants/adminRoutes';
+import { VoucherInterface } from '@models/Voucher';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -16,9 +17,13 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  loadingDelete = false;
+  successDelete = false;
   edit = true;
   nameDanger: boolean;
 
+  voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
+  voucher: VoucherInterface;
   addVoucherForm: FormGroup;
 
   voucherSubscription: Subscription;
@@ -88,4 +93,17 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  async deleteVoucher() {
+    this.loadingDelete = true;
+    try {
+      const { voucherId } = this.voucher;
+      await this.adminService.deleteVoucher(voucherId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.voucherRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
+  }
 }
