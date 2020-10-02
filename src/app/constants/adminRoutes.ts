@@ -1,5 +1,6 @@
 type ADMIN = 'admin';
 type LOGIN = 'login';
+type PROFILE = 'profile';
 type DASHBOARD = 'dashboard';
 type CATALOG = 'catalog';
 type PRODUCT = 'product';
@@ -21,6 +22,7 @@ type ADD = 'add';
 
 export const ADMIN: ADMIN = 'admin';
 export const LOGIN: LOGIN = 'login';
+export const PROFILE: PROFILE = 'profile';
 export const DASHBOARD: DASHBOARD = 'dashboard';
 export const CATALOG: CATALOG = 'catalog';
 export const PRODUCT: PRODUCT = 'product';

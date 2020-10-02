@@ -71,26 +71,15 @@
                 >
               </div> -->
               <div class="text-center mt-6">
-                <button
-                  class="arc-button w-full"
-                  type="submit"
-                  [attr.disabled]="success || loading ? true : null"
-                  [ngClass]="success || loading ? 'cursor-not-allowed' : ''"
-                >
-                <div *ngIf="!loading && !success" [@inOutAnimation]>Sign In</div>
-                <app-spinner
-                  *ngIf="loading"
-                  [color]="'currentColor'"
-                  [size]="'5'"
-                  [@inOutAnimation]
-                ></app-spinner>
-                <fa-icon
-                  *ngIf="success"
-                  [icon]="faCheckCircle"
-                  size="lg"
-                  [@inOutAnimation]
-                ></fa-icon>
-                </button>
+                <app-button
+                  [fullWidth]="true"
+                  [loading]="loading"
+                  [success]="success"
+                  [color]="'gray'"
+                  [dark]="true"
+                  [label]="'Sign In'"
+                  [submit]="true"
+                ></app-button>
               </div>
             </form>
           </div>

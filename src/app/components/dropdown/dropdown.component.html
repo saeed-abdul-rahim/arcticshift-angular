@@ -1,0 +1,8 @@
+<div class="relative outline-none" tabindex="0" (blur)="open = false">
+    <div (click)="toggleDropdown($event)">
+        <ng-container [ngTemplateOutlet]="buttonTemplate"></ng-container>
+    </div>
+    <div class="arc-dropdown-panel arc-dropdown-panel-items" [ngClass]="rightAligned ? 'right-0' : ''" *ngIf="open">
+        <ng-container [ngTemplateOutlet]="bodyTemplate"></ng-container>
+    </div>
+</div>

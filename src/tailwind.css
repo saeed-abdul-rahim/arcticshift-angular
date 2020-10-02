@@ -11,12 +11,10 @@
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	background-color: #F5F5F5;
 }
-
 .scrollbar::-webkit-scrollbar {
 	width: 3px;
 	background-color: #F5F5F5;
 }
-
 .scrollbar::-webkit-scrollbar-thumb {
 	background-color: #0ae;	
 	background-image: -webkit-gradient(linear, 0 0, 0 100%,
@@ -28,7 +26,6 @@
 	overflow-y: hidden;
 	max-height: 500px;
     box-sizing: border-box;
-
 	transition-property: all;
 	transition-duration: .5s;
 	transition-timing-function: ease;
@@ -63,7 +60,6 @@
     @apply shadow;
     @apply arc-transition;
 }
-
 .arc-input:focus {
     @apply outline-none;
     @apply shadow-outline;
@@ -78,10 +74,9 @@
     @apply mb-2;
 }
 
-.arc-button {
+.arc-button-base {
     @apply inline-flex;
     @apply justify-center;
-    @apply text-white;
     @apply text-sm;
     @apply font-bold;
     @apply uppercase;
@@ -95,11 +90,24 @@
     @apply arc-transition;
 }
 
+.arc-button {
+    @apply arc-button-base;
+    @apply text-white;
+}
 .arc-button:hover {
     @apply shadow-lg;
 }
-
 .arc-button:focus {
+    @apply outline-none;
+}
+
+.arc-button-secondary {
+    @apply arc-button-base;
+}
+.arc-button-secondary:hover {
+    @apply shadow-lg;
+}
+.arc-button-secondary:focus {
     @apply outline-none;
 }
 
@@ -118,11 +126,9 @@
     @apply cursor-pointer;
     @apply arc-transition;
 }
-
 .arc-link-button:hover {
     @apply shadow-md;
 }
-
 .arc-link-button:focus {
     @apply outline-none;
 }
@@ -150,15 +156,12 @@
     @apply mb-1;
     @apply arc-transition;
 }
-
 .arc-button-regular:active {
     @apply bg-blue-600;
 }
-
 .arc-button-regular:hover {
     @apply shadow-md;
 }
-
 .arc-button-regular:focus {
     @apply outline-none;
 }
@@ -196,6 +199,8 @@
     @apply bg-white;
     @apply shadow-lg;
     @apply absolute;
+    @apply arc-transition;
+    @apply z-50;
 }
 
 .arc-dropdown-panel-items {
@@ -209,6 +214,9 @@
     @apply text-sm;
     @apply leading-5;
     @apply text-gray-700;
+    @apply cursor-pointer;
+    @apply whitespace-no-wrap;
+    @apply w-full;
 }
 
 .arc-dropdown-item:hover {
@@ -376,6 +384,10 @@ h5 {
 .angular-editor-textarea {
     border: none !important;
     @apply arc-input;
+}
+.angular-editor-textarea:focus {
+    @apply outline-none;
+    @apply shadow-outline;
 }
 
 .ae-picker-options {

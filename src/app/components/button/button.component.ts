@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { inOut } from '@animations/inOut';
 
 @Component({
@@ -15,9 +15,10 @@ export class ButtonComponent implements OnInit {
   @Input() success: boolean;
   @Input() label: string;
   @Input() color = 'blue';
+  @Input() dark: boolean;
   @Input() submit = false;
 
-  faCheckCircle = faCheckCircle;
+  faCheck = faCheck;
 
   constructor() { }
 

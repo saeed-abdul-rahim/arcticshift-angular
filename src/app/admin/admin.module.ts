@@ -8,7 +8,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 
-import { DragAndDropDirective } from '@directives/DragAndDrop.directive';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { StorageService } from '@services/storage/storage.service';
@@ -40,7 +39,6 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
 
 @NgModule({
   declarations: [
-    DragAndDropDirective,
     AdminComponent,
     LoginComponent,
     NavbarComponent,

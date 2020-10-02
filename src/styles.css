@@ -20150,12 +20150,9 @@ video {
   margin-bottom: 0.5rem;
 }
 
-.arc-button {
+.arc-button-base {
   display: inline-flex;
   justify-content: center;
-  --text-opacity: 1;
-  color: #fff;
-  color: rgba(255, 255, 255, var(--text-opacity));
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -20171,11 +20168,58 @@ video {
   transition: all 0.15s ease 0s;
 }
 
+.arc-button {
+  display: inline-flex;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  outline: 0;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.15s ease 0s;
+  --text-opacity: 1;
+  color: #fff;
+  color: rgba(255, 255, 255, var(--text-opacity));
+}
+
 .arc-button:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .arc-button:focus {
+  outline: 0;
+}
+
+.arc-button-secondary {
+  display: inline-flex;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  outline: 0;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.15s ease 0s;
+}
+
+.arc-button-secondary:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.arc-button-secondary:focus {
   outline: 0;
 }
 
@@ -20307,6 +20351,8 @@ video {
   background-color: rgba(255, 255, 255, var(--bg-opacity));
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   position: absolute;
+  transition: all 0.15s ease 0s;
+  z-index: 50;
 }
 
 .arc-dropdown-panel-items {
@@ -20325,6 +20371,9 @@ video {
   --text-opacity: 1;
   color: #4a5568;
   color: rgba(74, 85, 104, var(--text-opacity));
+  cursor: pointer;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .arc-dropdown-item:hover {
@@ -20498,6 +20547,8 @@ h5 {
   background-color: rgba(255, 255, 255, var(--bg-opacity));
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   position: absolute;
+  transition: all 0.15s ease 0s;
+  z-index: 50;
   margin-top: 1rem;
   margin-left: -0.75rem;
 }
@@ -20518,6 +20569,9 @@ h5 {
   --text-opacity: 1;
   color: #4a5568;
   color: rgba(74, 85, 104, var(--text-opacity));
+  cursor: pointer;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .ng-option:hover {
@@ -20570,6 +20624,11 @@ h5 {
   transition: all 0.15s ease 0s;
 }
 
+.angular-editor-textarea:focus {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
 .ae-picker-options {
   border-radius: 0.375rem;
   --bg-opacity: 1;
@@ -20577,6 +20636,8 @@ h5 {
   background-color: rgba(255, 255, 255, var(--bg-opacity));
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   position: absolute;
+  transition: all 0.15s ease 0s;
+  z-index: 50;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
