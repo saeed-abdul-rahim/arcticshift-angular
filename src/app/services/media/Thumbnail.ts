@@ -1,4 +1,4 @@
-export default interface Thumbnail {
+export interface Thumbnail {
     url: string;
     blob: Blob;
 }

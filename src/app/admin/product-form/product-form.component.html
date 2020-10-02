@@ -75,10 +75,10 @@
           <ng-select formControlName="productType" placeholder="Product Type"></ng-select>
         </div>
         <div class="w-full mb-3">
-          <ng-select formControlName="category" placeholder="Category"></ng-select>
+          <ng-select formControlName="category" [items]="categories" bindValue="id" bindLabel="name" placeholder="Category"></ng-select>
         </div>
         <div class="w-full mb-3">
-          <ng-select formControlName="collection" placeholder="Collection"></ng-select>
+          <ng-select formControlName="collection" [items]="collections" bindValue="id" bindLabel="name" placeholder="Collection"></ng-select>
         </div>
       </div>
     </div>

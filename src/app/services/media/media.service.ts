@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import imageCompression from 'browser-image-compression';
-import Thumbnail from './Thumbnail';
+import { Thumbnail } from './Thumbnail';
 import { Observable, Observer } from 'rxjs';
 
 @Injectable()

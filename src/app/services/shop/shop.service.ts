@@ -21,17 +21,15 @@ export class ShopService {
 
   products$: Observable<ProductInterface[]>;
   collections$: Observable<CollectionInterface[]>;
+  categories$: Observable<CategoryInterface[]>;
 
   private db: AngularFirestoreDocument;
-  private products: AngularFirestoreCollection;
-  private collections: AngularFirestoreCollection;
 
   private dbProductsRoute: string;
   private dbProductTypesRoute: string;
   private dbCollectionsRoute: string;
   private dbCategoriesRoute: string;
   private dbSalesRoute: string;
-  private dbWarehousesRoute: string;
   private dbVouchersRoute: string;
   private dbAttributesRoute: string;
 
@@ -86,11 +84,6 @@ export class ShopService {
     return getDataFromDocument(saleRef);
   }
 
-  getWarehouseById(WarehouseId: string): Observable<SaleDiscountInterface> {
-    const warehouseRef =  this.db.collection(this.dbWarehousesRoute).doc(WarehouseId);
-    return getDataFromDocument(warehouseRef);
-  }
-
   getVoucherById(saleId: string): Observable<SaleDiscountInterface> {
     const saleRef =  this.db.collection(this.dbVouchersRoute).doc(saleId);
     return getDataFromDocument(saleRef);
@@ -102,13 +95,19 @@ export class ShopService {
   }
 
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
-    this.products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
-    this.products$ = getDataFromCollection(this.products);
+    const products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
+    this.products$ = getDataFromCollection(products);
     return this.products$;
   }
 
+  getAllCategoriesByShopId(shopId: string): Observable<CategoryInterface[]> {
+    const categories = this.queryCategories([{ field: 'shopId', type: '==', value: shopId }]);
+    this.categories$ = getDataFromCollection(categories);
+    return this.categories$;
+  }
+
   getAllCollectionsByShopId(shopId: string): Observable<CollectionInterface[]> {
-    const collection = this.queryCollection([{ field: 'shopId', type: '==', value: shopId }]);
+    const collection = this.queryCollections([{ field: 'shopId', type: '==', value: shopId }]);
     this.collections$ = getDataFromCollection(collection);
     return this.collections$;
   }
@@ -117,7 +116,12 @@ export class ShopService {
     this.auth.getCurrentUserStream().subscribe((user: User) => this.user = user);
   }
 
-  private queryCollection(conditions?: CollectionCondition[]) {
+  private queryCategories(conditions?: CollectionCondition[]) {
+    const { dbCategoriesRoute } = this;
+    return this.query(dbCategoriesRoute, conditions);
+  }
+
+  private queryCollections(conditions?: CollectionCondition[]) {
     const { dbCollectionsRoute } = this;
     return this.query(dbCollectionsRoute, conditions);
   }
