@@ -36,9 +36,9 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     if (saleId !== 'add') {
       this.edit = true;
       this.saleSubscription = this.shopService.getSaleById(saleId).subscribe(sale => {
-        const { name, value } = sale;
+        const { name, value,radio } = sale;
         this.addSaleForm.patchValue({
-          name, value
+          name, value,radio
 
         });
       });
@@ -48,7 +48,9 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.addSaleForm = this.formbuilder.group({
       name: ['', Validators.required],
-      value: ['', Validators.required]
+      value: ['', Validators.required],
+      radio: ['', Validators.required]
+
     });
   }
 
@@ -61,7 +63,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   get addSaleFormControls() { return this.addSaleForm.controls; }
 
   async onSubmit() {
-    const { name, value } = this.addSaleFormControls;
+    const { name, value,radio } = this.addSaleFormControls;
     if (this.addSaleForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -73,12 +75,15 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       if (this.edit) {
         await this.adminService.updateSale({
           name: name.value,
-          value: value.value
+          value: value.value,
+          valueType:radio.value,
+         
         });
       } else {
        const data = await this.adminService.createSale({
           name: name.value,
-          value: value.value
+          value: value.value,
+          radio: radio.value
         });
         if (data.id) {
           const { id } = data;
