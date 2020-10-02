@@ -1,0 +1,18 @@
+<ng-template #button>
+    <fa-icon [icon]="faUser" class="text-gray-800 cursor-pointer outline-none"></fa-icon>
+</ng-template>
+
+<ng-template #body>
+    <a class="arc-dropdown-item">
+        Settings
+    </a>
+    <a class="arc-dropdown-item" (click)="signOut()">
+        Sign Out
+    </a>
+</ng-template>
+
+<app-dropdown
+    [rightAligned]="true"
+    [buttonTemplate]="button"
+    [bodyTemplate]="body"
+></app-dropdown>
