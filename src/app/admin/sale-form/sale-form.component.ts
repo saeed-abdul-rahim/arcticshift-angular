@@ -36,9 +36,9 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     if (saleId !== 'add') {
       this.edit = true;
       this.saleSubscription = this.shopService.getSaleById(saleId).subscribe(sale => {
-        const { name, value,radio } = sale;
+        const { name, value, } = sale;
         this.addSaleForm.patchValue({
-          name, value,radio
+          name, value,
 
         });
       });
@@ -83,7 +83,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
        const data = await this.adminService.createSale({
           name: name.value,
           value: value.value,
-          radio: radio.value
+          valueType:radio.value
         });
         if (data.id) {
           const { id } = data;

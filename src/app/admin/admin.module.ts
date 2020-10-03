@@ -7,6 +7,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
@@ -69,7 +70,8 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    AngularEditorModule
+    AngularEditorModule,
+    MatDatepickerModule
   ],
   providers: [
     AdminGuard,

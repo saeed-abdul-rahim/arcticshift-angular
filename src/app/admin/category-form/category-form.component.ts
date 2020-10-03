@@ -7,7 +7,7 @@ import { CategoryInterface } from '@models/Category';
 import { ContentStorage, ContentType } from '@models/Common';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
-import Thumbnail from '@services/media/Thumbnail';
+import { Thumbnail } from '@services/media/Thumbnail';
 import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
 import { editorConfig } from '@settings/editorConfig';
