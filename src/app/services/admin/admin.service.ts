@@ -99,6 +99,24 @@ export class AdminService {
     }
   }
 
+  async deleteCollectionImage(id: string, path: string) {
+    const { apiCollection } = this;
+    try {
+      return await this.req.patch(`${apiCollection}/${id}/image`, { path });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteCollection(id: string) {
+    const { apiCollection } = this;
+    try {
+      return await this.req.delete(`${apiCollection}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createCategory(data: CategoryInterface) {
     const { apiCategory } = this;
     try {
@@ -112,6 +130,24 @@ export class AdminService {
     const { apiCategory } = this;
     try {
       return await this.req.patch(apiCategory, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteCategoryImage(id: string, path: string) {
+    const { apiCategory } = this;
+    try {
+      return await this.req.patch(`${apiCategory}/${id}/image`, { path });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteCategory(id: string) {
+    const { apiCategory } = this;
+    try {
+      return await this.req.delete(`${apiCategory}/${id}`);
     } catch (err) {
       throw err;
     }
@@ -136,6 +172,15 @@ export class AdminService {
     }
   }
 
+  async deleteSale(id: string) {
+    const { apiSale } = this;
+    try {
+      return await this.req.delete(`${apiSale}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createVariant(data: VariantInterface) {
     const { apiVariant } = this;
     try {
@@ -154,6 +199,16 @@ export class AdminService {
     }
   }
 
+  async deleteVariant(id: string) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.delete(`${apiVariant}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+
   async createVoucher(data: VoucherInterface) {
     const { apiVoucher } = this;
     try {
@@ -167,6 +222,15 @@ export class AdminService {
     const { apiVoucher } = this;
     try {
       return await this.req.patch(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteVoucher(id: string) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.delete(`${apiVoucher}/${id}`);
     } catch (err) {
       throw err;
     }
@@ -189,6 +253,14 @@ export class AdminService {
       throw err;
     }
   }
+  async deleteWarehouse(id: string) {
+    const { apiWarehouse } = this;
+    try {
+      return await this.req.delete(`${apiWarehouse}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
 
   async createAttribute(data: AttributeInterface) {
     const { apiVoucher } = this;
@@ -207,6 +279,16 @@ export class AdminService {
       throw err;
     }
   }
+
+  async deleteAttribute(id: string) {
+    const { apiAttribute } = this;
+    try {
+      return await this.req.delete(`${apiAttribute}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createProductType(data: ProductTypeInterface) {
     const { apiVoucher } = this;
     try {
@@ -219,6 +301,15 @@ export class AdminService {
     const { apiVoucher } = this;
     try {
       return await this.req.patch(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteProductType(id: string) {
+    const { apiProductType } = this;
+    try {
+      return await this.req.delete(`${apiProductType}/${id}`);
     } catch (err) {
       throw err;
     }

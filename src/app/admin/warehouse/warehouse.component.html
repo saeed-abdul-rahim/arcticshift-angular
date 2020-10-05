@@ -79,6 +79,13 @@
         </div>
       </div>
 
-      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+      <app-footer-form
+      [loading]="loading"
+      [success]="success"
+      [showDelete]="edit"
+      [loadingDelete]="loadingDelete"
+      [successDelete]="successDelete"
+      (deleteCallback)="deleteWarehouse()"
+    ></app-footer-form>
 
 </form>

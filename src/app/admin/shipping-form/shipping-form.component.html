@@ -1,0 +1,40 @@
+<form class="flex flex-col h-screen justify-between" [formGroup]="addShippingForm" (ngSubmit)="onSubmit()">
+
+    <!-- TEMPLATES -->
+  
+    <ng-template #shippingZone>
+  
+      <div class="flex flex-wrap items-center">
+        <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+          <div class="w-full mb-3">
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Shipping Zone Name"
+              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #warehouse>
+
+    </ng-template>
+
+
+     <!-- BODY -->
+
+  <div class="relative md:pt-32 pt-12">
+    <div class="px-4 md:px-10 mx-auto w-full">
+      <div class="flex flex-wrap mt-4">
+        <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+          <app-card [heading]="'General Information'" [body]="shippingZone"></app-card>
+       
+        </div>
+        <div class="w-full xl:w-4/12 px-4">
+            <app-card [heading]="'Warehouse'" [body]="warehouse"></app-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+
+</form>

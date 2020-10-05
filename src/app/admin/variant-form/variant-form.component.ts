@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ADMIN, CATALOG, VARIANT } from '@constants/adminRoutes';
+import { VariantInterface } from '@models/Variant';
 import { AdminService } from '@services/admin/admin.service';
 
 @Component({
@@ -11,15 +14,19 @@ export class VariantFormComponent implements OnInit {
 
   loading: boolean;
   success: boolean;
+  loadingDelete = false;
+  successDelete = false;
   edit = true;
+
   nameDanger: boolean;
   sizeDanger: boolean;
   priceDanger: boolean;
 
-
+  variantRoute = `/${ADMIN}/${CATALOG}/${VARIANT}`;
+  variant: VariantInterface;
   addVariantForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService,private router: Router) { }
 
   ngOnInit(): void {
     console.log('variant');
@@ -49,10 +56,13 @@ export class VariantFormComponent implements OnInit {
 
         });
       } else {
-        await this.adminService.createVariant({
+      const data = await this.adminService.createVariant({
           size: size.value,
-
         });
+        if (data.id) {
+          const { id } = data;
+          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${VARIANT}/${id}`);
+        }
       }
 
       this.success = true;
@@ -62,6 +72,20 @@ export class VariantFormComponent implements OnInit {
       console.log(err);
     }
     this.loading = false;
+  }
+
+  async deleteVariant() {
+    this.loadingDelete = true;
+    try {
+      const { variantId } = this.variant;
+      await this.adminService.deleteVariant(variantId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.variantRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
   }
 
 }

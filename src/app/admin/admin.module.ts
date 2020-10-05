@@ -7,6 +7,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
@@ -35,6 +36,7 @@ import { ProductTypeFormComponent } from './product-type-form/product-type-form.
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
+import { ShippingFormComponent } from './shipping-form/shipping-form.component';
 
 
 @NgModule({
@@ -55,7 +57,8 @@ import { TaxFormComponent } from './tax-form/tax-form.component';
     ProductTypeFormComponent,
     AttributeFormComponent,
     CustomerFormComponent,
-    TaxFormComponent
+    TaxFormComponent,
+    ShippingFormComponent
   ],
   imports: [
     CommonModule,
@@ -69,7 +72,8 @@ import { TaxFormComponent } from './tax-form/tax-form.component';
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    AngularEditorModule
+    AngularEditorModule,
+    MatDatepickerModule
   ],
   providers: [
     AdminGuard,

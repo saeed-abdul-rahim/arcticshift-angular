@@ -18,15 +18,23 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
+  <ng-template #imageUploadAction>
     <div class="flex w-full justify-center bg-grey-lighter">
       <label class="arc-link-button" type="button">
         Upload Image
         <input type='file' class="hidden" />
       </label>
     </div>
-    <!-- <div appDragAndDrop (fileDropped)="onFileDropped($event)">
-      </div> -->
+  </ng-template>
+
+  <ng-template #imageUpload>
+    <app-upload
+      [uploadProgress]="uploadProgress"
+      [thumbnails]="thumbnails"
+      (fileClickedCallback)="onFileClicked($event)"
+      (fileDroppedCallback)="onFileDropped($event)"
+      (deleteImageCallback)="deleteCategoryImage($event)"
+    ></app-upload>
   </ng-template>
 
   <ng-template #textArea>
@@ -42,12 +50,19 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="Category"></app-card>
-          <app-card [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
+          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
         </div>
       </div>
     </div>
   </div>
 
-  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+  <app-footer-form
+  [loading]="loading"
+  [success]="success"
+  [showDelete]="edit"
+  [loadingDelete]="loadingDelete"
+  [successDelete]="successDelete"
+  (deleteCallback)="deleteCetogory()"
+></app-footer-form>
 
 </form>

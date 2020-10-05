@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ADMIN, CATALOG, PRODUCTTYPE } from '@constants/adminRoutes';
+import { ProductTypeInterface } from '@models/ProductType';
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -15,9 +16,14 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
+  loadingDelete = false;
+  successDelete = false;
   edit = true;
+
   nameDanger: boolean;
 
+  productTypeRoute = `/${ADMIN}/${CATALOG}/${PRODUCTTYPE}`;
+  productType: ProductTypeInterface;
   productTypeForm: FormGroup;
   productTypeSubscription: Subscription;
 
@@ -80,4 +86,19 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     }
     this.loading = false;
   }
+
+  async deleteProductType() {
+    this.loadingDelete = true;
+    try {
+      const { productTypeId } = this.productType;
+      await this.adminService.deleteVariant(productTypeId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.productTypeRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
+  }
+
 }

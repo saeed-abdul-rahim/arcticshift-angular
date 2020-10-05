@@ -23,7 +23,9 @@ import {
   VOUCHER,
   WAREHOUSE
 } from '@constants/adminRoutes';
-
+import { WarehouseComponent } from './warehouse/warehouse.component';
+import { AttributeFormComponent } from './attribute-form/attribute-form.component';
+import { ShippingFormComponent } from './shipping-form/shipping-form.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
@@ -129,8 +131,8 @@ const routes: Routes = [
         path: PRODUCTATTRIBUTE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD },
-          { path: ':id' }
+          { path: ADD, component: AttributeFormComponent},
+          { path: ':id', component: AttributeFormComponent }
         ]
       },
       {
@@ -145,7 +147,7 @@ const routes: Routes = [
         path: SHIPPING,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD },
+          { path: ADD, component: ShippingFormComponent},
           { path: ':id' }
         ]
       },
@@ -153,8 +155,8 @@ const routes: Routes = [
         path: WAREHOUSE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD },
-          { path: ':id' }
+          { path: ADD , component: WarehouseComponent},
+          { path: ':id', component: WarehouseComponent }
         ]
       },
       {
