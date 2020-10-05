@@ -1,4 +1,4 @@
-import { CommonInterface, Role } from './Common';
+import { AuthType, CommonInterface, Role } from './Common';
 import { PaymentMethod } from './Payment';
 
 type Gender = 'Male' | 'Female' | 'Transgender' | '';
@@ -21,7 +21,7 @@ export interface UserClaim {
     role: Role;
 }
 
-export interface UserInterface extends CommonInterface {
+export interface UserInterface extends AuthType, CommonInterface {
     id?: string;
     uid?: string;
     name?: string;
@@ -35,6 +35,7 @@ export interface UserInterface extends CommonInterface {
     shopId?: string[];
     shopInvite?: string[];
     access?: string[];
+    users?: string[];
     paymentMethods?: PaymentMethod[];
     voucherId?: string[];
     orderId?: string[];

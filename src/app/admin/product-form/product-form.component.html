@@ -1,4 +1,4 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addProductForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="productForm" (ngSubmit)="onSubmit()">
 
   <!-- TEMPLATES -->
 
@@ -72,7 +72,7 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full mb-3">
-          <ng-select formControlName="productType" placeholder="Product Type"></ng-select>
+          <ng-select formControlName="productType" [ngClass]="productTypeDanger ? 'border-red' : ''" [(ngModel)]="selectedProductType" [items]="productTypes" bindValue="id" bindLabel="name" placeholder="Product Type"></ng-select>
         </div>
         <div class="w-full mb-3">
           <ng-select formControlName="category" [items]="categories" bindValue="id" bindLabel="name" placeholder="Category"></ng-select>
@@ -107,7 +107,7 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
           <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
-          <app-card *ngIf="edit" [heading]="'Attributes'" [body]="attributes"></app-card>
+          <app-card *ngIf="selectedProductType" [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
           <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variants"></app-card>
         </div>

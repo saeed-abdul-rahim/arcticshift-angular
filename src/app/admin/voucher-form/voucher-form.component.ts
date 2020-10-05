@@ -28,10 +28,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { name, value } = voucher;
+        const { code, value } = voucher;
         this.addVoucherForm.patchValue({
-          name, value
-
+          name: code, value
         });
       });
     }

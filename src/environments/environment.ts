@@ -15,9 +15,9 @@ export const environment = {
     sale: '/sale-discount',
     variant: '/variant',
     voucher: '/voucher',
-    productType:'/productType',
-    attribute:'/attribute',
-    warehouse:'/warehouse'
+    productType: '/productType',
+    attribute: '/attribute',
+    warehouse: '/warehouse'
 
   },
   db: {
@@ -29,6 +29,7 @@ export const environment = {
     variants: 'variants',
     productTypes: 'productTypes',
     attributes: 'attributes',
+    attributeValues: 'attributeValues',
     collections: 'collections',
     categories: 'categories',
     shipping: 'shipping',

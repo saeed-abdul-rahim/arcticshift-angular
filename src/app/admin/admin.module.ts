@@ -34,6 +34,7 @@ import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
+import { TaxFormComponent } from './tax-form/tax-form.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { CustomerFormComponent } from './customer-form/customer-form.component';
     VoucherFormComponent,
     ProductTypeFormComponent,
     AttributeFormComponent,
-    CustomerFormComponent
+    CustomerFormComponent,
+    TaxFormComponent
   ],
   imports: [
     CommonModule,

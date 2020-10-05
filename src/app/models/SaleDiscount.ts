@@ -1,6 +1,6 @@
-import { Datetime, TimestampInterface, ValueType } from './Common';
+import { Datetime, CommonInterface, ValueType } from './Common';
 
-export interface SaleDiscountInterface extends TimestampInterface {
+export interface SaleDiscountInterface extends CommonInterface {
     id?: string;
     shopId?: string;
     saleDiscountId?: string;

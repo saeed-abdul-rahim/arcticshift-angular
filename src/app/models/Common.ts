@@ -51,8 +51,7 @@ export type AuthType = {
     [key in Role]?: string[];
 };
 
-export interface CommonInterface extends AuthType, TimestampInterface {
-    users?: string[];
+export interface CommonInterface extends TimestampInterface {
     status?: Status;
 }
 

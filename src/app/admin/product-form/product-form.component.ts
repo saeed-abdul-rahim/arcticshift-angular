@@ -17,6 +17,7 @@ import { ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { StorageService } from '@services/storage/storage.service';
 import { AuthService } from '@services/auth/auth.service';
+import { ProductTypeInterface } from '@models/ProductType';
 
 @Component({
   selector: 'app-product-form',
@@ -35,14 +36,17 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   nameDanger: boolean;
   priceDanger: boolean;
+  productTypeDanger: boolean;
 
   shopId: string;
+  productTypes: ProductTypeInterface[];
   categories: CategoryInterface[];
   collections: CollectionInterface[];
 
   productRoute = `/${ADMIN}/${CATALOG}/${PRODUCT}`;
   product: ProductInterface;
-  addProductForm: FormGroup;
+  productForm: FormGroup;
+  selectedProductType: ProductTypeInterface;
 
   file: File;
   fileType: ContentType;
@@ -74,6 +78,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       if (user) {
         const { shopId } = user;
         this.shopId = shopId;
+        this.getProductTypes();
         this.getCategories();
         this.getCollections();
       }
@@ -92,11 +97,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.addProductForm = this.formbuilder.group({
+    this.productForm = this.formbuilder.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
       description: [''],
-      price: ['', Validators.required],
-      productType: [''],
+      price: [0, Validators.required],
+      productType: ['', Validators.required],
       category: [''],
       collection: [''],
       hidden: [false],
@@ -122,16 +127,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  get addProductFormControls() { return this.addProductForm.controls; }
+  get productFormControls() { return this.productForm.controls; }
 
   async onSubmit() {
-    const { name, price, description, category, collection, productType } = this.addProductFormControls;
-    if (this.addProductForm.invalid) {
+    const { name, price, description, category, collection, productType } = this.productFormControls;
+    if (this.productForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }
       if (price.errors) {
         this.priceDanger = true;
+      }
+      if (productType.errors) {
+        this.productTypeDanger = true;
       }
       return;
     }
@@ -140,9 +148,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       name: name.value,
       description: description.value,
       price: price.value,
-      category: category.value,
-      collection: collection.value,
-      productType: productType.value
+      categoryId: category.value,
+      collectionId: [...collection.value],
+      productTypeId: productType.value
     };
     try {
       if (this.edit) {
@@ -165,6 +173,12 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       console.log(err);
     }
     this.loading = false;
+  }
+
+  getProductTypes() {
+    this.categorySubscription = this.shopService.getAllProductTypesByShopId(this.shopId).subscribe(productTypes => {
+      this.productTypes = productTypes;
+    });
   }
 
   getCategories() {
@@ -264,7 +278,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   setFormValue() {
     const { name, description, price, productTypeId, categoryId, collectionId, status, tax } = this.product;
-    this.addProductForm.patchValue({
+    this.productForm.patchValue({
       name, description, price,
       productType: productTypeId,
       category: categoryId,

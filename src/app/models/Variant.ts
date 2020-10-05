@@ -1,6 +1,6 @@
-import { TimestampInterface, Status, ContentStorage, AttributeValue } from './Common';
+import { CommonInterface, Status, ContentStorage, AttributeValue } from './Common';
 
-export interface VariantInterface extends TimestampInterface {
+export interface VariantInterface extends CommonInterface {
     id?: string;
     shopId?: string;
     productId?: string;

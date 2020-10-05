@@ -1,6 +1,6 @@
-import { TimestampInterface, Status, Tax, AttributeValue, Condition, Content } from './Common';
+import { CommonInterface, Status, Tax, AttributeValue, Condition, Content } from './Common';
 
-export interface ProductInterface extends TimestampInterface {
+export interface ProductInterface extends CommonInterface {
     id?: string;
     shopId?: string;
     productId?: string;
@@ -21,7 +21,6 @@ export interface ProductInterface extends TimestampInterface {
     variantId?: string[];
     saleDiscountId?: string;
     voucherId?: string;
-    status?: Status;
     like?: number;
     rating?: number;
 }

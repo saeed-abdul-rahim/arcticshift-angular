@@ -1,5 +1,10 @@
-import { Datetime, TimestampInterface, ValueType } from './Common';
+import { CommonInterface } from './Common';
+import { Address } from './User';
 
-export interface WarehouseInterface extends TimestampInterface {
+export interface WarehouseInterface extends CommonInterface {
+    shopId?: string;
+    warehouseId?: string;
     name?: string;
+    address?: Address | null;
+    shippingId?: string;
 }

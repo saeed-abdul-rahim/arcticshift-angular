@@ -1,6 +1,6 @@
-import { Condition, Content, TimestampInterface } from './Common';
+import { Condition, Content, CommonInterface } from './Common';
 
-export interface CollectionInterface extends TimestampInterface {
+export interface CollectionInterface extends CommonInterface {
     id?: string;
     shopId?: string;
     collectionId?: string;

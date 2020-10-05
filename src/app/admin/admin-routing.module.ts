@@ -34,6 +34,7 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
+import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 
 
 const routes: Routes = [
@@ -136,8 +137,8 @@ const routes: Routes = [
         path: PRODUCTTYPE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD },
-          { path: ':id' }
+          { path: ADD, component: ProductTypeFormComponent },
+          { path: ':id', component: ProductTypeFormComponent }
         ]
       },
       {

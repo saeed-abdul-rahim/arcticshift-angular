@@ -18,17 +18,17 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   edit = true;
   nameDanger: boolean;
 
-  addProductTypeForm: FormGroup;
+  productTypeForm: FormGroup;
   productTypeSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService,
               private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const productTypeId = this.router.url.split('/').pop();
     if (productTypeId !== 'add') {
       this.edit = true;
       this.productTypeSubscription = this.shopService.getCollectionById(productTypeId).subscribe(productType => {
         const { name } = productType;
-        this.addProductTypeForm.patchValue({
+        this.productTypeForm.patchValue({
           name,
 
         });
@@ -37,7 +37,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.addProductTypeForm = this.formbuilder.group({
+    this.productTypeForm = this.formbuilder.group({
       name: ['', Validators.required]
     });
   }
@@ -48,11 +48,11 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  get addProductTypeFormControls() { return this.addProductTypeForm.controls; }
+  get productTypeFormControls() { return this.productTypeForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addProductTypeFormControls;
-    if (this.addProductTypeForm.invalid) {
+    const { name } = this.productTypeFormControls;
+    if (this.productTypeForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }
