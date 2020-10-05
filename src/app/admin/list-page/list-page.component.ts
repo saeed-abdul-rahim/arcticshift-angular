@@ -22,6 +22,7 @@ import {
   SALE,
   SHIPPING,
   STAFF,
+  TAX,
   VOUCHER,
   WAREHOUSE
 } from '@constants/adminRoutes';
@@ -124,6 +125,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       vouchers,
       shipping,
       warehouse,
+      taxes,
       orders,
     } = db;
 
@@ -221,6 +223,18 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
         shippingId: 'Shipping Zones',
       });
       this.getPageLength(warehouse, this.dataLengthKey);
+
+    } else if (urlSplit.includes(TAX)) {
+
+      this.heading = 'Taxes';
+      this.label = 'Tax';
+      this.getData(taxes, {
+        name: 'Name',
+        type: 'Tax Type',
+        value: 'Value',
+        valueType: 'Value Type'
+      });
+      this.getPageLength(taxes, this.dataLengthKey);
 
     } else if (urlSplit.includes(ORDER)) {
 

@@ -15,6 +15,7 @@ import { ProductTypeCondition, ProductTypeInterface } from '@models/ProductType'
 import { AttributeCondition, AttributeInterface, AttributeJoinInterface, AttributeValueCondition } from '@models/Attribute';
 import { leftJoin } from '@utils/leftJoin';
 import { VoucherInterface } from '@models/Voucher';
+import { TaxInterface } from '@models/Tax';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class ShopService {
   collections$: Observable<CollectionInterface[]>;
   categories$: Observable<CategoryInterface[]>;
   productTypes$: Observable<ProductTypeInterface[]>;
+  tax$: Observable<TaxInterface[]>;
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
   private db: AngularFirestoreDocument;
@@ -38,6 +40,7 @@ export class ShopService {
   private dbVouchersRoute: string;
   private dbAttributesRoute: string;
   private dbAttributeValuesRoute: string;
+  private dbTaxesRoute: string;
 
   private dbAttributeValuesRoutePath: string;
 
@@ -53,7 +56,8 @@ export class ShopService {
       vouchers,
       saleDiscounts,
       attributes,
-      attributeValues
+      attributeValues,
+      taxes
     } = db;
 
     this.db = this.afs.collection(version).doc(name);
@@ -66,6 +70,7 @@ export class ShopService {
     this.dbAttributesRoute = attributes;
     this.dbAttributeValuesRoute = attributeValues;
     this.dbProductTypesRoute = productTypes;
+    this.dbTaxesRoute = taxes;
     this.dbVouchersRoute = vouchers;
 
     this.dbAttributeValuesRoutePath = `${this.dbPath}/${attributeValues}`;
@@ -104,6 +109,11 @@ export class ShopService {
   getAttributeById(attributeId: string): Observable<AttributeInterface> {
     const attributeRef = this.db.collection(this.dbAttributesRoute).doc(attributeId);
     return getDataFromDocument(attributeRef);
+  }
+
+  getTaxesById(taxId: string): Observable<TaxInterface> {
+    const taxRef = this.db.collection(this.dbTaxesRoute).doc(taxId);
+    return getDataFromDocument(taxRef);
   }
 
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {

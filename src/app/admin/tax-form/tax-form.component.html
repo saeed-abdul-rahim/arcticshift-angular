@@ -17,8 +17,17 @@
         <div class="flex flex-wrap items-center">
             <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                 <div class="w-full mb-3">
-                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Value"
+                    <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Value"
                     [ngClass]="valueDanger ? 'border-red' : ''" formControlName="value" />
+                </div>
+                <div class="field">
+                    <div class="flex items-center" *ngFor="let valueType of valueTypes">
+                        <input id="{{valueType.id}}" type="radio" name="valueType" formControlName="valueType" value="{{valueType.id}}" class="hidden p-1" />
+                        <label for="{{valueType.id}}" class="flex items-center cursor-pointer">
+                            <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+                            {{valueType.label}}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,7 +37,23 @@
         <div class="flex flex-wrap items-center">
             <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                 <div class="w-full mb-3">
-                    <ng-select formControlName="tax" [items]="taxTypes" bindValue="id" bindLabel="label" placeholder="Tax"></ng-select>
+                    <ng-select [ngClass]="typeDanger ? 'border-red' : ''" formControlName="type" [items]="taxTypes" bindValue="id" bindLabel="label" placeholder="Tax"></ng-select>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #valueTypeForm>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                <div class="w-full mb-3">
+                    <div class="flex items-center ml-4 mb-4 p-1 pt-5" *ngFor="let valueType of valueTypes">
+                        <input id="valueType" type="radio" name="valueType" formControlName="valueType" value="{{valueType.id}}" class="hidden" checked />
+                        <label for="radio1" class="flex items-center cursor-pointer">
+                            <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+                            {{valueType.label}}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,7 +65,11 @@
         <div class="px-4 md:px-10 mx-auto w-full">
             <div class="flex flex-wrap mt-4 mb-12">
                 <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-
+                    <app-card [heading]="'General Information'" [body]="nameForm"></app-card>
+                    <app-card [heading]="'Value'" [body]="valueForm"></app-card>
+                </div>
+                <div class="w-full xl:w-4/12 px-4">
+                    <app-card [heading]="'Tax Type'" [body]="typeForm"></app-card>
                 </div>
             </div>
         </div>

@@ -15,10 +15,10 @@ import {
   PRODUCT,
   PRODUCTATTRIBUTE,
   PRODUCTTYPE,
-  PROFILE,
   SALE,
   SHIPPING,
   STAFF,
+  TAX,
   VARIANT,
   VOUCHER,
   WAREHOUSE
@@ -37,6 +37,7 @@ import { SaleFormComponent } from './sale-form/sale-form.component';
 import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
+import { TaxFormComponent } from './tax-form/tax-form.component';
 
 
 const routes: Routes = [
@@ -131,7 +132,7 @@ const routes: Routes = [
         path: PRODUCTATTRIBUTE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD, component: AttributeFormComponent},
+          { path: ADD, component: AttributeFormComponent },
           { path: ':id', component: AttributeFormComponent }
         ]
       },
@@ -147,7 +148,7 @@ const routes: Routes = [
         path: SHIPPING,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD, component: ShippingFormComponent},
+          { path: ADD, component: ShippingFormComponent },
           { path: ':id' }
         ]
       },
@@ -155,8 +156,16 @@ const routes: Routes = [
         path: WAREHOUSE,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ADD , component: WarehouseComponent},
+          { path: ADD , component: WarehouseComponent },
           { path: ':id', component: WarehouseComponent }
+        ]
+      },
+      {
+        path: TAX,
+        children: [
+          { path: '', component: ListPageComponent },
+          { path: ADD , component: TaxFormComponent },
+          { path: ':id', component: TaxFormComponent }
         ]
       },
       {

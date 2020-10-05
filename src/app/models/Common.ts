@@ -3,6 +3,14 @@ export type Status = 'active' | 'inactive';
 export type ContentType = 'image' | 'video' | 'document' | '';
 export type ValueType = 'fixed' | 'percent';
 
+export const valueTypes: {
+    id: ValueType,
+    label: string
+}[] = [
+    { id: 'fixed', label: 'Fixed' },
+    { id: 'percent', label: 'Percent'}
+];
+
 export interface QueryConfig {
     path?: string;
     orderBy?: string;

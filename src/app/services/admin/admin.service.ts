@@ -14,26 +14,28 @@ import { AuthService } from '@services/auth/auth.service';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AttributeInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
+import { TaxInterface } from '@models/Tax';
 
 @Injectable()
 export class AdminService {
 
-  apiProduct: string;
-  apiCategory: string;
-  apiCollection: string;
-  apiSale: string;
-  apiVariant: string;
-  apiVoucher: string;
-  apiProductType: string;
-  apiAttribute: string;
-  apiWarehouse: string;
+  private apiProduct: string;
+  private apiCategory: string;
+  private apiCollection: string;
+  private apiSale: string;
+  private apiVariant: string;
+  private apiVoucher: string;
+  private apiProductType: string;
+  private apiAttribute: string;
+  private apiWarehouse: string;
+  private apiTax: string;
 
   private db: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
 
   constructor(private req: RequestService, private afs: AngularFirestore, private auth: AuthService) {
     const { api, db } = environment;
-    const { url, product, category, collection, sale, variant, voucher } = api;
+    const { url, product, category, collection, sale, variant, voucher, tax } = api;
     const { version, name, products, analytics } = db;
     this.apiProduct = url + product;
     this.apiCategory = url + category;
@@ -41,6 +43,7 @@ export class AdminService {
     this.apiSale = url + sale;
     this.apiVariant = url + variant;
     this.apiVoucher = url + voucher;
+    this.apiTax = url + tax;
     this.db = this.afs.collection(version).doc(name);
     this.dbAnalytics = this.db.collection(analytics);
   }
@@ -237,26 +240,54 @@ export class AdminService {
   }
 
   async createWarehouse(data: WarehouseInterface) {
-    const { apiVoucher } = this;
+    const { apiWarehouse } = this;
     try {
-      return await this.req.post(apiVoucher, { data });
+      return await this.req.post(apiWarehouse, { data });
     } catch (err) {
       throw err;
     }
   }
 
   async updateWarehouse(data: WarehouseInterface) {
-    const { apiVoucher } = this;
+    const { apiWarehouse } = this;
     try {
-      return await this.req.patch(apiVoucher, { data });
+      return await this.req.patch(apiWarehouse, { data });
     } catch (err) {
       throw err;
     }
   }
+
   async deleteWarehouse(id: string) {
     const { apiWarehouse } = this;
     try {
       return await this.req.delete(`${apiWarehouse}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createTax(data: TaxInterface) {
+    const { apiTax } = this;
+    try {
+      return await this.req.post(apiTax, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateTax(data: TaxInterface) {
+    const { apiTax } = this;
+    try {
+      return await this.req.patch(apiTax, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteTax(id: string) {
+    const { apiTax } = this;
+    try {
+      return await this.req.delete(`${apiTax}/${id}`);
     } catch (err) {
       throw err;
     }

@@ -18,7 +18,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   success: boolean;
   loadingDelete = false;
   successDelete = false;
-  edit = true;
+  edit = false;
 
   nameDanger: boolean;
 

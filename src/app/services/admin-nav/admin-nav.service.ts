@@ -16,10 +16,10 @@ import {
   PRODUCT,
   PRODUCTATTRIBUTE,
   PRODUCTTYPE,
-  PROFILE,
   SALE,
   SHIPPING,
   STAFF,
+  TAX,
   VOUCHER,
   WAREHOUSE
 } from '@constants/adminRoutes';
@@ -80,7 +80,7 @@ export class AdminNavService {
   getNavRoutes() {
     return [
       DASHBOARD, ORDER, CUSTOMER, PRODUCT, CATEGORY, COLLECTION, SALE, VOUCHER, PRODUCTATTRIBUTE,
-      PRODUCTTYPE, SHIPPING, WAREHOUSE, STAFF, PROFILE
+      PRODUCTTYPE, SHIPPING, WAREHOUSE, STAFF, TAX
     ];
   }
 

@@ -5,7 +5,7 @@ export const taxTypes: {
     id: TaxObjectType,
     label: string
 }[] = [
-    { id: 'shop', label: 'Shop'},
+    { id: 'shop', label: 'Global'},
     { id: 'product', label: 'Product'},
     { id: 'shipping', label: 'Shipping'},
 ];
