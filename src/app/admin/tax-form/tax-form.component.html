@@ -1,0 +1,58 @@
+<form class="flex flex-col h-screen justify-between" [formGroup]="taxForm" (ngSubmit)="onSubmit()">
+
+    <!-- TEMPLATES -->
+    
+    <ng-template #nameForm>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                <div class="w-full mb-3">
+                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
+                    [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #valueForm>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                <div class="w-full mb-3">
+                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Value"
+                    [ngClass]="valueDanger ? 'border-red' : ''" formControlName="value" />
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #typeForm>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                <div class="w-full mb-3">
+                    <ng-select formControlName="tax" [items]="taxTypes" bindValue="id" bindLabel="label" placeholder="Tax"></ng-select>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- BODY -->
+
+    <div class="relative pt-12 mb-auto h-10">
+        <div class="px-4 md:px-10 mx-auto w-full">
+            <div class="flex flex-wrap mt-4 mb-12">
+                <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-footer-form
+    [loading]="loading"
+    [success]="success"
+    [showDelete]="edit"
+    [loadingDelete]="loadingDelete"
+    [successDelete]="successDelete"
+    (deleteCallback)="deleteTax()"
+  ></app-footer-form>
+
+</form>
