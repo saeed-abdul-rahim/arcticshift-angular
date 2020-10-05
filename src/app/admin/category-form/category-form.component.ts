@@ -6,7 +6,7 @@ import { IMAGE_SM } from '@constants/imageSize';
 import { CategoryInterface } from '@models/Category';
 import { ContentStorage, ContentType } from '@models/Common';
 import { AdminService } from '@services/admin/admin.service';
-import Thumbnail from '@services/media/Thumbnail';
+import { Thumbnail } from '@services/media/Thumbnail';
 import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
 import { editorConfig } from '@settings/editorConfig';
@@ -21,10 +21,13 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  loadingDelete = false;
+  successDelete = false;
   edit = false;
 
   nameDanger: boolean;
 
+  categoryRoute = `/${ADMIN}/${CATALOG}/${CATEGORY}`;
   category: CategoryInterface;
   addCategoryForm: FormGroup;
 
@@ -108,6 +111,20 @@ constructor(private formbuilder: FormBuilder, private storageService: StorageSer
       console.log(err);
     }
     this.loading = false;
+  }
+
+  async deleteCetogory() {
+    this.loadingDelete = true;
+    try {
+      const { categoryId } = this.category;
+      await this.adminService.deleteCategory(categoryId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.categoryRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
   }
 
   onFileDropped($event: Event) {

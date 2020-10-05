@@ -1,10 +1,24 @@
-<footer class="h-13 bg-gray-200 shadow-lg">
+<footer class="h-13 bg-gray-100 shadow-lg fixed bottom-0 inset-x-0">
     <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-1 max-w-full flex-grow flex-1 text-right">
-        <app-submit-button
+      <div class="relative w-full px-4 py-2 max-w-full flex flex-grow flex-1">
+        <div class="flex-1 flex md:ml-64">
+          <app-button *ngIf="showDelete"
+            (click)="deleteFn()"
+            [loading]="loadingDelete"
+            [success]="successDelete"
+            [color]="'red'"
+            [label]="'Delete'"
+          ></app-button>
+        </div>
+        <div class="inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <app-button
             [loading]="loading"
             [success]="success"
-        ></app-submit-button>
+            [color]="'blue'"
+            [label]="'Save'"
+            [submit]="true"
+          ></app-button>
+        </div>
       </div>
     </div>
 </footer>

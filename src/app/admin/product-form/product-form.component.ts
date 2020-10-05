@@ -5,15 +5,18 @@ import { Subscription } from 'rxjs/internal/Subscription';
 
 import { ContentStorage, ContentType } from '@models/Common';
 import { ProductInterface } from '@models/Product';
-import Thumbnail from '@services/media/Thumbnail';
-import { MediaService } from '@services/media/media.service';
+import { CategoryInterface } from '@models/Category';
+import { CollectionInterface } from '@models/Collection';
+
+import { Thumbnail } from '@services/media/Thumbnail';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
 import { ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
-import { IMAGE_L, IMAGE_M, IMAGE_S, IMAGE_SM, IMAGE_XL, IMAGE_XS } from '@constants/imageSize';
+import { IMAGE_SM } from '@constants/imageSize';
 import { StorageService } from '@services/storage/storage.service';
+import { AuthService } from '@services/auth/auth.service';
 
 @Component({
   selector: 'app-product-form',
@@ -26,11 +29,18 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  loadingDelete = false;
+  successDelete = false;
   edit = false;
 
   nameDanger: boolean;
   priceDanger: boolean;
 
+  shopId: string;
+  categories: CategoryInterface[];
+  collections: CollectionInterface[];
+
+  productRoute = `/${ADMIN}/${CATALOG}/${PRODUCT}`;
   product: ProductInterface;
   addProductForm: FormGroup;
 
@@ -44,22 +54,39 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   isUploaded = false;
   uploadProgress = 0;
 
+  userSubscription: Subscription;
   productSubscription: Subscription;
+  productTypeSubscription: Subscription;
+  categorySubscription: Subscription;
+  collectionSubscription: Subscription;
+  variantSubscription: Subscription;
+  attributeSubscription: Subscription;
 
   editorConfig = {
     ...editorConfig,
     placeholder: 'Description',
   };
 
-  constructor(private formbuilder: FormBuilder, private storageService: StorageService, private adminService: AdminService,
-              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+  constructor(private formbuilder: FormBuilder, private storageService: StorageService,
+              private authService: AuthService, private adminService: AdminService, private shopService: ShopService,
+              private router: Router, private route: ActivatedRoute) {
+    this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
+      if (user) {
+        const { shopId } = user;
+        this.shopId = shopId;
+        this.getCategories();
+        this.getCollections();
+      }
+    });
     const productId = this.router.url.split('/').pop();
     if (productId !== 'add') {
       this.edit = true;
       this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
-        this.product = product;
-        this.getPreviewImages();
-        this.setFormValue();
+        if (product) {
+          this.product = product;
+          this.getPreviewImages();
+          this.setFormValue();
+        }
       });
     }
   }
@@ -78,15 +105,27 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
     if (this.productSubscription && !this.productSubscription.closed) {
       this.productSubscription.unsubscribe();
+    }
+    if (this.productTypeSubscription && !this.productTypeSubscription.closed) {
+      this.productTypeSubscription.unsubscribe();
+    }
+    if (this.categorySubscription && !this.categorySubscription.closed) {
+      this.categorySubscription.unsubscribe();
+    }
+    if (this.collectionSubscription && !this.collectionSubscription.closed) {
+      this.collectionSubscription.unsubscribe();
     }
   }
 
   get addProductFormControls() { return this.addProductForm.controls; }
 
   async onSubmit() {
-    const { name, price } = this.addProductFormControls;
+    const { name, price, description, category, collection, productType } = this.addProductFormControls;
     if (this.addProductForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -97,24 +136,28 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
+    const setData = {
+      name: name.value,
+      description: description.value,
+      price: price.value,
+      category: category.value,
+      collection: collection.value,
+      productType: productType.value
+    };
     try {
       if (this.edit) {
         await this.adminService.updateProduct({
-          name: name.value,
-          price: price.value
+          ...setData,
+          productId: this.product.productId
         });
       }
       else {
-        const data = await this.adminService.createProduct({
-          name: name.value,
-          price: price.value
-        });
+        const data = await this.adminService.createProduct(setData);
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${PRODUCT}/${id}`);
+          this.router.navigateByUrl(`/${this.productRoute}/${id}`);
         }
       }
-
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
@@ -124,12 +167,47 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  getCategories() {
+    this.categorySubscription = this.shopService.getAllCategoriesByShopId(this.shopId).subscribe(categories => {
+      this.categories = categories;
+    });
+  }
+
+  getCollections() {
+    this.collectionSubscription = this.shopService.getAllCollectionsByShopId(this.shopId).subscribe(collections => {
+      this.collections = collections;
+    });
+  }
+
+  async deleteProduct() {
+    this.loadingDelete = true;
+    try {
+      const { productId } = this.product;
+      await this.adminService.deleteProduct(productId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.productRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
+  }
+
+  async deleteProductImage(path: string) {
+    try {
+      const { product } = this;
+      const { productId, images } = product;
+      const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
+      await this.adminService.deleteProductImage(productId, image.content.path);
+    } catch (_) { }
+  }
+
   onFileDropped($event: Event) {
     this.file = $event[0];
     this.processFile();
   }
 
-  onFileClicked(fileInput: Event){
+  onFileClicked(fileInput: Event) {
     this.file = (fileInput.target as HTMLInputElement).files[0];
     this.processFile();
   }
@@ -169,15 +247,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.fileType = null;
     this.isUploaded = false;
     this.invalidFile = true;
-  }
-
-  async deleteProductImage(path: string) {
-    try {
-      const { product } = this;
-      const { productId, images } = product;
-      const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
-      await this.adminService.deleteProductImage(productId, image.content.path);
-    } catch (_) { }
   }
 
   getPreviewImages() {

@@ -1,5 +1,0 @@
-<button class="arc-button" type="submit" [ngClass]="fullWidth ? 'w-full' : ''">
-    <div *ngIf="!loading && !success">{{label || 'Save'}}</div>
-    <app-spinner *ngIf="loading" [color]="'currentColor'" [size]="'5'" [@inOutAnimation]></app-spinner>
-    <fa-icon *ngIf="success" [icon]="faCheckCircle" size="lg" [@inOutAnimation]></fa-icon>
-</button>

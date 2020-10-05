@@ -62,6 +62,23 @@
               Minimum quantity of items</label>
           </div>
       </ng-template>
+
+      <ng-template #checkbox>
+          <div class="flex ">
+              <div class="flex-1 ">
+                  <label class="inline-flex w-full mt-4 px-2 pl-4">
+                      <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
+                      class="ml-2 text-gray-700">Limit number of times this discount can be used in total</span>
+                  </label>
+              </div>
+              <div class="flex-1 ">
+                <label class="inline-flex w-full mt-4 ">
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
+                    class="ml-2 w-full text-gray-700">Limit to one use per customer</span>
+                </label>
+              </div>
+          </div>
+      </ng-template>
       
       <ng-template #summary>
 
@@ -74,7 +91,9 @@
               <app-card [heading]="'General Information'" [body]="sale"></app-card>
               <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
               <app-card [heading]="'Value'" [body]="value"></app-card>
+              <app-card [heading]="'Usage Limit'" [body]="checkbox"></app-card>
               <app-card [heading]="'Minimum Requirements'" [body]="minimum"></app-card>
+              
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit" [heading]="'Summary'" [body]="summary"></app-card>
@@ -83,5 +102,12 @@
         </div>
       </div>
 
-      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+      <app-footer-form
+      [loading]="loading"
+      [success]="success"
+      [showDelete]="edit"
+      [loadingDelete]="loadingDelete"
+      [successDelete]="successDelete"
+      (deleteCallback)="deleteVoucher()"
+    ></app-footer-form>
 </form>

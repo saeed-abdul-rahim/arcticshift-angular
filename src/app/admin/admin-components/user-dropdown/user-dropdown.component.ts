@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
+import { AuthService } from '@services/auth/auth.service';
 
 @Component({
   selector: 'app-user-dropdown',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserDropdownComponent implements OnInit {
 
-  constructor() { }
+  faUser = faUser;
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  signOut() {
+    console.log('hi');
+    this.authService.signOut();
   }
 
 }

@@ -50,12 +50,19 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="Category"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
+          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
         </div>
       </div>
     </div>
   </div>
 
-  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+  <app-footer-form
+  [loading]="loading"
+  [success]="success"
+  [showDelete]="edit"
+  [loadingDelete]="loadingDelete"
+  [successDelete]="successDelete"
+  (deleteCallback)="deleteCetogory()"
+></app-footer-form>
 
 </form>

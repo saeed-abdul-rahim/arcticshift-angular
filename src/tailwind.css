@@ -7,33 +7,25 @@
     transition: all 0.15s ease 0s;
 }
 
-.scrollbar {
-	float: left;
+.scrollbar::-webkit-scrollbar-track, .scroll-host::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important;
+	background-color: #F5F5F5 !important;
 }
-
-.scrollbar::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
+.scrollbar::-webkit-scrollbar, .scroll-host::-webkit-scrollbar {
+	width: 3px !important;
+	background-color: #F5F5F5 !important;
 }
-
-.scrollbar::-webkit-scrollbar {
-	width: 5px;
-	background-color: #F5F5F5;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-	background-color: #0ae;	
+.scrollbar::-webkit-scrollbar-thumb, .scroll-host::-webkit-scrollbar-thumb {
+	background-color: #0ae !important;
 	background-image: -webkit-gradient(linear, 0 0, 0 100%,
 	                   color-stop(.5, rgba(255, 255, 255, .2)),
-					   color-stop(.5, transparent), to(transparent));
+					   color-stop(.5, transparent), to(transparent)) !important;
 }
-
 
 .slider {
 	overflow-y: hidden;
 	max-height: 500px;
     box-sizing: border-box;
-
 	transition-property: all;
 	transition-duration: .5s;
 	transition-timing-function: ease;
@@ -68,7 +60,6 @@
     @apply shadow;
     @apply arc-transition;
 }
-
 .arc-input:focus {
     @apply outline-none;
     @apply shadow-outline;
@@ -83,22 +74,41 @@
     @apply mb-2;
 }
 
-.arc-button {
+.arc-button-base {
     @apply inline-flex;
     @apply justify-center;
-    @apply bg-gray-900;
-    @apply text-white;
     @apply text-sm;
     @apply font-bold;
     @apply uppercase;
-    @apply px-6;
-    @apply py-3;
+    @apply px-5;
+    @apply py-2;
     @apply rounded;
     @apply shadow;
     @apply outline-none;
     @apply mr-1;
     @apply mb-1;
     @apply arc-transition;
+}
+
+.arc-button {
+    @apply arc-button-base;
+    @apply text-white;
+}
+.arc-button:hover {
+    @apply shadow-lg;
+}
+.arc-button:focus {
+    @apply outline-none;
+}
+
+.arc-button-secondary {
+    @apply arc-button-base;
+}
+.arc-button-secondary:hover {
+    @apply shadow-lg;
+}
+.arc-button-secondary:focus {
+    @apply outline-none;
 }
 
 .arc-link-button {
@@ -116,11 +126,9 @@
     @apply cursor-pointer;
     @apply arc-transition;
 }
-
 .arc-link-button:hover {
     @apply shadow-md;
 }
-
 .arc-link-button:focus {
     @apply outline-none;
 }
@@ -131,18 +139,6 @@
     @apply w-5;
     @apply h-5;
     @apply arc-transition;
-}
-
-.arc-button:active {
-    @apply bg-gray-700;
-}
-
-.arc-button:hover {
-    @apply shadow-lg;
-}
-
-.arc-button:focus {
-    @apply outline-none;
 }
 
 .arc-button-regular {
@@ -160,17 +156,42 @@
     @apply mb-1;
     @apply arc-transition;
 }
-
 .arc-button-regular:active {
     @apply bg-blue-600;
 }
-
 .arc-button-regular:hover {
     @apply shadow-md;
 }
-
 .arc-button-regular:focus {
     @apply outline-none;
+}
+
+.arc-dropdown-button {
+    @apply inline-flex;
+    @apply justify-center;
+    @apply w-full;
+    @apply rounded-md;
+    @apply border;
+    @apply border-gray-300;
+    @apply px-4;
+    @apply py-2;
+    @apply bg-white;
+    @apply text-sm;
+    @apply leading-5;
+    @apply font-medium;
+    @apply text-gray-700;
+    @apply arc-transition;
+}
+.arc-dropdown-button:hover {
+    @apply text-gray-500;
+}
+.arc-dropdown-button:focus {
+    @apply outline-none;
+    @apply border-blue-300;
+}
+.arc-dropdown-button:active {
+    @apply bg-gray-500;
+    @apply text-gray-800;
 }
 
 .arc-dropdown-panel {
@@ -178,6 +199,8 @@
     @apply bg-white;
     @apply shadow-lg;
     @apply absolute;
+    @apply arc-transition;
+    @apply z-50;
 }
 
 .arc-dropdown-panel-items {
@@ -191,6 +214,9 @@
     @apply text-sm;
     @apply leading-5;
     @apply text-gray-700;
+    @apply cursor-pointer;
+    @apply whitespace-no-wrap;
+    @apply w-full;
 }
 
 .arc-dropdown-item:hover {
@@ -311,10 +337,13 @@ h5 {
     @apply mb-2;
 }
 
-
 .ng-select {
     @apply arc-input;
     @apply relative;
+}
+
+.ng-select .ng-has-value .ng-placeholder {
+    display: none;
 }
 
 .ng-dropdown-panel {
@@ -356,18 +385,39 @@ h5 {
     border-radius: 0.2rem;
 }
 
-.angular-editor-textarea, .ae-picker-options {
+.angular-editor-textarea {
     border: none !important;
     @apply arc-input;
 }
+.angular-editor-textarea:focus {
+    @apply outline-none;
+    @apply shadow-outline;
+}
 
+.ae-picker-options {
+    @apply arc-dropdown-panel;
+    @apply arc-dropdown-panel-items;
+}
+
+.ae-font .ae-picker-label {
+    @apply arc-dropdown-button;
+    line-height: inherit !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+}
 
 .ae-picker-label {
     border-radius: 0.2rem;
 }
 
-.ae-picker-item.focused, .ae-picker-item:hover {
-    background-color: unset !important;
-    color: unset;
-    @apply bg-blue-100;
+.ae-font .ae-picker-options .ae-picker-item {
+    @apply arc-dropdown-panel-items;
+}
+
+.ae-font .ae-picker-options .ae-picker-item.focused,
+.ae-font .ae-picker-options .ae-picker-item.selected,
+.ae-font .ae-picker-options .ae-picker-item:hover,
+.angular-editor-button:hover {
+    @apply bg-gray-100 !important;
+    @apply text-gray-900 !important;
 }

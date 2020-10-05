@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ADMIN, CATALOG, WAREHOUSE } from '@constants/adminRoutes';
+import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -16,10 +17,16 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   success: boolean;
+  loadingDelete = false;
+  successDelete = false;
   edit = false;
+
   nameDanger: boolean;
 
+  warehouseRoute = `/${ADMIN}/${CATALOG}/${WAREHOUSE}`;
+  warehouse: WarehouseInterface;
   addWarehouseForm: FormGroup;
+
   warehouseSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
@@ -84,6 +91,20 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       console.log(err);
     }
     this.loading = false;
+  }
+
+  async deleteWarehouse() {
+    this.loadingDelete = true;
+    try {
+      const { warehouseId } = this.warehouse;
+      await this.adminService.deleteVoucher(warehouseId);
+      this.success = true;
+      setTimeout(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.warehouseRoute);
+    } catch (err) {
+      console.log(err);
+    }
+    this.loadingDelete = false;
   }
 
 }

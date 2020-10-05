@@ -18,7 +18,7 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
+  <ng-template #imageUploadAction>
     <div class="flex w-full justify-center bg-grey-lighter">
       <label class="arc-link-button" type="button">
         Upload Image
@@ -37,12 +37,6 @@
     ></app-upload>
   </ng-template>
 
-  <ng-template #textArea>
-    <div class="flex w-full justify-center pt-3">
-      <textarea class="w-1/2 h-32 mb-3 resize border rounded focus:outline-none focus:shadow-outline"></textarea>
-    </div>
-  </ng-template>
-
   <ng-template #visibility>
     <div class="flex items-center ml-4 mb-4 p-1">
       <input id="radio1" type="radio" name="radio" class="hidden" checked />
@@ -58,14 +52,6 @@
     </div>
   </ng-template>
 
-  <!-- <ng-template #description>
-    <div class="field">
-      <div class="control">
-        <angular-editor formControlName="description" [config]="editorConfig"></angular-editor>
-      </div>
-    </div>
-  </ng-template> -->
-
   <!-- BODY -->
 
   <div class="relative md:pt-32 pt-12">
@@ -73,8 +59,7 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="collection"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUpload" [body]="textArea"></app-card>
-          <!-- <app-card [heading]="'Description'"  [body]="description"></app-card> -->
+          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Visibility'" [body]="visibility"></app-card>
@@ -83,6 +68,14 @@
     </div>
   </div>
 
-  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+  <app-footer-form
+  [loading]="loading"
+  [success]="success"
+  [showDelete]="edit"
+  [loadingDelete]="loadingDelete"
+  [successDelete]="successDelete"
+  (deleteCallback)="deleteCollection()"
+></app-footer-form>
+
 
 </form>

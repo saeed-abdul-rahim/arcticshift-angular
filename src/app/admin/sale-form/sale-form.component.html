@@ -13,13 +13,13 @@
 
       <ng-template #discount>
         <div class="flex items-center ml-4 mb-4 p-1 pt-5">
-          <input id="radio1" type="radio" name="radio" class="hidden" checked />
+          <input id="radio1" type="radio" name="radio" formControlName="radio" value="percent" class="hidden" checked />
           <label for="radio1" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Percentage</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio2" type="radio" name="radio" class="hidden" />
+          <input id="radio2" type="radio" name="radio" formControlName="radio" value="fixed" class="hidden" />
           <label for="radio2" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Fixed Amount</label>
@@ -30,7 +30,7 @@
         <div class="flex flex-wrap items-center">
           <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
             <div class="w-full mb-3">
-              <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Discount value"
+              <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Discount value"
                 [ngClass]="nameDanger ? 'border-red' : ''" formControlName="value" />
             </div>
           </div>
@@ -47,7 +47,7 @@
             <div class="w-full xl:w-8/12 xl:mb-0 px-4">
               <app-card [heading]="'General Information'" [body]="sale"></app-card>
               <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
-              <app-card *ngIf="edit" [heading]="'Value'" [body]="value"></app-card>
+              <app-card [heading]="'Value'" [body]="value"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit"[heading]="'Summary'" [body]="summary"></app-card>
@@ -56,6 +56,13 @@
         </div>
       </div>
 
-      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+      <app-footer-form
+      [loading]="loading"
+      [success]="success"
+      [showDelete]="edit"
+      [loadingDelete]="loadingDelete"
+      [successDelete]="successDelete"
+      (deleteCallback)="deleteSale()"
+    ></app-footer-form>
 
 </form>

@@ -1,16 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { AdminGuard } from 'app/guards/admin/admin.guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { AdminComponent } from './admin.component';
-import { ProductFormComponent } from './product-form/product-form.component';
-import { VariantFormComponent } from './variant-form/variant-form.component';
-import { CollectionFormComponent } from './collection-form/collection-form.component';
-import { CategoryFormComponent } from './category-form/category-form.component';
-import { SaleFormComponent } from './sale-form/sale-form.component';
-import { VoucherFormComponent } from './voucher-form/voucher-form.component';
-import { ListPageComponent } from './list-page/list-page.component';
+import { AdminGuard } from '@guards/admin/admin.guard';
 import {
   ADD,
   CATALOG,
@@ -25,6 +15,7 @@ import {
   PRODUCT,
   PRODUCTATTRIBUTE,
   PRODUCTTYPE,
+  PROFILE,
   SALE,
   SHIPPING,
   STAFF,
@@ -36,6 +27,17 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
+
+import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AdminComponent } from './admin.component';
+import { ProductFormComponent } from './product-form/product-form.component';
+import { VariantFormComponent } from './variant-form/variant-form.component';
+import { CollectionFormComponent } from './collection-form/collection-form.component';
+import { CategoryFormComponent } from './category-form/category-form.component';
+import { SaleFormComponent } from './sale-form/sale-form.component';
+import { VoucherFormComponent } from './voucher-form/voucher-form.component';
+import { ListPageComponent } from './list-page/list-page.component';
 
 
 const routes: Routes = [

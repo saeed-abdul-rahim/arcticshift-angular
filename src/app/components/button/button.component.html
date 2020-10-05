@@ -1,0 +1,7 @@
+<button
+    class="arc-button relative text-center bg-{{color}}-{{dark ? '800' : '500'}} active:bg-{{color}}-{{dark ? '800' : '900'}} {{fullWidth ? 'w-full' : ''}}" [attr.type]="submit ? 'submit' : 'button'" [attr.disabled]="success || loading ? true : null" [ngClass]="success || loading ? 'cursor-not-allowed' : ''">
+    <div class="text-transparent">{{label}}</div>
+    <div class="absolute" *ngIf="!loading && !success">{{label}}</div>
+    <app-spinner class="absolute" *ngIf="loading" [color]="'currentColor'" [size]="'5'" [@inOutAnimation]></app-spinner>
+    <fa-icon class="absolute" *ngIf="success" [icon]="faCheck" size="lg" [@inOutAnimation]></fa-icon>
+</button>
