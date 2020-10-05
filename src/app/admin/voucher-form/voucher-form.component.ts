@@ -69,9 +69,8 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
 
         });
       } else {
-       const data =  await this.adminService.createSale({
+        const data =  await this.adminService.createSale({
           name: name.value,
-
         });
         if (data.id) {
           const { id } = data;

@@ -70,7 +70,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
           value: value.value
         });
       } else {
-       const data = await this.adminService.createSale({
+        const data = await this.adminService.createSale({
           name: name.value,
           value: value.value
         });

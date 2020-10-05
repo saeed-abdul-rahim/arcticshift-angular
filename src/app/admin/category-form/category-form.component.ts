@@ -6,7 +6,6 @@ import { IMAGE_SM } from '@constants/imageSize';
 import { CategoryInterface } from '@models/Category';
 import { ContentStorage, ContentType } from '@models/Common';
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
 import Thumbnail from '@services/media/Thumbnail';
 import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
@@ -28,8 +27,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   category: CategoryInterface;
   addCategoryForm: FormGroup;
- 
-  
+
   file: File;
   fileType: ContentType;
   previewUrl: string | ArrayBuffer | null;
@@ -47,8 +45,8 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     placeholder: 'Description',
   };
 
-constructor(private formbuilder: FormBuilder, private storageService: StorageService, private mediaService: MediaService, 
-  private adminService: AdminService,private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+constructor(private formbuilder: FormBuilder, private storageService: StorageService,
+            private adminService: AdminService, private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const categoryId = this.router.url.split('/').pop();
     if (categoryId !== 'add') {
       this.edit = true;
@@ -112,7 +110,6 @@ constructor(private formbuilder: FormBuilder, private storageService: StorageSer
     this.loading = false;
   }
 
-  
   onFileDropped($event: Event) {
     this.file = $event[0];
     this.processFile();

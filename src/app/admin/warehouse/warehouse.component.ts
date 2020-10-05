@@ -68,7 +68,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
         });
       } else {
-       const data =  await this.adminService.createWarehouse({
+        const data =  await this.adminService.createWarehouse({
           name: name.value,
         });
         if (data.id) {

@@ -67,7 +67,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
         });
       }
       else {
-       const data = await this.adminService.createAttribute({
+        const data = await this.adminService.createAttribute({
           name: name.value,
         });
         if (data.id) {

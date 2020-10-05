@@ -28,7 +28,7 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
 
   collection: CollectionInterface;
   addCollectionForm: FormGroup;
-   
+
   file: File;
   fileType: ContentType;
   previewUrl: string | ArrayBuffer | null;
@@ -47,8 +47,8 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
     placeholder: 'Description',
   };
 
-constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-  private storageService: StorageService,private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+constructor(private formbuilder: FormBuilder, private adminService: AdminService, private storageService: StorageService,
+            private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
     const collectionId = this.router.url.split('/').pop();
     if (collectionId !== 'add') {
       this.edit = true;
@@ -92,7 +92,7 @@ constructor(private formbuilder: FormBuilder, private mediaService: MediaService
         });
       }
       else {
-       const data = await this.adminService.createCollection({
+        const data = await this.adminService.createCollection({
           name: name.value,
         });
         if (data.id) {
