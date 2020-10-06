@@ -23,12 +23,13 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
   loadingDelete = false;
   successDelete = false;
   attributeValueLoading = false;
-  createAttributeLoading = false;
-  createAttributeSuccess = false;
+  attributeModalLoading = false;
+  attributeModalSuccess = false;
 
   edit = false;
   editValue = false;
   showModal = false;
+  showDeleteModal = false;
   nameDanger: boolean;
 
   displayData: any[] = [];
@@ -37,6 +38,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<any>;
 
   attributeRoute = `/${ADMIN}/${PRODUCTATTRIBUTE}`;
+  selectedAttributeValueId: string;
   attribute: AttributeInterface;
   attributeValue: AttributeValueInterface;
   attributeForm: FormGroup;
@@ -129,17 +131,17 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       if (this.editValue) {
         await this.adminService.updateAttributeValue({
           ...setData,
-          attributeId: this.attribute.attributeId
+          attributeValueId: this.selectedAttributeValueId
         });
       }
       else {
         await this.adminService.createAttributeValue(setData);
       }
-      this.createAttributeSuccess = true;
+      this.attributeModalSuccess = true;
       this.showModal = false;
-      setTimeout(() => this.createAttributeSuccess = false, 2000);
+      setTimeout(() => this.attributeModalSuccess = false, 2000);
     } catch (err) {
-      this.createAttributeSuccess = false;
+      this.attributeModalSuccess = false;
       console.log(err);
     }
     this.attributeValueLoading = false;
@@ -157,6 +159,20 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       console.log(err);
     }
     this.loadingDelete = false;
+  }
+
+  async deleteAttributeValue() {
+    this.attributeModalLoading = true;
+    try {
+      const { attributeId } = this.attribute;
+      await this.adminService.deleteAttributeValue(attributeId, this.selectedAttributeValueId);
+      this.attributeModalSuccess = true;
+      this.showDeleteModal = false;
+      setTimeout(() => this.attributeModalSuccess = false, 2000);
+    } catch (err) {
+      console.log(err);
+    }
+    this.attributeModalLoading = false;
   }
 
   unsubscribeAttributeValue() {
@@ -189,15 +205,20 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  showCreateAttributeModal(attributeValueId?: string) {
+  showAttributeModal(attributeValueId?: string) {
     this.showModal = true;
     if (attributeValueId) {
+      this.editValue = true;
+      this.selectedAttributeValueId = attributeValueId;
       this.getAttributeValue(attributeValueId);
+    } else {
+      this.editValue = false;
     }
   }
 
-  showDeleteModal(attributeValueId?: string) {
-    console.log(attributeValueId);
+  showAttributeValueDeleteModal(attributeValueId?: string) {
+    this.showDeleteModal = true;
+    this.selectedAttributeValueId = attributeValueId;
   }
 
   fillTable(data: any[]) {
