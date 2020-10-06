@@ -11,6 +11,7 @@ export class ModalComponent implements OnInit {
 
   @Input() showModal: boolean;
   @Input() size: 'small' | 'medium' | 'large';
+  @Input() buttonLabel = 'Save';
   @Input() buttonColor = 'blue';
 
   @Input() loading: boolean;
@@ -33,7 +34,6 @@ export class ModalComponent implements OnInit {
   }
 
   modalFn() {
-    this.toggleModal();
     this.modalCallback.emit();
   }
 
