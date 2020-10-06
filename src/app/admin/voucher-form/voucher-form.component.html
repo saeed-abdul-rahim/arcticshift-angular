@@ -67,13 +67,18 @@
           <div class="flex flex-wrap">
             <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                   <label class="inline-flex w-full">
-                      <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
+                      <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="toggletag()" checked><span 
                       class="ml-2 text-gray-700">Limit number of times this discount can be used in total</span>
                   </label>
+                  <div class="w-full mb-3">
+                    <input type="number" class="arc-input placeholder-gray-400 w-full" *ngIf="showMe" placeholder="Limit of Uses"
+                      [ngClass]="nameDanger ? 'border-red' : ''" formControlName="limit" />
+                  </div>
                 <label class="inline-flex w-full">
                     <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
                     class="ml-2 w-full text-gray-700">Limit to one use per customer</span>
                 </label>
+                
               </div>
           </div>
       </ng-template>

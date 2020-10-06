@@ -19,7 +19,8 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   success = false;
   loadingDelete = false;
   successDelete = false;
-  edit = true;
+  edit = false;
+  showMe = true;
   nameDanger: boolean;
 
   voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
@@ -46,6 +47,10 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     this.addVoucherForm = this.formbuilder.group({
       name: ['', Validators.required]
     });
+  }
+  toggletag()
+  {
+   this.showMe=!this.showMe;
   }
 
 
