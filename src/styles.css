@@ -20223,17 +20223,14 @@ video {
   outline: 0;
 }
 
-.arc-link-button {
-  --text-opacity: 1;
-  color: #4299e1;
-  color: rgba(66, 153, 225, var(--text-opacity));
+.arc-link-button-base {
   background-color: transparent;
   font-weight: 700;
   text-transform: uppercase;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   font-size: 0.75rem;
   outline: 0;
   margin-right: 0.25rem;
@@ -20243,11 +20240,59 @@ video {
   transition: all 0.15s ease 0s;
 }
 
+.arc-link-button {
+  background-color: transparent;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.75rem;
+  outline: 0;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease 0s;
+  --text-opacity: 1;
+  color: #4299e1;
+  color: rgba(66, 153, 225, var(--text-opacity));
+}
+
 .arc-link-button:hover {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .arc-link-button:focus {
+  outline: 0;
+}
+
+.arc-link-button-secondary {
+  background-color: transparent;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.75rem;
+  outline: 0;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease 0s;
+  --text-opacity: 1;
+  color: #4a5568;
+  color: rgba(74, 85, 104, var(--text-opacity));
+}
+
+.arc-link-button-secondary:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.arc-link-button-secondary:focus {
   outline: 0;
 }
 
@@ -20424,6 +20469,19 @@ video {
   font-weight: 700;
   display: block;
   cursor: pointer;
+}
+
+.height-0 {
+  height: 0 !important;
+}
+
+.padding-0 {
+  padding: 0 !important;
+}
+
+.padding-y-0 {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 input[type="radio"] + label span {

@@ -12,7 +12,7 @@ import { VariantInterface } from '@models/Variant';
 import {  getDataFromDocument } from '@utils/getFirestoreData';
 import { AuthService } from '@services/auth/auth.service';
 import { WarehouseInterface } from '@models/Warehouse';
-import { AttributeInterface } from '@models/Attribute';
+import { AttributeInterface, AttributeValueInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
 
@@ -35,9 +35,10 @@ export class AdminService {
 
   constructor(private req: RequestService, private afs: AngularFirestore, private auth: AuthService) {
     const { api, db } = environment;
-    const { url, product, category, collection, sale, variant, voucher, tax } = api;
-    const { version, name, products, analytics } = db;
+    const { url, product, attribute, category, collection, sale, variant, voucher, tax } = api;
+    const { version, name, analytics } = db;
     this.apiProduct = url + product;
+    this.apiAttribute = url + attribute;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;
     this.apiSale = url + sale;
@@ -294,18 +295,18 @@ export class AdminService {
   }
 
   async createAttribute(data: AttributeInterface) {
-    const { apiVoucher } = this;
+    const { apiAttribute } = this;
     try {
-      return await this.req.post(apiVoucher, { data });
+      return await this.req.post(apiAttribute, { data });
     } catch (err) {
       throw err;
     }
   }
 
   async updateAttribute(data: AttributeInterface) {
-    const { apiVoucher } = this;
+    const { apiAttribute } = this;
     try {
-      return await this.req.patch(apiVoucher, { data });
+      return await this.req.patch(apiAttribute, { data });
     } catch (err) {
       throw err;
     }
@@ -315,6 +316,33 @@ export class AdminService {
     const { apiAttribute } = this;
     try {
       return await this.req.delete(`${apiAttribute}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createAttributeValue(data: AttributeValueInterface) {
+    const { apiAttribute } = this;
+    try {
+      return await this.req.put(apiAttribute, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateAttributeValue(data: AttributeValueInterface) {
+    const { apiAttribute } = this;
+    try {
+      return await this.req.patch(`${apiAttribute}/value`, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteAttributeValue(attributeId: string, attributeValueId: string) {
+    const { apiAttribute } = this;
+    try {
+      return await this.req.delete(`${apiAttribute}/${attributeId}/value/${attributeValueId}`);
     } catch (err) {
       throw err;
     }

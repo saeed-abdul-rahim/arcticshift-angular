@@ -58,7 +58,9 @@ export class TaxFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    if (this.taxSubscription && !this.taxSubscription.closed) {
+      this.taxSubscription.unsubscribe();
+    }
   }
 
   setFormValue() {

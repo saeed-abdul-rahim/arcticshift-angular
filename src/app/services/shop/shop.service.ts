@@ -12,10 +12,10 @@ import { CollectionCondition, CollectionInterface } from '@models/Collection';
 import { CategoryInterface } from '@models/Category';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { ProductTypeCondition, ProductTypeInterface } from '@models/ProductType';
-import { AttributeCondition, AttributeInterface, AttributeJoinInterface, AttributeValueCondition } from '@models/Attribute';
+import { AttributeCondition, AttributeInterface, AttributeJoinInterface, AttributeValueCondition, AttributeValueInterface } from '@models/Attribute';
 import { leftJoin } from '@utils/leftJoin';
 import { VoucherInterface } from '@models/Voucher';
-import { TaxInterface } from '@models/Tax';
+import { TaxCondition, TaxInterface, TaxObjectType } from '@models/Tax';
 
 @Injectable({
   providedIn: 'root'
@@ -111,6 +111,11 @@ export class ShopService {
     return getDataFromDocument(attributeRef);
   }
 
+  getAttributeValueById(attributeValueId: string): Observable<AttributeValueInterface> {
+    const attributeValueRef = this.db.collection(this.dbAttributeValuesRoute).doc(attributeValueId);
+    return getDataFromDocument(attributeValueRef);
+  }
+
   getTaxesById(taxId: string): Observable<TaxInterface> {
     const taxRef = this.db.collection(this.dbTaxesRoute).doc(taxId);
     return getDataFromDocument(taxRef);
@@ -139,6 +144,11 @@ export class ShopService {
     return this.productAttributesJoin$;
   }
 
+  getAttributeValuesByAttributeId(attributeId: string): Observable<AttributeValueInterface[]> {
+    const attributeValueRef = this.queryAttributeValues([{ field: 'attributeId', type: '==', value: attributeId }]);
+    return getDataFromCollection(attributeValueRef);
+  }
+
   getAllCategoriesByShopId(shopId: string): Observable<CategoryInterface[]> {
     const categories = this.queryCategories([{ field: 'shopId', type: '==', value: shopId }]);
     this.categories$ = getDataFromCollection(categories);
@@ -149,6 +159,15 @@ export class ShopService {
     const collection = this.queryCollections([{ field: 'shopId', type: '==', value: shopId }]);
     this.collections$ = getDataFromCollection(collection);
     return this.collections$;
+  }
+
+  getAllTaxByShopIdAndType(shopId: string, type: TaxObjectType) {
+    const taxes = this.queryTax([
+      { field: 'shopId', type: '==', value: shopId },
+      { field: 'type', type: '==', value: type }
+    ]);
+    this.tax$ = getDataFromCollection(taxes);
+    return this.tax$;
   }
 
   private queryCategories(conditions?: CollectionCondition[]) {
@@ -179,6 +198,11 @@ export class ShopService {
   private queryAttributeValues(conditions?: AttributeValueCondition[]) {
     const { dbAttributeValuesRoute } = this;
     return this.query(dbAttributeValuesRoute, conditions);
+  }
+
+  private queryTax(conditions?: TaxCondition[]) {
+    const { dbTaxesRoute } = this;
+    return this.query(dbTaxesRoute, conditions);
   }
 
   private query(dbRoute: string, conditions?: Condition[]) {

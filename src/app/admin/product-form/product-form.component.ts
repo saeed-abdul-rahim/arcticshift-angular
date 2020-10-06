@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
-import { ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
+import { ADD, ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { StorageService } from '@services/storage/storage.service';
 import { AuthService } from '@services/auth/auth.service';
@@ -84,7 +84,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       }
     });
     const productId = this.router.url.split('/').pop();
-    if (productId !== 'add') {
+    if (productId !== ADD) {
       this.edit = true;
       this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
         if (product) {

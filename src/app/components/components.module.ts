@@ -24,7 +24,8 @@ import { ModalComponent } from './modal/modal.component';
     SpinnerComponent,
     ButtonComponent,
     ProgressBarComponent,
-    DropdownComponent
+    DropdownComponent,
+    ModalComponent
   ]
 })
 export class ComponentsModule { }

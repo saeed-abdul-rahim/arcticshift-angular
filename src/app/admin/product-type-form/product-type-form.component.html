@@ -16,7 +16,7 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full mb-3">
-          <ng-select formControlName="tax" [items]="taxes" bindValue="id" bindLabel="name" placeholder="Tax"></ng-select>
+          <ng-select formControlName="tax" [items]="tax$ | async" bindValue="id" bindLabel="name" placeholder="Tax"></ng-select>
         </div>
       </div>
     </div>

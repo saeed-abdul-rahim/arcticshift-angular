@@ -1,10 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ADMIN, CATALOG, PRODUCTTYPE } from '@constants/adminRoutes';
+import { ADD, ADMIN, CATALOG, PRODUCTTYPE } from '@constants/adminRoutes';
 import { ProductTypeInterface } from '@models/ProductType';
+import { TaxInterface } from '@models/Tax';
 import { AdminService } from '@services/admin/admin.service';
+import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
+import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
@@ -25,18 +28,29 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   productTypeRoute = `/${ADMIN}/${CATALOG}/${PRODUCTTYPE}`;
   productType: ProductTypeInterface;
   productTypeForm: FormGroup;
+
+  tax$: Observable<TaxInterface[]>;
+  userSubscription: Subscription;
   productTypeSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService,
-              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService, private authService: AuthService,
+              private router: Router, private shopService: ShopService) {
+    this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
+      if (user) {
+        const { shopId } = user;
+        this.tax$ = this.shopService.getAllTaxByShopIdAndType(shopId, 'product');
+      }
+    });
     const productTypeId = this.router.url.split('/').pop();
-    if (productTypeId !== 'add') {
+    if (productTypeId !== ADD) {
       this.edit = true;
-      this.productTypeSubscription = this.shopService.getCollectionById(productTypeId).subscribe(productType => {
-        const { name } = productType;
+      this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId).subscribe(productType => {
+        const { name, taxId, productAttributeId, variantAttributeId } = productType;
         this.productTypeForm.patchValue({
           name,
-
+          tax: taxId,
+          productAttributes: productAttributeId,
+          variantAttributes: variantAttributeId
         });
       });
     }
@@ -44,7 +58,10 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.productTypeForm = this.formbuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      tax: [''],
+      productAttributes: [''],
+      variantAttributes: ['']
     });
   }
 
@@ -52,12 +69,15 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     if (this.productTypeSubscription && !this.productTypeSubscription.closed) {
       this.productTypeSubscription.unsubscribe();
     }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   get productTypeFormControls() { return this.productTypeForm.controls; }
 
   async onSubmit() {
-    const { name } = this.productTypeFormControls;
+    const { name, tax } = this.productTypeFormControls;
     if (this.productTypeForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -69,12 +89,12 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
       if (this.edit) {
         await this.adminService.updateProductType({
           name: name.value,
-
+          taxId: tax.value
         });
       } else {
         await this.adminService.createProductType({
           name: name.value,
-
+          taxId: tax.value
         });
       }
 

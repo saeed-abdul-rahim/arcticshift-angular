@@ -1,6 +1,6 @@
-import { ValueType } from './Common';
+import { Condition, ValueType } from './Common';
 
-export type TaxObjectType = 'shop' | 'shipping' | 'product' | '';
+export type TaxObjectType = 'shop' | 'shipping' | 'product';
 export const taxTypes: {
     id: TaxObjectType,
     label: string
@@ -18,3 +18,10 @@ export interface TaxInterface {
     valueType?: ValueType;
     type?: TaxObjectType;
 }
+
+export type TaxCondition = Condition & {
+    field: TaxFields
+    parentFields?: (keyof TaxInterface)[]
+};
+
+type TaxFields = keyof (TaxInterface);

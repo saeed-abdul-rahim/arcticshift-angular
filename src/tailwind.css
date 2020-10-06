@@ -111,13 +111,12 @@
     @apply outline-none;
 }
 
-.arc-link-button {
-    @apply text-blue-500;
+.arc-link-button-base {
     @apply bg-transparent;
     @apply font-bold;
     @apply uppercase;
     @apply px-3;
-    @apply py-1;
+    @apply py-2;
     @apply text-xs;
     @apply outline-none;
     @apply mr-1;
@@ -126,10 +125,26 @@
     @apply cursor-pointer;
     @apply arc-transition;
 }
+
+.arc-link-button {
+    @apply arc-link-button-base;
+    @apply text-blue-500;
+}
 .arc-link-button:hover {
     @apply shadow-md;
 }
 .arc-link-button:focus {
+    @apply outline-none;
+}
+
+.arc-link-button-secondary {
+    @apply arc-link-button-base;
+    @apply text-gray-700;
+}
+.arc-link-button-secondary:hover {
+    @apply shadow-md;
+}
+.arc-link-button-secondary:focus {
     @apply outline-none;
 }
 
@@ -256,6 +271,18 @@
     @apply font-bold;
     @apply block;
     @apply cursor-pointer;
+}
+
+.height-0 {
+    @apply h-0 !important;
+}
+
+.padding-0 {
+    @apply p-0 !important;
+}
+
+.padding-y-0 {
+    @apply py-0 !important;
 }
 
 input[type="radio"] + label span {

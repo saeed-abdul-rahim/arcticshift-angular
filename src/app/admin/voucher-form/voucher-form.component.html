@@ -64,15 +64,13 @@
       </ng-template>
 
       <ng-template #checkbox>
-          <div class="flex ">
-              <div class="flex-1 ">
-                  <label class="inline-flex w-full mt-4 px-2 pl-4">
+          <div class="flex flex-wrap">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                  <label class="inline-flex w-full">
                       <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
                       class="ml-2 text-gray-700">Limit number of times this discount can be used in total</span>
                   </label>
-              </div>
-              <div class="flex-1 ">
-                <label class="inline-flex w-full mt-4 ">
+                <label class="inline-flex w-full">
                     <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
                     class="ml-2 w-full text-gray-700">Limit to one use per customer</span>
                 </label>
@@ -84,9 +82,9 @@
 
       </ng-template>
 
-      <div class="relative md:pt-32 pt-12">
+      <div class="relative pt-12">
         <div class="px-4 md:px-10 mx-auto w-full">
-          <div class="flex flex-wrap mt-4">
+          <div class="flex flex-wrap mt-4 mb-10">
             <div class="w-full xl:w-8/12 xl:mb-0 px-4">
               <app-card [heading]="'General Information'" [body]="sale"></app-card>
               <app-card [heading]="'Discount Type'" [body]="discount"></app-card>

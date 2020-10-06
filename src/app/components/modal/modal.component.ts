@@ -1,14 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { inOut, inOut5 } from '@animations/inOut';
 
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.css']
+  styleUrls: ['./modal.component.css'],
+  animations: [inOut, inOut5]
 })
 export class ModalComponent implements OnInit {
 
   @Input() showModal: boolean;
   @Input() size: 'small' | 'medium' | 'large';
+  @Input() buttonColor = 'blue';
 
   @Input() loading: boolean;
   @Input() success: boolean;
