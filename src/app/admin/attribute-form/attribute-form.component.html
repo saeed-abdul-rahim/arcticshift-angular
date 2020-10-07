@@ -19,7 +19,7 @@
 
   <ng-template #attributeValueList>
     <app-spinner class="flex justify-center pt-10" *ngIf="attributeValueLoading" [size]="'5'"></app-spinner>
-    <div *ngIf="!loading">
+    <div *ngIf="!attributeValueLoading">
       <table mat-table [dataSource]="dataSource" matSort>
 
         <ng-container matColumnDef="Value">
@@ -44,15 +44,11 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
 
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="2">No data available</td>
-        </tr>
-
       </table>
     </div>
   </ng-template>
 
-  <div class="relative md:pt-32 pt-12">
+  <div class="relative pt-12">
     <div class="px-4 md:px-10 mx-auto w-full">
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">

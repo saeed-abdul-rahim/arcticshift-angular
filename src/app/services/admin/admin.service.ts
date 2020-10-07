@@ -35,9 +35,21 @@ export class AdminService {
 
   constructor(private req: RequestService, private afs: AngularFirestore, private auth: AuthService) {
     const { api, db } = environment;
-    const { url, product, attribute, category, collection, sale, variant, voucher, tax } = api;
+    const {
+      url,
+      product,
+      productType,
+      attribute,
+      category,
+      collection,
+      sale,
+      variant,
+      voucher,
+      tax
+    } = api;
     const { version, name, analytics } = db;
     this.apiProduct = url + product;
+    this.apiProductType = url + productType;
     this.apiAttribute = url + attribute;
     this.apiCategory = url + category;
     this.apiCollection = url + collection;
@@ -349,17 +361,17 @@ export class AdminService {
   }
 
   async createProductType(data: ProductTypeInterface) {
-    const { apiVoucher } = this;
+    const { apiProductType } = this;
     try {
-      return await this.req.post(apiVoucher, { data });
+      return await this.req.post(apiProductType, { data });
     } catch (err) {
       throw err;
     }
   }
   async updateProductType(data: ProductTypeInterface) {
-    const { apiVoucher } = this;
+    const { apiProductType } = this;
     try {
-      return await this.req.patch(apiVoucher, { data });
+      return await this.req.patch(apiProductType, { data });
     } catch (err) {
       throw err;
     }
