@@ -32,9 +32,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
   showDeleteModal = false;
   nameDanger: boolean;
 
-  displayData: any[] = [];
   displayedColumns: string[];
-  dataKeys: string[];
   dataSource: MatTableDataSource<any>;
 
   attributeRoute = `/${ADMIN}/${PRODUCTATTRIBUTE}`;
@@ -183,9 +181,11 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
 
   getAttribute(attributeId: string) {
     this.attributeSubscription = this.shopService.getAttributeById(attributeId).subscribe(attribute => {
-      this.attribute = attribute;
-      const { name } = attribute;
-      this.attributeForm.patchValue({ name });
+      if (attribute) {
+        this.attribute = attribute;
+        const { name } = attribute;
+        this.attributeForm.patchValue({ name });
+      }
     });
   }
 

@@ -176,7 +176,6 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.label = 'Attribute';
       this.getData(attributes, {
         name: 'Name',
-        code: 'Code',
         status: 'Status'
       });
       this.getPageLength(attributes, this.dataLengthKey);

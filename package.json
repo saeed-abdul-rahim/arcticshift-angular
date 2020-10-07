@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prestart": "ngtw build"
+    "prestart": "ngtw build",
+    "bundle-report": "webpack-bundle-analyzer dist/arcticshift-angular/stats-es2015.json"
   },
   "private": true,
   "dependencies": {
@@ -67,7 +68,8 @@
     "tailwindcss": "^1.8.4",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~3.8.3"
+    "typescript": "~3.8.3",
+    "webpack-bundle-analyzer": "^3.9.0"
   },
   "_moduleAliases": {
     "@environment": "dist/environments/environment.ts",

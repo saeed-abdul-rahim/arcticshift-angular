@@ -16,6 +16,7 @@ import { AttributeCondition, AttributeInterface, AttributeJoinInterface, Attribu
 import { leftJoin } from '@utils/leftJoin';
 import { VoucherInterface } from '@models/Voucher';
 import { TaxCondition, TaxInterface, TaxObjectType } from '@models/Tax';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ import { TaxCondition, TaxInterface, TaxObjectType } from '@models/Tax';
 export class ShopService {
 
   products$: Observable<ProductInterface[]>;
+  attributes$: Observable<AttributeInterface[]>;
   collections$: Observable<CollectionInterface[]>;
   categories$: Observable<CategoryInterface[]>;
   productTypes$: Observable<ProductTypeInterface[]>;
@@ -121,6 +123,14 @@ export class ShopService {
     return getDataFromDocument(taxRef);
   }
 
+  getAttributeByIds(attributeIds: string[]): Observable<AttributeInterface[]> {
+    const queries = attributeIds.map(id => {
+      const attributeData = this.db.collection<AttributeInterface>(this.dbAttributesRoute).doc(id);
+      return getDataFromDocument(attributeData) as Observable<AttributeInterface>;
+    });
+    return combineLatest(queries);
+  }
+
   getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     const products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
     this.products$ = getDataFromCollection(products);
@@ -133,15 +143,10 @@ export class ShopService {
     return this.productTypes$;
   }
 
-  getAllAttributesByShopIdAndProductTypeId(shopId: string, productTypeId: string): Observable<AttributeJoinInterface[]> {
-    const attributes = this.queryAttributes([
-      { field: 'shopId', type: '==', value: shopId },
-      { field: 'productTypeId', type: '==', value: productTypeId }
-    ]);
-    this.productAttributesJoin$ = getDataFromCollection(attributes).pipe(
-      leftJoin(this.afs, 'attributeId', this.dbAttributeValuesRoutePath)
-    ) as Observable<AttributeJoinInterface[]>;
-    return this.productAttributesJoin$;
+  getAllAttributesByShopId(shopId: string): Observable<AttributeInterface[]> {
+    const attributes = this.queryAttributes([{ field: 'shopId', type: '==', value: shopId }]);
+    this.attributes$ = getDataFromCollection(attributes);
+    return this.attributes$;
   }
 
   getAttributeValuesByAttributeId(attributeId: string): Observable<AttributeValueInterface[]> {
@@ -168,6 +173,17 @@ export class ShopService {
     ]);
     this.tax$ = getDataFromCollection(taxes);
     return this.tax$;
+  }
+
+  getAllAttributesByShopIdAndProductTypeId(shopId: string, productTypeId: string): Observable<AttributeJoinInterface[]> {
+    const attributes = this.queryAttributes([
+      { field: 'shopId', type: '==', value: shopId },
+      { field: 'productTypeId', type: '==', value: productTypeId }
+    ]);
+    this.productAttributesJoin$ = getDataFromCollection(attributes).pipe(
+      leftJoin(this.afs, 'attributeId', this.dbAttributeValuesRoutePath)
+    ) as Observable<AttributeJoinInterface[]>;
+    return this.productAttributesJoin$;
   }
 
   private queryCategories(conditions?: CollectionCondition[]) {

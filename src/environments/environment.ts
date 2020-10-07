@@ -15,7 +15,7 @@ export const environment = {
     sale: '/sale-discount',
     variant: '/variant',
     voucher: '/voucher',
-    productType: '/productType',
+    productType: '/product-type',
     attribute: '/attribute',
     warehouse: '/warehouse',
     tax: '/tax'
