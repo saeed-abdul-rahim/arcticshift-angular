@@ -21062,6 +21062,13 @@ video {
   cursor: pointer;
 }
 
+.data-empty {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .height-0 {
   height: 0 !important;
 }
@@ -21234,6 +21241,24 @@ h5 {
   --text-opacity: 1;
   color: #1a202c;
   color: rgba(26, 32, 44, var(--text-opacity));
+}
+
+.ng-select-multiple .ng-value {
+  margin-right: 0.5rem;
+  --bg-opacity: 1;
+  background-color: #bee3f8;
+  background-color: rgba(190, 227, 248, var(--bg-opacity));
+  border-radius: 0.375rem;
+}
+
+.ng-select-multiple .ng-value-label, .ng-select-multiple .ng-value-icon {
+  padding: 0.25rem;
+}
+
+.ng-placeholder {
+  --text-opacity: 1;
+  color: #cbd5e0;
+  color: rgba(203, 213, 224, var(--text-opacity));
 }
 
 .mat-table, .mat-paginator, .mat-form-field {

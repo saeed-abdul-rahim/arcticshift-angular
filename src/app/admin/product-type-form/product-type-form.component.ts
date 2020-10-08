@@ -33,6 +33,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   attributeLoading: boolean;
   productAttributeLoading: boolean;
   variantAttributeLoading: boolean;
+  loadingAttributeModal: boolean;
   successAttributeModal: boolean;
 
   showModal = false;
@@ -48,7 +49,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   attributesSource: MatTableDataSource<AttributeInterface>;
   selectedAttributeIds: string[] = [];
 
-  productTypeRoute = `/${ADMIN}/${CATALOG}/${PRODUCTTYPE}`;
+  productTypeRoute = `/${ADMIN}/${PRODUCTTYPE}`;
   attributeRoute = `/${ADMIN}/${PRODUCTATTRIBUTE}`;
 
   productType: ProductTypeInterface;
@@ -174,7 +175,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   async saveAttributes() {
-    this.attributeLoading = true;
+    this.loadingAttributeModal = true;
     try {
       const setData = {
         productTypeId: this.productType.productTypeId
@@ -192,7 +193,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
       }
       this.showModal = false;
     } catch (err) {}
-    this.attributeLoading = false;
+    this.loadingAttributeModal = false;
   }
 
   async deleteAttribute(type: ListType, attributeId: string) {
@@ -220,16 +221,18 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
 
   getProductType(productTypeId: string) {
     this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId).subscribe(productType => {
-      this.productType = productType;
-      const { name, taxId, productAttributeId, variantAttributeId } = productType;
-      this.unsubscribeProductAttributes();
-      this.unsubscribeVariantAttributes();
-      this.getProductAttributeByIds(productAttributeId);
-      this.getVariantAttributeByIds(variantAttributeId);
-      this.productTypeForm.patchValue({
-        name,
-        tax: taxId
-      });
+      if (productType) {
+        this.productType = productType;
+        const { name, taxId, productAttributeId, variantAttributeId } = productType;
+        this.unsubscribeProductAttributes();
+        this.unsubscribeVariantAttributes();
+        this.getProductAttributeByIds(productAttributeId);
+        this.getVariantAttributeByIds(variantAttributeId);
+        this.productTypeForm.patchValue({
+          name,
+          tax: taxId
+        });
+      }
     });
   }
 

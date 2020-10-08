@@ -17,6 +17,7 @@ export interface ProductInterface extends CommonInterface {
     collectionId?: string[];
     prices?: Price[];
     price?: number;
+    chargeTax?: boolean;
     tax?: Tax | null;
     variantId?: string[];
     saleDiscountId?: string;
