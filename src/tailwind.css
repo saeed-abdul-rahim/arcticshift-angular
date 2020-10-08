@@ -273,6 +273,12 @@
     @apply cursor-pointer;
 }
 
+.data-empty {
+    @apply flex;
+    @apply justify-center;
+    @apply py-5;
+}
+
 .height-0 {
     @apply h-0 !important;
 }
@@ -389,6 +395,20 @@ h5 {
 .ng-option:hover {
     @apply bg-gray-100;
     @apply text-gray-900;
+}
+
+.ng-select-multiple .ng-value {
+    @apply mr-2;
+    @apply bg-blue-200;
+    @apply rounded-md;
+}
+
+.ng-select-multiple .ng-value-label, .ng-select-multiple .ng-value-icon {
+    @apply p-1;
+}
+
+.ng-placeholder {
+    @apply text-gray-400;
 }
 
 .mat-table, .mat-paginator, .mat-form-field {

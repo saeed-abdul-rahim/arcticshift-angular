@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 import { ContentStorage, ContentType } from '@models/Common';
@@ -18,6 +18,7 @@ import { IMAGE_SM } from '@constants/imageSize';
 import { StorageService } from '@services/storage/storage.service';
 import { AuthService } from '@services/auth/auth.service';
 import { ProductTypeInterface } from '@models/ProductType';
+import { AttributeJoinInterface } from '@models/Attribute';
 
 @Component({
   selector: 'app-product-form',
@@ -39,14 +40,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   productTypeDanger: boolean;
 
   shopId: string;
-  productTypes: ProductTypeInterface[];
-  categories: CategoryInterface[];
-  collections: CollectionInterface[];
+  productTypes: ProductTypeInterface[] = [];
+  categories: CategoryInterface[] = [];
+  collections: CollectionInterface[] = [];
+  attributes: AttributeJoinInterface[] = [];
 
   productRoute = `/${ADMIN}/${CATALOG}/${PRODUCT}`;
+  selectedCollections: string[] | null = [];
   product: ProductInterface;
   productForm: FormGroup;
-  selectedProductType: ProductTypeInterface;
 
   file: File;
   fileType: ContentType;
@@ -100,11 +102,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.productForm = this.formbuilder.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
       description: [''],
-      price: [0, Validators.required],
-      productType: ['', Validators.required],
-      category: [''],
-      collection: [''],
-      hidden: [false],
+      price: ['', Validators.required],
+      productType: [null, Validators.required],
+      attributes: new FormArray([]),
+      category: [null],
+      visibility: ['active'],
       tax: [false],
     });
   }
@@ -125,12 +127,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     if (this.collectionSubscription && !this.collectionSubscription.closed) {
       this.collectionSubscription.unsubscribe();
     }
+    this.unsubscribeAttributes();
+  }
+
+  unsubscribeAttributes() {
+    if (this.attributeSubscription && !this.attributeSubscription.closed) {
+      this.attributeSubscription.unsubscribe();
+    }
   }
 
   get productFormControls() { return this.productForm.controls; }
 
   async onSubmit() {
-    const { name, price, description, category, collection, productType } = this.productFormControls;
+    const { name, price, description, category, productType, tax, visibility } = this.productFormControls;
     if (this.productForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -149,8 +158,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       description: description.value,
       price: price.value,
       categoryId: category.value,
-      collectionId: [...collection.value],
-      productTypeId: productType.value
+      collectionId: this.selectedCollections,
+      productTypeId: productType.value,
+      chargeTax: tax.value,
+      status: visibility.value
     };
     try {
       if (this.edit) {
@@ -175,24 +186,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  getProductTypes() {
-    this.categorySubscription = this.shopService.getAllProductTypesByShopId(this.shopId).subscribe(productTypes => {
-      this.productTypes = productTypes;
-    });
-  }
-
-  getCategories() {
-    this.categorySubscription = this.shopService.getAllCategoriesByShopId(this.shopId).subscribe(categories => {
-      this.categories = categories;
-    });
-  }
-
-  getCollections() {
-    this.collectionSubscription = this.shopService.getAllCollectionsByShopId(this.shopId).subscribe(collections => {
-      this.collections = collections;
-    });
-  }
-
   async deleteProduct() {
     this.loadingDelete = true;
     try {
@@ -214,6 +207,27 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
       await this.adminService.deleteProductImage(productId, image.content.path);
     } catch (_) { }
+  }
+
+  getProductTypes() {
+    this.categorySubscription = this.shopService.getAllProductTypesByShopId(this.shopId)
+      .subscribe(productTypes => this.productTypes = productTypes);
+  }
+
+  getAttributes(productTypeId: string) {
+    this.unsubscribeAttributes();
+    this.attributeSubscription = this.shopService.getAllAttributesByShopIdAndProductTypeId(this.shopId, productTypeId)
+      .subscribe(attributes => this.attributes = attributes);
+  }
+
+  getCategories() {
+    this.categorySubscription = this.shopService.getAllCategoriesByShopId(this.shopId)
+      .subscribe(categories => this.categories = categories);
+  }
+
+  getCollections() {
+    this.collectionSubscription = this.shopService.getAllCollectionsByShopId(this.shopId)
+      .subscribe(collections => this.collections = collections);
   }
 
   onFileDropped($event: Event) {
@@ -277,15 +291,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   setFormValue() {
-    const { name, description, price, productTypeId, categoryId, collectionId, status, tax } = this.product;
+    const { name, description, price, productTypeId, categoryId, collectionId, status, chargeTax } = this.product;
     this.productForm.patchValue({
       name, description, price,
       productType: productTypeId,
       category: categoryId,
-      collection: collectionId,
-      hidden: status && status === 'active' ? true : false,
-      tax: tax ? true : false
+      visibility: status,
+      tax: chargeTax
     });
+    this.selectedCollections = collectionId;
   }
 
   toAddVariant() {

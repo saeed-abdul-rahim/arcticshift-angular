@@ -51,11 +51,11 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="form-checkbox arc-checkbox" />
+          <input type="checkbox" class="form-checkbox text-blue-500" formControlName="tax"/>
           <span class="ml-2 text-sm font-semibold text-gray-700">Charge taxes for this item</span>
         </label>
         <div class="w-full mb-3">
-          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="price"
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Price"
             [ngClass]="priceDanger ? 'border-red' : ''" formControlName="price" />
         </div>
       </div>
@@ -72,28 +72,40 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full mb-3">
-          <ng-select formControlName="productType" [ngClass]="productTypeDanger ? 'border-red' : ''" [(ngModel)]="selectedProductType" [items]="productTypes" bindValue="id" bindLabel="name" placeholder="Product Type"></ng-select>
+          <ng-select formControlName="productType" [ngClass]="productTypeDanger ? 'border-red' : ''" [items]="productTypes" bindValue="id" bindLabel="name" placeholder="Product Type"></ng-select>
         </div>
         <div class="w-full mb-3">
           <ng-select formControlName="category" [items]="categories" bindValue="id" bindLabel="name" placeholder="Category"></ng-select>
         </div>
         <div class="w-full mb-3">
-          <ng-select formControlName="collection" [items]="collections" bindValue="id" bindLabel="name" placeholder="Collection"></ng-select>
+          <ng-select
+            [items]="collections"
+            [multiple]="true"
+            bindLabel="name"
+            [closeOnSelect]="false"
+            bindValue="id"
+            placeholder="Collections"
+            [(ngModel)]="selectedCollections"
+            [ngModelOptions]="{standalone: true}" >
+            <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" class="form-checkbox text-blue-500" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{standalone: true}"/> {{item.name}}
+            </ng-template>
+          </ng-select>
         </div>
       </div>
     </div>
   </ng-template>
 
   <ng-template #visibility>
-    <div class="flex items-center ml-4 mb-4 p-1">
-      <input id="radio1" type="radio" name="radio" class="hidden" checked />
-      <label for="radio1" class="flex items-center cursor-pointer">
+    <div class="flex items-center ml-4 mb-1 p-1">
+      <input id="active" type="radio" name="visibility" class="hidden" formControlName="visibility" value="active" />
+      <label for="active" class="flex items-center cursor-pointer">
         <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
         Visible</label>
     </div>
-    <div class="flex items-center ml-4 mb-4 p-1">
-      <input id="radio2" type="radio" name="radio" class="hidden" />
-      <label for="radio2" class="flex items-center cursor-pointer">
+    <div class="flex items-center ml-4 mb-1 p-1">
+      <input id="inactive" type="radio" name="visibility" class="hidden" formControlName="visibility" value="inactive" />
+      <label for="inactive" class="flex items-center cursor-pointer">
         <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
         Hidden</label>
     </div>
@@ -107,7 +119,7 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
           <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
-          <app-card *ngIf="selectedProductType" [heading]="'Attributes'" [body]="attributes"></app-card>
+          <app-card *ngIf="productFormControls.productType.value" [heading]="'Attributes'" [body]="attributes"></app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
           <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variants"></app-card>
         </div>
