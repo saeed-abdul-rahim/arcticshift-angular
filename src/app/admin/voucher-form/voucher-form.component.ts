@@ -20,7 +20,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   loadingDelete = false;
   successDelete = false;
   edit = false;
-  showMe = true;
+  showMe = false;
   nameDanger: boolean;
 
   voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
