@@ -37,9 +37,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { code, value} = voucher;
+        const { code, value,valueType} = voucher;
         this.addVoucherForm.patchValue({
-          name: code, value
+          name: code, value, valueType
         });
       });
     }
@@ -59,17 +59,17 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
 
   togglelimit()
   {
-   this.showMe=!this.showMe;
+   this.showMe = !this.showMe;
   }
 
   toggleorder()
   {
-   this.showMeOrder=!this.showMeOrder;
+   this.showMeOrder = !this.showMeOrder;
   }
 
   togglequantity()
   {
-   this.showMeQuantity=!this.showMeQuantity;
+   this.showMeQuantity = !this.showMeQuantity;
   }
 
   ngOnDestroy(): void {
@@ -81,7 +81,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   get addvoucherFormControls() { return this.addVoucherForm.controls; }
 
   async onSubmit() {
-    const { code,value} = this.addvoucherFormControls;
+    const { code,value,discountType} = this.addvoucherFormControls;
     if (this.addVoucherForm.invalid) {
       if (code.errors) {
         this.nameDanger = true;
@@ -91,8 +91,8 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     const setData = {
       code: code.value,
-      value:value.value
-   
+      value: value.value,
+      valueType: discountType.value
     };
     try {
       if (this.edit) {
