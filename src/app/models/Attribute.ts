@@ -3,7 +3,7 @@ import { Condition, CommonInterface } from './Common';
 export interface AttributeInterface extends CommonInterface {
     id?: string;
     shopId?: string;
-    productTypeId?: string;
+    productTypeId?: string[];
     attributeId?: string;
     code?: string;
     name?: string;
@@ -13,7 +13,7 @@ export interface AttributeInterface extends CommonInterface {
 export interface AttributeValueInterface extends CommonInterface {
     id?: string;
     shopId?: string;
-    productTypeId?: string;
+    productTypeId?: string[];
     attributeId?: string;
     code?: string;
     name?: string;

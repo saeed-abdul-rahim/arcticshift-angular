@@ -44,14 +44,8 @@ export const leftJoin = (
         map(joins => {
           return collectionData.map((v, i) => {
             totalJoins += joins[i].length;
-            return { ...v, [collection]: joins[i] || null };
+            return { ...v, [collection.split('/').pop()]: joins[i] || null };
           });
-        }),
-        tap(final => {
-          console.log(
-            `Queried ${(final as any).length}, Joined ${totalJoins} docs`
-          );
-          totalJoins = 0;
         })
       );
     });

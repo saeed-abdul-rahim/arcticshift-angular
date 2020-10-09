@@ -19,6 +19,8 @@ import { StorageService } from '@services/storage/storage.service';
 import { AuthService } from '@services/auth/auth.service';
 import { ProductTypeInterface } from '@models/ProductType';
 import { AttributeJoinInterface } from '@models/Attribute';
+import { VariantInterface } from '@models/Variant';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-product-form',
@@ -31,6 +33,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  variantsLoading = false;
   loadingDelete = false;
   successDelete = false;
   edit = false;
@@ -40,6 +43,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   productTypeDanger: boolean;
 
   shopId: string;
+  product: ProductInterface;
+  variants: VariantInterface[] = [];
   productTypes: ProductTypeInterface[] = [];
   categories: CategoryInterface[] = [];
   collections: CollectionInterface[] = [];
@@ -47,8 +52,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   productRoute = `/${ADMIN}/${CATALOG}/${PRODUCT}`;
   selectedCollections: string[] | null = [];
-  product: ProductInterface;
   productForm: FormGroup;
+
+  displayedColumns: string[] = [];
+  variantsSource: MatTableDataSource<VariantInterface>;
 
   file: File;
   fileType: ContentType;
@@ -111,6 +118,25 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  setAttributeForm(event: ProductTypeInterface, patch = false) {
+    this.productFormControls.attributes.reset();
+    if (event) {
+      const { productTypeId } = event;
+      this.attributeSubscription = this.getAttributes(productTypeId).subscribe(attributes => {
+        this.attributes = attributes;
+        this.attributes.forEach(attr => {
+          let defaultValue = '';
+          if (patch && this.product && this.product.attributeValueId) {
+            defaultValue = this.product.attributeValueId.find(id => id === attr.attributeValueId.find(vId => vId === id));
+          }
+          this.attributeForm.push(this.formbuilder.group({
+            attributeValueId: [defaultValue]
+          }));
+        });
+      });
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
@@ -127,6 +153,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     if (this.collectionSubscription && !this.collectionSubscription.closed) {
       this.collectionSubscription.unsubscribe();
     }
+    if (this.variantSubscription && !this.variantSubscription.closed) {
+      this.variantSubscription.unsubscribe();
+    }
     this.unsubscribeAttributes();
   }
 
@@ -137,9 +166,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   get productFormControls() { return this.productForm.controls; }
+  get attributeForm() { return this.productFormControls.attributes as FormArray; }
 
   async onSubmit() {
     const { name, price, description, category, productType, tax, visibility } = this.productFormControls;
+    const attributeFormControls = this.attributeForm.controls;
     if (this.productForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -152,6 +183,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       }
       return;
     }
+    const attributeValueId = attributeFormControls.map((formGroup: FormGroup) => {
+      return formGroup.controls.attributeValueId.value as string;
+    }).filter(e => e);
     this.loading = true;
     const setData = {
       name: name.value,
@@ -160,6 +194,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       categoryId: category.value,
       collectionId: this.selectedCollections,
       productTypeId: productType.value,
+      attributeValueId,
       chargeTax: tax.value,
       status: visibility.value
     };
@@ -177,6 +212,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(`/${this.productRoute}/${id}`);
         }
       }
+      this.nameDanger = false;
+      this.productTypeDanger = false;
+      this.priceDanger = false;
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
@@ -210,23 +248,27 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   getProductTypes() {
-    this.categorySubscription = this.shopService.getAllProductTypesByShopId(this.shopId)
+    this.categorySubscription = this.shopService.getProductTypesByShopId(this.shopId)
       .subscribe(productTypes => this.productTypes = productTypes);
   }
 
   getAttributes(productTypeId: string) {
     this.unsubscribeAttributes();
-    this.attributeSubscription = this.shopService.getAllAttributesByShopIdAndProductTypeId(this.shopId, productTypeId)
-      .subscribe(attributes => this.attributes = attributes);
+    return this.shopService.getAttributesByShopIdAndProductTypeId(this.shopId, productTypeId);
+  }
+
+  getVariants(productId: string) {
+    this.variantSubscription = this.shopService.getVariantsByProductId(productId)
+      .subscribe(variants => this.variants = variants);
   }
 
   getCategories() {
-    this.categorySubscription = this.shopService.getAllCategoriesByShopId(this.shopId)
+    this.categorySubscription = this.shopService.getCategoriesByShopId(this.shopId)
       .subscribe(categories => this.categories = categories);
   }
 
   getCollections() {
-    this.collectionSubscription = this.shopService.getAllCollectionsByShopId(this.shopId)
+    this.collectionSubscription = this.shopService.getCollectionsByShopId(this.shopId)
       .subscribe(collections => this.collections = collections);
   }
 
@@ -300,6 +342,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       tax: chargeTax
     });
     this.selectedCollections = collectionId;
+    if (productTypeId) {
+      this.setAttributeForm({ productTypeId }, true);
+    }
   }
 
   toAddVariant() {

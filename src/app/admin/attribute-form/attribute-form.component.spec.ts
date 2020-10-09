@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributeFormComponent } from './attributes.component';
+import { AttributeFormComponent } from './attribute-form.component';
 
 describe('AttributeFormComponent', () => {
   let component: AttributeFormComponent;
