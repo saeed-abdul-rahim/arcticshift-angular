@@ -7,11 +7,6 @@ export interface VoucherInterface extends CommonInterface {
     code?: string;
     valueType?: VoucherValueType;
     value?: number;
-    none?:string;
-    minimalOrder?:string;
-    minimumQuantity?:string;
-    limit?:number;
-    limitTo?:string;
     entireOrder?: boolean;
     oncePerOrder?: boolean;
     categoryId?: string[];

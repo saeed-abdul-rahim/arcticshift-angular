@@ -37,9 +37,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { code, value,limit,limitTo,valueType,none,minimalOrder,minimumQuantity } = voucher;
+        const { code, value} = voucher;
         this.addVoucherForm.patchValue({
-          name: code, value,limit,limitTo,valueType,none,minimalOrder,minimumQuantity
+          name: code, value
         });
       });
     }
@@ -49,13 +49,11 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     this.addVoucherForm = this.formbuilder.group({
       code: ['', Validators.required],
       value: ['', Validators.required],
-      limit: ['', ],
-      limitTo: ['', ],
-      valueType: ['', ],
-      none: ['', ],
-      minimalOrder: ['', ],
-      minimumQuantity: ['', ],
-
+      discountType:[''],
+      minimalOrder: [''],
+      minimumQuantity:[''],
+      limit:[''],
+      limitOne:['']
     });
   }
 
@@ -83,7 +81,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   get addvoucherFormControls() { return this.addVoucherForm.controls; }
 
   async onSubmit() {
-    const { code,value,limit,limitTo,valueType,none,minimalOrder,minimumQuantity} = this.addvoucherFormControls;
+    const { code,value} = this.addvoucherFormControls;
     if (this.addVoucherForm.invalid) {
       if (code.errors) {
         this.nameDanger = true;
@@ -93,14 +91,8 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     const setData = {
       code: code.value,
-      value:value.value,
-      limit: limit.value,
-      limitTo: limitTo.value,
-      valueType:valueType.value,
-      none:none.value,
-      minimalOrder:minimalOrder.value,
-      minimumQuantity:minimumQuantity.value
-
+      value:value.value
+   
     };
     try {
       if (this.edit) {
