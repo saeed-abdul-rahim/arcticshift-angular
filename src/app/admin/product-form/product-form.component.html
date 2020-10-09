@@ -6,7 +6,7 @@
 
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-full mb-3">
+        <div class="w-full mb-1">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
             [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
         </div>
@@ -27,20 +27,20 @@
   </ng-template>
 
   <ng-template #imageUpload>
-    <app-upload
-      [uploadProgress]="uploadProgress"
-      [thumbnails]="thumbnails"
-      (fileClickedCallback)="onFileClicked($event)"
-      (fileDroppedCallback)="onFileDropped($event)"
-      (deleteImageCallback)="deleteProductImage($event)"
-    ></app-upload>
+    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
+      (deleteImageCallback)="deleteProductImage($event)"></app-upload>
   </ng-template>
 
-  <ng-template #attributes>
-    <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-full mb-3">
-          <ng-select placeholder="Value"></ng-select>
+  <ng-template #attributesTemplate>
+    <div class="items-center mb-1" formArrayName="attributes">
+      <div class="relative flex flex-wrap w-full px-4 py-2 max-w-full flex-grow flex-1"
+        *ngFor="let attribute of attributes; let i=index" [formGroupName]="i">
+        <div class="w-full md:w-4/12 m-auto">{{ attribute.name }}</div>
+        <div class="w-full md:w-8/12">
+          <ng-select formControlName="attributeValueId"
+            *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0" placeholder="Value"
+            [items]="attribute.attributeValues" bindValue="id" bindLabel="name"></ng-select>
         </div>
       </div>
     </div>
@@ -51,10 +51,10 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="form-checkbox text-blue-500" formControlName="tax"/>
+          <input type="checkbox" class="form-checkbox text-blue-500" formControlName="tax" />
           <span class="ml-2 text-sm font-semibold text-gray-700">Charge taxes for this item</span>
         </label>
-        <div class="w-full mb-3">
+        <div class="w-full mb-1">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Price"
             [ngClass]="priceDanger ? 'border-red' : ''" formControlName="price" />
         </div>
@@ -62,33 +62,25 @@
     </div>
   </ng-template>
 
-  <ng-template #variants>
-    <label class="arc-link-button" type="button">
-      <a (click)="toAddVariant()">Create Variant</a>
-    </label>
-  </ng-template>
-
   <ng-template #organizeProduct>
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-full mb-3">
-          <ng-select formControlName="productType" [ngClass]="productTypeDanger ? 'border-red' : ''" [items]="productTypes" bindValue="id" bindLabel="name" placeholder="Product Type"></ng-select>
+        <div class="w-full mb-1">
+          <ng-select formControlName="productType" [ngClass]="productTypeDanger ? 'border-red' : ''"
+            [items]="productTypes" bindValue="id" bindLabel="name" placeholder="Product Type"
+            (change)="setAttributeForm($event)">
+          </ng-select>
         </div>
-        <div class="w-full mb-3">
-          <ng-select formControlName="category" [items]="categories" bindValue="id" bindLabel="name" placeholder="Category"></ng-select>
+        <div class="w-full mb-1">
+          <ng-select formControlName="category" [items]="categories" bindValue="id" bindLabel="name"
+            placeholder="Category"></ng-select>
         </div>
-        <div class="w-full mb-3">
-          <ng-select
-            [items]="collections"
-            [multiple]="true"
-            bindLabel="name"
-            [closeOnSelect]="false"
-            bindValue="id"
-            placeholder="Collections"
-            [(ngModel)]="selectedCollections"
-            [ngModelOptions]="{standalone: true}" >
+        <div class="w-full mb-1">
+          <ng-select [items]="collections" [multiple]="true" bindLabel="name" [closeOnSelect]="false" bindValue="id"
+            placeholder="Collections" [(ngModel)]="selectedCollections" [ngModelOptions]="{standalone: true}">
             <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                <input id="item-{{index}}" class="form-checkbox text-blue-500" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{standalone: true}"/> {{item.name}}
+              <input id="item-{{index}}" class="form-checkbox text-blue-500" type="checkbox" [ngModel]="item$.selected"
+                [ngModelOptions]="{standalone: true}" /> {{item.name}}
             </ng-template>
           </ng-select>
         </div>
@@ -104,7 +96,8 @@
         Visible</label>
     </div>
     <div class="flex items-center ml-4 mb-1 p-1">
-      <input id="inactive" type="radio" name="visibility" class="hidden" formControlName="visibility" value="inactive" />
+      <input id="inactive" type="radio" name="visibility" class="hidden" formControlName="visibility"
+        value="inactive" />
       <label for="inactive" class="flex items-center cursor-pointer">
         <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
         Hidden</label>
@@ -119,9 +112,10 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
           <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
-          <app-card *ngIf="productFormControls.productType.value" [heading]="'Attributes'" [body]="attributes"></app-card>
+          <app-card *ngIf="productFormControls.productType.value" [heading]="'Attributes'" [body]="attributesTemplate">
+          </app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
-          <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variants"></app-card>
+          <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variantActionTemplate" [body]="variantListTemplate"></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Organize Product'" [body]="organizeProduct"></app-card>
@@ -131,13 +125,35 @@
     </div>
   </div>
 
-  <app-footer-form
-    [loading]="loading"
-    [success]="success"
-    [showDelete]="edit"
-    [loadingDelete]="loadingDelete"
-    [successDelete]="successDelete"
-    (deleteCallback)="deleteProduct()"
-  ></app-footer-form>
+  <app-footer-form [loading]="loading" [success]="success" [showDelete]="edit" [loadingDelete]="loadingDelete"
+    [successDelete]="successDelete" (deleteCallback)="deleteProduct()"></app-footer-form>
 
 </form>
+
+<!-- BUTTON TEMPLATES -->
+
+<ng-template #variantActionTemplate>
+  <label class="arc-link-button" type="button">
+    <a (click)="toAddVariant()">Create Variant</a>
+  </label>
+</ng-template>
+
+<!-- TABLE TEMPLATES -->
+
+<ng-template #variantListTemplate>
+  <app-spinner class="data-empty" *ngIf="variantsLoading" [size]="'5'"></app-spinner>
+  <div *ngIf="!variantsLoading">
+    <div *ngIf="variants && variants.length === 0" class="data-empty">No data available</div>
+    <table *ngIf="variants && variants.length > 0" mat-table [dataSource]="variantsSource">
+
+      <ng-container matColumnDef="attribute">
+        <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
+
+    </table>
+  </div>
+</ng-template>

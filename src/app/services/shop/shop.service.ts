@@ -3,7 +3,6 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import { Observable } from 'rxjs/internal/Observable';
 
 import { environment } from '@environment';
-import { AuthService } from '@services/auth/auth.service';
 import { ProductCondition, ProductInterface } from '@models/Product';
 import { getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreData';
 import { setCondition } from '@utils/setFirestoreCondition';
@@ -17,6 +16,7 @@ import { leftJoin } from '@utils/leftJoin';
 import { VoucherInterface } from '@models/Voucher';
 import { TaxCondition, TaxInterface, TaxObjectType } from '@models/Tax';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { VariantCondition, VariantInterface } from '@models/Variant';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +35,7 @@ export class ShopService {
   private dbPath: string;
 
   private dbProductsRoute: string;
+  private dbVariantsRoute: string;
   private dbProductTypesRoute: string;
   private dbCollectionsRoute: string;
   private dbCategoriesRoute: string;
@@ -46,12 +47,13 @@ export class ShopService {
 
   private dbAttributeValuesRoutePath: string;
 
-  constructor(private afs: AngularFirestore, private auth: AuthService) {
+  constructor(private afs: AngularFirestore) {
     const { db } = environment;
     const {
       version,
       name,
       products,
+      variants,
       productTypes,
       categories,
       collections,
@@ -66,6 +68,7 @@ export class ShopService {
     this.dbPath = `/${version}/${name}`;
 
     this.dbProductsRoute = products;
+    this.dbVariantsRoute = variants;
     this.dbCategoriesRoute = categories;
     this.dbCollectionsRoute = collections;
     this.dbSalesRoute = saleDiscounts;
@@ -131,22 +134,34 @@ export class ShopService {
     return combineLatest(queries);
   }
 
-  getAllProductsByShopId(shopId: string): Observable<ProductInterface[]> {
+  getProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     const products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
     this.products$ = getDataFromCollection(products);
     return this.products$;
   }
 
-  getAllProductTypesByShopId(shopId: string): Observable<ProductTypeInterface[]> {
+  getProductTypesByShopId(shopId: string): Observable<ProductTypeInterface[]> {
     const productTypes = this.queryProductTypes([{ field: 'shopId', type: '==', value: shopId }]);
     this.productTypes$ = getDataFromCollection(productTypes);
     return this.productTypes$;
   }
 
-  getAllAttributesByShopId(shopId: string): Observable<AttributeInterface[]> {
+  getAttributesByShopId(shopId: string): Observable<AttributeInterface[]> {
     const attributes = this.queryAttributes([{ field: 'shopId', type: '==', value: shopId }]);
     this.attributes$ = getDataFromCollection(attributes);
     return this.attributes$;
+  }
+
+  getCategoriesByShopId(shopId: string): Observable<CategoryInterface[]> {
+    const categories = this.queryCategories([{ field: 'shopId', type: '==', value: shopId }]);
+    this.categories$ = getDataFromCollection(categories);
+    return this.categories$;
+  }
+
+  getCollectionsByShopId(shopId: string): Observable<CollectionInterface[]> {
+    const collection = this.queryCollections([{ field: 'shopId', type: '==', value: shopId }]);
+    this.collections$ = getDataFromCollection(collection);
+    return this.collections$;
   }
 
   getAttributeValuesByAttributeId(attributeId: string): Observable<AttributeValueInterface[]> {
@@ -154,19 +169,12 @@ export class ShopService {
     return getDataFromCollection(attributeValueRef);
   }
 
-  getAllCategoriesByShopId(shopId: string): Observable<CategoryInterface[]> {
-    const categories = this.queryCategories([{ field: 'shopId', type: '==', value: shopId }]);
-    this.categories$ = getDataFromCollection(categories);
-    return this.categories$;
+  getVariantsByProductId(productId: string): Observable<VariantInterface[]> {
+    const variantsRef = this.queryVariants([{ field: 'productId', type: '==', value: productId }]);
+    return getDataFromCollection(variantsRef);
   }
 
-  getAllCollectionsByShopId(shopId: string): Observable<CollectionInterface[]> {
-    const collection = this.queryCollections([{ field: 'shopId', type: '==', value: shopId }]);
-    this.collections$ = getDataFromCollection(collection);
-    return this.collections$;
-  }
-
-  getAllTaxByShopIdAndType(shopId: string, type: TaxObjectType) {
+  getTaxesByShopIdAndType(shopId: string, type: TaxObjectType) {
     const taxes = this.queryTax([
       { field: 'shopId', type: '==', value: shopId },
       { field: 'type', type: '==', value: type }
@@ -175,10 +183,10 @@ export class ShopService {
     return this.tax$;
   }
 
-  getAllAttributesByShopIdAndProductTypeId(shopId: string, productTypeId: string): Observable<AttributeJoinInterface[]> {
+  getAttributesByShopIdAndProductTypeId(shopId: string, productTypeId: string): Observable<AttributeJoinInterface[]> {
     const attributes = this.queryAttributes([
       { field: 'shopId', type: '==', value: shopId },
-      { field: 'productTypeId', type: '==', value: productTypeId }
+      { field: 'productTypeId', type: 'array-contains', value: productTypeId }
     ]);
     this.productAttributesJoin$ = getDataFromCollection(attributes).pipe(
       leftJoin(this.afs, 'attributeId', this.dbAttributeValuesRoutePath)
@@ -199,6 +207,11 @@ export class ShopService {
   private queryProducts(conditions?: ProductCondition[]) {
     const { dbProductsRoute } = this;
     return this.query(dbProductsRoute, conditions);
+  }
+
+  private queryVariants(conditions?: VariantCondition[]) {
+    const { dbVariantsRoute } = this;
+    return this.query(dbVariantsRoute, conditions);
   }
 
   private queryProductTypes(conditions?: ProductTypeCondition[]) {

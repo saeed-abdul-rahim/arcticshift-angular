@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { ADD, ADMIN, CATALOG, PRODUCTATTRIBUTE, PRODUCTTYPE } from '@constants/adminRoutes';
+import { ADD, ADMIN, PRODUCTATTRIBUTE, PRODUCTTYPE } from '@constants/adminRoutes';
 import { AttributeInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
@@ -71,7 +71,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
       if (user) {
         const { shopId } = user;
         this.shopId = shopId;
-        this.tax$ = this.shopService.getAllTaxByShopIdAndType(shopId, 'product');
+        this.tax$ = this.shopService.getTaxesByShopIdAndType(shopId, 'product');
         this.getAllAttributes();
       }
     });
@@ -237,7 +237,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   getAllAttributes() {
-    this.attributeSubscription = this.shopService.getAllAttributesByShopId(this.shopId).subscribe(attributes => {
+    this.attributeSubscription = this.shopService.getAttributesByShopId(this.shopId).subscribe(attributes => {
       this.attributes = attributes;
     });
   }

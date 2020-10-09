@@ -1,4 +1,4 @@
-import { CommonInterface, Status, ContentStorage, AttributeValue } from './Common';
+import { CommonInterface, Status, Condition, Content } from './Common';
 
 export interface VariantInterface extends CommonInterface {
     id?: string;
@@ -11,11 +11,10 @@ export interface VariantInterface extends CommonInterface {
     description?: string;
     keywords?: string[];
     url?: string;
-    image?: ContentStorage | null;
-    thumbnailUrls?: Thumbnail[];
+    image?: Content[];
     productTypeId?: string;
-    attribute?: AttributeValue;
-    attributeValue?: AttributeValue;
+    attributeId?: string[];
+    attributeValueId?: string[];
     categoryId?: string;
     collectionId?: string[];
     prices?: Price[];
@@ -30,14 +29,16 @@ export interface VariantInterface extends CommonInterface {
     bookedQuantity?: number;
 }
 
+export type VariantCondition = Condition & {
+    field: VariantFields
+    parentFields?: (keyof VariantInterface)[]
+};
+
+type VariantFields = keyof (VariantInterface);
+
 type Price = {
     name: string
     value: string
-};
-
-type Thumbnail = {
-    size: string
-    image: ContentStorage | null
 };
 
 type WarehouseInventory = {
