@@ -13,19 +13,19 @@
 
       <ng-template #discount>
         <div class="flex items-center ml-4 mb-4 p-1 pt-5">
-          <input id="radio1" type="radio" name="radio" class="hidden" checked />
+          <input id="radio1" type="radio" name="radio" class="hidden" formControlName="fixedAmount" checked />
           <label for="radio1" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Fixed Amount</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio2" type="radio" name="radio" class="hidden" />
+          <input id="radio2" type="radio" name="radio" class="hidden" formControlName="percentage" />
           <label for="radio2" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Percentage</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-            <input id="radio3" type="radio" name="radio" class="hidden" />
+            <input id="radio3" type="radio" name="radio" class="hidden" formControlName="freeShipping"/>
             <label for="radio3" class="flex items-center cursor-pointer">
               <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
               Free Shipping</label>
@@ -44,22 +44,30 @@
       </ng-template>
       <ng-template #minimum>
         <div class="flex items-center ml-4 mb-4 p-1 pt-5">
-          <input id="radio4" type="radio" name="radio1" class="hidden" checked />
+          <input id="radio4" type="radio" name="radio1" class="hidden" formControlName="none" checked />
           <label for="radio4" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             None</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio5" type="radio" name="radio1" class="hidden" />
+          <input id="radio5" type="radio" name="radio1" class="hidden" (click)="toggleorder()" />
           <label for="radio5" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Minimal order value</label>
         </div>
+        <div class="w-full mb-3">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" *ngIf="showMeOrder" placeholder="Minimal order value"
+            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="minimalOrder"/>
+        </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-            <input id="radio6" type="radio" name="radio1" class="hidden" />
+            <input id="radio6" type="radio" name="radio1" class="hidden" (click)="togglequantity()" />
             <label for="radio6" class="flex items-center cursor-pointer">
               <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
               Minimum quantity of items</label>
+          </div>
+          <div class="w-full mb-3">
+            <input type="number" class="arc-input placeholder-gray-400 w-full" *ngIf="showMeQuantity" placeholder="Minimum quantity of items"
+              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="minimumQuantity"/>
           </div>
       </ng-template>
 
@@ -67,15 +75,15 @@
           <div class="flex flex-wrap">
             <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                   <label class="inline-flex w-full">
-                      <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="toggletag()"><span 
+                      <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="togglelimit()"><span 
                       class="ml-2 text-gray-700">Limit number of times this discount can be used in total</span>
                   </label>
                   <div class="w-full mb-3">
                     <input type="number" class="arc-input placeholder-gray-400 w-full" *ngIf="showMe" placeholder="Limit of Uses"
-                      [ngClass]="nameDanger ? 'border-red' : ''" formControlName="limit" />
+                      [ngClass]="nameDanger ? 'border-red' : ''" formControlName="limit"/>
                   </div>
                 <label class="inline-flex w-full">
-                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400"><span 
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400 " formControlName="limitTo"><span 
                     class="ml-2 w-full text-gray-700">Limit to one use per customer</span>
                 </label>
                 

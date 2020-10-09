@@ -21,6 +21,8 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   successDelete = false;
   edit = false;
   showMe = false;
+  showMeOrder = false;
+  showMeQuantity = false;
   nameDanger: boolean;
 
   voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
@@ -35,9 +37,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { code, value } = voucher;
+        const { code, value,limit,limitTo,valueType,none,minimalOrder,minimumQuantity } = voucher;
         this.addVoucherForm.patchValue({
-          name: code, value
+          name: code, value,limit,limitTo,valueType,none,minimalOrder,minimumQuantity
         });
       });
     }
@@ -45,14 +47,32 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.addVoucherForm = this.formbuilder.group({
-      name: ['', Validators.required]
+      code: ['', Validators.required],
+      value: ['', Validators.required],
+      limit: ['', ],
+      limitTo: ['', ],
+      valueType: ['', ],
+      none: ['', ],
+      minimalOrder: ['', ],
+      minimumQuantity: ['', ],
+
     });
   }
-  toggletag()
+
+  togglelimit()
   {
    this.showMe=!this.showMe;
   }
 
+  toggleorder()
+  {
+   this.showMeOrder=!this.showMeOrder;
+  }
+
+  togglequantity()
+  {
+   this.showMeQuantity=!this.showMeQuantity;
+  }
 
   ngOnDestroy(): void {
     if (this.voucherSubscription && !this.voucherSubscription.closed) {
@@ -63,23 +83,35 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   get addvoucherFormControls() { return this.addVoucherForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addvoucherFormControls;
+    const { code,value,limit,limitTo,valueType,none,minimalOrder,minimumQuantity} = this.addvoucherFormControls;
     if (this.addVoucherForm.invalid) {
-      if (name.errors) {
+      if (code.errors) {
         this.nameDanger = true;
       }
       return;
     }
     this.loading = true;
+    const setData = {
+      code: code.value,
+      value:value.value,
+      limit: limit.value,
+      limitTo: limitTo.value,
+      valueType:valueType.value,
+      none:none.value,
+      minimalOrder:minimalOrder.value,
+      minimumQuantity:minimumQuantity.value
+
+    };
     try {
       if (this.edit) {
-        await this.adminService.updateSale({
-          name: name.value,
+        await this.adminService.updateVoucher({
+          ...setData,
+
 
         });
       } else {
-        const data =  await this.adminService.createSale({
-          name: name.value,
+        const data =  await this.adminService.createVoucher({
+          ...setData,
         });
         if (data.id) {
           const { id } = data;
