@@ -90,6 +90,17 @@
               </div>
           </div>
       </ng-template>
+
+      <ng-template #datepicker>
+        <div class="px-6 py-2">
+        <mat-form-field appearance="fill">
+          <mat-label>Choose a date</mat-label>
+          <input matInput [matDatepicker]="picker"/>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+      </ng-template>
       
       <ng-template #summary>
 
@@ -104,6 +115,7 @@
               <app-card [heading]="'Value'" [body]="value"></app-card>
               <app-card [heading]="'Minimum Requirements'" [body]="minimum"></app-card>
               <app-card [heading]="'Usage Limit'" [body]="checkbox"></app-card>
+              <app-card [heading]="'Active Dates'" [body]="datepicker"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit" [heading]="'Summary'" [body]="summary"></app-card>
