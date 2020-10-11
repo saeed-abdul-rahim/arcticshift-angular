@@ -5,8 +5,6 @@ import { Observable } from 'rxjs/internal/Observable';
 import { environment } from '@environment';
 import { ProductCondition, ProductInterface } from '@models/Product';
 import { getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreData';
-import { setCondition } from '@utils/setFirestoreCondition';
-import { Condition } from '@models/Common';
 import { CollectionCondition, CollectionInterface } from '@models/Collection';
 import { CategoryInterface } from '@models/Category';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
@@ -17,6 +15,9 @@ import { VoucherInterface } from '@models/Voucher';
 import { TaxCondition, TaxInterface, TaxObjectType } from '@models/Tax';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { VariantCondition, VariantInterface } from '@models/Variant';
+import { map } from 'rxjs/internal/operators/map';
+import { switchMap } from 'rxjs/operators';
+import { query } from '@utils/query';
 
 @Injectable({
   providedIn: 'root'
@@ -134,6 +135,23 @@ export class ShopService {
     return combineLatest(queries);
   }
 
+  getAttributeAndValuesByIds(attributeIds: string[]): Observable<AttributeJoinInterface[]> {
+    const queries = attributeIds.map(id => {
+      const attributeData = this.db.collection<AttributeInterface>(this.dbAttributesRoute).doc(id);
+      const attributeValueData = this.queryAttributeValues([{ field: 'attributeId', type: '==', value: id }]);
+      return getDataFromDocument(attributeData).pipe(
+          switchMap((attribute: AttributeJoinInterface) => {
+            return getDataFromCollection(attributeValueData).pipe(
+              map(attributeValues => {
+                return { ...attribute, attributeValues };
+              })
+            );
+          })
+      ) as Observable<AttributeJoinInterface>;
+    });
+    return combineLatest(queries);
+  }
+
   getProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     const products = this.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
     this.products$ = getDataFromCollection(products);
@@ -183,9 +201,8 @@ export class ShopService {
     return this.tax$;
   }
 
-  getAttributesByShopIdAndProductTypeId(shopId: string, productTypeId: string): Observable<AttributeJoinInterface[]> {
+  getAttributesByProductTypeId(productTypeId: string): Observable<AttributeJoinInterface[]> {
     const attributes = this.queryAttributes([
-      { field: 'shopId', type: '==', value: shopId },
       { field: 'productTypeId', type: 'array-contains', value: productTypeId }
     ]);
     this.productAttributesJoin$ = getDataFromCollection(attributes).pipe(
@@ -195,52 +212,43 @@ export class ShopService {
   }
 
   private queryCategories(conditions?: CollectionCondition[]) {
-    const { dbCategoriesRoute } = this;
-    return this.query(dbCategoriesRoute, conditions);
+    const { db, dbCategoriesRoute } = this;
+    return query(db, dbCategoriesRoute, conditions);
   }
 
   private queryCollections(conditions?: CollectionCondition[]) {
-    const { dbCollectionsRoute } = this;
-    return this.query(dbCollectionsRoute, conditions);
+    const { db, dbCollectionsRoute } = this;
+    return query(db, dbCollectionsRoute, conditions);
   }
 
   private queryProducts(conditions?: ProductCondition[]) {
-    const { dbProductsRoute } = this;
-    return this.query(dbProductsRoute, conditions);
+    const { db, dbProductsRoute } = this;
+    return query(db, dbProductsRoute, conditions);
   }
 
   private queryVariants(conditions?: VariantCondition[]) {
-    const { dbVariantsRoute } = this;
-    return this.query(dbVariantsRoute, conditions);
+    const { db, dbVariantsRoute } = this;
+    return query(db, dbVariantsRoute, conditions);
   }
 
   private queryProductTypes(conditions?: ProductTypeCondition[]) {
-    const { dbProductTypesRoute } = this;
-    return this.query(dbProductTypesRoute, conditions);
+    const { db, dbProductTypesRoute } = this;
+    return query(db, dbProductTypesRoute, conditions);
   }
 
   private queryAttributes(conditions?: AttributeCondition[]) {
-    const { dbAttributesRoute } = this;
-    return this.query(dbAttributesRoute, conditions);
+    const { db, dbAttributesRoute } = this;
+    return query(db, dbAttributesRoute, conditions);
   }
 
   private queryAttributeValues(conditions?: AttributeValueCondition[]) {
-    const { dbAttributeValuesRoute } = this;
-    return this.query(dbAttributeValuesRoute, conditions);
+    const { db, dbAttributeValuesRoute } = this;
+    return query(db, dbAttributeValuesRoute, conditions);
   }
 
   private queryTax(conditions?: TaxCondition[]) {
-    const { dbTaxesRoute } = this;
-    return this.query(dbTaxesRoute, conditions);
-  }
-
-  private query(dbRoute: string, conditions?: Condition[]) {
-    const { db } = this;
-    if (conditions && conditions.length > 0) {
-      return setCondition(db, dbRoute, conditions);
-    } else {
-      return db.collection(dbRoute);
-    }
+    const { db, dbTaxesRoute } = this;
+    return query(db, dbTaxesRoute, conditions);
   }
 
 }

@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
-import { ADD, ADMIN, CATALOG, PRODUCT } from '@constants/adminRoutes';
+import { ADD, ADMIN, CATALOG, PRODUCT, VARIANT } from '@constants/adminRoutes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { StorageService } from '@services/storage/storage.service';
 import { AuthService } from '@services/auth/auth.service';
@@ -254,7 +254,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   getAttributes(productTypeId: string) {
     this.unsubscribeAttributes();
-    return this.shopService.getAttributesByShopIdAndProductTypeId(this.shopId, productTypeId);
+    return this.shopService.getAttributesByProductTypeId(productTypeId);
   }
 
   getVariants(productId: string) {
@@ -347,8 +347,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  toAddVariant() {
-    this.router.navigate(['variant'], { relativeTo: this.route });
+  navigateToVariant(id?: string) {
+    const path = id ? id : ADD;
+    this.router.navigate([`${VARIANT}/${path}`], { relativeTo: this.route });
   }
 
 }

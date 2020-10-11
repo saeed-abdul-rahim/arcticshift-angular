@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environment';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, Query } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 
 import { RequestService } from '@services/request/request.service';
 import { ProductInterface } from '@models/Product';
@@ -9,15 +9,19 @@ import { CategoryInterface } from '@models/Category';
 import { VoucherInterface } from '@models/Voucher';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
-import {  getDataFromDocument } from '@utils/getFirestoreData';
-import { AuthService } from '@services/auth/auth.service';
-import { WarehouseInterface } from '@models/Warehouse';
+import {  getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreData';
+import { WarehouseCondition, WarehouseInterface } from '@models/Warehouse';
 import { AttributeInterface, AttributeValueInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
+import { query } from '@utils/query';
+import { AuthService } from '@services/auth/auth.service';
+import { User } from '@models/User';
 
 @Injectable()
 export class AdminService {
+
+  private dbWarehouseRoute: string;
 
   private apiProduct: string;
   private apiCategory: string;
@@ -33,7 +37,9 @@ export class AdminService {
   private db: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
 
-  constructor(private req: RequestService, private afs: AngularFirestore, private auth: AuthService) {
+  private user: User;
+
+  constructor(private req: RequestService, private afs: AngularFirestore, private authService: AuthService) {
     const { api, db } = environment;
     const {
       url,
@@ -47,7 +53,9 @@ export class AdminService {
       voucher,
       tax
     } = api;
-    const { version, name, analytics } = db;
+    const { version, name, analytics, warehouse } = db;
+    this.getCurrentUser();
+
     this.apiProduct = url + product;
     this.apiProductType = url + productType;
     this.apiAttribute = url + attribute;
@@ -57,8 +65,10 @@ export class AdminService {
     this.apiVariant = url + variant;
     this.apiVoucher = url + voucher;
     this.apiTax = url + tax;
+
     this.db = this.afs.collection(version).doc(name);
     this.dbAnalytics = this.db.collection(analytics);
+    this.dbWarehouseRoute = warehouse;
   }
 
   async createProduct(data: ProductInterface) {
@@ -223,7 +233,6 @@ export class AdminService {
       throw err;
     }
   }
-
 
   async createVoucher(data: VoucherInterface) {
     const { apiVoucher } = this;
@@ -390,4 +399,18 @@ export class AdminService {
     return getDataFromDocument(this.dbAnalytics.doc(path));
   }
 
+  getWarehouseByShopId() {
+    const { shopId } = this.user;
+    const warehouse = this.queryWarehouse([{ field: 'shopId', type: '==', value: shopId }]);
+    return getDataFromCollection(warehouse);
+  }
+
+  private queryWarehouse(conditions?: WarehouseCondition[]) {
+    const { db, dbWarehouseRoute } = this;
+    return query(db, dbWarehouseRoute, conditions);
+  }
+
+  private getCurrentUser() {
+    this.authService.getCurrentUserStream().subscribe(user => this.user = user);
+  }
 }

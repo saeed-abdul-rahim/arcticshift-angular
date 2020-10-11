@@ -9,6 +9,7 @@ export interface ProductInterface extends CommonInterface {
     keywords?: string[];
     url?: string;
     images?: Content[];
+    attributeId?: string[];
     attributeValueId?: string[];
     productTypeId?: string;
     categoryId?: string;

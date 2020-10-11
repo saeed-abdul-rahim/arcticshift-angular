@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ADMIN, CATALOG, COLLECTION } from '@constants/adminRoutes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { CollectionInterface } from '@models/Collection';
 import { ContentStorage, ContentType } from '@models/Common';
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
 import {Thumbnail} from '@services/media/Thumbnail';
 import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
@@ -51,7 +50,7 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
   };
 
 constructor(private formbuilder: FormBuilder, private adminService: AdminService, private storageService: StorageService,
-            private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+            private router: Router, private shopService: ShopService) {
     const collectionId = this.router.url.split('/').pop();
     if (collectionId !== 'add') {
       this.edit = true;

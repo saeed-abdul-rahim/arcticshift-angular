@@ -1,7 +1,7 @@
 import { AngularFirestore } from '@angular/fire/firestore';
 
 import { combineLatest, of, defer } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { getDataFromCollection } from './getFirestoreData';
 
 export const leftJoin = (
@@ -16,7 +16,7 @@ export const leftJoin = (
       let collectionData;
 
       // Track total num of joined doc reads
-      let totalJoins = 0;
+      // let totalJoins = 0;
 
       return source.pipe(
         switchMap(data => {
@@ -43,7 +43,7 @@ export const leftJoin = (
         }),
         map(joins => {
           return collectionData.map((v, i) => {
-            totalJoins += joins[i].length;
+            // totalJoins += joins[i].length;
             return { ...v, [collection.split('/').pop()]: joins[i] || null };
           });
         })

@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 export class ShippingFormComponent implements OnInit {
 
   loading = false;
-  success = false; 
+  success = false;
 
   nameDanger: boolean;
 
@@ -23,7 +23,7 @@ export class ShippingFormComponent implements OnInit {
   get addShippingFormControls() { return this.addShippingForm.controls; }
 
   async onSubmit() {
-    const { name, price } = this.addShippingFormControls;
+    const { name } = this.addShippingFormControls;
     if (this.addShippingForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -33,7 +33,7 @@ export class ShippingFormComponent implements OnInit {
       // }
       // return;
     }
-  
+
     // this.loading = true;
     // try {
       // if (this.edit) {
