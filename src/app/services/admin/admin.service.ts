@@ -17,11 +17,14 @@ import { TaxInterface } from '@models/Tax';
 import { query } from '@utils/query';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
+import { Observable } from 'rxjs';
+import { ShippingCondition, ShippingInterface } from '@models/Shipping';
 
 @Injectable()
 export class AdminService {
 
   private dbWarehouseRoute: string;
+  private dbShippingRoute: string;
 
   private apiProduct: string;
   private apiCategory: string;
@@ -51,9 +54,10 @@ export class AdminService {
       sale,
       variant,
       voucher,
-      tax
+      tax,
+      warehouse
     } = api;
-    const { version, name, analytics, warehouse } = db;
+    const { version, name, analytics, warehouses, shippings } = db;
     this.getCurrentUser();
 
     this.apiProduct = url + product;
@@ -65,10 +69,12 @@ export class AdminService {
     this.apiVariant = url + variant;
     this.apiVoucher = url + voucher;
     this.apiTax = url + tax;
+    this.apiWarehouse = url + warehouse;
 
     this.db = this.afs.collection(version).doc(name);
     this.dbAnalytics = this.db.collection(analytics);
-    this.dbWarehouseRoute = warehouse;
+    this.dbWarehouseRoute = warehouses;
+    this.dbShippingRoute = shippings;
   }
 
   async createProduct(data: ProductInterface) {
@@ -399,15 +405,30 @@ export class AdminService {
     return getDataFromDocument(this.dbAnalytics.doc(path));
   }
 
-  getWarehouseByShopId() {
+  getWarehouseById(warehouseId: string): Observable<WarehouseInterface> {
+    const warehouse = this.db.collection(this.dbWarehouseRoute).doc(warehouseId);
+    return getDataFromDocument(warehouse);
+  }
+
+  getWarehousesByShopId(): Observable<WarehouseInterface[]> {
     const { shopId } = this.user;
     const warehouse = this.queryWarehouse([{ field: 'shopId', type: '==', value: shopId }]);
     return getDataFromCollection(warehouse);
   }
 
+  getShippingByWarehouseId(warehouseId: string): Observable<ShippingInterface[]> {
+    const shipping = this.queryShipping([{ field: 'warehouseId', type: 'array-contains', value: warehouseId }]);
+    return getDataFromCollection(shipping);
+  }
+
   private queryWarehouse(conditions?: WarehouseCondition[]) {
     const { db, dbWarehouseRoute } = this;
     return query(db, dbWarehouseRoute, conditions);
+  }
+
+  private queryShipping(conditions?: ShippingCondition[]) {
+    const { db, dbShippingRoute } = this;
+    return query(db, dbShippingRoute, conditions);
   }
 
   private getCurrentUser() {

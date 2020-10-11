@@ -48,7 +48,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     const { url } = this.router;
     const urlSplit = url.split('/');
     const productId = urlSplit[urlSplit.indexOf(VARIANT) - 1];
-    this.warehouseSubscription = this.adminService.getWarehouseByShopId().subscribe(warehouses => this.warehouses = warehouses);
+    this.warehouseSubscription = this.adminService.getWarehousesByShopId().subscribe(warehouses => this.warehouses = warehouses);
     this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
       this.product = product;
       const { productTypeId } = product;

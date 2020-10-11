@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN, CATALOG, WAREHOUSE } from '@constants/adminRoutes';
+import { ADD, ADMIN, WAREHOUSE } from '@constants/adminRoutes';
+import { ShippingInterface } from '@models/Shipping';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';
-import { ShopService } from '@services/shop/shop.service';
+import { countryAlphaList } from '@utils/countryAlphaList';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
@@ -20,33 +21,51 @@ export class WarehouseComponent implements OnInit, OnDestroy {
   successDelete = false;
   edit = false;
 
-  nameDanger: boolean;
-
-  warehouseRoute = `/${ADMIN}/${CATALOG}/${WAREHOUSE}`;
+  warehouseRoute = `/${ADMIN}/${WAREHOUSE}`;
   warehouse: WarehouseInterface;
-  addWarehouseForm: FormGroup;
+  shippings: ShippingInterface[];
+  warehouseForm: FormGroup;
+
+  countryAlphaList = countryAlphaList;
 
   warehouseSubscription: Subscription;
+  shippingSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private adminService: AdminService,
-              private router: Router, private shopService: ShopService) {
-    const warehousenId = this.router.url.split('/').pop();
-    if (warehousenId !== 'add') {
+              private router: Router) {
+    const warehouseId = this.router.url.split('/').pop();
+    if (warehouseId !== ADD) {
       this.edit = true;
-      this.warehouseSubscription = this.shopService.getCollectionById(warehousenId).subscribe(warehouse => {
-        const { name } = warehouse;
-        this.addWarehouseForm.patchValue({
-          name,
-
+      this.warehouseSubscription = this.adminService.getWarehouseById(warehouseId).subscribe(warehouse => {
+        this.warehouse = warehouse;
+        if (!warehouse) {
+          return;
+        }
+        const { name, address, pointLocation } = warehouse;
+        const { company, line1, line2, city, area, zip, country, phone } = address;
+        const { lat, lon } = pointLocation;
+        this.warehouseForm.patchValue({
+          name, company, line1, line2, city, area, zip, country, phone, lat, lon
         });
       });
+      this.shippingSubscription = this.adminService.getShippingByWarehouseId(warehouseId).subscribe(shipping => this.shippings = shipping);
     }
   }
 
 
   ngOnInit(): void {
-    this.addWarehouseForm = this.formbuilder.group({
-      name: ['', Validators.required]
+    this.warehouseForm = this.formbuilder.group({
+      name: ['', Validators.required],
+      company: ['', Validators.required],
+      line1: ['', Validators.required],
+      line2: [''],
+      city: ['', Validators.required],
+      area: ['', Validators.required],
+      zip: ['', Validators.required],
+      country: [null, Validators.required],
+      phone: [''],
+      lat: [null],
+      lon: [null]
     });
   }
 
@@ -54,35 +73,53 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     if (this.warehouseSubscription && !this.warehouseSubscription.closed) {
       this.warehouseSubscription.unsubscribe();
     }
+    if (this.shippingSubscription && !this.shippingSubscription.closed) {
+      this.shippingSubscription.unsubscribe();
+    }
   }
 
-  get addWarehouseFormControls() { return this.addWarehouseForm.controls; }
+  get warehouseFormControls() { return this.warehouseForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addWarehouseFormControls;
-    if (this.addWarehouseForm.invalid) {
-      if (name.errors) {
-        this.nameDanger = true;
-      }
+    const { name, company, line1, line2, city, area, zip, country, phone, lat, lon } = this.warehouseFormControls;
+    if (this.warehouseForm.invalid) {
+      return;
+    }
+    if ((lat.value && !lon.value) || (!lat.value && lon.value)) {
       return;
     }
     this.loading = true;
     try {
+      const setData: WarehouseInterface = {
+        name: name.value,
+        address: {
+          company: company.value,
+          line1: line1.value,
+          line2: line2.value,
+          city: city.value,
+          area: area.value,
+          zip: zip.value,
+          country: country.value,
+          phone: phone.value
+        },
+        pointLocation: {
+          lat: lat.value,
+          lon: lon.value
+        }
+      };
       if (this.edit) {
         await this.adminService.updateWarehouse({
-          name: name.value,
+          ...setData,
+          warehouseId: this.warehouse.warehouseId
 
         });
       } else {
-        const data =  await this.adminService.createWarehouse({
-          name: name.value,
-        });
+        const data =  await this.adminService.createWarehouse(setData);
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${WAREHOUSE}/${id}`);
+          this.router.navigateByUrl(`/${this.warehouseRoute}/${id}`);
         }
       }
-
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
@@ -96,9 +133,9 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     this.loadingDelete = true;
     try {
       const { warehouseId } = this.warehouse;
-      await this.adminService.deleteVoucher(warehouseId);
-      this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      await this.adminService.deleteWarehouse(warehouseId);
+      this.successDelete = true;
+      setTimeout(() => this.successDelete = false, 2000);
       this.router.navigateByUrl(this.warehouseRoute);
     } catch (err) {
       console.log(err);

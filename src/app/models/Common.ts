@@ -51,6 +51,11 @@ export type Datetime = {
     zone: string
 };
 
+export type Point = {
+    lat: number,
+    lon: number
+};
+
 export type AttributeValue = {
     [key: string]: boolean
 } | null;
