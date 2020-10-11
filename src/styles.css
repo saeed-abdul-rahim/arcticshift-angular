@@ -20690,6 +20690,27 @@ video {
   max-height: 0;
 }
 
+.carousel-open:checked + .carousel-item {
+  position: static;
+  opacity: 100;
+}
+
+.carousel-item {
+  transition: opacity 1s ease-out;
+}
+
+.carousel-indicators {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 2%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+}
+
 .sidebar-heading {
   --text-opacity: 1;
   color: #718096;

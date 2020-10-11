@@ -1,26 +1,30 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addVariantForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="variantForm" (ngSubmit)="onSubmit()" *ngIf="product">
 
-  <ng-template #variantType>
-
-    <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-half mb-3">
-          <ng-select formControlName="variantType" placeholder="size" [ngClass]="sizeDanger ? 'border-red' : ''"
-            formControlName="size"></ng-select>
+  <ng-template #attributesTemplate>
+    <div class="items-center mb-1" formArrayName="attributes">
+      <div class="relative flex flex-wrap w-full px-4 py-2 max-w-full flex-grow flex-1"
+        *ngFor="let attribute of attributes; let i=index" [formGroupName]="i">
+        <div class="w-full md:w-4/12 m-auto">{{ attribute.name }}</div>
+        <div class="w-full md:w-8/12">
+          <ng-select formControlName="attributeValueId"
+            *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0" placeholder="Value"
+            [items]="attribute.attributeValues" bindValue="id" bindLabel="name"></ng-select>
         </div>
       </div>
     </div>
   </ng-template>
 
   <ng-template #variantPrice>
-    <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-half mb-3">
-          <input type="number" class="arc-input placeholder-gray-400 w-half" placeholder="Selling price"
+    <div class="items-center">
+      <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full md:w-6/12 m-auto pr-1">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Selling price"
             [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
         </div>
-        <input type="number" class="arc-input placeholder-gray-400 w-half" placeholder="Strike price override"
-          [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
+        <div class="w-full md:w-6/12 pl-1">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Strike price"
+            [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
+        </div>
       </div>
     </div>
   </ng-template>
@@ -29,11 +33,9 @@
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full mb-3">
-          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="SKU(stock keeping unit)"
-            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="inventory" />
         </div>
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="form-checkbox arc-checkbox" />
+          <input type="checkbox" class="form-checkbox text-blue-500" />
           <span class="ml-2 text-sm font-semibold text-gray-700">Track Inventory</span>
         </label>
         <div>
@@ -43,11 +45,13 @@
     </div>
   </ng-template>
 
-  <div class="relative md:pt-32 pt-12">
+  <div class="relative pt-12">
     <div class="px-4 md:px-10 mx-auto w-full">
       <div class="flex flex-wrap mt-4">
+        <div class="w-full xl:w-4/12 xl:mb-0 px-4">
+        </div>
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-          <app-card [heading]="'General Information'" [body]="variantType"></app-card>
+          <app-card [heading]="'General Information'" [body]="attributesTemplate"></app-card>
           <app-card [heading]="'Pricing'" [body]="variantPrice"></app-card>
           <app-card [heading]="'Inventory'" [body]="inventory"></app-card>
         </div>

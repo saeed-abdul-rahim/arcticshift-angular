@@ -134,7 +134,7 @@
 
 <ng-template #variantActionTemplate>
   <label class="arc-link-button" type="button">
-    <a (click)="toAddVariant()">Create Variant</a>
+    <a (click)="navigateToVariant()">Create Variant</a>
   </label>
 </ng-template>
 
@@ -152,7 +152,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="navigateToVariant(row.id)"></tr>
 
     </table>
   </div>

@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ADMIN, CATALOG, WAREHOUSE } from '@constants/adminRoutes';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -29,8 +28,8 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   warehouseSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService,
+              private router: Router, private shopService: ShopService) {
     const warehousenId = this.router.url.split('/').pop();
     if (warehousenId !== 'add') {
       this.edit = true;

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ADMIN, CATALOG, CATEGORY } from '@constants/adminRoutes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { CategoryInterface } from '@models/Category';
@@ -49,7 +49,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   };
 
 constructor(private formbuilder: FormBuilder, private storageService: StorageService,
-            private adminService: AdminService, private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+            private adminService: AdminService, private router: Router, private shopService: ShopService) {
     const categoryId = this.router.url.split('/').pop();
     if (categoryId !== 'add') {
       this.edit = true;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { AdminService } from '@services/admin/admin.service';
 
 @Component({
@@ -14,18 +14,19 @@ export class CustomerFormComponent implements OnInit {
   edit = false;
   nameDanger: boolean;
 
-  addCustomerForm: FormGroup;
+  customerForm: FormGroup;
 
   constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
   ngOnInit(): void {
+    this.customerForm = this.formbuilder.group({});
   }
 
-  get addCustomerFormControls() { return this.addCustomerForm.controls; }
+  get customerFormControls() { return this.customerForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addCustomerFormControls;
-    if (this.addCustomerForm.invalid) {
+    const { name } = this.customerFormControls;
+    if (this.customerForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }
