@@ -13,18 +13,18 @@ export class ShippingFormComponent implements OnInit {
 
   nameDanger: boolean;
 
-  addShippingForm: FormGroup;
+  shippingForm: FormGroup;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  get addShippingFormControls() { return this.addShippingForm.controls; }
+  get shippingFormControls() { return this.shippingForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addShippingFormControls;
-    if (this.addShippingForm.invalid) {
+    const { name } = this.shippingFormControls;
+    if (this.shippingForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }

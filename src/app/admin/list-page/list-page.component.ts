@@ -123,8 +123,8 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
       users,
       saleDiscounts,
       vouchers,
-      shipping,
-      warehouse,
+      shippings,
+      warehouses,
       taxes,
       orders,
     } = db;
@@ -207,21 +207,21 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.heading = 'Shipping';
       this.label = 'Shipping';
-      this.getData(shipping, {
+      this.getData(shippings, {
         name: 'Name',
         countries: 'Countries',
       });
-      this.getPageLength(shipping, this.dataLengthKey);
+      this.getPageLength(shippings, this.dataLengthKey);
 
     } else if (urlSplit.includes(WAREHOUSE)) {
 
       this.heading = 'Warehouse';
       this.label = 'Warehouse';
-      this.getData(warehouse, {
+      this.getData(warehouses, {
         name: 'Name',
         shippingId: 'Shipping Zones',
       });
-      this.getPageLength(warehouse, this.dataLengthKey);
+      this.getPageLength(warehouses, this.dataLengthKey);
 
     } else if (urlSplit.includes(TAX)) {
 
