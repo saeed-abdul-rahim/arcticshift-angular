@@ -100,6 +100,13 @@
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         </div>
+
+      </ng-template>
+      <ng-template #timepicker>
+        <div class="px-6 py-2">  
+          <input [ngxTimepicker]="picker"/>
+            <ngx-material-timepicker #picker></ngx-material-timepicker>
+        </div>
       </ng-template>
       
       <ng-template #summary>
@@ -116,6 +123,7 @@
               <app-card [heading]="'Minimum Requirements'" [body]="minimum"></app-card>
               <app-card [heading]="'Usage Limit'" [body]="checkbox"></app-card>
               <app-card [heading]="'Active Dates'" [body]="datepicker"></app-card>
+              <app-card [heading]="'Active Dates'" [body]="timepicker"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit" [heading]="'Summary'" [body]="summary"></app-card>

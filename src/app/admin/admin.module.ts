@@ -8,6 +8,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
@@ -40,6 +41,7 @@ import { AttributeFormComponent } from './attribute-form/attribute-form.componen
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
+
 
 
 
@@ -80,7 +82,8 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
-    MatNativeDateModule 
+    MatNativeDateModule ,
+    NgxMaterialTimepickerModule
   ],
   providers: [
     AdminGuard,
