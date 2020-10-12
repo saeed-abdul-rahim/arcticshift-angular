@@ -104,11 +104,14 @@
       </ng-template>
       <ng-template #timepicker>
         <div class="px-6 py-2">  
+          <ngx-timepicker-field appearance="fill">
           <label>Start Time : </label>
+          <ngx-material-timepicker-dial>
           <input [ngxTimepicker]="picker" />
             <ngx-material-timepicker #picker>
-              <mat-label>Choose a date</mat-label>
             </ngx-material-timepicker>
+          </ngx-material-timepicker-dial>
+          </ngx-timepicker-field>
         </div>
       </ng-template>
       
