@@ -22,6 +22,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   showMe = false;
   showMeOrder = false;
   showMeQuantity = false;
+  showMeEndDate = false;
   nameDanger: boolean;
 
   voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
@@ -36,9 +37,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { code, value,valueType} = voucher;
+        const { code, value,valueType,startDate,endDate } = voucher;
         this.addVoucherForm.patchValue({
-          name: code, value, valueType
+          name: code, value, valueType,startDate,endDate
         });
       });
     }
@@ -52,7 +53,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       minimalOrder: [''],
       minimumQuantity:[''],
       limit:[''],
-      limitOne:['']
+      limitOne:[''],
+      startDate:[''],
+      endDate:['']
     });
   }
 
@@ -71,6 +74,11 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
    this.showMeQuantity = !this.showMeQuantity;
   }
 
+  toggleEnddate()
+  {
+   this.showMeEndDate = !this.showMeEndDate;
+  }
+
   ngOnDestroy(): void {
     if (this.voucherSubscription && !this.voucherSubscription.closed) {
       this.voucherSubscription.unsubscribe();
@@ -80,7 +88,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   get addvoucherFormControls() { return this.addVoucherForm.controls; }
 
   async onSubmit() {
-    const { code,value,discountType} = this.addvoucherFormControls;
+    const { code,value,discountType,startDate,endDate} = this.addvoucherFormControls;
     if (this.addVoucherForm.invalid) {
       if (code.errors) {
         this.nameDanger = true;
@@ -91,7 +99,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     const setData = {
       code: code.value,
       value: value.value,
-      valueType: discountType.value
+      valueType: discountType.value,
+      startDate: startDate.value,
+      endDate: endDate.value
     };
     try {
       if (this.edit) {

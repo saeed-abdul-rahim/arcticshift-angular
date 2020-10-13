@@ -36,6 +36,53 @@
           </div>
         </div>
       </ng-template>
+
+      <ng-template #dateTimePicker>
+        <div class="flex">
+        <div class="px-6 py-2">
+        <mat-form-field appearance="fill">
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="startDate"/>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="px-6">  
+          <ngx-timepicker-field appearance="fill">
+          <ngx-material-timepicker-dial>
+          <input [ngxTimepicker]="picker" formControlName="startDate"/>
+            <ngx-material-timepicker #picker>
+            </ngx-material-timepicker>
+          </ngx-material-timepicker-dial>
+          </ngx-timepicker-field>
+        </div>
+        </div>
+
+        <label class="inline-flex w-full pl-6">
+          <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="toggleEnddate()"><span 
+          class="ml-2 text-gray-700">Set end date</span>
+      </label>
+
+      <div class="flex">
+        <div class="px-6 py-2">
+        <mat-form-field appearance="fill">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="picker" *ngIf="showMeEndDate" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="px-6">  
+          <ngx-timepicker-field appearance="fill">
+          <ngx-material-timepicker-dial>
+          <input [ngxTimepicker]="picker" *ngIf="showMeEndDate" />
+            <ngx-material-timepicker #picker>
+            </ngx-material-timepicker>
+          </ngx-material-timepicker-dial>
+          </ngx-timepicker-field>
+        </div>
+        </div>
+      </ng-template>
       
       <ng-template #summary>
 
@@ -48,6 +95,7 @@
               <app-card [heading]="'General Information'" [body]="sale"></app-card>
               <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
               <app-card [heading]="'Value'" [body]="value"></app-card>
+              <app-card [heading]="'Active Dates'" [body]="dateTimePicker"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit"[heading]="'Summary'" [body]="summary"></app-card>

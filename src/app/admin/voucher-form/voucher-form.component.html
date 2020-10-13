@@ -91,28 +91,55 @@
           </div>
       </ng-template>
 
-      <ng-template #datepicker>
+      <ng-template #dateTimePicker>
+        <div class="flex">
         <div class="px-6 py-2">
         <mat-form-field appearance="fill">
-          <mat-label>Choose a date</mat-label>
-          <input matInput [matDatepicker]="picker"/>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="startDate"/>
+          <mat-datepicker-toggle matSuffix [for]="picker">
+          </mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         </div>
-
-      </ng-template>
-      <ng-template #timepicker>
-        <div class="px-6 py-2">  
+        <div class="px-6">  
           <ngx-timepicker-field appearance="fill">
           <ngx-material-timepicker-dial>
-          <input [ngxTimepicker]="picker" />
+          <input [ngxTimepicker]="picker" formControlName="startDate"/>
             <ngx-material-timepicker #picker>
             </ngx-material-timepicker>
           </ngx-material-timepicker-dial>
           </ngx-timepicker-field>
         </div>
+        </div>
+
+        <label class="inline-flex w-full pl-6">
+          <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="toggleEnddate()"><span 
+          class="ml-2 text-gray-700">Set end date</span>
+      </label>
+
+      <div class="flex">
+        <div class="px-6 py-2">
+        <mat-form-field appearance="fill">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="picker" *ngIf="showMeEndDate" formControlName="endDate"/>
+          <mat-datepicker-toggle matSuffix [for]="picker">
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="px-6">  
+          <ngx-timepicker-field appearance="fill">
+          <ngx-material-timepicker-dial>
+          <input [ngxTimepicker]="picker" *ngIf="showMeEndDate" formControlName="endDate" />
+            <ngx-material-timepicker #picker>
+            </ngx-material-timepicker>
+          </ngx-material-timepicker-dial>
+          </ngx-timepicker-field>
+        </div>
+        </div>
       </ng-template>
+     
       
       <ng-template #summary>
 
@@ -127,8 +154,7 @@
               <app-card [heading]="'Value'" [body]="value"></app-card>
               <app-card [heading]="'Minimum Requirements'" [body]="minimum"></app-card>
               <app-card [heading]="'Usage Limit'" [body]="checkbox"></app-card>
-              <app-card [heading]="'Active Dates'" [body]="datepicker"></app-card>
-              <app-card [heading]="'Active times'" [body]="timepicker"></app-card>
+              <app-card [heading]="'Active Dates'" [body]="dateTimePicker"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit" [heading]="'Summary'" [body]="summary"></app-card>
@@ -145,4 +171,5 @@
       [successDelete]="successDelete"
       (deleteCallback)="deleteVoucher()"
     ></app-footer-form>
+
 </form>
