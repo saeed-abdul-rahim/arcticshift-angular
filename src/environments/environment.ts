@@ -18,6 +18,7 @@ export const environment = {
     productType: '/product-type',
     attribute: '/attribute',
     warehouse: '/warehouse',
+    shipping: '/shipping',
     tax: '/tax'
   },
   db: {

@@ -6,20 +6,23 @@ export interface ShippingInterface {
     name?: string;
     countries?: string[];
     zipCode?: string[];
-    priceBased?: Rate;
-    weightBased?: Rate;
+    radius?: number;
+    priceBased?: Rate[];
+    weightBased?: Rate[];
     warehouseId?: string[];
     taxId?: string;
 }
 
-type Rate = {
+export type RateType = 'price' | 'weight';
+
+export type Rate = {
     name: string
     minValue?: number
     maxValue?: number
     price?: number
     noValueLimit?: boolean
     freeShipping?: boolean
-} | null;
+};
 
 export type ShippingCondition = Condition & {
     field: ShippingFields

@@ -14,51 +14,51 @@
 
   <ng-template #addressTemplate>
     <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-full mb-3 pt-5">
+      <div class="relative w-full px-4 py-3 mb-3 max-w-full flex-grow flex-1">
+        <div class="w-full">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Company"
             [ngClass]="warehouseFormControls.company.touched && warehouseFormControls.company.invalid ? 'border-red' : ''"
             formControlName="company" />
         </div>
 
-        <div class="w-full mb-3 pt-5">
+        <div class="w-full mt-1">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Address line 1"
             [ngClass]="warehouseFormControls.line1.touched && warehouseFormControls.line1.invalid ? 'border-red' : ''"
             formControlName="line1" />
         </div>
 
-        <div class="w-full mb-3 pt-5">
+        <div class="w-full mt-1">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Address line 2"
             formControlName="line2" />
         </div>
 
-        <div class="flex">
-          <div class="w-full flex-1  mb-3 pt-5">
+        <div class="flex flex-wrap mt-1">
+          <div class="w-full flex-1">
             <input type="text" class="arc-input placeholder-gray-400 w-full " placeholder="City"
               [ngClass]="warehouseFormControls.city.touched && warehouseFormControls.city.invalid ? 'border-red' : ''"
               formControlName="city" />
           </div>
-          <div class=" flex-1 mb-3 pt-5 px-4">
+          <div class="flex-1 pl-1">
             <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="ZIP / Postal Code"
               [ngClass]="warehouseFormControls.zip.touched && warehouseFormControls.zip.invalid ? 'border-red' : ''"
               formControlName="zip" />
           </div>
         </div>
 
-        <div class="flex">
-          <div class="w-full flex-1 mb-3 pt-5">
+        <div class="flex mt-1">
+          <div class="w-full flex-1">
             <ng-select formControlName="country" placeholder="Country" [items]="countryAlphaList"
               [ngClass]="warehouseFormControls.country.touched && warehouseFormControls.country.invalid ? 'border-red' : ''"
               bindValue="alpha3" bindLabel="name"></ng-select>
           </div>
-          <div class="w-full flex-1 mb-3 pt-5 px-4">
+          <div class="w-full flex-1 pl-1">
             <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country Area"
               [ngClass]="warehouseFormControls.area.touched && warehouseFormControls.area.invalid ? 'border-red' : ''"
               formControlName="area" />
           </div>
         </div>
 
-        <div class="w-full mb-3 pt-5">
+        <div class="w-full  mt-1">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Phone"
             [ngClass]="warehouseFormControls.phone.touched && warehouseFormControls.phone.invalid  ? 'border-red' : ''"
             formControlName="phone" />
@@ -69,24 +69,21 @@
 
   <ng-template #locationTemplate>
     <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-full mb-3 pt-5">
-          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Latitude"
-            [ngClass]="warehouseFormControls.lon.value && !warehouseFormControls.lat.value ? 'border-red' : ''"
-            formControlName="lat" />
-        </div>
-
-        <div class="w-full mb-3 pt-5">
-          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Longitude"
-            [ngClass]="warehouseFormControls.lat.value && !warehouseFormControls.lon.value ? 'border-red' : ''"
-            formControlName="lon" />
+      <div class="relative w-full px-4 py-3 mb-3 max-w-full flex-grow flex-1">
+        <div class="flex">
+          <div class="w-full flex-1">
+            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Latitude"
+              [ngClass]="warehouseFormControls.lon.value && !warehouseFormControls.lat.value ? 'border-red' : ''"
+              formControlName="lat" />
+          </div>
+          <div class="w-full flex-1 pl-1">
+            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Longitude"
+              [ngClass]="warehouseFormControls.lat.value && !warehouseFormControls.lon.value ? 'border-red' : ''"
+              formControlName="lon" />
+          </div>
         </div>
       </div>
     </div>
-  </ng-template>
-
-  <ng-template #shippingTemplate>
-
   </ng-template>
 
   <div class="relative md:pt-32 pt-12">
@@ -108,3 +105,20 @@
     [successDelete]="successDelete" (deleteCallback)="deleteWarehouse()"></app-footer-form>
 
 </form>
+
+<ng-template #shippingTemplate>
+  <div class="w-full">
+    <div *ngIf="shippings && shippings.length === 0" class="data-empty">No data available</div>
+    <div *ngIf="shippings && shippings.length > 0" class="relative overflow-x-auto scrollbar">
+      <table mat-table [dataSource]="shippingSource">
+
+        <ng-container matColumnDef="name">
+          <td mat-cell *matCellDef="let row" (click)="navigateToShipping(row.id)">{{row.name}}</td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+    </div>
+  </div>
+</ng-template>
