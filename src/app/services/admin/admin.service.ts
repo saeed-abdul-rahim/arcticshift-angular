@@ -119,6 +119,42 @@ export class AdminService {
     }
   }
 
+  async createVariant(data: VariantInterface) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.post(apiVariant, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateVariant(data: VariantInterface) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.patch(apiVariant, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteVariantImage(id: string, path: string) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.patch(`${apiVariant}/${id}/image`, { path });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteVariant(id: string) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.delete(`${apiVariant}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createCollection(data: CollectionInterface) {
     const { apiCollection } = this;
     try {
@@ -191,7 +227,6 @@ export class AdminService {
     }
   }
 
-
   async createSale(data: SaleDiscountInterface) {
     const { apiSale } = this;
     try {
@@ -214,33 +249,6 @@ export class AdminService {
     const { apiSale } = this;
     try {
       return await this.req.delete(`${apiSale}/${id}`);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async createVariant(data: VariantInterface) {
-    const { apiVariant } = this;
-    try {
-      return await this.req.post(apiVariant, { data });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async updateVariant(data: VariantInterface) {
-    const { apiVariant } = this;
-    try {
-      return await this.req.patch(apiVariant, { data });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async deleteVariant(id: string) {
-    const { apiVariant } = this;
-    try {
-      return await this.req.delete(`${apiVariant}/${id}`);
     } catch (err) {
       throw err;
     }

@@ -1,12 +1,24 @@
 <form class="flex flex-col h-screen justify-between" [formGroup]="variantForm" (ngSubmit)="onSubmit()" *ngIf="product">
 
+  <ng-template #nameTemplate>
+    <div class="items-center">
+      <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
+            [ngClass]="variantFormControls.name.touched && variantFormControls.name.invalid ? 'border-red' : ''"
+            formControlName="name">
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
   <ng-template #attributesTemplate>
-    <div class="items-center mb-1" formArrayName="attributes">
+    <div class="items-center mb-1" formArrayName="attributes" *ngIf="attributes">
       <div class="relative flex flex-wrap w-full px-4 py-2 max-w-full flex-grow flex-1"
         *ngFor="let attribute of attributes; let i=index" [formGroupName]="i">
         <div class="w-full md:w-4/12 m-auto">{{ attribute.name }}</div>
         <div class="w-full md:w-8/12">
-          <ng-select formControlName="attributeValueId"
+          <ng-select formControlName="{{attribute.id}}"
             *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0" placeholder="Value"
             [items]="attribute.attributeValues" bindValue="id" bindLabel="name"></ng-select>
         </div>
@@ -14,16 +26,22 @@
     </div>
   </ng-template>
 
+  <ng-template #imageUpload>
+    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
+      (deleteImageCallback)="deleteVariantImage($event)"></app-upload>
+  </ng-template>
+
   <ng-template #variantPrice>
     <div class="items-center">
       <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full md:w-6/12 m-auto pr-1">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Selling price"
-            [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
+            formControlName="price">
         </div>
         <div class="w-full md:w-6/12 pl-1">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Strike price"
-            [ngClass]="priceDanger ? 'border-green' : ''" formControlName="price">
+            formControlName="strikePrice">
         </div>
       </div>
     </div>
@@ -31,15 +49,31 @@
 
   <ng-template #inventory>
     <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-        <div class="w-full mb-3">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1 divide-y divide-gray-400">
+        <div class="mb-3">
+          <div class="w-full md:w-6/12 mb-3">
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="SKU (Stock Keeping Unit)"
+              formControlName="sku">
+          </div>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="form-checkbox text-blue-500" formControlName="trackInventory" />
+            <span class="ml-2 text-sm font-semibold text-gray-700">Track Inventory</span>
+          </label>
         </div>
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="form-checkbox text-blue-500" />
-          <span class="ml-2 text-sm font-semibold text-gray-700">Track Inventory</span>
-        </label>
         <div>
-
+          <div class="font-semibold py-3 text-gray-600">
+            Quantity
+          </div>
+          <div class="items-center mb-1" formArrayName="warehouses">
+            <div class="relative flex flex-wrap w-full px-4 py-2 max-w-full flex-grow flex-1"
+              *ngFor="let warehouse of warehouses; let i=index" [formGroupName]="i">
+              <div class="w-full md:w-8/12 m-auto">{{ warehouse.name }}</div>
+              <div class="w-full md:w-4/12">
+                <input formControlName="{{warehouse.id}}" class="arc-input placeholder-gray-400 w-full" type="number"
+                  placeholder="Quantity">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -49,9 +83,12 @@
     <div class="px-4 md:px-10 mx-auto w-full">
       <div class="flex flex-wrap mt-4 mb-12">
         <div class="w-full xl:w-4/12 xl:mb-0 px-4">
+          <app-card [heading]="'Variants'" [body]="variantListTemplate" [actions]="variantActionTemplate"></app-card>
         </div>
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-          <app-card [heading]="'General Information'" [body]="attributesTemplate"></app-card>
+          <app-card [heading]="'General Information'" [body]="nameTemplate"></app-card>
+          <app-card [heading]="'Attributes'" [body]="attributesTemplate"></app-card>
+          <app-card *ngIf="edit" [heading]="'Images'" [body]="imageUpload" [actions]="imageUploadAction"></app-card>
           <app-card [heading]="'Pricing'" [body]="variantPrice"></app-card>
           <app-card [heading]="'Inventory'" [body]="inventory"></app-card>
         </div>
@@ -59,12 +96,48 @@
     </div>
   </div>
 
-  <app-footer-form
-  [loading]="loading"
-  [success]="success"
-  [showDelete]="edit"
-  [loadingDelete]="loadingDelete"
-  [successDelete]="successDelete"
-  (deleteCallback)="deleteVariant()"
-></app-footer-form>
+  <app-footer-form [loading]="loading" [success]="success" [showDelete]="edit" [loadingDelete]="loadingDelete"
+    [successDelete]="successDelete" (deleteCallback)="deleteVariant()"></app-footer-form>
+
 </form>
+
+<!-- BUTTON TEMPLATES -->
+
+<ng-template #imageUploadAction>
+  <label class="arc-link-button" type="button">
+    Upload Image
+    <input type='file' class="hidden" (change)="onFileClicked($event)" />
+  </label>
+</ng-template>
+
+<ng-template #variantActionTemplate>
+  <label class="arc-link-button" type="button">
+    <a (click)="navigateToVariant()">Create Variant</a>
+  </label>
+</ng-template>
+
+<!-- TABLE TEMPLATES -->
+
+<ng-template #variantListTemplate>
+  <app-spinner class="data-empty" *ngIf="variantsLoading" [size]="'5'"></app-spinner>
+  <div *ngIf="!variantsLoading">
+    <div *ngIf="variants && variants.length === 0" class="data-empty">No data available</div>
+    <table *ngIf="variants && variants.length > 0" mat-table [dataSource]="variantsSource">
+
+      <ng-container matColumnDef="image">
+        <td mat-cell *matCellDef="let row" class="w-32 content-center">
+          <img src="{{ getTableThumbnails(row.images) }}" width="48" height="48" class="m-3"/>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <td mat-cell *matCellDef="let row">
+          {{row.name}}
+        </td>
+      </ng-container>
+
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="navigateToVariant(row.id)"></tr>
+
+    </table>
+  </div>
+</ng-template>

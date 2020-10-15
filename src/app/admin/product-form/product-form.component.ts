@@ -1,14 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-import { ContentStorage, ContentType } from '@models/Common';
+import { ContentStorage, ContentType, ObjNumber } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
 
-import { Thumbnail } from '@services/media/Thumbnail';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -54,14 +53,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   selectedCollections: string[] | null = [];
   productForm: FormGroup;
 
-  displayedColumns: string[] = [];
+  displayedColumns: string[] = ['variant', 'sku', 'price', 'inventory'];
   variantsSource: MatTableDataSource<VariantInterface>;
 
   file: File;
   fileType: ContentType;
-  previewUrl: string | ArrayBuffer | null;
-  previewBlob: Blob | null;
-  generatedThumbnails: Thumbnail[];
   thumbnails: ContentStorage[] = [];
   invalidFile = false;
   isUploaded = false;
@@ -82,7 +78,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   constructor(private formbuilder: FormBuilder, private storageService: StorageService,
               private authService: AuthService, private adminService: AdminService, private shopService: ShopService,
-              private router: Router, private route: ActivatedRoute) {
+              private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
     this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
       if (user) {
         const { shopId } = user;
@@ -102,6 +98,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           this.setFormValue();
         }
       });
+      this.getVariants(productId);
     }
   }
 
@@ -258,8 +255,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   getVariants(productId: string) {
+    this.variantsLoading = true;
     this.variantSubscription = this.shopService.getVariantsByProductId(productId)
-      .subscribe(variants => this.variants = variants);
+      .subscribe(variants => {
+        this.variantsLoading = false;
+        this.variants = variants;
+        this.variantsSource = new MatTableDataSource(variants);
+        this.cdr.detectChanges();
+      });
   }
 
   getCategories() {
@@ -270,6 +273,12 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   getCollections() {
     this.collectionSubscription = this.shopService.getCollectionsByShopId(this.shopId)
       .subscribe(collections => this.collections = collections);
+  }
+
+  calculateInventory(warehouses: ObjNumber) {
+    const totalWarehouses = Object.keys(warehouses).length;
+    const totalQuantity = Object.values(warehouses).reduce((a, b) => a + b);
+    return `${totalQuantity} available at ${totalWarehouses} location`;
   }
 
   onFileDropped($event: Event) {

@@ -18,6 +18,7 @@ import { VariantCondition, VariantInterface } from '@models/Variant';
 import { map } from 'rxjs/internal/operators/map';
 import { switchMap } from 'rxjs/operators';
 import { query } from '@utils/query';
+import { InventoryInterface } from '@models/Inventory';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,7 @@ export class ShopService {
   private dbAttributesRoute: string;
   private dbAttributeValuesRoute: string;
   private dbTaxesRoute: string;
+  private dbInventoriesRoute: string;
 
   private dbAttributeValuesRoutePath: string;
 
@@ -62,7 +64,8 @@ export class ShopService {
       saleDiscounts,
       attributes,
       attributeValues,
-      taxes
+      taxes,
+      inventories
     } = db;
 
     this.db = this.afs.collection(version).doc(name);
@@ -78,6 +81,7 @@ export class ShopService {
     this.dbProductTypesRoute = productTypes;
     this.dbTaxesRoute = taxes;
     this.dbVouchersRoute = vouchers;
+    this.dbInventoriesRoute = inventories;
 
     this.dbAttributeValuesRoutePath = `${this.dbPath}/${attributeValues}`;
   }
@@ -85,6 +89,11 @@ export class ShopService {
   getProductById(productId: string): Observable<ProductInterface> {
     const productRef = this.db.collection(this.dbProductsRoute).doc(productId);
     return getDataFromDocument(productRef);
+  }
+
+  getVariantById(variantId: string): Observable<VariantInterface> {
+    const variantRef = this.db.collection(this.dbVariantsRoute).doc(variantId);
+    return getDataFromDocument(variantRef);
   }
 
   getProductTypeById(productTypeId: string): Observable<ProductTypeInterface> {
@@ -125,6 +134,11 @@ export class ShopService {
   getTaxesById(taxId: string): Observable<TaxInterface> {
     const taxRef = this.db.collection(this.dbTaxesRoute).doc(taxId);
     return getDataFromDocument(taxRef);
+  }
+
+  getInventoryById(inventoryId: string): Observable<InventoryInterface> {
+    const inventoryRef = this.db.collection(this.dbInventoriesRoute).doc(inventoryId);
+    return getDataFromDocument(inventoryRef);
   }
 
   getAttributeByIds(attributeIds: string[]): Observable<AttributeInterface[]> {

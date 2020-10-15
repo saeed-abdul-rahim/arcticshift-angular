@@ -2,6 +2,7 @@ export type Role = 'admin' | 'staff';
 export type Status = 'active' | 'inactive';
 export type ContentType = 'image' | 'video' | 'document' | '';
 export type ValueType = 'fixed' | 'percent';
+export type PriceType = 'original' | 'override' | 'strike' | 'discount' | 'cost';
 
 export const valueTypes: {
     id: ValueType,
@@ -10,6 +11,11 @@ export const valueTypes: {
     { id: 'fixed', label: 'Fixed' },
     { id: 'percent', label: 'Percent'}
 ];
+
+export type Price = {
+    name: PriceType
+    value: number
+};
 
 export interface QueryConfig {
     path?: string;
@@ -43,6 +49,14 @@ export type Tax = {
     name: string
     value: number
     type: ValueType
+};
+
+export type ObjString = {
+    [key: string]: string;
+};
+
+export type ObjNumber = {
+    [key: string]: number
 };
 
 export type Datetime = {
