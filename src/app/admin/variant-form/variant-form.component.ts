@@ -306,6 +306,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   }
 
   checkFileType(file: File) {
+    if (!file) { return; }
     const fileTypes = ['image/png', 'image/jpeg'];
     if (!fileTypes.includes(file.type)) {
       this.invalidFile = true;
