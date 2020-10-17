@@ -30,7 +30,6 @@ export class ShopService {
   collections$: Observable<CollectionInterface[]>;
   categories$: Observable<CategoryInterface[]>;
   productTypes$: Observable<ProductTypeInterface[]>;
-  tax$: Observable<TaxInterface[]>;
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
   private db: AngularFirestoreDocument;
@@ -211,18 +210,20 @@ export class ShopService {
       { field: 'shopId', type: '==', value: shopId },
       { field: 'type', type: '==', value: type }
     ]);
-    this.tax$ = getDataFromCollection(taxes);
-    return this.tax$;
+    return getDataFromCollection(taxes);
   }
 
   getAttributesByProductTypeId(productTypeId: string): Observable<AttributeJoinInterface[]> {
     const attributes = this.queryAttributes([
       { field: 'productTypeId', type: 'array-contains', value: productTypeId }
     ]);
-    this.productAttributesJoin$ = getDataFromCollection(attributes).pipe(
+    return this.getJoinedAttributes(attributes);
+  }
+
+  getJoinedAttributes(dbRef: any): Observable<AttributeJoinInterface[]> {
+    return getDataFromCollection(dbRef).pipe(
       leftJoin(this.afs, 'attributeId', this.dbAttributeValuesRoutePath)
     ) as Observable<AttributeJoinInterface[]>;
-    return this.productAttributesJoin$;
   }
 
   private queryCategories(conditions?: CollectionCondition[]) {
