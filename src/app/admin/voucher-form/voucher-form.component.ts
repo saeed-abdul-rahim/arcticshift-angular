@@ -65,9 +65,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   }
 
   setFormValue() {
-    const { code, value,valueType,startDate,endDate } =this.voucher;
+    const { code, value,valueType,minimumRequirement,totalUsage,onePerUser,startDate,endDate } =this.voucher;
     this.addVoucherForm.patchValue({
-       code, value, discountType:valueType,startDate,endDate
+       code, value, discountType:valueType,minimumRequirement,limit:totalUsage,onePerUser,startDate,endDate
     });
   }
 
