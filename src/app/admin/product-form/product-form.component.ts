@@ -345,15 +345,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   setFormValue() {
     const { name, description, price, productTypeId, categoryId, collectionId, status, chargeTax } = this.product;
+    this.attributeForms.clear();
     this.productForm.patchValue({
       name, description, price,
       productType: productTypeId,
       category: categoryId,
       visibility: status,
-      tax: chargeTax
+      tax: chargeTax,
     });
     this.selectedCollections = collectionId;
-    this.attributeForms.clear();
     if (productTypeId) {
       this.setAttributeForm({ productTypeId }, true);
     }
