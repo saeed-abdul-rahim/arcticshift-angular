@@ -19,7 +19,6 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   loadingDelete = false;
   successDelete = false;
   edit = false;
-  showMe = false;
   showMeEndDate = false;
   nameDanger: boolean;
 
@@ -49,7 +48,9 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       value: ['', Validators.required],
       discountType: [''],
       minimumQuantity: [''],
-      minimumRequirement: [''],
+      orderValue: [null],
+      quantity: [null],
+      limitCheck: [false],
       limit: [''],
       onePerUser: [''],
       startDate: [''],
@@ -64,25 +65,42 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   }
 
   setFormValue() {
-    const { code, value,valueType,minimumRequirement,totalUsage,onePerUser,startDate,endDate } =this.voucher;
+    const { code, value, valueType, minimumRequirement, totalUsage, onePerUser, startDate, endDate } = this.voucher;
+    const { type } = minimumRequirement;
     this.voucherForm.patchValue({
-       code, value, discountType:valueType,minimumRequirement,limit:totalUsage,onePerUser,startDate,endDate
+      code,
+      value,
+      discountType: valueType,
+      limitCheck: totalUsage > 0 ? true : false,
+      limit: totalUsage,
+      minimumQuantity: type,
+      orderValue: type === 'orderValue' ? minimumRequirement.value : null,
+      quantity: type === 'quantity' ? minimumRequirement.value : null,
+      onePerUser,
+      startDate,
+      endDate
     });
-  }
-
-  togglelimit() {
-    this.showMe = !this.showMe;
   }
 
   toggleEnddate() {
     this.showMeEndDate = !this.showMeEndDate;
   }
 
-
   get voucherFormControls() { return this.voucherForm.controls; }
 
   async onSubmit() {
-    const { code, value, discountType, minimumRequirement, limit, onePerUser, startDate, endDate } = this.voucherFormControls;
+    const {
+      code,
+      value,
+      discountType,
+      minimumQuantity,
+      orderValue,
+      quantity,
+      limit,
+      onePerUser,
+      startDate,
+      endDate
+    } = this.voucherFormControls;
     if (this.voucherForm.invalid) {
       if (code.errors) {
         this.nameDanger = true;
@@ -90,13 +108,16 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    const setData = {
+    const setData: VoucherInterface = {
       code: code.value,
       value: value.value,
       valueType: discountType.value,
       startDate: startDate.value,
       endDate: endDate.value,
-      minimumRequirement: minimumRequirement.value,
+      minimumRequirement: {
+        type: minimumQuantity.value,
+        value: minimumQuantity.value === 'orderValue' ? orderValue.value : quantity.value
+      },
       totalUsage: limit.value,
       onePerUser: onePerUser.value
 
@@ -107,7 +128,6 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
         await this.adminService.updateVoucher({
           ...setData,
           voucherId: this.voucher.voucherId
-
         });
       } else {
         const data = await this.adminService.createVoucher({

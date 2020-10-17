@@ -50,14 +50,14 @@
             None</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio5" type="radio" name="minimumQuantity" class="hidden" formControlName="minimumQuantity" value="order" />
+          <input id="radio5" type="radio" name="minimumQuantity" class="hidden" formControlName="minimumQuantity" value="orderValue" />
           <label for="radio5" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Minimal order value</label>
         </div>
         <div class="w-full mb-3 px-4">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Minimal order value"
-            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="minimumRequirement" *ngIf="voucherFormControls.minimumQuantity.value === 'order'"/>
+            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="orderValue" *ngIf="voucherFormControls.minimumQuantity.value === 'orderValue'"/>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
             <input id="radio6" type="radio" name="minimumQuantity" class="hidden" formControlName="minimumQuantity" value="quantity" />
@@ -67,7 +67,7 @@
           </div>
           <div class="w-full mb-3 px-4">
             <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Minimum quantity of items"
-              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="minimumRequirement"  *ngIf="voucherFormControls.minimumQuantity.value === 'quantity'"/>
+              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="quantity"  *ngIf="voucherFormControls.minimumQuantity.value === 'quantity'"/>
           </div>
       </ng-template>
 
@@ -75,11 +75,11 @@
           <div class="flex flex-wrap">
             <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                   <label class="inline-flex w-full">
-                      <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="togglelimit()"><span 
+                      <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" formControlName="limitCheck"><span 
                       class="ml-2 text-gray-700">Limit number of times this discount can be used in total</span>
                   </label>
                   <div class="w-full mb-3">
-                    <input type="number" class="arc-input placeholder-gray-400 w-full" *ngIf="showMe" placeholder="Limit of Uses"
+                    <input type="number" class="arc-input placeholder-gray-400 w-full slider" placeholder="Limit of Uses" *ngIf="voucherFormControls.limitCheck.value"
                       [ngClass]="nameDanger ? 'border-red' : ''" formControlName="limit"/>
                   </div>
                 <label class="inline-flex w-full">
