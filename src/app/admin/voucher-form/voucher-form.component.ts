@@ -20,14 +20,12 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   successDelete = false;
   edit = false;
   showMe = false;
-  showMeOrder = false;
-  showMeQuantity = false;
   showMeEndDate = false;
   nameDanger: boolean;
 
   voucherRoute = `/${ADMIN}/${DISCOUNT}/${VOUCHER}`;
   voucher: VoucherInterface;
-  addVoucherForm: FormGroup;
+  voucherForm: FormGroup;
 
   voucherSubscription: Subscription;
 
@@ -46,15 +44,16 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.addVoucherForm = this.formbuilder.group({
+    this.voucherForm = this.formbuilder.group({
       code: ['', Validators.required],
       value: ['', Validators.required],
-      discountType:[''],
-      minimumRequirement:[],
-      limit:[''],
-      onePerUser:[''],
-      startDate:[''],
-      endDate:['']
+      discountType: [''],
+      minimumQuantity: [''],
+      minimumRequirement: [''],
+      limit: [''],
+      onePerUser: [''],
+      startDate: [''],
+      endDate: [''],
     });
   }
 
@@ -66,37 +65,25 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
 
   setFormValue() {
     const { code, value,valueType,minimumRequirement,totalUsage,onePerUser,startDate,endDate } =this.voucher;
-    this.addVoucherForm.patchValue({
+    this.voucherForm.patchValue({
        code, value, discountType:valueType,minimumRequirement,limit:totalUsage,onePerUser,startDate,endDate
     });
   }
 
-  togglelimit()
-  {
-   this.showMe = !this.showMe;
+  togglelimit() {
+    this.showMe = !this.showMe;
   }
 
-  toggleorder()
-  {
-   this.showMeOrder = !this.showMeOrder;
-  }
-
-  togglequantity()
-  {
-   this.showMeQuantity = !this.showMeQuantity;
-  }
-
-  toggleEnddate()
-  {
-   this.showMeEndDate = !this.showMeEndDate;
+  toggleEnddate() {
+    this.showMeEndDate = !this.showMeEndDate;
   }
 
 
-  get addvoucherFormControls() { return this.addVoucherForm.controls; }
+  get voucherFormControls() { return this.voucherForm.controls; }
 
   async onSubmit() {
-    const { code,value,discountType,minimumRequirement,limit,onePerUser,startDate,endDate} = this.addvoucherFormControls;
-    if (this.addVoucherForm.invalid) {
+    const { code, value, discountType, minimumRequirement, limit, onePerUser, startDate, endDate } = this.voucherFormControls;
+    if (this.voucherForm.invalid) {
       if (code.errors) {
         this.nameDanger = true;
       }
@@ -110,25 +97,25 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       startDate: startDate.value,
       endDate: endDate.value,
       minimumRequirement: minimumRequirement.value,
-      totalUsage:limit.value,
-      onePerUser:onePerUser.value
-      
+      totalUsage: limit.value,
+      onePerUser: onePerUser.value
+
     };
-   
+
     try {
       if (this.edit) {
-           await this.adminService.updateVoucher({
+        await this.adminService.updateVoucher({
           ...setData,
           voucherId: this.voucher.voucherId
 
         });
       } else {
-        const data =  await this.adminService.createVoucher({
+        const data = await this.adminService.createVoucher({
           ...setData,
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${DISCOUNT}/${VOUCHER}/${id}`);
+          this.router.navigateByUrl(`/${this.voucherRoute}/${id}`);
         }
       }
 
