@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN, CATALOG, VOUCHER } from '@constants/adminRoutes';
+import { ADMIN, DISCOUNT, VOUCHER } from '@constants/adminRoutes';
 import { VoucherInterface } from '@models/Voucher';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -25,7 +25,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   showMeEndDate = false;
   nameDanger: boolean;
 
-  voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
+  voucherRoute = `/${ADMIN}/${DISCOUNT}/${VOUCHER}`;
   voucher: VoucherInterface;
   addVoucherForm: FormGroup;
 
@@ -37,10 +37,10 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { code, value,valueType,startDate,endDate } = voucher;
-        this.addVoucherForm.patchValue({
-          name: code, value, valueType,startDate,endDate
-        });
+        if (voucher) {
+          this.voucher = voucher;
+          this.setFormValue();
+        }
       });
     }
   }
@@ -50,12 +50,24 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       code: ['', Validators.required],
       value: ['', Validators.required],
       discountType:[''],
-      minimalOrder: [''],
-      minimumQuantity:[''],
+      minimumRequirement:[],
       limit:[''],
-      limitOne:[''],
+      onePerUser:[''],
       startDate:[''],
       endDate:['']
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.voucherSubscription && !this.voucherSubscription.closed) {
+      this.voucherSubscription.unsubscribe();
+    }
+  }
+
+  setFormValue() {
+    const { code, value,valueType,startDate,endDate } =this.voucher;
+    this.addVoucherForm.patchValue({
+       code, value, discountType:valueType,startDate,endDate
     });
   }
 
@@ -79,16 +91,11 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
    this.showMeEndDate = !this.showMeEndDate;
   }
 
-  ngOnDestroy(): void {
-    if (this.voucherSubscription && !this.voucherSubscription.closed) {
-      this.voucherSubscription.unsubscribe();
-    }
-  }
 
   get addvoucherFormControls() { return this.addVoucherForm.controls; }
 
   async onSubmit() {
-    const { code,value,discountType,startDate,endDate} = this.addvoucherFormControls;
+    const { code,value,discountType,minimumRequirement,limit,onePerUser,startDate,endDate} = this.addvoucherFormControls;
     if (this.addVoucherForm.invalid) {
       if (code.errors) {
         this.nameDanger = true;
@@ -101,13 +108,18 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       value: value.value,
       valueType: discountType.value,
       startDate: startDate.value,
-      endDate: endDate.value
+      endDate: endDate.value,
+      minimumRequirement: minimumRequirement.value,
+      totalUsage:limit.value,
+      onePerUser:onePerUser.value
+      
     };
+   
     try {
       if (this.edit) {
-        await this.adminService.updateVoucher({
+           await this.adminService.updateVoucher({
           ...setData,
-
+          voucherId: this.voucher.voucherId
 
         });
       } else {
@@ -116,7 +128,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${VOUCHER}/${id}`);
+          this.router.navigateByUrl(`/${ADMIN}/${DISCOUNT}/${VOUCHER}/${id}`);
         }
       }
 

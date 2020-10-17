@@ -84,6 +84,8 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     MatInputModule,
     MatNativeDateModule ,
     NgxMaterialTimepickerModule
+    
+
   ],
   providers: [
     AdminGuard,

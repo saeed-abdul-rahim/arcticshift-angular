@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {  Router } from '@angular/router';
-import { ADMIN, CATALOG, SALE } from '@constants/adminRoutes';
+import { ADMIN, DISCOUNT, SALE } from '@constants/adminRoutes';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { AdminService } from '@services/admin/admin.service';
 
@@ -24,8 +24,8 @@ export class SaleFormComponent implements OnInit, OnDestroy {
 
   nameDanger: boolean;
 
-  saleRoute = `/${ADMIN}/${CATALOG}/${SALE}`;
-  sale: SaleDiscountInterface;
+  saleRoute = `/${ADMIN}/${DISCOUNT}/${SALE}`;
+  saleDiscount: SaleDiscountInterface;
   addSaleForm: FormGroup;
 
 
@@ -37,10 +37,10 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     if (saleId !== 'add') {
       this.edit = true;
       this.saleSubscription = this.shopService.getSaleById(saleId).subscribe(sale => {
-        const { name, value,startDate } = sale;
-        this.addSaleForm.patchValue({
-          name, value,startDate
-        });
+        if (sale) {
+          this.saleDiscount = sale;
+          this.setFormValue();
+        }
       });
     }
   }
@@ -49,7 +49,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     this.addSaleForm = this.formbuilder.group({
       name: ['', Validators.required],
       value: ['', Validators.required],
-      radio: ['', Validators.required],
+      discountType: ['', Validators.required],
       startDate: ['',]
 
     });
@@ -66,10 +66,17 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  setFormValue() {
+    const { name,valueType,value,startDate } =this.saleDiscount;
+    this.addSaleForm.patchValue({
+      name, discountType:valueType,value,startDate
+    });
+  }
+
   get addSaleFormControls() { return this.addSaleForm.controls; }
 
   async onSubmit() {
-    const { name, value, radio,startDate } = this.addSaleFormControls;
+    const { name, value, discountType,startDate } = this.addSaleFormControls;
     if (this.addSaleForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -77,24 +84,27 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
+    const setData = {
+      code: name.value,
+      value: value.value,
+      valueType: discountType.value,
+      startDate: startDate.value,
+     
+    };
     try {
       if (this.edit) {
         await this.adminService.updateSale({
-          name: name.value,
-          value: value.value,
-          valueType: radio.value,
-          startDate: startDate.value
+         ...setData,
+          saleDiscountId:this.saleDiscount.saleDiscountId
+          
         });
       } else {
         const data = await this.adminService.createSale({
-          name: name.value,
-          value: value.value,
-          valueType: radio.value,
-          startDate: startDate.value
+       ...setData,
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${SALE}/${id}`);
+          this.router.navigateByUrl(`/${ADMIN}/${DISCOUNT}/${SALE}/${id}`);
         }
       }
 
@@ -110,7 +120,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   async deleteSale() {
     this.loadingDelete = true;
     try {
-      const { saleDiscountId } = this.sale;
+      const { saleDiscountId } = this.saleDiscount;
       await this.adminService.deleteSale(saleDiscountId);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
