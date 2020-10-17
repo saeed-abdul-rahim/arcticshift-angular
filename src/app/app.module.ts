@@ -32,8 +32,7 @@ import { ShopService } from '@services/shop/shop.service';
     AngularFireAnalyticsModule,
     AngularFireAuthModule,
     AngularFireStorageModule,
-    HttpClientModule,
-    
+    HttpClientModule
   ],
   providers: [
     ScreenTrackingService,

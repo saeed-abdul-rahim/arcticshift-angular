@@ -28,8 +28,10 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productTypeTemplate"></app-card>
           <app-card [heading]="'Taxes'" [body]="taxesTemplate"></app-card>
-          <app-card *ngIf="edit" [heading]="'Product Attributes'" [body]="productAttributeListTemplate" [actions]="assignProductAttributeTemplate"></app-card>
-          <app-card *ngIf="edit" [heading]="'Variant Attributes'" [body]="variantAttributeListTemplate" [actions]="assignVariantAttributeTemplate"></app-card>
+          <app-card *ngIf="edit" [heading]="'Product Attributes'" [body]="productAttributeListTemplate"
+            [actions]="assignProductAttributeTemplate"></app-card>
+          <app-card *ngIf="edit" [heading]="'Variant Attributes'" [body]="variantAttributeListTemplate"
+            [actions]="assignVariantAttributeTemplate"></app-card>
         </div>
       </div>
     </div>
@@ -64,24 +66,26 @@
   <app-spinner class="data-empty" *ngIf="productAttributeLoading" [size]="'5'"></app-spinner>
   <div *ngIf="!productAttributeLoading">
     <div *ngIf="productAttributes && productAttributes.length === 0" class="data-empty">No data available</div>
-    <table *ngIf="productAttributes && productAttributes.length > 0" mat-table [dataSource]="productAttributesSource">
+    <div class="overflow-x-auto scrollbar" *ngIf="productAttributes && productAttributes.length > 0">
+      <table mat-table [dataSource]="productAttributesSource">
 
-      <ng-container matColumnDef="attribute">
-        <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
-        <td mat-cell *matCellDef="let row" class="padding-0">
-          <div class="flex flex-wrap relative align-middle">
-            <div class="relative w-full px-5 py-3" (click)="navigateToAttribute(row.id)">{{row.name}}</div>
-            <div class="absolute right-0 mx-2 py-3" (click)="deleteAttribute('product', row.id)">
-              <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+        <ng-container matColumnDef="attribute">
+          <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle">
+              <div class="relative w-full px-5 py-3" (click)="navigateToAttribute(row.id)">{{row.name}}</div>
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteAttribute('product', row.id)">
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+              </div>
             </div>
-          </div>
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
 
-    </table>
+      </table>
+    </div>
   </div>
 </ng-template>
 
@@ -89,39 +93,43 @@
   <app-spinner class="flex justify-center pt-10" *ngIf="variantAttributeLoading" [size]="'5'"></app-spinner>
   <div *ngIf="!variantAttributeLoading">
     <div *ngIf="variantAttributes && variantAttributes.length === 0" class="data-empty">No data available</div>
-    <table *ngIf="variantAttributes && variantAttributes.length > 0" mat-table [dataSource]="variantAttributesSource">
+    <div class="overflow-x-auto scrollbar" *ngIf="variantAttributes && variantAttributes.length > 0">
+      <table mat-table [dataSource]="variantAttributesSource">
 
-      <ng-container matColumnDef="attribute">
-        <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
-        <td mat-cell *matCellDef="let row" class="padding-0">
-          <div class="flex flex-wrap relative align-middle">
-            <div class="relative w-full px-5 py-3" (click)="navigateToAttribute(row.id)">{{row.name}}</div>
-            <div class="absolute right-0 mx-2 py-3" (click)="deleteAttribute('variant', row.id)">
-              <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+        <ng-container matColumnDef="attribute">
+          <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle">
+              <div class="relative w-full px-5 py-3" (click)="navigateToAttribute(row.id)">{{row.name}}</div>
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteAttribute('variant', row.id)">
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+              </div>
             </div>
-          </div>
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="height-0"></tr>
 
-    </table>
+      </table>
+    </div>
   </div>
 </ng-template>
 
 <ng-template #attributeListTemplate>
   <app-spinner class="flex justify-center pt-10" *ngIf="attributeLoading" [size]="'5'"></app-spinner>
-  <div class="w-96" *ngIf="!attributeLoading">
+  <div class="w-full" *ngIf="!attributeLoading">
     <div *ngIf="filteredAttributes && filteredAttributes.length === 0" class="data-empty">No data available</div>
-    <div *ngIf="filteredAttributes && filteredAttributes.length > 0">
-      <input class="arc-input w-full" (keyup)="applyAttributeListFilter($event)" placeholder="Search" #input>
+    <div *ngIf="filteredAttributes && filteredAttributes.length > 0" class="overflow-x-auto scrollbar">
+      <input class="arc-input sticky-input w-full" (keyup)="applyAttributeListFilter($event)" placeholder="Search"
+        #input>
       <table mat-table [dataSource]="attributesSource">
 
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row">
-            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" (change)="assignAttributeCheckbox($event, row.id)">
+            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400"
+              (change)="assignAttributeCheckbox($event, row.id)">
           </td>
         </ng-container>
 

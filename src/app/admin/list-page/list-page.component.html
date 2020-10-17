@@ -2,7 +2,7 @@
   <app-spinner class="data-empty" *ngIf="loading" [size]="'5'"></app-spinner>
   <div *ngIf="!loading">
     <div *ngIf="data && data.length === 0" class="data-empty">No data available</div>
-    <div *ngIf="data && data.length > 0">
+    <div *ngIf="data && data.length > 0" class="overflow-x-auto scrollbar">
       <input class="arc-input w-full" (keyup)="applyFilter($event)" placeholder="Search" #input>
       <table mat-table [dataSource]="dataSource" matSort>
 

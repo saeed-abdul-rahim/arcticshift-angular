@@ -19,13 +19,6 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUploadAction>
-    <label class="arc-link-button" type="button">
-      Upload Image
-      <input type='file' class="hidden" (change)="onFileClicked($event)" />
-    </label>
-  </ng-template>
-
   <ng-template #imageUpload>
     <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
       (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
@@ -138,6 +131,13 @@
   </label>
 </ng-template>
 
+<ng-template #imageUploadAction>
+  <label class="arc-link-button" type="button">
+    Upload Image
+    <input type='file' class="hidden" (change)="onFileClicked($event)" />
+  </label>
+</ng-template>
+
 <!-- TABLE TEMPLATES -->
 
 <ng-template #variantListTemplate>
@@ -146,9 +146,24 @@
     <div *ngIf="variants && variants.length === 0" class="data-empty">No data available</div>
     <table *ngIf="variants && variants.length > 0" mat-table [dataSource]="variantsSource">
 
-      <ng-container matColumnDef="attribute">
-        <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
+      <ng-container matColumnDef="variant">
+        <th mat-header-cell *matHeaderCellDef>Variant</th>
         <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sku">
+        <th mat-header-cell *matHeaderCellDef>SKU</th>
+        <td mat-cell *matCellDef="let row">{{row.sku}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Price</th>
+        <td mat-cell *matCellDef="let row">{{row.price}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="inventory">
+        <th mat-header-cell *matHeaderCellDef>Inventory</th>
+        <td mat-cell *matCellDef="let row">{{ calculateInventory(row.warehouseQuantity) }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

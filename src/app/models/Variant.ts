@@ -1,4 +1,4 @@
-import { CommonInterface, Status, Condition, Content } from './Common';
+import { CommonInterface, Status, Condition, Content, ObjString, ObjNumber, Price } from './Common';
 
 export interface VariantInterface extends CommonInterface {
     id?: string;
@@ -11,10 +11,11 @@ export interface VariantInterface extends CommonInterface {
     description?: string;
     keywords?: string[];
     url?: string;
-    image?: Content[];
+    images?: Content[];
     productTypeId?: string;
     attributeId?: string[];
     attributeValueId?: string[];
+    attributes?: ObjString;
     categoryId?: string;
     collectionId?: string[];
     prices?: Price[];
@@ -24,7 +25,7 @@ export interface VariantInterface extends CommonInterface {
     like?: number;
     rating?: number;
     trackInventory?: boolean;
-    warehouse?: WarehouseInventory[];
+    warehouseQuantity?: ObjNumber;
     quantity?: number;
     bookedQuantity?: number;
 }
@@ -34,14 +35,4 @@ export type VariantCondition = Condition & {
     parentFields?: (keyof VariantInterface)[]
 };
 
-type VariantFields = keyof (VariantInterface);
-
-type Price = {
-    name: string
-    value: string
-};
-
-type WarehouseInventory = {
-    warehouseId: string
-    quantity: number
-};
+type VariantFields = keyof (VariantInterface) | string;

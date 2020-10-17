@@ -18,9 +18,10 @@
   </ng-template>
 
   <ng-template #attributeValueList>
-    <app-spinner class="flex justify-center pt-10" *ngIf="attributeValueLoading" [size]="'5'"></app-spinner>
+    <app-spinner class="data-empty" *ngIf="attributeValueLoading" [size]="'5'"></app-spinner>
     <div *ngIf="!attributeValueLoading">
-      <table mat-table [dataSource]="dataSource" matSort>
+      <div *ngIf="attributeValues && attributeValues.length === 0" class="data-empty">No data available</div>
+      <table *ngIf="attributeValues && attributeValues.length > 0" mat-table [dataSource]="dataSource" matSort>
 
         <ng-container matColumnDef="Value">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
@@ -68,12 +69,12 @@
 <form class="flex flex-col justify-between" [formGroup]="attributeValueForm" (ngSubmit)="attributeValueSubmit()">
 
   <ng-template #attributeValueFormTemplate>
-    <input type="text" class="arc-input placeholder-gray-400 w-full md:w-64" placeholder="Name"
+    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
       [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
   </ng-template>
 
   <app-modal [(showModal)]="showModal" [loading]="attributeModalLoading" [success]="attributeModalSuccess"
-    [heading]="editValue ? 'Edit Value' : 'Add Value'" [size]="'large'" [bodyTemplate]="attributeValueFormTemplate"></app-modal>
+    [heading]="editValue ? 'Edit Value' : 'Add Value'" [size]="'small'" [bodyTemplate]="attributeValueFormTemplate"></app-modal>
 
 </form>
 

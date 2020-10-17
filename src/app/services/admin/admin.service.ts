@@ -35,9 +35,11 @@ export class AdminService {
   private apiProductType: string;
   private apiAttribute: string;
   private apiWarehouse: string;
+  private apiShipping: string;
   private apiTax: string;
 
   private db: AngularFirestoreDocument;
+  private dbShop: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
 
   private user: User;
@@ -55,10 +57,12 @@ export class AdminService {
       variant,
       voucher,
       tax,
-      warehouse
+      warehouse,
+      shipping,
     } = api;
-    const { version, name, analytics, warehouses, shippings } = db;
+    const { version, name, analytics, warehouses, shippings, shops } = db;
     this.getCurrentUser();
+    const { shopId } = this.user;
 
     this.apiProduct = url + product;
     this.apiProductType = url + productType;
@@ -70,9 +74,11 @@ export class AdminService {
     this.apiVoucher = url + voucher;
     this.apiTax = url + tax;
     this.apiWarehouse = url + warehouse;
+    this.apiShipping = url + shipping;
 
     this.db = this.afs.collection(version).doc(name);
     this.dbAnalytics = this.db.collection(analytics);
+    this.dbShop = this.db.collection(shops).doc(shopId);
     this.dbWarehouseRoute = warehouses;
     this.dbShippingRoute = shippings;
   }
@@ -108,6 +114,42 @@ export class AdminService {
     const { apiProduct } = this;
     try {
       return await this.req.delete(`${apiProduct}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createVariant(data: VariantInterface) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.post(apiVariant, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateVariant(data: VariantInterface) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.patch(apiVariant, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteVariantImage(id: string, path: string) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.patch(`${apiVariant}/${id}/image`, { path });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteVariant(id: string) {
+    const { apiVariant } = this;
+    try {
+      return await this.req.delete(`${apiVariant}/${id}`);
     } catch (err) {
       throw err;
     }
@@ -185,7 +227,6 @@ export class AdminService {
     }
   }
 
-
   async createSale(data: SaleDiscountInterface) {
     const { apiSale } = this;
     try {
@@ -208,33 +249,6 @@ export class AdminService {
     const { apiSale } = this;
     try {
       return await this.req.delete(`${apiSale}/${id}`);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async createVariant(data: VariantInterface) {
-    const { apiVariant } = this;
-    try {
-      return await this.req.post(apiVariant, { data });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async updateVariant(data: VariantInterface) {
-    const { apiVariant } = this;
-    try {
-      return await this.req.patch(apiVariant, { data });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async deleteVariant(id: string) {
-    const { apiVariant } = this;
-    try {
-      return await this.req.delete(`${apiVariant}/${id}`);
     } catch (err) {
       throw err;
     }
@@ -289,6 +303,33 @@ export class AdminService {
     const { apiWarehouse } = this;
     try {
       return await this.req.delete(`${apiWarehouse}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createShipping(data: ShippingInterface) {
+    const { apiShipping } = this;
+    try {
+      return await this.req.post(apiShipping, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateShipping(data: ShippingInterface) {
+    const { apiShipping } = this;
+    try {
+      return await this.req.patch(apiShipping, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteShipping(id: string) {
+    const { apiShipping } = this;
+    try {
+      return await this.req.delete(`${apiShipping}/${id}`);
     } catch (err) {
       throw err;
     }
@@ -401,6 +442,10 @@ export class AdminService {
     }
   }
 
+  getCurrentShop() {
+    return getDataFromDocument(this.dbShop);
+  }
+
   getCollectionAnalytics(path: string) {
     return getDataFromDocument(this.dbAnalytics.doc(path));
   }
@@ -408,6 +453,11 @@ export class AdminService {
   getWarehouseById(warehouseId: string): Observable<WarehouseInterface> {
     const warehouse = this.db.collection(this.dbWarehouseRoute).doc(warehouseId);
     return getDataFromDocument(warehouse);
+  }
+
+  getShippingById(shippingId: string): Observable<ShippingInterface> {
+    const shipping = this.db.collection(this.dbShippingRoute).doc(shippingId);
+    return getDataFromDocument(shipping);
   }
 
   getWarehousesByShopId(): Observable<WarehouseInterface[]> {

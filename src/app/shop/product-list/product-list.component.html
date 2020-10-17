@@ -1,0 +1,8 @@
+<div class="container mx-auto flex items-center flex-wrap pt-4 pb-12 arc-transition">
+        <app-product-card class="sm:w-6/12 md:w-3/12 cursor-pointer" *ngFor="let product of products"
+            [id]="product.id"
+            [title]="product.name"
+            [images]="product.images"
+            [price]="product.price"
+        ></app-product-card>
+</div>

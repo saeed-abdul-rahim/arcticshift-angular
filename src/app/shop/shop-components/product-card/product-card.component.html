@@ -1,0 +1,22 @@
+<div class="w-full p-3 flex flex-col" (mouseenter)="hover = true" (mouseleave)="hover = false"
+    ng-touch [timemove]="3" (touch)="toggleHover()" (click)="cardClick()">
+    <div class="relative w-full flex flex-col">
+        <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; let first = first"
+            [ngClass]="first ? 'relative' : 'absolute opacity-0'" src="{{img.url}}" alt="{{img.title}}"
+            [class.opacity-100]="!first && hover">
+    </div>
+    <div class="relative pt-3 w-full flex items-center justify-between">
+        <p class="text-gray-600">{{title}}</p>
+        <fa-icon [icon]="heart ? faHeartS : faHeartR" (click)="heartClick()" size="1x"
+            class="h-6 w-6 text-gray-500 hover:text-black cursor-pointer"></fa-icon>
+    </div>
+    <div class="relative block w-full text-gray-700">
+        <p class="absolute pt-1" *ngIf="!hover" [@slideInOutAnimation]>
+            <span class="line-through text-gray-500">{{strikePrice}}</span>
+            {{price}}
+        </p>
+        <p class="absolute pt-1 cursor-pointer underline hover:text-blue-500" *ngIf="hover" [@slideInOutAnimation]>
+            Show more
+        </p>
+    </div>
+</div>

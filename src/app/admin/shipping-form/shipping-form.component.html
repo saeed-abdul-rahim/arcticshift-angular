@@ -1,43 +1,366 @@
 <form class="flex flex-col h-screen justify-between" [formGroup]="shippingForm" (ngSubmit)="onSubmit()">
 
-    <!-- TEMPLATES -->
-  
-    <ng-template #shippingZoneTemplate>
-  
-      <div class="flex flex-wrap items-center">
-        <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-          <div class="w-full mb-3">
-            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Shipping Zone Name"
-              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-          </div>
+  <!-- TEMPLATES -->
+
+  <ng-template #shippingZoneTemplate>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Shipping Zone Name"
+            [ngClass]="shippingFormControls.name.touched && shippingFormControls.name.invalid ? 'border-red' : ''"
+            formControlName="name" />
         </div>
       </div>
-    </ng-template>
+    </div>
+  </ng-template>
 
-    <ng-template #countriesTemplate>
+  <ng-template #countriesTemplate>
+    <div class="flex px-6 py-3 cursor-pointer" (click)="toggleCountries()">
+      {{selectedCountries.length}} Countr{{selectedCountries.length === 1 ? 'y' : 'ies'}}
+    </div>
+    <div class="slider" [ngClass]="showCountries ? '' : 'closed'">
+      <div *ngIf="shipping && shipping.countries.length === 0" class="data-empty">No data available</div>
+      <table *ngIf="shipping && shipping.countries.length > 0" mat-table [dataSource]="selectedCountriesSource">
 
-    </ng-template>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Countries</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle">
+              <div class="relative w-full px-5 py-3">{{row.name}}</div>
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteCountry(row.alpha3)">
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
 
-    <ng-template #countriesTemplate>
+        <tr mat-header-row *matHeaderRowDef="displayedCountries"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedCountries;" class="height-0"></tr>
 
-    </ng-template>
+      </table>
+    </div>
+  </ng-template>
 
-     <!-- BODY -->
+  <ng-template #zipCodeTemplate>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex flex-wrap flex-grow flex-1">
+        <div class="w-10/12">
+          <input #inputZip type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Zipcode" />
+        </div>
+        <div class="w-2/12 flex justify-center">
+          <button type="button" class="arc-button-secondary text-blue-500 h-full w-3/4"
+            (click)="addZipcode(inputZip.value); inputZip.value = ''">Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="flex px-6 py-3 cursor-pointer" (click)="toggleZip()">
+      {{selectedZipCodes.length}} Zip code{{selectedZipCodes.length === 1 ? '' : 's'}}
+    </div>
+    <div class="slider" [ngClass]="showZip ? '' : 'closed'">
+      <div *ngIf="selectedZipCodes.length === 0" class="data-empty">No data available</div>
+      <table *ngIf="selectedZipCodes.length > 0" mat-table [dataSource]="selectedZipCodeSource">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Zipcodes</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle">
+              <div class="relative w-full px-5 py-3">{{row}}</div>
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteZipcode(row)">
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedCountries"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedCountries;" class="height-0"></tr>
+
+      </table>
+    </div>
+  </ng-template>
+
+  <ng-template #radiusTemplate>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3 relative">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Radius"
+            formControlName="radius" />
+          <span class="input-right-label text-gray-600">
+            KM
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #warehouseTemplate>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3">
+          <ng-select [items]="warehouses" [multiple]="true" bindLabel="name" [closeOnSelect]="false" bindValue="id"
+            placeholder="Warehouses" [(ngModel)]="selectedWarehouses" [ngModelOptions]="{standalone: true}">
+            <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+              <input id="item-{{index}}" class="form-checkbox text-blue-500" type="checkbox" [ngModel]="item$.selected"
+                [ngModelOptions]="{standalone: true}" /> {{item.name}}
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- BODY -->
 
   <div class="relative md:pt-32 pt-12">
     <div class="px-4 md:px-10 mx-auto w-full">
       <div class="flex flex-wrap mt-4 mb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="shippingZoneTemplate"></app-card>
-       
+          <app-card [heading]="'Countries'" [body]="countriesTemplate" [actions]="assignCountriesTemplate"></app-card>
+          <app-card [heading]="'Zip Codes'" [body]="zipCodeTemplate"></app-card>
+          <app-card [heading]="'Radius'" [body]="radiusTemplate"></app-card>
+          <app-card *ngIf="shipping" [heading]="'Price Based Rate'" [body]="priceRateTemplate"
+            [actions]="createPriceRateTemplate"></app-card>
+          <app-card *ngIf="shipping" [heading]="'Weight Based Rate'" [body]="weightRateTemplate"
+            [actions]="createWeightRateTemplate"></app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
-            <app-card [heading]="'Countries'" [body]="countriesTemplate"></app-card>
+          <app-card [heading]="'Warehouse'" [body]="warehouseTemplate"></app-card>
         </div>
       </div>
     </div>
   </div>
 
-  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+  <app-footer-form [loading]="loading" [success]="success" [showDelete]="edit" [loadingDelete]="loadingDelete"
+    [successDelete]="successDelete" (deleteCallback)="deleteShipping()"></app-footer-form>
 
 </form>
+
+<!-- MODALS -->
+
+<app-modal [(showModal)]="showCountryModal" [loading]="loading" [success]="success" [heading]="'Assign Countries'"
+  [size]="'medium'" [bodyTemplate]="countriesModalTemplate" (modalCallback)="saveCountries()"></app-modal>
+
+<app-modal [(showModal)]="showRateModal" [loading]="loading" [success]="success"
+  [heading]="rateModalType === 'price' ? 'Price Based Rate' : 'Weight Based Rate'" [size]="'medium'"
+  [bodyTemplate]="rateTemplate" (modalCallback)="rateSubmit()"></app-modal>
+
+<app-modal [(showModal)]="showDeleteModal" [loading]="loadingDeleteModal" [success]="successDeleteModal"
+  [heading]="deleteModalTitle" [bodyTemplate]="deleteModalBodyTemplate" [buttonColor]="'red'" [buttonLabel]="'Delete'"
+  (modalCallback)="deleteRate()"></app-modal>
+
+<!-- MODAL BODY TEMPLATES -->
+
+<ng-template #deleteModalBodyTemplate>
+  {{ deleteModalBody }}
+</ng-template>
+
+<!-- BUTTON TEMPLATES -->
+
+<ng-template #assignCountriesTemplate>
+  <label class="arc-link-button" type="button">
+    <a (click)="showCountryModal = true">Assign Country</a>
+  </label>
+</ng-template>
+
+<ng-template #createPriceRateTemplate>
+  <label class="arc-link-button" type="button">
+    <a (click)="showRateModalFn('price')">Create Rate</a>
+  </label>
+</ng-template>
+
+<ng-template #createWeightRateTemplate>
+  <label class="arc-link-button" type="button">
+    <a (click)="showRateModalFn('weight')">Create Rate</a>
+  </label>
+</ng-template>
+
+<!-- TABLES TEMPLATES -->
+
+<ng-template #countriesModalTemplate>
+  <app-spinner class="flex justify-center pt-10" [size]="'5'" *ngIf="loading"></app-spinner>
+  <div class="w-full" *ngIf="!loading">
+    <div *ngIf="countryAlphaList && countryAlphaList.length === 0" class="data-empty">No data available</div>
+    <div *ngIf="countryAlphaList && countryAlphaList.length > 0" class="relative">
+      <input class="arc-input sticky-input w-full" (keyup)="applyCountryListFilter($event)" placeholder="Search" #input>
+      <table mat-table [dataSource]="countriesSource">
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400"
+              (change)="assignCountryCheckbox($event, row.alpha3)"
+              [attr.checked]="selectedCountries.includes(row.alpha3) ? true : null">
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Country Name</th>
+          <td mat-cell *matCellDef="let row">{{row.name}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedAllCountries"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedAllCountries;"></tr>
+
+      </table>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #priceRateTemplate>
+  <div class="w-full">
+    <div *ngIf="shipping.priceBased && shipping.priceBased.length === 0" class="data-empty">No data available</div>
+    <div *ngIf="shipping.priceBased && shipping.priceBased.length > 0" class="relative overflow-x-auto scrollbar">
+      <table mat-table [dataSource]="priceBasedRateSource">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let row" (click)="editRate('price', row.name)">{{row.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="range">
+          <th mat-header-cell *matHeaderCellDef>Value Range</th>
+          <td mat-cell *matCellDef="let row" (click)="editRate('price', row.name)">
+            <div *ngIf="row.noValueLimit">No Limit</div>
+            <div *ngIf="!row.noValueLimit">
+              from {{row.minValue | currency: shop.currency}}
+              {{ row.maxValue && row.maxValue > 0 ? 'to ' + (row.maxValue | currency: shop.currency) : ''}}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle">
+              <div class="relative w-full pl-0 pr-5 py-3" (click)="editRate('price', row.name)">
+                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shop.currency)}}&nbsp;
+              </div>
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('price', row.name)">
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedRates"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedRates;"></tr>
+
+      </table>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #weightRateTemplate>
+  <div class="w-full">
+    <div *ngIf="shipping.weightBased && shipping.weightBased.length === 0" class="data-empty">No data available</div>
+    <div *ngIf="shipping.weightBased && shipping.weightBased.length > 0" class="relative overflow-x-auto scrollbar">
+      <table mat-table [dataSource]="weightBasedRateSource">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let row" (click)="editRate('price', row.name)">{{row.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="range">
+          <th mat-header-cell *matHeaderCellDef>Value Range</th>
+          <td mat-cell *matCellDef="let row" (click)="editRate('weight', row.name)">
+            <div *ngIf="row.noValueLimit">No Limit</div>
+            <div *ngIf="!row.noValueLimit">
+              from {{row.minValue}} {{shop.weightUnit}}
+              {{ row.maxValue && row.maxValue > 0 ? 'to ' + row.maxValue + ' ' + shop.weightUnit : ''}}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle">
+              <div class="relative w-full pl-0 pr-5 py-3" (click)="editRate('weight', row.name)">
+                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shop.currency)}}&nbsp;
+              </div>
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('weight', row.name)">
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedRates"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedRates;"></tr>
+
+      </table>
+    </div>
+  </div>
+</ng-template>
+
+<!-- FORM TEMPLATES -->
+
+<ng-template #rateTemplate>
+  <form class="w-full" [formGroup]="rateForm">
+    <div class="divide-y divide-gray-400">
+      <div class="flex flex-wrap items-center">
+        <div class="relative w-full px-1 py-3 max-w-full flex-grow flex-1">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Rate Name"
+            [ngClass]="rateFormControls.name.touched && rateFormControls.name.invalid ? 'border-red' : ''"
+            formControlName="name" />
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold py-3">
+          Value range
+        </div>
+        <div class="flex flex-wrap">
+          <div class="relative w-full px-4 pt-3 max-w-full flex-grow flex-1 arc-transition"
+            [ngClass]="noValueLimit ? 'pb-3' : ''">
+            <label class="inline-flex w-full">
+              <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" formControlName="noValueLimit"
+                (click)="noValueLimitCheckbox($event)">
+              <span class="ml-2 text-gray-700">No Value Limits</span>
+            </label>
+          </div>
+        </div>
+        <div class="items-center slider" [ngClass]="noValueLimit ? 'closed' : ''">
+          <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
+            <div class="w-full md:w-6/12 m-auto md:pr-1">
+              <input type="number" class="arc-input placeholder-gray-400 w-full"
+                placeholder="Minimum Order {{ rateModalType === 'price' ? 'Value' : 'Weight'}}"
+                formControlName="minValue">
+            </div>
+            <div class="w-full md:w-6/12 md:pl-1">
+              <input type="number" class="arc-input placeholder-gray-400 w-full"
+                placeholder="Maximum Order {{ rateModalType === 'price' ? 'Value' : 'Weight'}}"
+                formControlName="maxValue">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold py-3">
+          Rate
+        </div>
+        <div class="flex flex-wrap">
+          <div class="relative w-full px-4 pt-3 max-w-full flex-grow flex-1">
+            <label class="inline-flex w-full">
+              <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" formControlName="freeShipping"
+                (click)="freeShippingCheckbox($event)">
+              <span class="ml-2 text-gray-700">Free Shipping</span>
+            </label>
+          </div>
+        </div>
+        <div class="items-center slider" [ngClass]="freeShipping ? 'closed' : ''">
+          <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
+            <div class="w-full md:w-6/12 md:pr-1 relative">
+              <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Rate Price"
+                formControlName="price">
+              <span class="input-right-label text-gray-600">
+                {{shop.currency}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>

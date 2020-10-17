@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD, ADMIN, WAREHOUSE } from '@constants/adminRoutes';
+import { ADD, ADMIN, SHIPPING, WAREHOUSE } from '@constants/adminRoutes';
 import { ShippingInterface } from '@models/Shipping';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';
@@ -22,9 +23,13 @@ export class WarehouseComponent implements OnInit, OnDestroy {
   edit = false;
 
   warehouseRoute = `/${ADMIN}/${WAREHOUSE}`;
+  shippingRoute = `/${ADMIN}/${SHIPPING}`;
   warehouse: WarehouseInterface;
   shippings: ShippingInterface[];
   warehouseForm: FormGroup;
+
+  displayedColumns = ['name'];
+  shippingSource: MatTableDataSource<ShippingInterface>;
 
   countryAlphaList = countryAlphaList;
 
@@ -32,7 +37,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
   shippingSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private adminService: AdminService,
-              private router: Router) {
+              private router: Router, private cdr: ChangeDetectorRef) {
     const warehouseId = this.router.url.split('/').pop();
     if (warehouseId !== ADD) {
       this.edit = true;
@@ -48,7 +53,11 @@ export class WarehouseComponent implements OnInit, OnDestroy {
           name, company, line1, line2, city, area, zip, country, phone, lat, lon
         });
       });
-      this.shippingSubscription = this.adminService.getShippingByWarehouseId(warehouseId).subscribe(shipping => this.shippings = shipping);
+      this.shippingSubscription = this.adminService.getShippingByWarehouseId(warehouseId).subscribe(shipping => {
+        this.shippings = shipping;
+        this.shippingSource = new MatTableDataSource(shipping);
+        this.cdr.detectChanges();
+      });
     }
   }
 
@@ -141,6 +150,10 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       console.log(err);
     }
     this.loadingDelete = false;
+  }
+
+  navigateToShipping(id: string) {
+    this.router.navigateByUrl(`${this.shippingRoute}/${id}`);
   }
 
 }

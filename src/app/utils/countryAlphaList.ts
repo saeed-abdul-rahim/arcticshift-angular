@@ -193,3 +193,10 @@ export const countryAlphaList = [
     { id: 894, name: 'Zambia', alpha2: 'zm', alpha3: 'zmb' },
     { id: 716, name: 'Zimbabwe', alpha2: 'zw', alpha3: 'zwe' }
 ];
+
+export type CountryAlphaList = {
+    id: number,
+    name: string,
+    alpha2: string,
+    alpha3: string
+};

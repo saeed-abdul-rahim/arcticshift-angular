@@ -39,6 +39,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
   selectedAttributeValueId: string;
   attribute: AttributeInterface;
   attributeValue: AttributeValueInterface;
+  attributeValues: AttributeValueInterface[];
   attributeForm: FormGroup;
   attributeValueForm: FormGroup;
   attributeSubscription: Subscription;
@@ -120,6 +121,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       }
       return;
     }
+    this.attributeModalLoading = true;
     this.attributeValueLoading = true;
     const setData = {
       name: name.value,
@@ -142,6 +144,7 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       this.attributeModalSuccess = false;
       console.log(err);
     }
+    this.attributeModalLoading = false;
     this.attributeValueLoading = false;
   }
 
@@ -199,9 +202,10 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
   }
 
   getAttributeValues(attributeId: string) {
-    this.attributeValuesSubscription = this.shopService.getAttributeValuesByAttributeId(attributeId).subscribe(attribute => {
+    this.attributeValuesSubscription = this.shopService.getAttributeValuesByAttributeId(attributeId).subscribe(attributeValues => {
       this.displayedColumns = [ 'Value' ];
-      this.fillTable(attribute);
+      this.attributeValues = attributeValues;
+      this.fillTable(attributeValues);
     });
   }
 

@@ -20656,6 +20656,10 @@ video {
           animation: bounce 1s infinite;
 }
 
+.max-h-64 {
+  max-height: 16rem;
+}
+
 .arc-transition {
   transition: all 0.15s ease 0s;
 }
@@ -20667,6 +20671,7 @@ video {
 
 .scrollbar::-webkit-scrollbar, .scroll-host::-webkit-scrollbar {
   width: 3px !important;
+  height: 3px !important;
   background-color: #F5F5F5 !important;
 }
 
@@ -20675,6 +20680,13 @@ video {
   background-image: -webkit-gradient(linear, 0 0, 0 100%,
 	                   color-stop(.5, rgba(255, 255, 255, .2)),
 					   color-stop(.5, transparent), to(transparent)) !important;
+}
+
+.sticky-input {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 10;
+  top: 0;
 }
 
 .slider {
@@ -20751,6 +20763,17 @@ video {
   box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }
 
+.input-right-label {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  padding-right: 1.5rem;
+}
+
 .arc-label {
   display: block;
   text-transform: uppercase;
@@ -20765,6 +20788,7 @@ video {
 .arc-button-base {
   display: inline-flex;
   justify-content: center;
+  align-items: center;
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -20783,6 +20807,7 @@ video {
 .arc-button {
   display: inline-flex;
   justify-content: center;
+  align-items: center;
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -20812,6 +20837,7 @@ video {
 .arc-button-secondary {
   display: inline-flex;
   justify-content: center;
+  align-items: center;
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -20837,6 +20863,7 @@ video {
 
 .arc-link-button-base {
   background-color: transparent;
+  align-items: center;
   font-weight: 700;
   text-transform: uppercase;
   padding-left: 0.75rem;
@@ -20845,8 +20872,6 @@ video {
   padding-bottom: 0.5rem;
   font-size: 0.75rem;
   outline: 0;
-  margin-right: 0.25rem;
-  margin-bottom: 0.25rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.15s ease 0s;
@@ -20854,6 +20879,7 @@ video {
 
 .arc-link-button {
   background-color: transparent;
+  align-items: center;
   font-weight: 700;
   text-transform: uppercase;
   padding-left: 0.75rem;
@@ -20862,8 +20888,6 @@ video {
   padding-bottom: 0.5rem;
   font-size: 0.75rem;
   outline: 0;
-  margin-right: 0.25rem;
-  margin-bottom: 0.25rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.15s ease 0s;
@@ -20882,6 +20906,7 @@ video {
 
 .arc-link-button-secondary {
   background-color: transparent;
+  align-items: center;
   font-weight: 700;
   text-transform: uppercase;
   padding-left: 0.75rem;
@@ -20890,8 +20915,6 @@ video {
   padding-bottom: 0.5rem;
   font-size: 0.75rem;
   outline: 0;
-  margin-right: 0.25rem;
-  margin-bottom: 0.25rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.15s ease 0s;

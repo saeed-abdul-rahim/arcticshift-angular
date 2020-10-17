@@ -149,7 +149,7 @@ const routes: Routes = [
         children: [
           { path: '', component: ListPageComponent },
           { path: ADD, component: ShippingFormComponent },
-          { path: ':id' }
+          { path: ':id', component: ShippingFormComponent }
         ]
       },
       {
