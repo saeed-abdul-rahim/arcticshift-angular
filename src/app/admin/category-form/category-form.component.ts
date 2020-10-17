@@ -53,11 +53,13 @@ constructor(private formbuilder: FormBuilder, private storageService: StorageSer
     const categoryId = this.router.url.split('/').pop();
     if (categoryId !== 'add') {
       this.edit = true;
-      this.categorySubscription = this.shopService.getCollectionById(categoryId).subscribe(category => {
-        const { name } = category;
+      this.categorySubscription = this.shopService.getCategoryById(categoryId).subscribe(category => {
+        if (!category) { return; }
+        this.category = category;
+        const { name, description } = category;
         this.addCategoryForm.patchValue({
           name,
-
+          description
         });
       });
     }
@@ -65,7 +67,8 @@ constructor(private formbuilder: FormBuilder, private storageService: StorageSer
 
   ngOnInit(): void {
     this.addCategoryForm = this.formbuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      description: ['']
     });
   }
 
@@ -113,7 +116,8 @@ constructor(private formbuilder: FormBuilder, private storageService: StorageSer
     this.loading = false;
   }
 
-  async deleteCetogory() {
+  async deleteCategory() {
+    if (!this.category) { return; }
     this.loadingDelete = true;
     try {
       const { categoryId } = this.category;

@@ -20,6 +20,7 @@ import { ProductTypeInterface } from '@models/ProductType';
 import { AttributeJoinInterface } from '@models/Attribute';
 import { VariantInterface } from '@models/Variant';
 import { MatTableDataSource } from '@angular/material/table';
+import { getFormGroupArrayValues } from '@utils/formUtils';
 
 @Component({
   selector: 'app-product-form',
@@ -116,19 +117,22 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   setAttributeForm(event: ProductTypeInterface, patch = false) {
-    this.productFormControls.attributes.reset();
+    this.attributeForms.clear();
     if (event) {
       const { productTypeId } = event;
-      this.attributeSubscription = this.getAttributes(productTypeId).subscribe(attributes => {
-        this.attributes = attributes;
-        this.attributes.forEach(attr => {
-          let defaultValue = '';
-          if (patch && this.product && this.product.attributeValueId) {
-            defaultValue = this.product.attributeValueId.find(id => id === attr.attributeValueId.find(vId => vId === id));
-          }
-          this.attributeForm.push(this.formbuilder.group({
-            attributeValueId: [defaultValue]
-          }));
+      this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId).subscribe(productType => {
+        const { productAttributeId } = productType;
+        this.attributeSubscription = this.shopService.getAttributeAndValuesByIds(productAttributeId).subscribe(attributes => {
+          this.attributes = attributes;
+          this.attributes.forEach(attr => {
+            let attributeValueId = null;
+            if (patch) {
+              attributeValueId = this.product.attributes?.[attr.id];
+            }
+            this.attributeForms.push(this.formbuilder.group({
+              [attr.id]: [attributeValueId]
+            }));
+          });
         });
       });
     }
@@ -163,11 +167,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   get productFormControls() { return this.productForm.controls; }
-  get attributeForm() { return this.productFormControls.attributes as FormArray; }
+  get attributeForms() { return this.productFormControls.attributes as FormArray; }
 
   async onSubmit() {
     const { name, price, description, category, productType, tax, visibility } = this.productFormControls;
-    const attributeFormControls = this.attributeForm.controls;
     if (this.productForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -180,9 +183,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       }
       return;
     }
-    const attributeValueId = attributeFormControls.map((formGroup: FormGroup) => {
-      return formGroup.controls.attributeValueId.value as string;
-    }).filter(e => e);
+    const attributes = getFormGroupArrayValues(this.attributeForms);
     this.loading = true;
     const setData = {
       name: name.value,
@@ -191,7 +192,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       categoryId: category.value,
       collectionId: this.selectedCollections,
       productTypeId: productType.value,
-      attributeValueId,
+      attributes,
       chargeTax: tax.value,
       status: visibility.value
     };
@@ -352,6 +353,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       tax: chargeTax
     });
     this.selectedCollections = collectionId;
+    this.attributeForms.clear();
     if (productTypeId) {
       this.setAttributeForm({ productTypeId }, true);
     }

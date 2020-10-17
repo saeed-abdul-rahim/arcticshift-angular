@@ -31,7 +31,7 @@
         *ngFor="let attribute of attributes; let i=index" [formGroupName]="i">
         <div class="w-full md:w-4/12 m-auto">{{ attribute.name }}</div>
         <div class="w-full md:w-8/12">
-          <ng-select formControlName="attributeValueId"
+          <ng-select formControlName="{{attribute.id}}"
             *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0" placeholder="Value"
             [items]="attribute.attributeValues" bindValue="id" bindLabel="name"></ng-select>
         </div>
@@ -105,7 +105,7 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
           <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
-          <app-card *ngIf="productFormControls.productType.value" [heading]="'Attributes'" [body]="attributesTemplate">
+          <app-card *ngIf="attributeForms.length > 0" [heading]="'Attributes'" [body]="attributesTemplate">
           </app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
           <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variantActionTemplate" [body]="variantListTemplate"></app-card>

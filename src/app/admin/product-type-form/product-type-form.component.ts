@@ -193,6 +193,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
       }
       this.showModal = false;
     } catch (err) {}
+    this.selectedAttributeIds = [];
     this.loadingAttributeModal = false;
   }
 

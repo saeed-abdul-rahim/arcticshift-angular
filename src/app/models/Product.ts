@@ -1,4 +1,4 @@
-import { CommonInterface, Tax, Condition, Content } from './Common';
+import { CommonInterface, Tax, Condition, Content, ObjString } from './Common';
 
 export interface ProductInterface extends CommonInterface {
     id?: string;
@@ -9,8 +9,7 @@ export interface ProductInterface extends CommonInterface {
     keywords?: string[];
     url?: string;
     images?: Content[];
-    attributeId?: string[];
-    attributeValueId?: string[];
+    attributes?: ObjString;
     productTypeId?: string;
     categoryId?: string;
     collectionId?: string[];
@@ -30,7 +29,7 @@ export type ProductCondition = Condition & {
     parentFields?: (keyof ProductInterface)[]
 };
 
-type ProductFields = keyof (ProductInterface & Content & Price);
+type ProductFields = keyof (ProductInterface & Price) | string;
 
 type Price = {
     name: string
