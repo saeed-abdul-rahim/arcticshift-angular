@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ADMIN, CATALOG, SALE } from '@constants/adminRoutes';
+import {  Router } from '@angular/router';
+import { ADMIN, DISCOUNT, SALE } from '@constants/adminRoutes';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
+
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -19,28 +19,28 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   success: boolean;
   loadingDelete = false;
   successDelete = false;
+  showMeEndDate = false;
   edit = false;
 
   nameDanger: boolean;
 
-  saleRoute = `/${ADMIN}/${CATALOG}/${SALE}`;
-  sale: SaleDiscountInterface;
+  saleRoute = `/${ADMIN}/${DISCOUNT}/${SALE}`;
+  saleDiscount: SaleDiscountInterface;
   addSaleForm: FormGroup;
 
 
   saleSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService,
+              private router: Router, private shopService: ShopService) {
     const saleId = this.router.url.split('/').pop();
     if (saleId !== 'add') {
       this.edit = true;
       this.saleSubscription = this.shopService.getSaleById(saleId).subscribe(sale => {
-        const { name, value, } = sale;
-        this.addSaleForm.patchValue({
-          name, value,
-
-        });
+        if (sale) {
+          this.saleDiscount = sale;
+          this.setFormValue();
+        }
       });
     }
   }
@@ -49,9 +49,15 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     this.addSaleForm = this.formbuilder.group({
       name: ['', Validators.required],
       value: ['', Validators.required],
-      radio: ['', Validators.required]
+      discountType: ['', Validators.required],
+      startDate: ['',]
 
     });
+  }
+
+  toggleEnddate()
+  {
+   this.showMeEndDate = !this.showMeEndDate;
   }
 
   ngOnDestroy(): void {
@@ -60,10 +66,17 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  setFormValue() {
+    const { name,valueType,value,startDate } =this.saleDiscount;
+    this.addSaleForm.patchValue({
+      name, discountType:valueType,value,startDate
+    });
+  }
+
   get addSaleFormControls() { return this.addSaleForm.controls; }
 
   async onSubmit() {
-    const { name, value, radio } = this.addSaleFormControls;
+    const { name, value, discountType,startDate } = this.addSaleFormControls;
     if (this.addSaleForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -71,22 +84,27 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
+    const setData = {
+      code: name.value,
+      value: value.value,
+      valueType: discountType.value,
+      startDate: startDate.value,
+     
+    };
     try {
       if (this.edit) {
         await this.adminService.updateSale({
-          name: name.value,
-          value: value.value,
-          valueType: radio.value,
+         ...setData,
+          saleDiscountId:this.saleDiscount.saleDiscountId
+          
         });
       } else {
         const data = await this.adminService.createSale({
-          name: name.value,
-          value: value.value,
-          valueType: radio.value
+       ...setData,
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${SALE}/${id}`);
+          this.router.navigateByUrl(`/${ADMIN}/${DISCOUNT}/${SALE}/${id}`);
         }
       }
 
@@ -102,7 +120,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   async deleteSale() {
     this.loadingDelete = true;
     try {
-      const { saleDiscountId } = this.sale;
+      const { saleDiscountId } = this.saleDiscount;
       await this.adminService.deleteSale(saleDiscountId);
       this.success = true;
       setTimeout(() => this.success = false, 2000);

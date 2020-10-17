@@ -9,6 +9,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
@@ -38,6 +40,8 @@ import { AttributeFormComponent } from './attribute-form/attribute-form.componen
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
+
+
 
 
 @NgModule({
@@ -75,7 +79,9 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     FontAwesomeModule,
     AngularEditorModule,
     MatFormFieldModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule
   ],
   providers: [
     AdminGuard,

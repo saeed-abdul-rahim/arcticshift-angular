@@ -1,11 +1,11 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addVoucherForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="voucherForm" (ngSubmit)="onSubmit()">
 
     <ng-template #sale>
         <div class="flex flex-wrap items-center">
           <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
             <div class="w-full mb-3">
               <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
-                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="code" />
             </div>
           </div>
         </div>
@@ -13,19 +13,19 @@
 
       <ng-template #discount>
         <div class="flex items-center ml-4 mb-4 p-1 pt-5">
-          <input id="radio1" type="radio" name="radio" class="hidden" checked />
+          <input id="radio1" type="radio" name="discountType" value="fixed" class="hidden" formControlName="discountType" checked />
           <label for="radio1" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Fixed Amount</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio2" type="radio" name="radio" class="hidden" />
+          <input id="radio2" type="radio" name="discountType" value="percent" class="hidden" formControlName="discountType" />
           <label for="radio2" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Percentage</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-            <input id="radio3" type="radio" name="radio" class="hidden" />
+            <input id="radio3" type="radio" name="discountType" value="shipping" class="hidden" formControlName="discountType"/>
             <label for="radio3" class="flex items-center cursor-pointer">
               <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
               Free Shipping</label>
@@ -44,22 +44,30 @@
       </ng-template>
       <ng-template #minimum>
         <div class="flex items-center ml-4 mb-4 p-1 pt-5">
-          <input id="radio4" type="radio" name="radio1" class="hidden" checked />
+          <input id="radio4" type="radio" name="minimumQuantity" class="hidden" formControlName="minimumQuantity" value="" checked />
           <label for="radio4" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             None</label>
         </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio5" type="radio" name="radio1" class="hidden" />
+          <input id="radio5" type="radio" name="minimumQuantity" class="hidden" formControlName="minimumQuantity" value="order" />
           <label for="radio5" class="flex items-center cursor-pointer">
             <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
             Minimal order value</label>
         </div>
+        <div class="w-full mb-3 px-4">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Minimal order value"
+            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="minimumRequirement" *ngIf="voucherFormControls.minimumQuantity.value === 'order'"/>
+        </div>
         <div class="flex items-center ml-4 mb-4 p-1">
-            <input id="radio6" type="radio" name="radio1" class="hidden" />
+            <input id="radio6" type="radio" name="minimumQuantity" class="hidden" formControlName="minimumQuantity" value="quantity" />
             <label for="radio6" class="flex items-center cursor-pointer">
               <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
               Minimum quantity of items</label>
+          </div>
+          <div class="w-full mb-3 px-4">
+            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Minimum quantity of items"
+              [ngClass]="nameDanger ? 'border-red' : ''" formControlName="minimumRequirement"  *ngIf="voucherFormControls.minimumQuantity.value === 'quantity'"/>
           </div>
       </ng-template>
 
@@ -67,16 +75,69 @@
           <div class="flex flex-wrap">
             <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                   <label class="inline-flex w-full">
-                      <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
+                      <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="togglelimit()"><span 
                       class="ml-2 text-gray-700">Limit number of times this discount can be used in total</span>
                   </label>
+                  <div class="w-full mb-3">
+                    <input type="number" class="arc-input placeholder-gray-400 w-full" *ngIf="showMe" placeholder="Limit of Uses"
+                      [ngClass]="nameDanger ? 'border-red' : ''" formControlName="limit"/>
+                  </div>
                 <label class="inline-flex w-full">
-                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" checked><span 
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400 " formControlName="onePerUser"><span 
                     class="ml-2 w-full text-gray-700">Limit to one use per customer</span>
                 </label>
+                
               </div>
           </div>
       </ng-template>
+
+      <ng-template #dateTimePicker>
+        <div class="flex">
+        <div class="px-6 py-2">
+        <mat-form-field appearance="fill">
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="startDate">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        </div>
+        <!-- <div class="px-6">  
+          <mat-form-field appearance="fill"> 
+          <input matInput [ngxTimepicker]="picker">
+            <ngx-material-timepicker #picker>
+            </ngx-material-timepicker>
+            <ngx-material-timepicker-dial #picker></ngx-material-timepicker-dial>
+          </mat-form-field >
+        </div>
+        </div>
+
+        <label class="inline-flex w-full pl-6">
+          <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="toggleEnddate()"><span 
+          class="ml-2 text-gray-700">Set end date</span>
+      </label>
+
+      <div class="flex">
+        <div class="px-6 py-2">
+        <mat-form-field appearance="fill">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="picker" *ngIf="showMeEndDate" >
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="px-6">  
+          <mat-form-field appearance="fill">
+          <input matInput [ngxTimepicker]="picker" *ngIf="showMeEndDate" >
+            <ngx-material-timepicker #picker>
+            </ngx-material-timepicker>
+            <ngx-material-timepicker-dial #picker>
+            </ngx-material-timepicker-dial>
+          </mat-form-field>
+        </div>
+        </div> -->
+
+      </ng-template> 
       
       <ng-template #summary>
 
@@ -89,9 +150,9 @@
               <app-card [heading]="'General Information'" [body]="sale"></app-card>
               <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
               <app-card [heading]="'Value'" [body]="value"></app-card>
-              <app-card [heading]="'Usage Limit'" [body]="checkbox"></app-card>
               <app-card [heading]="'Minimum Requirements'" [body]="minimum"></app-card>
-              
+              <app-card [heading]="'Usage Limit'" [body]="checkbox"></app-card>
+              <app-card [heading]="'Active Dates'" [body]="dateTimePicker"></app-card>
             </div>
             <div class="w-full xl:w-4/12 px-4">
               <app-card *ngIf="edit" [heading]="'Summary'" [body]="summary"></app-card>
@@ -108,4 +169,5 @@
       [successDelete]="successDelete"
       (deleteCallback)="deleteVoucher()"
     ></app-footer-form>
+
 </form>

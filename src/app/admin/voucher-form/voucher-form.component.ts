@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ADMIN, CATALOG, VOUCHER } from '@constants/adminRoutes';
+import { Router } from '@angular/router';
+import { ADMIN, DISCOUNT, VOUCHER } from '@constants/adminRoutes';
 import { VoucherInterface } from '@models/Voucher';
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -19,35 +18,44 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   success = false;
   loadingDelete = false;
   successDelete = false;
-  edit = true;
+  edit = false;
+  showMe = false;
+  showMeEndDate = false;
   nameDanger: boolean;
 
-  voucherRoute = `/${ADMIN}/${CATALOG}/${VOUCHER}`;
+  voucherRoute = `/${ADMIN}/${DISCOUNT}/${VOUCHER}`;
   voucher: VoucherInterface;
-  addVoucherForm: FormGroup;
+  voucherForm: FormGroup;
 
   voucherSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private mediaService: MediaService, private adminService: AdminService,
-              private router: Router, private route: ActivatedRoute, private shopService: ShopService) {
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService,
+              private router: Router, private shopService: ShopService) {
     const voucherId = this.router.url.split('/').pop();
     if (voucherId !== 'add') {
       this.edit = true;
       this.voucherSubscription = this.shopService.getVoucherById(voucherId).subscribe(voucher => {
-        const { code, value } = voucher;
-        this.addVoucherForm.patchValue({
-          name: code, value
-        });
+        if (voucher) {
+          this.voucher = voucher;
+          this.setFormValue();
+        }
       });
     }
   }
 
   ngOnInit(): void {
-    this.addVoucherForm = this.formbuilder.group({
-      name: ['', Validators.required]
+    this.voucherForm = this.formbuilder.group({
+      code: ['', Validators.required],
+      value: ['', Validators.required],
+      discountType: [''],
+      minimumQuantity: [''],
+      minimumRequirement: [''],
+      limit: [''],
+      onePerUser: [''],
+      startDate: [''],
+      endDate: [''],
     });
   }
-
 
   ngOnDestroy(): void {
     if (this.voucherSubscription && !this.voucherSubscription.closed) {
@@ -55,30 +63,59 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  get addvoucherFormControls() { return this.addVoucherForm.controls; }
+  setFormValue() {
+    const { code, value,valueType,minimumRequirement,totalUsage,onePerUser,startDate,endDate } =this.voucher;
+    this.voucherForm.patchValue({
+       code, value, discountType:valueType,minimumRequirement,limit:totalUsage,onePerUser,startDate,endDate
+    });
+  }
+
+  togglelimit() {
+    this.showMe = !this.showMe;
+  }
+
+  toggleEnddate() {
+    this.showMeEndDate = !this.showMeEndDate;
+  }
+
+
+  get voucherFormControls() { return this.voucherForm.controls; }
 
   async onSubmit() {
-    const { name } = this.addvoucherFormControls;
-    if (this.addVoucherForm.invalid) {
-      if (name.errors) {
+    const { code, value, discountType, minimumRequirement, limit, onePerUser, startDate, endDate } = this.voucherFormControls;
+    if (this.voucherForm.invalid) {
+      if (code.errors) {
         this.nameDanger = true;
       }
       return;
     }
     this.loading = true;
+    const setData = {
+      code: code.value,
+      value: value.value,
+      valueType: discountType.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
+      minimumRequirement: minimumRequirement.value,
+      totalUsage: limit.value,
+      onePerUser: onePerUser.value
+
+    };
+
     try {
       if (this.edit) {
-        await this.adminService.updateSale({
-          name: name.value,
+        await this.adminService.updateVoucher({
+          ...setData,
+          voucherId: this.voucher.voucherId
 
         });
       } else {
-        const data =  await this.adminService.createSale({
-          name: name.value,
+        const data = await this.adminService.createVoucher({
+          ...setData,
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${VOUCHER}/${id}`);
+          this.router.navigateByUrl(`/${this.voucherRoute}/${id}`);
         }
       }
 

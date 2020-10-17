@@ -14,19 +14,19 @@ export class CustomerFormComponent implements OnInit {
   edit = false;
   nameDanger: boolean;
 
-  customerForm: FormGroup;
+  addCustomerForm: FormGroup;
 
   constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.customerForm = this.formbuilder.group({});
+    this.addCustomerForm = this.formbuilder.group({});
   }
 
-  get customerFormControls() { return this.customerForm.controls; }
+  get customerFormControls() { return this.addCustomerForm.controls; }
 
   async onSubmit() {
     const { name } = this.customerFormControls;
-    if (this.customerForm.invalid) {
+    if (this.addCustomerForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
       }
