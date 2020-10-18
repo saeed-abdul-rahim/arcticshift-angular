@@ -17,7 +17,7 @@ export interface CategoryInterface extends CommonInterface {
 
 export type CategoryCondition = Condition & {
     field: CategoryFields
-    parentFields?: (keyof CategoryInterface)[]
+    parentFields?: CategoryFields[]
 };
 
-type CategoryFields = keyof (CategoryInterface & Content);
+export type CategoryFields = keyof CategoryInterface;

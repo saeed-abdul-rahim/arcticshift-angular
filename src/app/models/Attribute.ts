@@ -25,9 +25,12 @@ export interface AttributeJoinInterface extends AttributeInterface {
 }
 
 export type AttributeCondition = Condition & {
-    field: keyof AttributeInterface
+    field: AttributeFields
 };
 
 export type AttributeValueCondition = Condition & {
-    field: keyof AttributeValueInterface
+    field: AttributeValueFields
 };
+
+export type AttributeFields = keyof AttributeInterface;
+export type AttributeValueFields = keyof AttributeValueInterface;

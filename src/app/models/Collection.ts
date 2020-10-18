@@ -16,7 +16,7 @@ export interface CollectionInterface extends CommonInterface {
 
 export type CollectionCondition = Condition & {
     field: CollectionFields
-    parentFields?: (keyof CollectionInterface)[]
+    parentFields?: CollectionFields[]
 };
 
-type CollectionFields = keyof (CollectionInterface & Content);
+export type CollectionFields = keyof CollectionInterface;

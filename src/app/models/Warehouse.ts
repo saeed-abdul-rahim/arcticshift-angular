@@ -12,8 +12,10 @@ export interface WarehouseInterface extends CommonInterface {
 }
 
 export type WarehouseCondition = Condition & {
-    field: WarehouseFields
-    parentFields?: (keyof WarehouseInterface)[]
+    field: AllWarehouseFields
+    parentFields?: WarehouseFields[]
 };
 
-type WarehouseFields = keyof (WarehouseInterface & Address & Point);
+export type WarehouseFields = keyof WarehouseInterface;
+
+type AllWarehouseFields = keyof (WarehouseInterface & Address & Point);

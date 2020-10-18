@@ -12,8 +12,8 @@ import { ShopComponentsModule } from './shop-components/shop-components.module';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { AuthService } from '@services/auth/auth.service';
-import { ShopService } from '@services/shop/shop.service';
 import { FilterProductComponent } from './filter-product/filter-product.component';
+import { ProductService } from '@services/product/product.service';
 
 
 @NgModule({
@@ -34,7 +34,7 @@ import { FilterProductComponent } from './filter-product/filter-product.componen
   ],
   providers: [
     AuthService,
-    ShopService
+    ProductService
   ]
 })
 export class ShopModule { }

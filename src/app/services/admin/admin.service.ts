@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environment';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 
 import { RequestService } from '@services/request/request.service';
 import { ProductInterface } from '@models/Product';
@@ -9,22 +9,19 @@ import { CategoryInterface } from '@models/Category';
 import { VoucherInterface } from '@models/Voucher';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
-import {  getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreData';
-import { WarehouseCondition, WarehouseInterface } from '@models/Warehouse';
+import { getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreData';
+import { WarehouseInterface } from '@models/Warehouse';
 import { AttributeInterface, AttributeValueInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
-import { query } from '@utils/query';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
 import { Observable } from 'rxjs';
-import { ShippingCondition, ShippingInterface } from '@models/Shipping';
+import { ShippingInterface } from '@models/Shipping';
+import { DbService } from '@services/db/db.service';
 
 @Injectable()
 export class AdminService {
-
-  private dbWarehouseRoute: string;
-  private dbShippingRoute: string;
 
   private apiProduct: string;
   private apiCategory: string;
@@ -38,13 +35,12 @@ export class AdminService {
   private apiShipping: string;
   private apiTax: string;
 
-  private db: AngularFirestoreDocument;
   private dbShop: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
 
   private user: User;
 
-  constructor(private req: RequestService, private afs: AngularFirestore, private authService: AuthService) {
+  constructor(private req: RequestService, private dbS: DbService, private authService: AuthService) {
     const { api, db } = environment;
     const {
       url,
@@ -60,7 +56,7 @@ export class AdminService {
       warehouse,
       shipping,
     } = api;
-    const { version, name, analytics, warehouses, shippings, shops } = db;
+    const { analytics, shops } = db;
     this.getCurrentUser();
     const { shopId } = this.user;
 
@@ -76,11 +72,8 @@ export class AdminService {
     this.apiWarehouse = url + warehouse;
     this.apiShipping = url + shipping;
 
-    this.db = this.afs.collection(version).doc(name);
-    this.dbAnalytics = this.db.collection(analytics);
-    this.dbShop = this.db.collection(shops).doc(shopId);
-    this.dbWarehouseRoute = warehouses;
-    this.dbShippingRoute = shippings;
+    this.dbAnalytics = this.dbS.db.collection(analytics);
+    this.dbShop = this.dbS.db.collection(shops).doc(shopId);
   }
 
   async createProduct(data: ProductInterface) {
@@ -451,34 +444,26 @@ export class AdminService {
   }
 
   getWarehouseById(warehouseId: string): Observable<WarehouseInterface> {
-    const warehouse = this.db.collection(this.dbWarehouseRoute).doc(warehouseId);
+    const { dbWarehouseRoute, db } = this.dbS;
+    const warehouse = db.collection(dbWarehouseRoute).doc(warehouseId);
     return getDataFromDocument(warehouse);
   }
 
   getShippingById(shippingId: string): Observable<ShippingInterface> {
-    const shipping = this.db.collection(this.dbShippingRoute).doc(shippingId);
+    const { dbShippingRoute, db } = this.dbS;
+    const shipping = db.collection(dbShippingRoute).doc(shippingId);
     return getDataFromDocument(shipping);
   }
 
   getWarehousesByShopId(): Observable<WarehouseInterface[]> {
     const { shopId } = this.user;
-    const warehouse = this.queryWarehouse([{ field: 'shopId', type: '==', value: shopId }]);
+    const warehouse = this.dbS.queryWarehouse([{ field: 'shopId', type: '==', value: shopId }]);
     return getDataFromCollection(warehouse);
   }
 
   getShippingByWarehouseId(warehouseId: string): Observable<ShippingInterface[]> {
-    const shipping = this.queryShipping([{ field: 'warehouseId', type: 'array-contains', value: warehouseId }]);
+    const shipping = this.dbS.queryShipping([{ field: 'warehouseId', type: 'array-contains', value: warehouseId }]);
     return getDataFromCollection(shipping);
-  }
-
-  private queryWarehouse(conditions?: WarehouseCondition[]) {
-    const { db, dbWarehouseRoute } = this;
-    return query(db, dbWarehouseRoute, conditions);
-  }
-
-  private queryShipping(conditions?: ShippingCondition[]) {
-    const { db, dbShippingRoute } = this;
-    return query(db, dbShippingRoute, conditions);
   }
 
   private getCurrentUser() {

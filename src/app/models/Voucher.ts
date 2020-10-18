@@ -19,6 +19,8 @@ export interface VoucherInterface extends CommonInterface {
     endDate?: Datetime | null;
 }
 
+export type VoucherFields = keyof VoucherInterface;
+
 type MinimumRequirement = {
     type: MinimumRequirementType
     value: number

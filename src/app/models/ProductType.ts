@@ -11,5 +11,7 @@ export interface ProductTypeInterface extends CommonInterface {
 }
 
 export type ProductTypeCondition = Condition & {
-    field: keyof ProductTypeInterface
+    field: ProductTypeFields
 };
+
+export type ProductTypeFields = keyof ProductTypeInterface;

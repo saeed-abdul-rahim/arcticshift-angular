@@ -16,6 +16,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { RequestService } from '@services/request/request.service';
 import { PaginationService } from '@services/pagination/pagination.service';
 import { ShopService } from '@services/shop/shop.service';
+import { DbService } from '@services/db/db.service';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { ShopService } from '@services/shop/shop.service';
     AuthService,
     RequestService,
     PaginationService,
+    DbService,
     ShopService
   ],
   bootstrap: [AppComponent]

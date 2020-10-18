@@ -25,11 +25,11 @@ export interface ProductInterface extends CommonInterface {
 }
 
 export type ProductCondition = Condition & {
-    field: ProductFields
-    parentFields?: (keyof ProductInterface)[]
+    field: string
+    parentFields?: ProductFields[]
 };
 
-type ProductFields = keyof (ProductInterface & Price) | string;
+export type ProductFields = keyof ProductInterface;
 
 type Price = {
     name: string

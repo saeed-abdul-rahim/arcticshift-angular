@@ -31,8 +31,8 @@ export interface VariantInterface extends CommonInterface {
 }
 
 export type VariantCondition = Condition & {
-    field: VariantFields
-    parentFields?: (keyof VariantInterface)[]
+    field: string
+    parentFields?: VariantFields[]
 };
 
-type VariantFields = keyof (VariantInterface) | string;
+export type VariantFields = keyof VariantInterface;

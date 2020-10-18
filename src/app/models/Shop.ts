@@ -11,3 +11,5 @@ export interface ShopInterface extends CommonInterface, AuthType {
     taxId?: string;
     currency?: string;
 }
+
+export type ShopFields = keyof ShopInterface;

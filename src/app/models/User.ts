@@ -57,3 +57,5 @@ export type Address = {
     area?: string
     country?: string
 } | null;
+
+export type UserFields = keyof UserInterface;

@@ -26,7 +26,7 @@ export type Rate = {
 
 export type ShippingCondition = Condition & {
     field: ShippingFields
-    parentFields?: (keyof ShippingFields)[]
+    parentFields?: ShippingFields[]
 };
 
-type ShippingFields = keyof (ShippingInterface & Rate);
+export type ShippingFields = keyof ShippingInterface;

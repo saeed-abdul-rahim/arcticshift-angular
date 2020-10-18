@@ -21,7 +21,7 @@ export interface TaxInterface {
 
 export type TaxCondition = Condition & {
     field: TaxFields
-    parentFields?: (keyof TaxInterface)[]
+    parentFields?: TaxFields[]
 };
 
-type TaxFields = keyof (TaxInterface);
+export type TaxFields = keyof TaxInterface;

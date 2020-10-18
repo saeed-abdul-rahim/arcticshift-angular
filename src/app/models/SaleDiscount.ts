@@ -13,3 +13,5 @@ export interface SaleDiscountInterface extends CommonInterface {
     startDate?: Datetime | null;
     endDate?: Datetime | null;
 }
+
+export type SaleDiscountFields = keyof SaleDiscountInterface;

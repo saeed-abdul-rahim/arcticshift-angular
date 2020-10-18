@@ -11,10 +11,10 @@ export interface InventoryInterface extends CommonInterface {
 
 export type InventoryCondition = Condition & {
     field: InventoryFields;
-    parentFields?: (keyof InventoryInterface)[];
+    parentFields?: InventoryFields[];
 };
 
-type InventoryFields = keyof (InventoryInterface & WarehouseInventory);
+export type InventoryFields = keyof InventoryInterface;
 
 type WarehouseInventory = {
     warehouseId: string
