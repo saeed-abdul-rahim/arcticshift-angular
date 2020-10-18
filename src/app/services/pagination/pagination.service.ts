@@ -62,9 +62,10 @@ export class PaginationService {
         this.where = this.query.where;
         newRef = this.setWhere(newRef);
       }
-      return newRef
-              .orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc')
-              .limit(this.query.limit);
+      if (this.query.orderBy) {
+        newRef = newRef.orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc');
+      }
+      return newRef.limit(this.query.limit);
     });
 
     this.mapAndUpdate(first);
@@ -85,8 +86,10 @@ export class PaginationService {
         this.where = this.where;
         newRef = this.setWhere(newRef);
       }
+      if (this.query.orderBy) {
+        newRef = newRef.orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc');
+      }
       return newRef
-              .orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc')
               .limit(this.query.limit)
               .startAfter(cursor);
     });

@@ -3,7 +3,8 @@ import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
 import { ProductCondition, ProductInterface } from '@models/Product';
 import { ProductTypeInterface } from '@models/ProductType';
 import { DbService } from '@services/db/db.service';
-import { uniqueArr } from '@utils/arrUtils';
+import { PaginationService } from '@services/pagination/pagination.service';
+import { patchArrObj, uniqueArr } from '@utils/arrUtils';
 import { getDataFromCollection } from '@utils/getFirestoreData';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
@@ -28,7 +29,7 @@ export class ProductService {
   productFilters$ = this.productFilters.asObservable();
   productListLoading$ = this.productListLoading.asObservable();
 
-  constructor(private dbS: DbService) { }
+  constructor(private dbS: DbService, private page: PaginationService) { }
 
   destroy(): void {
     this.unsubscribeProducts();
@@ -79,13 +80,24 @@ export class ProductService {
   }
 
   getProductsFromDb(filters: ProductCondition[] = []) {
-    const products = this.dbS.queryProducts(filters);
+    const { dbProductsRoute } = this.dbS;
     this.unsubscribeProducts();
+    this.page.destroy();
     this.resetProductListLoaders();
     this.productListLoading.next(true);
-    this.productsSubscription = getDataFromCollection(products).subscribe(data => {
+    this.page.init(dbProductsRoute, {
+      where: filters,
+      limit: 2
+    });
+    this.productsSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
+      if (data && data.length > 0 && this.productList.value.length > 0) {
+        let productList = this.productList.value;
+        productList = patchArrObj(data, productList, 'id');
+        this.productList.next(productList);
+      } else if (data && data.length > 0) {
+        this.productList.next(data);
+      }
       this.productListLoading.next(false);
-      this.productList.next(data);
     },
     err => {
       this.productListError.next(err);

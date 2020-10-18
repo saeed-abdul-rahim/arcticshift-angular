@@ -26,6 +26,7 @@ import {
   VOUCHER,
   WAREHOUSE
 } from '@constants/adminRoutes';
+import { patchArrObj } from '@utils/arrUtils';
 
 
 @Component({
@@ -303,14 +304,7 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataSubscription = this.page.data.subscribe(data => {
       this.data = data;
       if (data && data.length > 0 && this.displayData.length > 0) {
-        data.forEach((d: any) => {
-          if (this.displayData.some(ed => ed.id === d.id)) {
-            const idx = this.displayData.findIndex(ed => ed.id === d.id);
-            this.displayData[idx] = d;
-          } else {
-            this.displayData.push(d);
-          }
-        });
+        this.displayData = patchArrObj(data, this.displayData, 'id');
         this.fillTable(this.displayData);
       } else if (data && data.length > 0) {
         this.displayData = data;
