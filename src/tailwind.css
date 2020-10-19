@@ -509,3 +509,13 @@ h5 {
     @apply bg-gray-100 !important;
     @apply text-gray-900 !important;
 }
+
+.ngxImageZoomContainer {
+    @apply w-auto !important;
+    @apply h-auto !important;
+}
+
+.ngxImageZoomFullContainer.ngxImageZoomLensEnabled {
+    @apply border-gray-700 !important;
+    @apply border-2 !important;
+}

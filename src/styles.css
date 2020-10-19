@@ -21413,6 +21413,18 @@ h5 {
   color: rgba(26, 32, 44, var(--text-opacity)) !important;
 }
 
+.ngxImageZoomContainer {
+  width: auto !important;
+  height: auto !important;
+}
+
+.ngxImageZoomFullContainer.ngxImageZoomLensEnabled {
+  --border-opacity: 1 !important;
+  border-color: #4a5568 !important;
+  border-color: rgba(74, 85, 104, var(--border-opacity)) !important;
+  border-width: 2px !important;
+}
+
 @media (min-width: 640px){
   .sm\:container{
     width: 100%;

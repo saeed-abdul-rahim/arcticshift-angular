@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
+import { NgxImageZoomModule } from 'ngx-image-zoom';
 
 import { ComponentsModule } from '@components/components.module';
 
@@ -48,7 +49,8 @@ import { CollectionComponent } from './collection/collection.component';
     ComponentsModule,
     ShopComponentsModule,
     FontAwesomeModule,
-    IvyCarouselModule
+    IvyCarouselModule,
+    NgxImageZoomModule
   ],
   providers: [
     AuthService,

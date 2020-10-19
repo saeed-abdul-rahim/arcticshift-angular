@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IMAGE_XL } from '@constants/imageSize';
+import { IMAGE_L } from '@constants/imageSize';
 import { PRODUCT } from '@constants/routes';
 import { ProductInterface } from '@models/Product';
 import { ProductService } from '@services/product/product.service';
@@ -53,7 +53,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           const filteredImages = images.slice(0, 2);
           allThumbnails = filteredImages.map(image => {
             const { thumbnails } = image;
-            const thumbnail = thumbnails.find(thumb => thumb.dimension === IMAGE_XL);
+            const thumbnail = thumbnails.find(thumb => thumb.dimension === IMAGE_L);
             return {
               title: name,
               url: thumbnail.url

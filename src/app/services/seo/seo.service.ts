@@ -13,9 +13,9 @@ export class SeoService {
     this.title.setTitle(title);
   }
 
-  updateOgUrl(path: string) {
+  updateOgUrl(path?: string) {
     const { url } = environment;
-    this.meta.updateTag({ name: 'og:url', content: `${url}/${path}` });
+    this.meta.updateTag({ name: 'og:url', content: path ? `${url}/${path}` : url });
   }
 
   updateDescription(desc: string) {
