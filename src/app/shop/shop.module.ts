@@ -21,6 +21,8 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderStatusComponent } from './order-status/order-status.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
+import { CategoryComponent } from './category/category.component';
+import { CollectionComponent } from './collection/collection.component';
 
 
 @NgModule({
@@ -36,7 +38,9 @@ import { ProfileComponent } from './profile/profile.component';
     CheckoutComponent,
     OrderStatusComponent,
     OrdersComponent,
-    ProfileComponent
+    ProfileComponent,
+    CategoryComponent,
+    CollectionComponent
   ],
   imports: [
     CommonModule,
