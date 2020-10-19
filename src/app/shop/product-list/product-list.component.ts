@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { IMAGE_XL } from '@constants/imageSize';
+import { PRODUCT } from '@constants/routes';
 import { ProductInterface } from '@models/Product';
 import { ProductService } from '@services/product/product.service';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -11,6 +13,8 @@ import { Subscription } from 'rxjs/internal/Subscription';
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
+  productUrl = `/${PRODUCT}`;
+
   products: ProductInterface[] = [];
   loading = false;
   error = '';
@@ -19,7 +23,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   productsLoadingSubscription: Subscription;
   productsErrorSubscription: Subscription;
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService, private router: Router) { }
 
   ngOnInit(): void {
     this.getProductList();
@@ -70,6 +74,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   getProductsError() {
     this.productService.getProductsError().subscribe(error => this.error = error);
+  }
+
+  navigateToVariant(title: string, id: string) {
+    const routeTitle = encodeURIComponent(title.split(' ').join('-'));
+    this.router.navigateByUrl(`${this.productUrl}/${routeTitle}/${id}`);
   }
 
 }

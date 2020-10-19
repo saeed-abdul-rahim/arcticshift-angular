@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CART, CATEGORY, COLLECTION, PRODUCT, WISHLIST } from '@constants/routes';
 import { CartComponent } from './cart/cart.component';
 import { CategoryComponent } from './category/category.component';
 import { CollectionComponent } from './collection/collection.component';
@@ -14,11 +15,11 @@ const routes: Routes = [
     path: '', component: ShopComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'product/:id', component: VariantComponent },
-      { path: 'category', component: CategoryComponent },
-      { path: 'collection', component: CollectionComponent },
-      { path: 'wishlist', component: WishlistComponent },
-      { path: 'cart', component: CartComponent }
+      { path: `${PRODUCT}/:title/:id`, component: VariantComponent },
+      { path: CATEGORY, component: CategoryComponent },
+      { path: COLLECTION, component: CollectionComponent },
+      { path: WISHLIST, component: WishlistComponent },
+      { path: CART, component: CartComponent }
     ]
   },
 ];

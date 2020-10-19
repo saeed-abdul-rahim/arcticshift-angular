@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD, VARIANT } from '@constants/adminRoutes';
+import { ADD, VARIANT } from '@constants/routes';
 import { IMAGE_SM, IMAGE_SS } from '@constants/imageSize';
 import { AttributeJoinInterface } from '@models/Attribute';
 import { Content, ContentStorage, ContentType } from '@models/Common';

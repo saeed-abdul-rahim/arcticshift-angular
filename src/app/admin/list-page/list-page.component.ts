@@ -25,7 +25,7 @@ import {
   TAX,
   VOUCHER,
   WAREHOUSE
-} from '@constants/adminRoutes';
+} from '@constants/routes';
 import { patchArrObj } from '@utils/arrUtils';
 
 

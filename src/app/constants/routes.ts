@@ -19,6 +19,9 @@ type SHIPPING = 'shipping';
 type WAREHOUSE = 'warehouse';
 type STAFF = 'staff';
 type ADD = 'add';
+type CHECKOUT = 'checkout';
+type CART = 'cart';
+type WISHLIST = 'wishlist';
 
 export const ADMIN: ADMIN = 'admin';
 export const LOGIN: LOGIN = 'login';
@@ -41,3 +44,6 @@ export const SHIPPING: SHIPPING = 'shipping';
 export const WAREHOUSE: WAREHOUSE = 'warehouse';
 export const STAFF: STAFF = 'staff';
 export const ADD: ADD = 'add';
+export const CHECKOUT: CHECKOUT = 'checkout';
+export const CART: CART = 'cart';
+export const WISHLIST: WISHLIST = 'wishlist';

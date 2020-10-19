@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN, TAX } from '@constants/adminRoutes';
+import { ADMIN, TAX } from '@constants/routes';
 import { valueTypes } from '@models/Common';
 import { TaxInterface, taxTypes } from '@models/Tax';
 import { AdminService } from '@services/admin/admin.service';

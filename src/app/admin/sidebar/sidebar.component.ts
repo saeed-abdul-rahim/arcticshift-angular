@@ -37,7 +37,7 @@ import {
   TAX,
   VOUCHER,
   WAREHOUSE
-} from '@constants/adminRoutes';
+} from '@constants/routes';
 
 @Component({
   selector: 'app-sidebar',

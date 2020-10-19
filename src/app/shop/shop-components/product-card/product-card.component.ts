@@ -26,7 +26,6 @@ export class ProductCardComponent implements OnInit {
   @Input() price: string;
 
   @Output() heartCallback = new EventEmitter<string>();
-  @Output() cardCallback = new EventEmitter<string>();
 
   hover = false;
   faHeartR = faHeartR;
@@ -43,10 +42,6 @@ export class ProductCardComponent implements OnInit {
 
   heartClick() {
     this.heartCallback.emit(this.id);
-  }
-
-  cardClick() {
-    this.cardCallback.emit(this.id);
   }
 
 }

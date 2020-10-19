@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN, CATALOG, COLLECTION } from '@constants/adminRoutes';
+import { ADMIN, CATALOG, COLLECTION } from '@constants/routes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { CollectionInterface } from '@models/Collection';
 import { ContentStorage, ContentType } from '@models/Common';

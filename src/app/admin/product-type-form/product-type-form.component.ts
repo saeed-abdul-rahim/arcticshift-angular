@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { ADD, ADMIN, PRODUCTATTRIBUTE, PRODUCTTYPE } from '@constants/adminRoutes';
+import { ADD, ADMIN, PRODUCTATTRIBUTE, PRODUCTTYPE } from '@constants/routes';
 import { AttributeInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';

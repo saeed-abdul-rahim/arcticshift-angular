@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD, ADMIN, SHIPPING, WAREHOUSE } from '@constants/adminRoutes';
+import { ADD, ADMIN, SHIPPING, WAREHOUSE } from '@constants/routes';
 import { ShippingInterface } from '@models/Shipping';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';

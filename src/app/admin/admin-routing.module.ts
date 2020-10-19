@@ -22,7 +22,7 @@ import {
   VARIANT,
   VOUCHER,
   WAREHOUSE
-} from '@constants/adminRoutes';
+} from '@constants/routes';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { AttributeFormComponent } from './attribute-form/attribute-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';

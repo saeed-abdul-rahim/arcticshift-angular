@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD, ADMIN, SHIPPING } from '@constants/adminRoutes';
+import { ADD, ADMIN, SHIPPING } from '@constants/routes';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { Rate, RateType, ShippingInterface } from '@models/Shipping';
 import { ShopInterface } from '@models/Shop';

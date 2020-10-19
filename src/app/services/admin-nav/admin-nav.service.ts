@@ -22,7 +22,7 @@ import {
   TAX,
   VOUCHER,
   WAREHOUSE
-} from '@constants/adminRoutes';
+} from '@constants/routes';
 
 export type Url = {
   endPath: string,

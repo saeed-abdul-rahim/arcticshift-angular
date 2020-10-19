@@ -17,6 +17,7 @@ import { RequestService } from '@services/request/request.service';
 import { PaginationService } from '@services/pagination/pagination.service';
 import { ShopService } from '@services/shop/shop.service';
 import { DbService } from '@services/db/db.service';
+import { SeoService } from '@services/seo/seo.service';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { DbService } from '@services/db/db.service';
   providers: [
     ScreenTrackingService,
     AuthService,
+    SeoService,
     RequestService,
     PaginationService,
     DbService,

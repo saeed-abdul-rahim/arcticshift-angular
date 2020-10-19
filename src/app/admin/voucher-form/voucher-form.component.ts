@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN, DISCOUNT, VOUCHER } from '@constants/adminRoutes';
+import { ADMIN, DISCOUNT, VOUCHER } from '@constants/routes';
 import { VoucherInterface } from '@models/Voucher';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';

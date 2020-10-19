@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import {  Router } from '@angular/router';
-import { ADMIN, DISCOUNT, SALE } from '@constants/adminRoutes';
+import { Router } from '@angular/router';
+import { ADMIN, DISCOUNT, SALE } from '@constants/routes';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { AdminService } from '@services/admin/admin.service';
 
@@ -50,14 +50,12 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       value: ['', Validators.required],
       discountType: ['', Validators.required],
-      startDate: ['',]
-
+      startDate: ['']
     });
   }
 
-  toggleEnddate()
-  {
-   this.showMeEndDate = !this.showMeEndDate;
+  toggleEnddate() {
+    this.showMeEndDate = !this.showMeEndDate;
   }
 
   ngOnDestroy(): void {
@@ -67,16 +65,16 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   }
 
   setFormValue() {
-    const { name,valueType,value,startDate } =this.saleDiscount;
+    const { name, valueType, value, startDate } = this.saleDiscount;
     this.addSaleForm.patchValue({
-      name, discountType:valueType,value,startDate
+      name, discountType: valueType, value, startDate
     });
   }
 
   get addSaleFormControls() { return this.addSaleForm.controls; }
 
   async onSubmit() {
-    const { name, value, discountType,startDate } = this.addSaleFormControls;
+    const { name, value, discountType, startDate } = this.addSaleFormControls;
     if (this.addSaleForm.invalid) {
       if (name.errors) {
         this.nameDanger = true;
@@ -89,18 +87,18 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       value: value.value,
       valueType: discountType.value,
       startDate: startDate.value,
-     
+
     };
     try {
       if (this.edit) {
         await this.adminService.updateSale({
-         ...setData,
-          saleDiscountId:this.saleDiscount.saleDiscountId
-          
+          ...setData,
+          saleDiscountId: this.saleDiscount.saleDiscountId
+
         });
       } else {
         const data = await this.adminService.createSale({
-       ...setData,
+          ...setData,
         });
         if (data.id) {
           const { id } = data;

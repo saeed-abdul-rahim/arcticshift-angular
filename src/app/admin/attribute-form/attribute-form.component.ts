@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD, ADMIN, PRODUCTATTRIBUTE } from '@constants/adminRoutes';
+import { ADD, ADMIN, PRODUCTATTRIBUTE } from '@constants/routes';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { AttributeInterface, AttributeValueInterface } from '@models/Attribute';
 import { AdminService } from '@services/admin/admin.service';
