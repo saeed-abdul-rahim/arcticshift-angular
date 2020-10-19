@@ -14,6 +14,13 @@ import { ProductListComponent } from './product-list/product-list.component';
 import { AuthService } from '@services/auth/auth.service';
 import { FilterProductComponent } from './filter-product/filter-product.component';
 import { ProductService } from '@services/product/product.service';
+import { VariantComponent } from './variant/variant.component';
+import { CartComponent } from './cart/cart.component';
+import { WishlistComponent } from './wishlist/wishlist.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { OrderStatusComponent } from './order-status/order-status.component';
+import { OrdersComponent } from './orders/orders.component';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -22,7 +29,14 @@ import { ProductService } from '@services/product/product.service';
     HomeComponent,
     NavbarComponent,
     ProductListComponent,
-    FilterProductComponent
+    FilterProductComponent,
+    VariantComponent,
+    CartComponent,
+    WishlistComponent,
+    CheckoutComponent,
+    OrderStatusComponent,
+    OrdersComponent,
+    ProfileComponent
   ],
   imports: [
     CommonModule,
