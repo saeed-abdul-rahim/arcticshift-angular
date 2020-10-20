@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ComponentsModule } from '@components/components.module';
 
@@ -45,12 +47,14 @@ import { CollectionComponent } from './collection/collection.component';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ShopRoutingModule,
     ComponentsModule,
     ShopComponentsModule,
     FontAwesomeModule,
     IvyCarouselModule,
-    NgxImageZoomModule
+    NgxImageZoomModule,
+    NgSelectModule
   ],
   providers: [
     AuthService,

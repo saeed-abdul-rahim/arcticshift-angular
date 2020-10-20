@@ -21113,6 +21113,10 @@ video {
   padding-bottom: 1.25rem;
 }
 
+.width-75 {
+  width: 75% !important;
+}
+
 .height-0 {
   height: 0 !important;
 }
@@ -21423,6 +21427,10 @@ h5 {
   border-color: #4a5568 !important;
   border-color: rgba(74, 85, 104, var(--border-opacity)) !important;
   border-width: 2px !important;
+}
+
+.carousel-cells {
+  width: unset !important;
 }
 
 @media (min-width: 640px){

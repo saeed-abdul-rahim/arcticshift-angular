@@ -1,20 +1,46 @@
-<div class="container flex items-center">
-    <div class="w-screen md:w-1/2">
-        <lib-ngx-image-zoom
-            [thumbImage]="selectedThumbnail"
-            [fullImage]="selectedImage"
-            [enableLens]="true"
-            [circularLens]="true"
-        ></lib-ngx-image-zoom>
-        <carousel class="pt-3" *ngIf="carouselImages.length > 0" [height]="144" [cellWidth]="144" [arrows]="false">
-            <div class="carousel-cell" *ngFor="let img of carouselImages">
-                <img src="{{img.url}}" alt="{{img.name}}"/>
-                {{'hi'}}
+<div class="container flex flex-wrap justify-center">
+    <div class="flex flex-wrap justify-center w-screen md:w-7/12">
+        <lib-ngx-image-zoom [thumbImage]="selectedThumbnail" [fullImage]="selectedImage" [enableLens]="true"
+            [circularLens]="true"></lib-ngx-image-zoom>
+        <carousel class="pt-3" style="width: {{ innerWidth > 767 ? '75%' : '100%' }};" *ngIf="carouselImages.length > 0"
+            [height]="144" [cellWidth]="144" [arrows]="false" [arrowsOutside]="true">
+            <div class="carousel-cell" *ngFor="let img of carouselImages" (click)="setSelectedImage(img.image)">
+                <img src="{{img.url}}" alt="{{img.name}}" />
             </div>
         </carousel>
     </div>
-</div>
-<div class="container flex flex-grow">
-    <div class="w-1/2">
+    <div class="w-screen px-2 md:w-5/12 text-gray-700">
+        <div class="text-3xl font-light py-3">
+            {{ product && product.name || '' }}
+        </div>
+        <div class="text-2xl relative">
+            <span class="align-text-top text-sm line-through text-gray-600">
+                {{ strikePrice | currency: currency }}
+            </span>
+            <span class="" [ngClass]="strikePrice ? 'text-' + accentColor + '-500' : ''">
+                {{ price | currency: currency }}
+            </span>
+            &nbsp;
+            <span class="align-text-top rounded-lg p-1 text-gray-600 border border-gray-500 text-sm">
+                -{{ discountPercentage }}%
+            </span>
+        </div>
+        <div class="text-gray-600 font-thin pt-3" [innerHTML]="product && product.description"></div>
+        <div class="pt-4">
+            <div class="items-center" *ngIf="attributes">
+                <div class="relative flex flex-wrap w-full py-2 max-w-full flex-grow flex-1"
+                  *ngFor="let attribute of attributes; let i=index">
+                    <div class="w-full md:w-4/12 m-auto font-light">{{ attribute.name }}</div>
+                    <div class="w-full md:w-8/12">
+                        <ng-select [searchable]="false" [clearable]="false" (change)="changeAttribute(attribute.id, selectedAttribute[attribute.id])"
+                        *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0" [(ngModel)]="selectedAttribute[attribute.id]"
+                        [items]="attribute.attributeValues" bindValue="id" bindLabel="name"></ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pt-4">
+            <button class="arc-button w-full bg-gray-900">Add to Bag</button>
+        </div>
     </div>
 </div>

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ADD, VARIANT } from '@constants/routes';
 import { IMAGE_SM, IMAGE_SS } from '@constants/imageSize';
 import { AttributeJoinInterface } from '@models/Attribute';
@@ -57,40 +57,9 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   inventorySubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private adminService: AdminService, private shopService: ShopService,
-              private storageService: StorageService, private router: Router, private cdr: ChangeDetectorRef) {
-    const { url } = this.router;
-    const urlSplit = url.split('/');
-    const productId = urlSplit[urlSplit.indexOf(VARIANT) - 1];
-    const variantId = urlSplit.pop();
-    this.variantRoute = urlSplit.join('/');
-    this.warehouseSubscription = this.adminService.getWarehousesByShopId().subscribe(warehouses => {
-      this.warehouses = warehouses;
-      this.setWarehouseForm();
-    });
-    this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
-      this.product = product;
-      const { productTypeId } = product;
-      this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId)
-        .subscribe(productType => {
-          const { variantAttributeId } = productType;
-          this.attributeSubscription = this.shopService.getAttributeAndValuesByIds(variantAttributeId)
-            .subscribe(attributes => {
-              this.attributes = attributes;
-              this.setAttributeForm();
-              if (variantId !== ADD) {
-                this.edit = true;
-                this.variantSubscription = this.shopService.getVariantById(variantId).subscribe(variant => {
-                  this.variant = variant;
-                  this.setVariantForm();
-                  this.patchAttributeForm();
-                  this.patchWarehouseForm();
-                  this.getPreviewImages();
-                });
-              }
-            });
-        });
-    });
-    this.getVariants(productId);
+              private storageService: StorageService, private router: Router, private cdr: ChangeDetectorRef,
+              private route: ActivatedRoute) {
+    this.route.params.subscribe(() => this.initialize());
   }
 
   ngOnInit(): void {
@@ -127,6 +96,42 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     if (this.inventorySubscription && !this.inventorySubscription.closed) {
       this.inventorySubscription.unsubscribe();
     }
+  }
+
+  initialize() {
+    const { url } = this.router;
+    const urlSplit = url.split('/');
+    const productId = urlSplit[urlSplit.indexOf(VARIANT) - 1];
+    const variantId = urlSplit.pop();
+    this.variantRoute = urlSplit.join('/');
+    this.warehouseSubscription = this.adminService.getWarehousesByShopId().subscribe(warehouses => {
+      this.warehouses = warehouses;
+      this.setWarehouseForm();
+    });
+    this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
+      this.product = product;
+      const { productTypeId } = product;
+      this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId)
+        .subscribe(productType => {
+          const { variantAttributeId } = productType;
+          this.attributeSubscription = this.shopService.getAttributeAndValuesByIds(variantAttributeId)
+            .subscribe(attributes => {
+              this.attributes = attributes;
+              this.setAttributeForm();
+              if (variantId !== ADD) {
+                this.edit = true;
+                this.variantSubscription = this.shopService.getVariantById(variantId).subscribe(variant => {
+                  this.variant = variant;
+                  this.setVariantForm();
+                  this.patchAttributeForm();
+                  this.patchWarehouseForm();
+                  this.getPreviewImages();
+                });
+              }
+            });
+        });
+    });
+    this.getVariants(productId);
   }
 
   getVariants(productId: string) {
@@ -260,10 +265,12 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     } catch (_) { }
   }
 
-  getTableThumbnails(images: Content[]) {
-    const image = images[0];
-    const thumbnail = image.thumbnails.find(thumb => thumb.dimension === IMAGE_SS);
-    return thumbnail.url;
+  getTableThumbnails(images?: Content[]) {
+    if (images && images.length > 0) {
+      const image = images[0];
+      const thumbnail = image.thumbnails.find(thumb => thumb.dimension === IMAGE_SS);
+      return thumbnail.url;
+    }
   }
 
   getPreviewImages() {

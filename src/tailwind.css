@@ -320,6 +320,10 @@
     @apply py-5;
 }
 
+.width-75 {
+    width: 75% !important;
+}
+
 .height-0 {
     @apply h-0 !important;
 }
@@ -518,4 +522,8 @@ h5 {
 .ngxImageZoomFullContainer.ngxImageZoomLensEnabled {
     @apply border-gray-700 !important;
     @apply border-2 !important;
+}
+
+.carousel-cells {
+    width: unset !important;
 }

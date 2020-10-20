@@ -14,9 +14,16 @@ import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { VariantInterface } from '@models/Variant';
 import { InventoryInterface } from '@models/Inventory';
 import { DbService } from '@services/db/db.service';
+import { GeneralSettings } from '@models/GeneralSettings';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Injectable()
 export class ShopService {
+
+  generalSettings = new BehaviorSubject<GeneralSettings>(null);
+  generalSettings$ = this.generalSettings.asObservable();
+  generalSettingsSubscription: Subscription;
 
   products$: Observable<ProductInterface[]>;
   attributes$: Observable<AttributeInterface[]>;
@@ -26,6 +33,26 @@ export class ShopService {
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
   constructor(private dbS: DbService) {}
+
+  destroy(): void {
+    if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
+      this.generalSettingsSubscription.unsubscribe();
+    }
+  }
+
+  setGeneralSettings(data: GeneralSettings) {
+    this.generalSettings.next(data);
+  }
+
+  getGeneralSettings() {
+    return this.generalSettings$;
+  }
+
+  getGeneralSettingsFromDb() {
+    const { dbGeneralSettings } = this.dbS;
+    this.generalSettingsSubscription =  getDataFromDocument(dbGeneralSettings)
+      .subscribe((data: GeneralSettings) => this.generalSettings.next(data));
+  }
 
   getProductById(productId: string): Observable<ProductInterface> {
     const { db, dbProductsRoute } = this.dbS;

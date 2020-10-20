@@ -42,7 +42,9 @@ export const environment = {
     orders: 'orders',
     taxes: 'taxes',
     adverts: 'adverts',
-    analytics: 'analytics'
+    analytics: 'analytics',
+    settings: 'settings',
+    general: 'general'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',

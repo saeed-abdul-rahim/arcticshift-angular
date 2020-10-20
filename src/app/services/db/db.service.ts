@@ -30,6 +30,7 @@ export class DbService {
 
   afs: AngularFirestore;
   db: AngularFirestoreDocument;
+  dbGeneralSettings: AngularFirestoreDocument;
   dbPath: string;
 
   dbProductsRoute: string;
@@ -66,10 +67,13 @@ export class DbService {
       taxes,
       inventories,
       warehouses,
-      shippings
+      shippings,
+      settings,
+      general
     } = db;
 
     this.db = this.afs.collection(version).doc(name);
+    this.dbGeneralSettings = this.db.collection(settings).doc(general);
     this.dbPath = `/${version}/${name}`;
 
     this.dbWarehouseRoute = warehouses;
