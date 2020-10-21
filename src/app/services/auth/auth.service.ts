@@ -92,6 +92,14 @@ export class AuthService {
     }
   }
 
+  async signInAnonymously() {
+    try {
+      return await this.afAuth.signInAnonymously();
+    } catch (err) {
+      throw err.message;
+    }
+  }
+
   async verifyOtp(otp: string) {
     try {
       const confirmationResult = await this.getConfirmationResult();
@@ -162,6 +170,11 @@ export class AuthService {
     this.emailPhone.next(emailPhone);
   }
 
+  async isUserAnonymous(): Promise<boolean> {
+    const user = await this.isLoggedIn();
+    return user.isAnonymous;
+  }
+
   async getCurrentEmailPhone() {
     return await this.emailPhone$.pipe(first()).toPromise();
   }
@@ -182,8 +195,11 @@ export class AuthService {
 
   async getUser() {
     try {
-      const currentUser = await this.getAfsCurrentUser();
-      if (!currentUser) { return null; }
+      let currentUser = await this.getAfsCurrentUser();
+      if (!currentUser) {
+        await this.signInAnonymously();
+        currentUser = await this.getAfsCurrentUser();
+      }
       const { displayName, email, phoneNumber, uid } = currentUser;
       const { token, claims, expirationTime } = await currentUser.getIdTokenResult(true);
       const expiry = Date.parse(expirationTime);

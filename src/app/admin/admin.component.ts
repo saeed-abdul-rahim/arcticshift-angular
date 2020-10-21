@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ADMIN, LOGIN } from '@constants/routes';
 import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 import { AuthService } from '@services/auth/auth.service';
 import { Subscription } from 'rxjs';
@@ -53,7 +54,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   toLogin() {
-    this.router.navigateByUrl('admin/login');
+    this.router.navigateByUrl(`${ADMIN}/${LOGIN}`);
   }
 
 }
