@@ -40,7 +40,7 @@
             <fa-icon [icon]="faHeart"></fa-icon>
         </a>
 
-        <a class="px-3 inline-block no-underline hover:text-black relative" href="#">
+        <a class="px-3 inline-block no-underline hover:text-black relative" routerLink="{{cartRoute}}">
             <fa-icon [icon]="faShoppingBag"></fa-icon>
             <span *ngIf="draft && draft.variants.length > 0"
                 class="absolute inset-y-0 right-0 w-4 h-4 rounded-full bg-gray-800 text-white text-xs text-center">

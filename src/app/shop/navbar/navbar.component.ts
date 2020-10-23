@@ -5,6 +5,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons/faShoppingBag';
 import { ShopNavService } from '@services/shop-nav.service';
 import { OrderInterface } from '@models/Order';
+import { CART } from '@constants/routes';
 
 @Component({
   selector: 'app-navbar',
@@ -12,6 +13,8 @@ import { OrderInterface } from '@models/Order';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+
+  cartRoute = `/${CART}`;
 
   faShoppingBag = faShoppingBag;
   faHeart = faHeart;
