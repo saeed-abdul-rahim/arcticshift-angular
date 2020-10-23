@@ -1,4 +1,4 @@
-import { Condition, CommonInterface } from './Common';
+import { Condition, CommonInterface, OrderBy } from './Common';
 
 export interface AttributeInterface extends CommonInterface {
     id?: string;
@@ -34,3 +34,11 @@ export type AttributeValueCondition = Condition & {
 
 export type AttributeFields = keyof AttributeInterface;
 export type AttributeValueFields = keyof AttributeValueInterface;
+
+export type AttributeOrderBy = OrderBy & {
+    field: AttributeFields
+};
+
+export type AttributeValueOrderBy = OrderBy & {
+    field: AttributeValueFields
+};

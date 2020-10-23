@@ -17,6 +17,9 @@ import { DbService } from '@services/db/db.service';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { RequestService } from '@services/request/request.service';
+import { environment } from '@environment';
+import { OrderInterface } from '@models/Order';
 
 @Injectable()
 export class ShopService {
@@ -32,7 +35,35 @@ export class ShopService {
   productTypes$: Observable<ProductTypeInterface[]>;
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
-  constructor(private dbS: DbService) {}
+  private apiUser: string;
+  private apiWishlist: string;
+  private apiOrder: string;
+
+  constructor(private dbS: DbService, private req: RequestService) {
+    const { api } = environment;
+    const { url, user, wishlist, order } = api;
+    this.apiUser = url + user;
+    this.apiWishlist = this.apiUser + wishlist;
+    this.apiOrder = url + order;
+  }
+
+  async addToWishlist(productId: string) {
+    const { req, apiWishlist } = this;
+    try {
+      return await req.put(apiWishlist, { productId });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async addToCart(data: OrderInterface) {
+    const { req, apiOrder } = this;
+    try {
+      return await req.put(apiOrder, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
 
   destroy(): void {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
@@ -169,14 +200,14 @@ export class ShopService {
     return this.collections$;
   }
 
-  getAttributeValuesByAttributeId(attributeId: string): Observable<AttributeValueInterface[]> {
+  getAttributeValuesByAttributeId(attributeId: string) {
     const attributeValueRef = this.dbS.queryAttributeValues([{ field: 'attributeId', type: '==', value: attributeId }]);
-    return getDataFromCollection(attributeValueRef);
+    return getDataFromCollection(attributeValueRef) as Observable<AttributeValueInterface[]>;
   }
 
-  getVariantsByProductId(productId: string): Observable<VariantInterface[]> {
+  getVariantsByProductId(productId: string) {
     const variantsRef = this.dbS.queryVariants([{ field: 'productId', type: '==', value: productId }]);
-    return getDataFromCollection(variantsRef);
+    return getDataFromCollection(variantsRef) as Observable<VariantInterface[]>;
   }
 
   getTaxesByShopIdAndType(shopId: string, type: TaxObjectType) {
@@ -184,7 +215,7 @@ export class ShopService {
       { field: 'shopId', type: '==', value: shopId },
       { field: 'type', type: '==', value: type }
     ]);
-    return getDataFromCollection(taxes);
+    return getDataFromCollection(taxes) as Observable<TaxInterface[]>;
   }
 
   getAttributesByProductTypeId(productTypeId: string): Observable<AttributeJoinInterface[]> {
@@ -192,6 +223,16 @@ export class ShopService {
       { field: 'productTypeId', type: 'array-contains', value: productTypeId }
     ]);
     return this.dbS.joinAttributeValues(attributes);
+  }
+
+  getDraftOrderByUserId(userId: string) {
+    const orders = this.dbS.queryOrders([
+      { field: 'userId', type: '==', value: userId},
+      { field: 'orderStatus', type: '==', value: 'draft' }
+    ], {
+      field: 'createdAt', direction: 'desc'
+    }, 1);
+    return getDataFromCollection(orders) as Observable<OrderInterface[]>;
   }
 
 }

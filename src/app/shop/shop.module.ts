@@ -14,7 +14,6 @@ import { HomeComponent } from './home/home.component';
 import { ShopComponentsModule } from './shop-components/shop-components.module';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProductListComponent } from './product-list/product-list.component';
-import { AuthService } from '@services/auth/auth.service';
 import { FilterProductComponent } from './filter-product/filter-product.component';
 import { ProductService } from '@services/product/product.service';
 import { VariantComponent } from './variant/variant.component';
@@ -26,6 +25,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CategoryComponent } from './category/category.component';
 import { CollectionComponent } from './collection/collection.component';
+import { ShopNavService } from '@services/shop-nav.service';
 
 
 @NgModule({
@@ -57,7 +57,7 @@ import { CollectionComponent } from './collection/collection.component';
     NgSelectModule
   ],
   providers: [
-    AuthService,
+    ShopNavService,
     ProductService
   ]
 })

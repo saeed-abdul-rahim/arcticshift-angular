@@ -2,10 +2,12 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IMAGE_SM, IMAGE_XL } from '@constants/imageSize';
 import { AttributeJoinInterface } from '@models/Attribute';
-import { Content, ObjString } from '@models/Common';
+import { Content, ObjNumber, ObjString } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { VariantInterface } from '@models/Variant';
+import { AuthService } from '@services/auth/auth.service';
 import { SeoService } from '@services/seo/seo.service';
+import { ShopNavService } from '@services/shop-nav.service';
 import { ShopService } from '@services/shop/shop.service';
 import { percentDecrease } from '@utils/percentDecrease';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -24,8 +26,11 @@ export class VariantComponent implements OnInit, OnDestroy {
   productLoading = false;
   variantLoading = false;
   attributesLoading = false;
+  cartLoading = false;
+  cartSuccess = false;
   available = false;
 
+  quantity = 1;
   price: number;
   strikePrice: number;
   discountPercentage: string;
@@ -36,23 +41,31 @@ export class VariantComponent implements OnInit, OnDestroy {
   selectedImageSize = IMAGE_XL;
   carouselImageSize = IMAGE_SM;
 
+  draftVariantQuantity: ObjNumber;
   product: ProductInterface;
   variants: VariantInterface[] = [];
   variant: VariantInterface;
   attributes: AttributeJoinInterface[];
 
+  draftSubscription: Subscription;
   productSubscription: Subscription;
   variantSubscription: Subscription;
   productTypeSubscription: Subscription;
   attributeSubscription: Subscription;
 
-  constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService) {
+  constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService,
+              private auth: AuthService, private shopNav: ShopNavService) {
     const params = this.route.snapshot.paramMap;
     const title = params.get('title');
     const id = params.get('id');
     this.seo.updateTitle(title);
     this.seo.updateOgUrl(this.route.snapshot.url.join('/'));
     this.getProduct(id);
+  }
+
+  ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
+    this.getDraft();
     this.shop.getGeneralSettings().subscribe(generalSettings => {
       if (generalSettings) {
         const { currency, accentColor } = generalSettings;
@@ -60,10 +73,6 @@ export class VariantComponent implements OnInit, OnDestroy {
         this.accentColor = accentColor;
       }
     });
-  }
-
-  ngOnInit(): void {
-    this.innerWidth = window.innerWidth;
   }
 
   ngOnDestroy(): void {
@@ -76,6 +85,53 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (this.attributeSubscription && !this.attributeSubscription.closed) {
       this.attributeSubscription.unsubscribe();
     }
+    if (this.draftSubscription && !this.draftSubscription.closed) {
+      this.draftSubscription.unsubscribe();
+    }
+  }
+
+  async addToCart() {
+    const { variant, quantity, shop, auth } = this;
+    const { warehouseQuantity, variantId } = variant;
+    let maxQuantity = 0;
+    maxQuantity = Object.keys(warehouseQuantity)
+      .map(key => warehouseQuantity[key])
+      .reduce((prev, curr) => prev > curr ? prev : curr);
+    if (maxQuantity < 1) {
+      console.log('Out of stock');
+    }
+    this.cartLoading = true;
+    try {
+      const user = await auth.getCurrentUser();
+      await shop.addToCart({
+        userId: user.uid,
+        variants: [{
+          variantId,
+          quantity
+        }]
+      });
+      this.cartSuccess = true;
+      setInterval(() => this.cartSuccess = false, 2000);
+    } catch (err) {
+      console.log(err);
+    }
+    this.cartLoading = false;
+  }
+
+  getDraft() {
+    this.draftSubscription = this.shopNav.getDraft().subscribe(draft => {
+      if (draft) {
+        const { variants } = draft;
+        const draftVariantQuantity = {};
+        variants.forEach(variant => {
+          Object.assign(draftVariantQuantity, {
+            [variant.variantId]: variant.quantity
+          });
+        });
+        this.draftVariantQuantity = draftVariantQuantity;
+        this.quantity = this.draftVariantQuantity[this.variant.id];
+      }
+    });
   }
 
   getProduct(id: string) {
@@ -117,6 +173,7 @@ export class VariantComponent implements OnInit, OnDestroy {
   }
 
   setVariant(variant: VariantInterface) {
+    this.variant = variant;
     const { price, prices, attributes } = variant;
     const strikePrice = prices.find(prs => prs.name === 'strike');
     if (strikePrice) {
@@ -144,6 +201,9 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (images && images.length > 0) {
       this.setSelectedImage(images[0]);
       this.setCarouselImages(images);
+    }
+    if (this.draftVariantQuantity) {
+      this.quantity = this.draftVariantQuantity[this.variant.id];
     }
   }
 

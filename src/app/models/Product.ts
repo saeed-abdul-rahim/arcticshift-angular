@@ -1,4 +1,4 @@
-import { CommonInterface, Tax, Condition, Content, ObjString } from './Common';
+import { CommonInterface, Tax, Condition, Content, ObjString, OrderBy } from './Common';
 
 export interface ProductInterface extends CommonInterface {
     id?: string;
@@ -34,4 +34,8 @@ export type ProductFields = keyof ProductInterface;
 type Price = {
     name: string
     value: string
+};
+
+export type ProductOrderBy = OrderBy & {
+    field: ProductFields
 };

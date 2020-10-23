@@ -6,6 +6,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { ModalComponent } from './modal/modal.component';
+import { CounterInputComponent } from './counter-input/counter-input.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { ModalComponent } from './modal/modal.component';
     ButtonComponent,
     ProgressBarComponent,
     DropdownComponent,
-    ModalComponent
+    ModalComponent,
+    CounterInputComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { ModalComponent } from './modal/modal.component';
     ButtonComponent,
     ProgressBarComponent,
     DropdownComponent,
-    ModalComponent
+    ModalComponent,
+    CounterInputComponent
   ]
 })
 export class ComponentsModule { }

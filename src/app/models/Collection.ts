@@ -1,4 +1,4 @@
-import { Condition, Content, CommonInterface } from './Common';
+import { Condition, Content, CommonInterface, OrderBy } from './Common';
 
 export interface CollectionInterface extends CommonInterface {
     id?: string;
@@ -20,3 +20,7 @@ export type CollectionCondition = Condition & {
 };
 
 export type CollectionFields = keyof CollectionInterface;
+
+export type CollectionOrderBy = OrderBy & {
+    field: CollectionInterface
+};

@@ -1,4 +1,4 @@
-import { AuthType, CommonInterface } from './Common';
+import { AuthType, CommonInterface, OrderBy } from './Common';
 import { Address } from './User';
 
 export interface ShopInterface extends CommonInterface, AuthType {
@@ -13,3 +13,7 @@ export interface ShopInterface extends CommonInterface, AuthType {
 }
 
 export type ShopFields = keyof ShopInterface;
+
+export type ShopOrderBy = OrderBy & {
+    field: ShopFields
+};

@@ -1,4 +1,4 @@
-import { Condition, ValueType } from './Common';
+import { Condition, OrderBy, ValueType } from './Common';
 
 export type TaxObjectType = 'shop' | 'shipping' | 'product';
 export const taxTypes: {
@@ -25,3 +25,7 @@ export type TaxCondition = Condition & {
 };
 
 export type TaxFields = keyof TaxInterface;
+
+export type TaxOrderBy = OrderBy & {
+    field: TaxFields
+};

@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { User } from '@models/User';
 import { AuthService } from '@services/auth/auth.service';
 
 export interface SuccessResponse {
@@ -13,23 +11,19 @@ export interface SuccessResponse {
 @Injectable()
 export class RequestService {
 
-    private user: User;
-
-    constructor(private http: HttpClient, private router: Router, private auth: AuthService) {
-        this.auth.getCurrentUserStream().subscribe(user => this.user = user);
-    }
+    constructor(private http: HttpClient, private router: Router, private auth: AuthService) { }
 
     private async setDefaultHeaders() {
         try {
-            if (this.user.expiry < Date.now()) {
+            const user = await this.auth.getCurrentUser();
+            if (user.expiry < Date.now()) {
                 await this.auth.getUser();
             }
-            const { token, shopId } = this.user;
+            const { token, shopId } = user;
             return {
                 Authorization: `Bearer ${token}`,
                 shopId: shopId ? shopId : '',
             };
-            return {};
         } catch (err) {
             throw err;
         }

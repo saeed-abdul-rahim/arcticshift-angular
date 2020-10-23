@@ -9,21 +9,22 @@ import { getDataFromCollection, getDataFromDocument } from '@utils/getFirestoreD
 import { leftJoin } from '@utils/leftJoin';
 import {
   AttributeCondition,
-  AttributeFields,
   AttributeInterface,
   AttributeJoinInterface,
+  AttributeOrderBy,
   AttributeValueCondition,
-  AttributeValueFields
+  AttributeValueOrderBy
 } from '@models/Attribute';
-import { CategoryCondition, CategoryFields } from '@models/Category';
-import { CollectionCondition, CollectionFields } from '@models/Collection';
-import { Condition } from '@models/Common';
-import { ProductCondition, ProductFields } from '@models/Product';
-import { ProductTypeCondition, ProductTypeFields } from '@models/ProductType';
-import { ShippingCondition, ShippingFields } from '@models/Shipping';
-import { TaxCondition, TaxFields } from '@models/Tax';
-import { VariantCondition, VariantFields } from '@models/Variant';
-import { WarehouseCondition, WarehouseFields } from '@models/Warehouse';
+import { CategoryCondition, CategoryOrderBy } from '@models/Category';
+import { CollectionCondition, CollectionOrderBy } from '@models/Collection';
+import { Condition, OrderBy } from '@models/Common';
+import { ProductCondition, ProductOrderBy } from '@models/Product';
+import { ProductTypeCondition, ProductTypeOrderBy } from '@models/ProductType';
+import { ShippingCondition, ShippingOrderBy } from '@models/Shipping';
+import { TaxCondition, TaxOrderBy } from '@models/Tax';
+import { VariantCondition, VariantOrderBy } from '@models/Variant';
+import { WarehouseCondition, WarehouseOrderBy } from '@models/Warehouse';
+import { OrderCondition, OrderOrderBy } from '@models/Order';
 
 @Injectable()
 export class DbService {
@@ -46,6 +47,7 @@ export class DbService {
   dbInventoriesRoute: string;
   dbWarehouseRoute: string;
   dbShippingRoute: string;
+  dbOrdersRoute: string;
 
   dbAttributeValuesRoutePath: string;
 
@@ -68,6 +70,7 @@ export class DbService {
       inventories,
       warehouses,
       shippings,
+      orders,
       settings,
       general
     } = db;
@@ -76,8 +79,6 @@ export class DbService {
     this.dbGeneralSettings = this.db.collection(settings).doc(general);
     this.dbPath = `/${version}/${name}`;
 
-    this.dbWarehouseRoute = warehouses;
-    this.dbShippingRoute = shippings;
 
     this.dbProductsRoute = products;
     this.dbVariantsRoute = variants;
@@ -89,6 +90,9 @@ export class DbService {
     this.dbProductTypesRoute = productTypes;
     this.dbTaxesRoute = taxes;
     this.dbVouchersRoute = vouchers;
+    this.dbWarehouseRoute = warehouses;
+    this.dbShippingRoute = shippings;
+    this.dbOrdersRoute = orders;
     this.dbInventoriesRoute = inventories;
 
     this.dbAttributeValuesRoutePath = `${this.dbPath}/${attributeValues}`;
@@ -119,65 +123,70 @@ export class DbService {
     ) as Observable<AttributeJoinInterface[]>;
   }
 
-  queryCategories(conditions?: CategoryCondition[], orderBy?: CategoryFields) {
+  queryCategories(conditions?: CategoryCondition[], orderBy?: CategoryOrderBy, limit?: number) {
     const { db, dbCategoriesRoute } = this;
-    return this.query(db, dbCategoriesRoute, conditions, orderBy);
+    return this.query(db, dbCategoriesRoute, conditions, orderBy, limit);
   }
 
-  queryCollections(conditions?: CollectionCondition[], orderBy?: CollectionFields) {
+  queryCollections(conditions?: CollectionCondition[], orderBy?: CollectionOrderBy, limit?: number) {
     const { db, dbCollectionsRoute } = this;
-    return this.query(db, dbCollectionsRoute, conditions, orderBy);
+    return this.query(db, dbCollectionsRoute, conditions, orderBy, limit);
   }
 
-  queryProducts(conditions?: ProductCondition[], orderBy?: ProductFields) {
+  queryProducts(conditions?: ProductCondition[], orderBy?: ProductOrderBy, limit?: number) {
     const { db, dbProductsRoute } = this;
-    return this.query(db, dbProductsRoute, conditions, orderBy);
+    return this.query(db, dbProductsRoute, conditions, orderBy, limit);
   }
 
-  queryVariants(conditions?: VariantCondition[], orderBy?: VariantFields) {
+  queryVariants(conditions?: VariantCondition[], orderBy?: VariantOrderBy, limit?: number) {
     const { db, dbVariantsRoute } = this;
-    return this.query(db, dbVariantsRoute, conditions, orderBy);
+    return this.query(db, dbVariantsRoute, conditions, orderBy, limit);
   }
 
-  queryProductTypes(conditions?: ProductTypeCondition[], orderBy?: ProductTypeFields) {
+  queryProductTypes(conditions?: ProductTypeCondition[], orderBy?: ProductTypeOrderBy, limit?: number) {
     const { db, dbProductTypesRoute } = this;
-    return this.query(db, dbProductTypesRoute, conditions, orderBy);
+    return this.query(db, dbProductTypesRoute, conditions, orderBy, limit);
   }
 
-  queryAttributes(conditions?: AttributeCondition[], orderBy?: AttributeFields) {
+  queryAttributes(conditions?: AttributeCondition[], orderBy?: AttributeOrderBy, limit?: number) {
     const { db, dbAttributesRoute } = this;
-    return this.query(db, dbAttributesRoute, conditions, orderBy);
+    return this.query(db, dbAttributesRoute, conditions, orderBy, limit);
   }
 
-  queryAttributeValues(conditions?: AttributeValueCondition[], orderBy?: AttributeValueFields) {
+  queryAttributeValues(conditions?: AttributeValueCondition[], orderBy?: AttributeValueOrderBy, limit?: number) {
     const { db, dbAttributeValuesRoute } = this;
-    return this.query(db, dbAttributeValuesRoute, conditions, orderBy);
+    return this.query(db, dbAttributeValuesRoute, conditions, orderBy, limit);
   }
 
-  queryTax(conditions?: TaxCondition[], orderBy?: TaxFields) {
+  queryTax(conditions?: TaxCondition[], orderBy?: TaxOrderBy, limit?: number) {
     const { db, dbTaxesRoute } = this;
-    return this.query(db, dbTaxesRoute, conditions, orderBy);
+    return this.query(db, dbTaxesRoute, conditions, orderBy, limit);
   }
 
-  queryWarehouse(conditions?: WarehouseCondition[], orderBy?: WarehouseFields) {
+  queryWarehouse(conditions?: WarehouseCondition[], orderBy?: WarehouseOrderBy, limit?: number) {
     const { db, dbWarehouseRoute } = this;
-    return this.query(db, dbWarehouseRoute, conditions, orderBy);
+    return this.query(db, dbWarehouseRoute, conditions, orderBy, limit);
   }
 
-  queryShipping(conditions?: ShippingCondition[], orderBy?: ShippingFields) {
+  queryShipping(conditions?: ShippingCondition[], orderBy?: ShippingOrderBy, limit?: number) {
     const { db, dbShippingRoute } = this;
-    return this.query(db, dbShippingRoute, conditions, orderBy);
+    return this.query(db, dbShippingRoute, conditions, orderBy, limit);
   }
 
-  query(db: AngularFirestoreDocument, dbRoute: string, conditions?: Condition[], orderBy?: string) {
+  queryOrders(conditions?: OrderCondition[], orderBy?: OrderOrderBy, limit?: number) {
+    const { db, dbOrdersRoute } = this;
+    return this.query(db, dbOrdersRoute, conditions, orderBy, limit);
+  }
+
+  query(db: AngularFirestoreDocument, dbRoute: string, conditions?: Condition[], orderBy?: OrderBy, limit?: number) {
     if (conditions && conditions.length > 0) {
-      return this.setCondition(db, dbRoute, conditions, orderBy);
+      return this.setCondition(db, dbRoute, conditions, orderBy, limit);
     } else {
       return db.collection(dbRoute);
     }
   }
 
-  setCondition(dbRef: AngularFirestoreDocument, collectionName: string, conditions: Condition[], orderBy?: string) {
+  setCondition(dbRef: AngularFirestoreDocument, collectionName: string, conditions: Condition[], orderBy?: OrderBy, limit?: number) {
     return dbRef.collection(collectionName, ref => {
         let newRef: Query = ref;
         conditions.forEach(condition => {
@@ -190,10 +199,13 @@ export class DbService {
             }
         });
         if (orderBy) {
-          return newRef.orderBy(orderBy);
-        } else {
-          return newRef;
+          const { field, direction } = orderBy;
+          newRef.orderBy(field, direction);
         }
+        if (limit) {
+          newRef.limit(limit);
+        }
+        return newRef;
     });
   }
 

@@ -1,4 +1,4 @@
-import { CommonInterface, Status, Condition, Content, ObjString, ObjNumber, Price } from './Common';
+import { CommonInterface, Status, Condition, Content, ObjString, ObjNumber, Price, OrderBy } from './Common';
 
 export interface VariantInterface extends CommonInterface {
     id?: string;
@@ -36,3 +36,7 @@ export type VariantCondition = Condition & {
 };
 
 export type VariantFields = keyof VariantInterface;
+
+export type VariantOrderBy = OrderBy & {
+    field: VariantFields
+};

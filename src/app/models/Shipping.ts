@@ -1,4 +1,4 @@
-import { Condition } from './Common';
+import { Condition, OrderBy } from './Common';
 
 export interface ShippingInterface {
     shopId?: string;
@@ -30,3 +30,7 @@ export type ShippingCondition = Condition & {
 };
 
 export type ShippingFields = keyof ShippingInterface;
+
+export type ShippingOrderBy = OrderBy & {
+    field: ShippingFields
+};

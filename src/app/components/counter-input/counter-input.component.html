@@ -1,0 +1,18 @@
+<div class="flex flex-wrap w-32">
+    <label for="custom-input-number" class="w-full font-light my-auto">
+        {{label}}
+    </label>
+    <div class="flex flex-row h-10 w-full rounded-lg shadow relative bg-transparent mt-1">
+        <button data-action="decrement" (click)="decrease()"
+            class=" bg-white text-gray-600 hover:text-gray-700 hover:bg-gray-100 focus:outline-none h-full w-20 rounded-l cursor-pointer outline-none">
+            <span class="m-auto text-2xl font-thin">−</span>
+        </button>
+        <input #input type="number"
+            class="outline-none focus:outline-none text-center w-full bg-white text-md hover:text-gray-900 focus:text-gray-900 md:text-basecursor-default flex items-center text-gray-700"
+            name="custom-input-number" value="{{value}}" (change)="writeValue(input.value)">
+        <button data-action="increment" (click)="increase()"
+            class="bg-white text-gray-600 hover:text-gray-700 hover:bg-gray-100 focus:outline-none h-full w-20 rounded-r cursor-pointer">
+            <span class="m-auto text-2xl font-thin">+</span>
+        </button>
+    </div>
+</div>

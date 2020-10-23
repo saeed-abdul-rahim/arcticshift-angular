@@ -29,18 +29,26 @@
         <div class="pt-4">
             <div class="items-center" *ngIf="attributes">
                 <div class="relative flex flex-wrap w-full py-2 max-w-full flex-grow flex-1"
-                  *ngFor="let attribute of attributes; let i=index">
+                    *ngFor="let attribute of attributes; let i=index">
                     <div class="w-full md:w-4/12 m-auto font-light">{{ attribute.name }}</div>
                     <div class="w-full md:w-8/12">
-                        <ng-select [searchable]="false" [clearable]="false" (change)="changeAttribute(attribute.id, selectedAttribute[attribute.id])"
-                        *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0" [(ngModel)]="selectedAttribute[attribute.id]"
-                        [items]="attribute.attributeValues" bindValue="id" bindLabel="name"></ng-select>
+                        <ng-select [searchable]="false" [clearable]="false"
+                            (change)="changeAttribute(attribute.id, selectedAttribute[attribute.id])"
+                            *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0"
+                            [(ngModel)]="selectedAttribute[attribute.id]" [items]="attribute.attributeValues"
+                            bindValue="id" bindLabel="name"></ng-select>
                     </div>
                 </div>
+                <app-counter-input [label]="'Quantity'" [(value)]="quantity" [valueMin]="1" [valueMax]="20">
+                </app-counter-input>
             </div>
         </div>
         <div class="pt-4">
-            <button class="arc-button w-full bg-gray-900">Add to Bag</button>
+            <app-button (click)="addToCart()" [loading]="cartLoading"
+                [success]="cartSuccess || (draftVariantQuantity && variant && draftVariantQuantity[variant.id] === quantity)"
+                [fullWidth]="true" [color]="'gray'" [dark]="true"
+                [label]="draftVariantQuantity && variant && draftVariantQuantity[variant.id] ? 'Update Bag' : 'Add to Bag'">
+            </app-button>
         </div>
     </div>
 </div>

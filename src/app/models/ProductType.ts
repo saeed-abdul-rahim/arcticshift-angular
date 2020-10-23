@@ -1,4 +1,4 @@
-import { Condition, CommonInterface } from './Common';
+import { Condition, CommonInterface, OrderBy } from './Common';
 
 export interface ProductTypeInterface extends CommonInterface {
     id?: string;
@@ -15,3 +15,7 @@ export type ProductTypeCondition = Condition & {
 };
 
 export type ProductTypeFields = keyof ProductTypeInterface;
+
+export type ProductTypeOrderBy = OrderBy & {
+    field: ProductTypeFields
+};

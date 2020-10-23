@@ -1,4 +1,4 @@
-import { AuthType, CommonInterface, Role } from './Common';
+import { AuthType, CommonInterface, OrderBy, Role } from './Common';
 import { PaymentMethod } from './Payment';
 
 type Gender = 'Male' | 'Female' | 'Transgender' | '';
@@ -59,3 +59,7 @@ export type Address = {
 } | null;
 
 export type UserFields = keyof UserInterface;
+
+export type UserOrderBy = OrderBy & {
+    field: UserFields
+};

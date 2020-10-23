@@ -1,4 +1,4 @@
-import { CommonInterface, Condition, Point } from './Common';
+import { CommonInterface, Condition, OrderBy, Point } from './Common';
 import { Address } from './User';
 
 export interface WarehouseInterface extends CommonInterface {
@@ -17,5 +17,9 @@ export type WarehouseCondition = Condition & {
 };
 
 export type WarehouseFields = keyof WarehouseInterface;
+
+export type WarehouseOrderBy = OrderBy & {
+    field: WarehouseFields
+};
 
 type AllWarehouseFields = keyof (WarehouseInterface & Address & Point);

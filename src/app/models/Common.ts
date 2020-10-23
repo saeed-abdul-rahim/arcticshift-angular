@@ -105,3 +105,8 @@ export type Condition = {
     value: any
     parentFields?: string[]
 };
+
+export type OrderBy = {
+    field: string
+    direction: 'asc' | 'desc'
+};

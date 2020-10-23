@@ -1,4 +1,4 @@
-import { Datetime, CommonInterface, ValueType } from './Common';
+import { Datetime, CommonInterface, ValueType, OrderBy } from './Common';
 
 export interface SaleDiscountInterface extends CommonInterface {
     id?: string;
@@ -15,3 +15,7 @@ export interface SaleDiscountInterface extends CommonInterface {
 }
 
 export type SaleDiscountFields = keyof SaleDiscountInterface;
+
+export type SaleDiscountOrderBy = OrderBy & {
+    field: SaleDiscountFields
+};

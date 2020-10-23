@@ -9,6 +9,7 @@ export const environment = {
   api: {
     url: 'https://asia-east2-articshift-7f9cd.cloudfunctions.net/api/v1',
     user: '/user',
+    wishlist: '/wishlist',
     product: '/product',
     category: '/category',
     collection: '/collection',
@@ -19,6 +20,7 @@ export const environment = {
     attribute: '/attribute',
     warehouse: '/warehouse',
     shipping: '/shipping',
+    order: '/order',
     tax: '/tax'
   },
   db: {
