@@ -4,11 +4,11 @@ import { Subscription } from 'rxjs/internal/Subscription';
 
 import { OrderInterface } from '@models/Order';
 import { User } from '@models/User';
-import { ShopService } from './shop/shop.service';
-import { AuthService } from './auth/auth.service';
+import { ShopService } from '../shop/shop.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
-export class ShopNavService {
+export class CartService {
 
   private user: User;
   private draft = new BehaviorSubject<OrderInterface>(null);

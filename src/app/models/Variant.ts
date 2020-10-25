@@ -7,7 +7,7 @@ export interface VariantInterface extends CommonInterface {
     variantId?: string;
     sku?: string;
     name?: string;
-    size?: string;
+    productName?: string;
     description?: string;
     keywords?: string[];
     url?: string;

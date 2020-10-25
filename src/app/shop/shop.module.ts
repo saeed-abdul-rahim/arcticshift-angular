@@ -25,7 +25,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CategoryComponent } from './category/category.component';
 import { CollectionComponent } from './collection/collection.component';
-import { ShopNavService } from '@services/shop-nav.service';
+import { CartService } from '@services/cart/cart.service';
 
 
 @NgModule({
@@ -57,7 +57,7 @@ import { ShopNavService } from '@services/shop-nav.service';
     NgSelectModule
   ],
   providers: [
-    ShopNavService,
+    CartService,
     ProductService
   ]
 })

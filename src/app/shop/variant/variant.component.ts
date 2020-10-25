@@ -7,7 +7,7 @@ import { ProductInterface } from '@models/Product';
 import { VariantInterface } from '@models/Variant';
 import { AuthService } from '@services/auth/auth.service';
 import { SeoService } from '@services/seo/seo.service';
-import { ShopNavService } from '@services/shop-nav.service';
+import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { percentDecrease } from '@utils/percentDecrease';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -54,7 +54,7 @@ export class VariantComponent implements OnInit, OnDestroy {
   attributeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService,
-              private auth: AuthService, private shopNav: ShopNavService) {
+              private auth: AuthService, private cart: CartService) {
     const params = this.route.snapshot.paramMap;
     const title = params.get('title');
     const id = params.get('id');
@@ -119,7 +119,7 @@ export class VariantComponent implements OnInit, OnDestroy {
   }
 
   getDraft() {
-    this.draftSubscription = this.shopNav.getDraft().subscribe(draft => {
+    this.draftSubscription = this.cart.getDraft().subscribe(draft => {
       if (draft) {
         const { variants } = draft;
         const draftVariantQuantity = {};

@@ -17,7 +17,6 @@ export class UserDropdownComponent implements OnInit {
   }
 
   signOut() {
-    console.log('hi');
     this.authService.signOut();
   }
 

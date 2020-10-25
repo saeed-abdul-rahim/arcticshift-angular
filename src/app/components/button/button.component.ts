@@ -11,6 +11,7 @@ import { inOut } from '@animations/inOut';
 export class ButtonComponent implements OnInit {
 
   @Input() fullWidth: boolean;
+  @Input() secondary: boolean;
   @Input() loading: boolean;
   @Input() success: boolean;
   @Input() label: string;

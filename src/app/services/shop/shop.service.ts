@@ -170,6 +170,15 @@ export class ShopService {
     return this.dbS.getAttributeByIds(attributeIds);
   }
 
+  getVariantByIds(variantIds: string[]) {
+    const { db, dbVariantsRoute } = this.dbS;
+    const queries = variantIds.map(id => {
+      const variant = db.collection(dbVariantsRoute).doc(id);
+      return getDataFromDocument(variant) as Observable<VariantInterface>;
+    });
+    return combineLatest(queries);
+  }
+
   getProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     const products = this.dbS.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
     this.products$ = getDataFromCollection(products);

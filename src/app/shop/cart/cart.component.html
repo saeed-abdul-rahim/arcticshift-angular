@@ -1,1 +1,90 @@
-<p>cart works!</p>
+<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between">
+    <div class="w-full md:w-7/12 mb-5">
+        <div class="font-light text-2xl mb-3">
+            Shopping Cart
+        </div>
+        <div class="divide-y divide-gray-200">
+            <div class="flex justify-between py-5" *ngFor="let variant of variants">
+                <div class="flex">
+                    <img class="object-contain" src="{{ getImage(variant.images) }}" alt="{{ variant.productName }}" width="{{imageSize}}" height="{{imageSize}}">
+                    <div class="flex flex-col font-light ml-6 ">
+                        <div class="mb-auto md:my-auto text-base md:text-xl">
+                            {{ variant.productName }} - {{ variant.name }}
+                        </div>
+                        <app-counter-input [label]="'Quantity'" [value]="variant.quantity">
+                        </app-counter-input>
+                    </div>
+                </div>
+                <div class="relative">
+                    <fa-icon class="absolute right-0 hover:text-gray-700 cursor-pointer" [icon]="faTimes" size="xs"></fa-icon>
+                    <div class="absolute bottom-0 right-0 font-light">
+                        {{variant.price | currency: settings.currency }}
+                    </div>
+                </div>
+            </div>
+            <div class="flex pt-5 text-gray-600">
+                <app-button class="w-full" [secondary]="true" [label]="'Update Cart'" [color]="'white'" [fullWidth]="true"></app-button>
+            </div>
+        </div>
+    </div>
+    <div class="w-full md:w-4/12">
+        <div class="font-light text-2xl">
+            Cart Totals
+        </div>
+        <div class="border border-gray-300 rounded-md my-5 p-5 text-sm">
+            <div class="font-light cursor-pointer flex justify-between" (click)="toggleCoupon()">
+                <div>
+                    <fa-icon class="mr-1" [icon]="faTicketAlt" transform="rotate--30"></fa-icon>
+                    Apply Coupon
+                </div>
+                <fa-icon [icon]="faChevronDown"></fa-icon>
+            </div>
+            <div class="flex flex-col overflow-x-hidden slider" [ngClass]="showCoupon ? '' : 'closed'">
+                <input class="arc-input placeholder-gray-400 my-5 mx-1" type="text" placeholder="Coupon Code" />
+                <app-button color="gray" [label]="'Apply Coupon'" [dark]="true" [fullWidth]="true"></app-button>
+            </div>
+        </div>
+        <div class="border border-gray-300 bg-gray-100 rounded-md my-5 font-light text-sm">
+            <div class="border-b border-gray-300 p-5">
+                Subtotal
+            </div>
+            <div class="border-b border-gray-300 p-5">
+                Shipping
+                <div class="flex my-auto py-5">
+                    <input type="radio" name="shippingType" class="my-auto" />
+                    <div class="ml-2 flex flex-1 justify-between">
+                        <label for="">Label</label>
+                        <label for="">Label2</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    Shipping to
+                </div>
+                <div class="mb-5 flex cursor-pointer" (click)="toggleAddress()">
+                    <fa-icon class="mr-2" [icon]="faMapMarkerAlt"></fa-icon>
+                    Change Address
+                    <fa-icon class="ml-2" [icon]="faChevronDown" size="xs"></fa-icon>
+                </div>
+                <div class="slider" [class.closed]="!showAddress">
+                    <div class="p-1 flex flex-col">
+                        <input type="text" class="mb-2 arc-input placeholder-gray-400" placeholder="Address line" />
+                        <input type="text" class="mb-2 arc-input placeholder-gray-400" placeholder="Town / City" />
+                        <ng-select class="mb-2" placeholder="State / County"></ng-select>
+                        <ng-select class="mb-2" placeholder="Country"></ng-select>
+                        <input type="text" class="mb-3 arc-input placeholder-gray-400" placeholder="Postcode / ZIP" />
+                        <app-button color="gray" [label]="'Update'" [dark]="true" [fullWidth]="true"></app-button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-300 p-4 flex justify-between text-xl">
+                <div>
+                    Total
+                </div>
+                <div>
+                    Price
+                </div>
+            </div>
+        </div>
+        <app-button color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true"></app-button>
+    </div>
+</div>

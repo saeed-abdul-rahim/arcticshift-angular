@@ -1,5 +1,5 @@
 <button
-    class="arc-button relative text-center bg-{{color}}-{{dark ? '800' : '500'}} active:bg-{{color}}-{{dark ? '800' : '900'}} {{fullWidth ? 'w-full' : ''}}"
+    class="arc-button{{secondary ? '-secondary' : ''}} relative text-center bg-{{color}}-{{dark ? '800' : '500'}} active:bg-{{color}}-{{dark ? '800' : '900'}} {{fullWidth ? 'w-full' : ''}}"
     [attr.type]="submit ? 'submit' : 'button'" [attr.disabled]="success || loading ? true : null"
     [ngClass]="success || loading ? 'cursor-not-allowed' : ''">
     <div class="text-transparent">{{label}}</div>
