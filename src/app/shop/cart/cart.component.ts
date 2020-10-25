@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faTicketAlt } from '@fortawesome/free-solid-svg-icons/faTicketAlt';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons/faMapMarkerAlt';
 
+import { CHECKOUT } from '@constants/routes';
 import { IMAGE_XS } from '@constants/imageSize';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { Content } from '@models/Common';
@@ -25,9 +27,12 @@ export class CartComponent implements OnInit, OnDestroy {
   faChevronDown = faChevronDown;
   faTimes = faTimes;
 
+  checkoutRoute = `/${CHECKOUT}`;
   imageSize = IMAGE_XS;
   showCoupon = false;
   showAddress = false;
+  variantsLoading = false;
+  draftLoading = false;
 
   settings: GeneralSettings;
   draft: OrderInterface;
@@ -37,14 +42,16 @@ export class CartComponent implements OnInit, OnDestroy {
   variantsSubscription: Subscription;
   settingsSubscription: Subscription;
 
-  constructor(private cart: CartService, private shop: ShopService) { }
+  constructor(private cart: CartService, private shop: ShopService, private router: Router) { }
 
   ngOnInit(): void {
+    this.draftLoading = true;
     this.draftSubscription = this.cart.getDraft().subscribe(draft => {
       if (!draft) { return; }
       this.draft = draft;
       const { variants } = draft;
       const variantIds = variants.map(variant => variant.variantId);
+      this.variantsLoading = true;
       this.variantsSubscription = this.shop.getVariantByIds(variantIds).subscribe(vars => {
         if (!vars) { return; }
         this.variants = vars.map(v => {
@@ -52,8 +59,10 @@ export class CartComponent implements OnInit, OnDestroy {
           v.quantity = variantQuantity.quantity;
           return v;
         });
-      });
-    });
+        this.variantsLoading = false;
+      }, _ => this.variantsLoading = false);
+      this.draftLoading = false;
+    }, _ => this.draftLoading = false);
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
   }
 
@@ -80,6 +89,10 @@ export class CartComponent implements OnInit, OnDestroy {
 
   toggleAddress() {
     this.showAddress = !this.showAddress;
+  }
+
+  navigateToCheckout() {
+    this.router.navigateByUrl(this.checkoutRoute);
   }
 
 }

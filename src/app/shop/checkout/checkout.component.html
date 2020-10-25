@@ -1,1 +1,59 @@
-<p>checkout works!</p>
+<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between">
+    <div class="w-full md:w-7/12 mb-5">
+        <div class="font-light text-2xl mb-3">
+            Billing Details
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="flex justify-between">
+                <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name" />
+                <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name" />
+            </div>
+            <ng-select placeholder="Country"></ng-select>
+            <input type="text" class="arc-input placeholder-gray-400 w-full"
+                placeholder="House number and street name" />
+            <input type="text" class="arc-input placeholder-gray-400 w-full"
+                placeholder="Apartment, suite, unit, etc. (optional)" />
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City" />
+            <ng-select placeholder="State / County"></ng-select>
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP" />
+            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Phone" />
+            <input type="email" class="arc-input placeholder-gray w-full" placeholder="Email" />
+        </div>
+        <div class="font-light text-2xl mb-3 mt-10">
+            Shipping Details
+        </div>
+        <div>
+            <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="form-checkbox text-gray-800 ml-1 w-5 h-5"
+                    style="transition: all 0.15s ease 0s;" [checked]="shippingAddressCheck"
+                    [(ngModel)]="shippingAddressCheck" (change)="toggleShippingAddressCheck()" />
+                <span class="ml-2 text-sm font-semibold text-gray-700">
+                    Ship to a different address?
+                </span>
+            </label>
+        </div>
+        <div class="slider" [class.closed]="!shippingAddressCheck">
+            <div class="p-1 flex flex-col space-y-2 mt-3">
+                <div class="flex justify-between">
+                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name" />
+                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name" />
+                </div>
+                <ng-select placeholder="Country"></ng-select>
+                <input type="text" class="arc-input placeholder-gray-400 w-full"
+                    placeholder="House number and street name" />
+                <input type="text" class="arc-input placeholder-gray-400 w-full"
+                    placeholder="Apartment, suite, unit, etc. (optional)" />
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City" />
+                <ng-select placeholder="State / County"></ng-select>
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP" />
+            </div>
+        </div>
+        <div class="font-light mt-5">
+            Order Notes (optional)
+        </div>
+        <textarea class="arc-input mt-3 w-full" placeholder="Notes about your order"></textarea>
+    </div>
+    <div class="w-full md:w-4/12">
+
+    </div>
+</div>

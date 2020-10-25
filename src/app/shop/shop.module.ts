@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
@@ -48,6 +48,7 @@ import { CartService } from '@services/cart/cart.service';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     ShopRoutingModule,
     ComponentsModule,
     ShopComponentsModule,
