@@ -527,3 +527,29 @@ h5 {
 .carousel-cells {
     width: unset !important;
 }
+
+.mat-form-field-wrapper {
+    @apply pb-0 !important;
+}
+
+.mat-form-field-underline {
+    display: none;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+    @apply bg-white !important;
+    @apply arc-input;
+    @apply rounded !important;
+}
+
+.ngx-timepicker {
+    @apply border-b-0 !important;
+    @apply arc-input;
+    @apply px-0 !important;
+}
+
+@screen md {
+    .ngx-timepicker {
+        @apply py-0 !important;
+    }
+}

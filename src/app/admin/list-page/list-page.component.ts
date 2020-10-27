@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -34,7 +34,7 @@ import { patchArrObj } from '@utils/arrUtils';
   templateUrl: './list-page.component.html',
   styleUrls: ['./list-page.component.css']
 })
-export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ListPageComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   shopId: string;
@@ -78,9 +78,6 @@ export class ListPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.unsubscribeData();
     this.unsubscribeUser();
     this.page.destroy();
-  }
-
-  ngAfterViewInit(): void {
   }
 
   unsubscribeData() {

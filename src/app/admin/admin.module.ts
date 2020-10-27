@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
@@ -81,7 +82,8 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    NgxMaterialTimepickerModule
   ],
   providers: [
     AdminGuard,

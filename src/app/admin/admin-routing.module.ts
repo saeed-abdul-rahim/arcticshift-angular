@@ -38,6 +38,7 @@ import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
+import { CatalogTabListComponent } from './admin-components/catalog-tab-list/catalog-tab-list.component';
 
 
 const routes: Routes = [
@@ -48,6 +49,7 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     canActivateChild: [AdminGuard],
     children: [
+      { path: 'tab', component: CatalogTabListComponent },
       { path: '', redirectTo: DASHBOARD, pathMatch: 'full' },
       { path: DASHBOARD, component: DashboardComponent },
       {

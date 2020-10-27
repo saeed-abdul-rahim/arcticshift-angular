@@ -1,0 +1,26 @@
+<div class="flex flex-wrap">
+    <div class="w-full">
+        <ul class="flex mb-0 list-none flex-wrap pb-2 flex-row">
+            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center cursor-pointer"
+                *ngFor="let label of labels; let i = index">
+                <a class="text-xs font-bold uppercase px-5 py-3 rounded block leading-normal bg-white arc-transition"
+                    (click)="toggleTabs(i)"
+                    [ngClass]="openTab !== i ? 'shadow-md text-gray-500' : 'shadow border-b ' + 'text-' + color + '-600' + ' border-' + color + '-600'">
+                    {{label}}
+                </a>
+            </li>
+        </ul>
+        <div class="relative flex flex-col min-w-0 break-words w-full rounded">
+            <div class="flex-auto">
+                <div class="tab-content tab-space">
+                    <div [ngClass]="{'hidden': openTab !== i, 'block': openTab === i}"
+                        *ngFor="let template of templates; let i = index">
+                        <p>
+                            <ng-container [ngTemplateOutlet]="template"></ng-container>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -443,6 +443,46 @@ export class AdminService {
     return getDataFromDocument(this.dbAnalytics.doc(path));
   }
 
+  getProductsByShopId(shopId: string): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
+    return getDataFromCollection(products);
+  }
+
+  getProductTypesByShopId(shopId: string): Observable<ProductTypeInterface[]> {
+    const productTypes = this.dbS.queryProductTypes([{ field: 'shopId', type: '==', value: shopId }]);
+    return getDataFromCollection(productTypes);
+  }
+
+  getAttributesByShopId(shopId: string): Observable<AttributeInterface[]> {
+    const attributes = this.dbS.queryAttributes([{ field: 'shopId', type: '==', value: shopId }]);
+    return getDataFromCollection(attributes);
+  }
+
+  getCategoriesByShopId(shopId: string): Observable<CategoryInterface[]> {
+    const categories = this.dbS.queryCategories([{ field: 'shopId', type: '==', value: shopId }]);
+    return getDataFromCollection(categories);
+  }
+
+  getCollectionsByShopId(shopId: string): Observable<CollectionInterface[]> {
+    const collection = this.dbS.queryCollections([{ field: 'shopId', type: '==', value: shopId }]);
+    return getDataFromCollection(collection);
+  }
+
+  getProductbyIds(ids: string[]): Observable<ProductInterface[]> {
+    const { dbProductsRoute } = this.dbS;
+    return this.dbS.queryByIds(dbProductsRoute, ids);
+  }
+
+  getCategorybyIds(ids: string[]): Observable<CategoryInterface[]> {
+    const { dbCategoriesRoute } = this.dbS;
+    return this.dbS.queryByIds(dbCategoriesRoute, ids);
+  }
+
+  getCollectionbyIds(ids: string[]): Observable<CollectionInterface[]> {
+    const { dbCollectionsRoute } = this.dbS;
+    return this.dbS.queryByIds(dbCollectionsRoute, ids);
+  }
+
   getWarehouseById(warehouseId: string): Observable<WarehouseInterface> {
     const { dbWarehouseRoute, db } = this.dbS;
     const warehouse = db.collection(dbWarehouseRoute).doc(warehouseId);

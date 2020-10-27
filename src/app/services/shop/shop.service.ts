@@ -179,36 +179,6 @@ export class ShopService {
     return combineLatest(queries);
   }
 
-  getProductsByShopId(shopId: string): Observable<ProductInterface[]> {
-    const products = this.dbS.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
-    this.products$ = getDataFromCollection(products);
-    return this.products$;
-  }
-
-  getProductTypesByShopId(shopId: string): Observable<ProductTypeInterface[]> {
-    const productTypes = this.dbS.queryProductTypes([{ field: 'shopId', type: '==', value: shopId }]);
-    this.productTypes$ = getDataFromCollection(productTypes);
-    return this.productTypes$;
-  }
-
-  getAttributesByShopId(shopId: string): Observable<AttributeInterface[]> {
-    const attributes = this.dbS.queryAttributes([{ field: 'shopId', type: '==', value: shopId }]);
-    this.attributes$ = getDataFromCollection(attributes);
-    return this.attributes$;
-  }
-
-  getCategoriesByShopId(shopId: string): Observable<CategoryInterface[]> {
-    const categories = this.dbS.queryCategories([{ field: 'shopId', type: '==', value: shopId }]);
-    this.categories$ = getDataFromCollection(categories);
-    return this.categories$;
-  }
-
-  getCollectionsByShopId(shopId: string): Observable<CollectionInterface[]> {
-    const collection = this.dbS.queryCollections([{ field: 'shopId', type: '==', value: shopId }]);
-    this.collections$ = getDataFromCollection(collection);
-    return this.collections$;
-  }
-
   getAttributeValuesByAttributeId(attributeId: string) {
     const attributeValueRef = this.dbS.queryAttributeValues([{ field: 'attributeId', type: '==', value: attributeId }]);
     return getDataFromCollection(attributeValueRef) as Observable<AttributeValueInterface[]>;

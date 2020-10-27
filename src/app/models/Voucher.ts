@@ -1,4 +1,4 @@
-import { Datetime, CommonInterface, ValueType, OrderBy } from './Common';
+import { CommonInterface, ValueType, OrderBy } from './Common';
 
 export interface VoucherInterface extends CommonInterface {
     id?: string;
@@ -15,8 +15,8 @@ export interface VoucherInterface extends CommonInterface {
     minimumRequirement?: MinimumRequirement;
     totalUsage?: number;
     onePerUser?: boolean;
-    startDate?: Datetime | null;
-    endDate?: Datetime | null;
+    startDate?: number;
+    endDate?: number;
 }
 
 export type VoucherFields = keyof VoucherInterface;

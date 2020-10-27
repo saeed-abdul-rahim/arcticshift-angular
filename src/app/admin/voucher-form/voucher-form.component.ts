@@ -5,6 +5,7 @@ import { ADMIN, DISCOUNT, VOUCHER } from '@constants/routes';
 import { VoucherInterface } from '@models/Voucher';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
+import { getTimeObjFromStr, dateToHrMin } from '@utils/datetime';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
@@ -49,12 +50,17 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       discountType: [''],
       minimumQuantity: [''],
       orderValue: [null],
+      valueType: [null],
+      oncePerOrder: [null],
       quantity: [null],
       limitCheck: [false],
       limit: [''],
       onePerUser: [''],
       startDate: [''],
+      startTime: [''],
       endDate: [''],
+      endTime: [''],
+      endDateCheck: [false],
     });
   }
 
@@ -65,20 +71,39 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   }
 
   setFormValue() {
-    const { code, value, valueType, minimumRequirement, totalUsage, onePerUser, startDate, endDate } = this.voucher;
-    const { type } = minimumRequirement;
+    const {
+      code, value, valueType, minimumRequirement, totalUsage,
+      onePerUser, oncePerOrder, startDate, endDate,
+      categoryId, collectionId, productId
+    } = this.voucher;
+    const limit = totalUsage > 0 ? totalUsage : null;
+    const startDatetime = startDate && startDate > 0 ? new Date(startDate) : null;
+    const endDatetime = endDate && endDate > 0 ? new Date(endDate) : null;
+    let startTime = '00:00';
+    let endTime = '00:00';
+    if (startDatetime) {
+      startTime = dateToHrMin(startDatetime);
+    }
+    if (endDatetime) {
+      endTime = dateToHrMin(endDatetime);
+    }
+    const productsLength = categoryId.length === 0 && collectionId.length === 0 && productId.length === 0 ? 'entire' : 'specific';
     this.voucherForm.patchValue({
       code,
       value,
       discountType: valueType,
+      valueType: productsLength,
       limitCheck: totalUsage > 0 ? true : false,
-      limit: totalUsage,
-      minimumQuantity: type,
-      orderValue: type === 'orderValue' ? minimumRequirement.value : null,
-      quantity: type === 'quantity' ? minimumRequirement.value : null,
+      limit,
+      minimumQuantity: minimumRequirement && minimumRequirement.type,
+      orderValue: minimumRequirement && minimumRequirement.type === 'orderValue' ? minimumRequirement.value : null,
+      quantity: minimumRequirement && minimumRequirement.type === 'quantity' ? minimumRequirement.value : null,
       onePerUser,
-      startDate,
-      endDate
+      oncePerOrder,
+      startDate: startDatetime,
+      startTime,
+      endDate: endDatetime,
+      endTime
     });
   }
 
@@ -97,9 +122,14 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       orderValue,
       quantity,
       limit,
+      limitCheck,
       onePerUser,
+      oncePerOrder,
       startDate,
-      endDate
+      startTime,
+      endDate,
+      endTime,
+      endDateCheck
     } = this.voucherFormControls;
     if (this.voucherForm.invalid) {
       if (code.errors) {
@@ -107,23 +137,38 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       }
       return;
     }
-    this.loading = true;
-    const setData: VoucherInterface = {
-      code: code.value,
-      value: value.value,
-      valueType: discountType.value,
-      startDate: startDate.value,
-      endDate: endDate.value,
-      minimumRequirement: {
-        type: minimumQuantity.value,
-        value: minimumQuantity.value === 'orderValue' ? orderValue.value : quantity.value
-      },
-      totalUsage: limit.value,
-      onePerUser: onePerUser.value
-
-    };
-
     try {
+      let startDateTime = -1;
+      let endDateTime = -1;
+      if (startDate.value) {
+        startDateTime = Date.parse(startDate.value);
+        if (startTime) {
+          const { hour, minute } = getTimeObjFromStr(startTime.value);
+          startDateTime = new Date(startDateTime).setHours(hour, minute);
+        }
+      }
+      if (endDate.value) {
+        endDateTime = Date.parse(endDate.value);
+        if (endTime) {
+          const { hour, minute } = getTimeObjFromStr(endTime.value);
+          endDateTime = new Date(endDateTime).setHours(hour, minute);
+        }
+      }
+      this.loading = true;
+      const setData: VoucherInterface = {
+        code: code.value,
+        value: value.value,
+        valueType: discountType.value,
+        startDate: startDateTime,
+        endDate: endDateCheck.value ? endDateTime : -1,
+        minimumRequirement: {
+          type: minimumQuantity.value,
+          value: minimumQuantity.value === 'orderValue' ? orderValue.value : quantity.value
+        },
+        totalUsage: limitCheck.value ? limit.value : -1,
+        onePerUser: onePerUser.value,
+        oncePerOrder: oncePerOrder.value
+      };
       if (this.edit) {
         await this.adminService.updateVoucher({
           ...setData,
@@ -161,4 +206,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     }
     this.loadingDelete = false;
   }
+
+  showModal() {}
+
 }

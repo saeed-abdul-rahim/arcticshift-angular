@@ -78,7 +78,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   };
 
   constructor(private formbuilder: FormBuilder, private storageService: StorageService,
-              private authService: AuthService, private adminService: AdminService, private shopService: ShopService,
+              private authService: AuthService, private admin: AdminService, private shop: ShopService,
               private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
     this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
       if (user) {
@@ -92,7 +92,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     const productId = this.router.url.split('/').pop();
     if (productId !== ADD) {
       this.edit = true;
-      this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
+      this.productSubscription = this.shop.getProductById(productId).subscribe(product => {
         if (product) {
           this.product = product;
           this.getPreviewImages();
@@ -120,9 +120,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.attributeForms.clear();
     if (event) {
       const { productTypeId } = event;
-      this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId).subscribe(productType => {
+      this.productTypeSubscription = this.shop.getProductTypeById(productTypeId).subscribe(productType => {
         const { productAttributeId } = productType;
-        this.attributeSubscription = this.shopService.getAttributeAndValuesByIds(productAttributeId).subscribe(attributes => {
+        this.attributeSubscription = this.shop.getAttributeAndValuesByIds(productAttributeId).subscribe(attributes => {
           this.attributes = attributes;
           this.attributes.forEach(attr => {
             let attributeValueId = null;
@@ -198,13 +198,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     };
     try {
       if (this.edit) {
-        await this.adminService.updateProduct({
+        await this.admin.updateProduct({
           ...setData,
           productId: this.product.productId
         });
       }
       else {
-        const data = await this.adminService.createProduct(setData);
+        const data = await this.admin.createProduct(setData);
         if (data.id) {
           const { id } = data;
           this.router.navigateByUrl(`/${this.productRoute}/${id}`);
@@ -226,7 +226,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.loadingDelete = true;
     try {
       const { productId } = this.product;
-      await this.adminService.deleteProduct(productId);
+      await this.admin.deleteProduct(productId);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
       this.router.navigateByUrl(this.productRoute);
@@ -241,23 +241,23 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       const { product } = this;
       const { productId, images } = product;
       const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
-      await this.adminService.deleteProductImage(productId, image.content.path);
+      await this.admin.deleteProductImage(productId, image.content.path);
     } catch (_) { }
   }
 
   getProductTypes() {
-    this.categorySubscription = this.shopService.getProductTypesByShopId(this.shopId)
+    this.categorySubscription = this.admin.getProductTypesByShopId(this.shopId)
       .subscribe(productTypes => this.productTypes = productTypes);
   }
 
   getAttributes(productTypeId: string) {
     this.unsubscribeAttributes();
-    return this.shopService.getAttributesByProductTypeId(productTypeId);
+    return this.shop.getAttributesByProductTypeId(productTypeId);
   }
 
   getVariants(productId: string) {
     this.variantsLoading = true;
-    this.variantSubscription = this.shopService.getVariantsByProductId(productId)
+    this.variantSubscription = this.shop.getVariantsByProductId(productId)
       .subscribe(variants => {
         this.variantsLoading = false;
         this.variants = variants;
@@ -267,12 +267,12 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   getCategories() {
-    this.categorySubscription = this.shopService.getCategoriesByShopId(this.shopId)
+    this.categorySubscription = this.admin.getCategoriesByShopId(this.shopId)
       .subscribe(categories => this.categories = categories);
   }
 
   getCollections() {
-    this.collectionSubscription = this.shopService.getCollectionsByShopId(this.shopId)
+    this.collectionSubscription = this.admin.getCollectionsByShopId(this.shopId)
       .subscribe(collections => this.collections = collections);
   }
 

@@ -178,6 +178,15 @@ export class DbService {
     return this.query(db, dbOrdersRoute, conditions, orderBy, limit);
   }
 
+  queryByIds(collection: string, ids: string[]) {
+    const { db } = this;
+    const queries = ids.map(id => {
+      const data = db.collection(collection).doc(id);
+      return getDataFromDocument(data);
+    });
+    return combineLatest(queries);
+  }
+
   query(db: AngularFirestoreDocument, dbRoute: string, conditions?: Condition[], orderBy?: OrderBy, limit?: number) {
     if (conditions && conditions.length > 0) {
       return this.setCondition(db, dbRoute, conditions, orderBy, limit);

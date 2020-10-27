@@ -7,6 +7,8 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { ModalComponent } from './modal/modal.component';
 import { CounterInputComponent } from './counter-input/counter-input.component';
+import { TabComponent } from './tab/tab.component';
+import { AlertComponent } from './alert/alert.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { CounterInputComponent } from './counter-input/counter-input.component';
     ProgressBarComponent,
     DropdownComponent,
     ModalComponent,
-    CounterInputComponent
+    CounterInputComponent,
+    TabComponent,
+    AlertComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +32,9 @@ import { CounterInputComponent } from './counter-input/counter-input.component';
     ProgressBarComponent,
     DropdownComponent,
     ModalComponent,
-    CounterInputComponent
+    CounterInputComponent,
+    TabComponent,
+    AlertComponent
   ]
 })
 export class ComponentsModule { }

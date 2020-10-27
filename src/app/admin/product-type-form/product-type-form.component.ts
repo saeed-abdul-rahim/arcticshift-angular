@@ -65,13 +65,13 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   variantAttributeSubscription: Subscription;
   attributeSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService, private authService: AuthService,
-              private router: Router, private shopService: ShopService, private cdr: ChangeDetectorRef) {
+  constructor(private formbuilder: FormBuilder, private admin: AdminService, private authService: AuthService,
+              private router: Router, private shop: ShopService, private cdr: ChangeDetectorRef) {
     this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
       if (user) {
         const { shopId } = user;
         this.shopId = shopId;
-        this.tax$ = this.shopService.getTaxesByShopIdAndType(shopId, 'product');
+        this.tax$ = this.shop.getTaxesByShopIdAndType(shopId, 'product');
         this.getAllAttributes();
       }
     });
@@ -135,13 +135,13 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     try {
       if (this.edit) {
-        await this.adminService.updateProductType({
+        await this.admin.updateProductType({
           name: name.value,
           taxId: tax.value,
           productTypeId: this.productType.productTypeId
         });
       } else {
-        const data = await this.adminService.createProductType({
+        const data = await this.admin.createProductType({
           name: name.value,
           taxId: tax.value
         });
@@ -164,7 +164,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     this.loadingDelete = true;
     try {
       const { productTypeId } = this.productType;
-      await this.adminService.deleteProductType(productTypeId);
+      await this.admin.deleteProductType(productTypeId);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
       this.router.navigateByUrl(this.productTypeRoute);
@@ -181,12 +181,12 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
         productTypeId: this.productType.productTypeId
       };
       if (this.selectedList === 'product') {
-        await this.adminService.updateProductType({
+        await this.admin.updateProductType({
           ...setData,
           productAttributeId: this.selectedAttributeIds
         });
       } else if (this.selectedList === 'variant') {
-        await this.adminService.updateProductType({
+        await this.admin.updateProductType({
           ...setData,
           variantAttributeId: this.selectedAttributeIds
         });
@@ -205,12 +205,12 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
         productTypeId: this.productType.productTypeId
       };
       if (type === 'product') {
-        await this.adminService.updateProductType({
+        await this.admin.updateProductType({
           ...setData,
           productAttributeId: productAttributeId.filter(id => id !== attributeId)
         });
       } else if (type === 'variant') {
-        await this.adminService.updateProductType({
+        await this.admin.updateProductType({
           ...setData,
           variantAttributeId: variantAttributeId.filter(id => id !== attributeId)
         });
@@ -221,7 +221,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   getProductType(productTypeId: string) {
-    this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId).subscribe(productType => {
+    this.productTypeSubscription = this.shop.getProductTypeById(productTypeId).subscribe(productType => {
       if (productType) {
         this.productType = productType;
         const { name, taxId, productAttributeId, variantAttributeId } = productType;
@@ -238,13 +238,13 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   getAllAttributes() {
-    this.attributeSubscription = this.shopService.getAttributesByShopId(this.shopId).subscribe(attributes => {
+    this.attributeSubscription = this.admin.getAttributesByShopId(this.shopId).subscribe(attributes => {
       this.attributes = attributes;
     });
   }
 
   getProductAttributeByIds(attributeIds: string[]) {
-    this.productAttributeSubscription = this.shopService.getAttributeByIds(attributeIds).subscribe(attributes => {
+    this.productAttributeSubscription = this.shop.getAttributeByIds(attributeIds).subscribe(attributes => {
       this.productAttributes = attributes;
       this.productAttributesSource = new MatTableDataSource(this.productAttributes);
       this.cdr.detectChanges();
@@ -252,7 +252,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   getVariantAttributeByIds(attributeIds: string[]) {
-    this.variantAttributeSubscription = this.shopService.getAttributeByIds(attributeIds).subscribe(attributes => {
+    this.variantAttributeSubscription = this.shop.getAttributeByIds(attributeIds).subscribe(attributes => {
       this.variantAttributes = attributes;
       this.variantAttributesSource = new MatTableDataSource(this.variantAttributes);
       this.cdr.detectChanges();

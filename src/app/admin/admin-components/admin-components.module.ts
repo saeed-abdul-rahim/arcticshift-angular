@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { DragAndDropDirective } from '@directives/DragAndDrop.directive';
@@ -11,6 +13,7 @@ import { FooterFormComponent } from './footer-form/footer-form.component';
 import { UploadComponent } from './upload/upload.component';
 import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
 import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
+import { CatalogTabListComponent } from './catalog-tab-list/catalog-tab-list.component';
 
 
 @NgModule({
@@ -21,11 +24,14 @@ import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
     FooterFormComponent,
     UploadComponent,
     NotificationDropdownComponent,
-    UserDropdownComponent
+    UserDropdownComponent,
+    CatalogTabListComponent
   ],
   imports: [
     CommonModule,
     ComponentsModule,
+    MatTableModule,
+    MatPaginatorModule,
     FontAwesomeModule
   ],
   exports: [
@@ -34,7 +40,8 @@ import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
     FooterFormComponent,
     UploadComponent,
     NotificationDropdownComponent,
-    UserDropdownComponent
+    UserDropdownComponent,
+    CatalogTabListComponent
   ]
 })
 export class AdminComponentsModule { }
