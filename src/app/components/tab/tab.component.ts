@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-tab',
@@ -11,6 +11,7 @@ export class TabComponent implements OnInit {
   @Input() templates: TemplateRef<any>[];
   @Input() color = 'blue';
   @Input() openTab = 0;
+  @Output() openTabChange = new EventEmitter<number>();
 
   constructor() { }
 
@@ -19,6 +20,7 @@ export class TabComponent implements OnInit {
 
   toggleTabs($tabNumber: number){
     this.openTab = $tabNumber;
+    this.openTabChange.emit(this.openTab);
   }
 
 }

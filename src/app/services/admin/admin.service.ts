@@ -19,6 +19,7 @@ import { User } from '@models/User';
 import { Observable } from 'rxjs';
 import { ShippingInterface } from '@models/Shipping';
 import { DbService } from '@services/db/db.service';
+import { CatalogTypeApi } from '@models/Common';
 
 @Injectable()
 export class AdminService {
@@ -238,6 +239,24 @@ export class AdminService {
     }
   }
 
+  async addCatalogToSaleDiscount(id: string, data: CatalogTypeApi) {
+    const { apiSale } = this;
+    try {
+      return await this.req.put(`${apiSale}/${id}`, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async removeCatalogFromSaleDiscount(id: string, data: CatalogTypeApi) {
+    const { apiSale } = this;
+    try {
+      return await this.req.patch(`${apiSale}/${id}`, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async deleteSale(id: string) {
     const { apiSale } = this;
     try {
@@ -260,6 +279,24 @@ export class AdminService {
     const { apiVoucher } = this;
     try {
       return await this.req.patch(apiVoucher, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async addCatalogToVoucher(id: string, data: CatalogTypeApi) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.put(`${apiVoucher}/${id}`, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async removeCatalogFromVoucher(id: string, data: CatalogTypeApi) {
+    const { apiVoucher } = this;
+    try {
+      return await this.req.patch(`${apiVoucher}/${id}`, { data });
     } catch (err) {
       throw err;
     }

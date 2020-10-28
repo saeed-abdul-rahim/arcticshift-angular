@@ -1,116 +1,105 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addSaleForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="saleForm" (ngSubmit)="onSubmit()">
 
-    <ng-template #sale>
-        <div class="flex flex-wrap items-center">
-          <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-            <div class="w-full mb-3">
-              <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
-                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-            </div>
+  <ng-template #sale>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
+            [ngClass]="saleFormControls.name.touched && saleFormControls.name.invalid ? 'border-red' : ''" formControlName="name" />
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #discount>
+    <div class="flex items-center ml-4 mb-2 p-1 pt-5">
+      <input id="percent" type="radio" name="discountType" value="percent" class="hidden" formControlName="discountType"
+        checked />
+      <label for="percent" class="flex items-center cursor-pointer">
+        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+        Percentage</label>
+    </div>
+    <div class="flex items-center ml-4 mb-2 p-1">
+      <input id="fixed" type="radio" name="discountType" value="fixed" class="hidden" formControlName="discountType" />
+      <label for="fixed" class="flex items-center cursor-pointer">
+        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
+        Fixed Amount</label>
+    </div>
+  </ng-template>
+
+  <ng-template #value>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3 relative">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Discount value"
+            [ngClass]="saleFormControls.value.touched && saleFormControls.value.invalid ? 'border-red' : ''" formControlName="value" />
+          <span class="input-right-label"> {{ saleFormControls.discountType.value !== 'percent' ?  shopData && shopData.currency : '%' }} </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #dateTimePicker>
+    <div class="items-start">
+      <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full md:w-5/12">
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput [min]="minDate" [matDatepicker]="startDate" formControlName="startDate">
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="w-40 mt-2 md:mt-0">
+          <ngx-timepicker-field formControlName="startTime" [controlOnly]="true" [format]="24"></ngx-timepicker-field>
+        </div>
+      </div>
+      <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <label class="inline-flex w-full">
+          <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" formControlName="endDateCheck"><span
+            class="ml-2 text-gray-700">Set end date?</span>
+        </label>
+      </div>
+      <div class="slider" [class.closed]="!saleFormControls.endDateCheck.value">
+        <div class="relative flex flex-wrap w-full px-4 mb-3 max-w-full flex-grow flex-1">
+          <div class="w-full md:w-5/12">
+            <mat-form-field appearance="fill">
+              <mat-label>End Date</mat-label>
+              <input matInput [min]="saleFormControls.startDate.value" [matDatepicker]="endDate" formControlName="endDate">
+              <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+              <mat-datepicker #endDate></mat-datepicker>
+            </mat-form-field>
           </div>
-        </div>
-      </ng-template>
-
-      <ng-template #discount>
-        <div class="flex items-center ml-4 mb-4 p-1 pt-5">
-          <input id="radio1" type="radio" name="discountType"  value="percent" class="hidden" formControlName="discountType" checked />
-          <label for="radio1" class="flex items-center cursor-pointer">
-            <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-            Percentage</label>
-        </div>
-        <div class="flex items-center ml-4 mb-4 p-1">
-          <input id="radio2" type="radio" name="discountType"  value="fixed" class="hidden" formControlName="discountType" />
-          <label for="radio2" class="flex items-center cursor-pointer">
-            <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-            Fixed Amount</label>
-        </div>
-      </ng-template>
-
-      <ng-template #value>
-        <div class="flex flex-wrap items-center">
-          <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-            <div class="w-full mb-3">
-              <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Discount value"
-                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="value" />
-            </div>
-          </div>
-        </div>
-      </ng-template>
-
-      <ng-template #dateTimePicker>
-        <div class="flex">
-        <div class="px-6 py-2">
-        <mat-form-field appearance="fill">
-          <mat-label>Start Date</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="startDate"/>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        </div>
-        <!-- <div class="px-6">  
-          <ngx-timepicker-field appearance="fill">
-          <ngx-material-timepicker-dial>
-          <input [ngxTimepicker]="picker" formControlName=""/>
-            <ngx-material-timepicker #picker>
-            </ngx-material-timepicker>
-          </ngx-material-timepicker-dial>
-          </ngx-timepicker-field>
-        </div> -->
-        </div>
-<!-- 
-        <label class="inline-flex w-full pl-6">
-          <input type="checkbox"  class="form-checkbox h-5 w-5 text-blue-400" (click)="toggleEnddate()"><span 
-          class="ml-2 text-gray-700">Set end date</span>
-      </label>
-
-      <div class="flex">
-        <div class="px-6 py-2">
-        <mat-form-field appearance="fill">
-          <mat-label>End Date</mat-label>
-          <input matInput [matDatepicker]="picker" *ngIf="showMeEndDate" />
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        </div>
-        <div class="px-6">  
-          <ngx-timepicker-field appearance="fill">
-          <ngx-material-timepicker-dial>
-          <input [ngxTimepicker]="picker" *ngIf="showMeEndDate" />
-            <ngx-material-timepicker #picker>
-            </ngx-material-timepicker>
-          </ngx-material-timepicker-dial>
-          </ngx-timepicker-field>
-        </div>
-        </div> -->
-      </ng-template>
-      
-      <ng-template #summary>
-
-      </ng-template>
-
-      <div class="relative md:pt-32 pt-12">
-        <div class="px-4 md:px-10 mx-auto w-full">
-          <div class="flex flex-wrap mt-4">
-            <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-              <app-card [heading]="'General Information'" [body]="sale"></app-card>
-              <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
-              <app-card [heading]="'Value'" [body]="value"></app-card>
-              <app-card [heading]="'Active Dates'" [body]="dateTimePicker"></app-card>
-            </div>
-            <div class="w-full xl:w-4/12 px-4">
-              <app-card *ngIf="edit"[heading]="'Summary'" [body]="summary"></app-card>
-            </div>
+          <div class="w-40 mt-2 md:mt-0">
+            <ngx-timepicker-field formControlName="endTime" [controlOnly]="true" [format]="24"></ngx-timepicker-field>
           </div>
         </div>
       </div>
+    </div>
+  </ng-template>
 
-      <app-footer-form
-      [loading]="loading"
-      [success]="success"
-      [showDelete]="edit"
-      [loadingDelete]="loadingDelete"
-      [successDelete]="successDelete"
-      (deleteCallback)="deleteSale()"
-    ></app-footer-form>
+  <div class="relative md:pt-32 pt-12">
+    <div class="px-4 md:px-10 mx-auto w-full">
+      <div class="flex flex-wrap mt-4 mb-12">
+        <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+          <app-card [heading]="'General Information'" [body]="sale"></app-card>
+          <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
+          <app-card [heading]="'Value'" [body]="value"></app-card>
+          <app-catalog-tab-list [productIds]="saleDiscount && saleDiscount.productId"
+              [categoryIds]="saleDiscount && saleDiscount.categoryId" [collectionIds]="saleDiscount && saleDiscount.collectionId"
+              (addCatalog)="addCatalog($event)" (removeCatalog)="removeCatalog($event)" [modalLoading]="modalLoading"
+              [modalSuccess]="modalSuccess" [(showModal)]="showModal" [removeLoading]="tabDeleteLoading">
+            </app-catalog-tab-list>
+          <app-card [heading]="'Active Dates'" [body]="dateTimePicker"></app-card>
+        </div>
+        <div class="w-full xl:w-4/12 px-4">
+          <!-- SUMMARY -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer-form [loading]="loading" [success]="success" [showDelete]="edit" [loadingDelete]="loadingDelete"
+    [successDelete]="successDelete" (deleteCallback)="deleteSale()"></app-footer-form>
 
 </form>

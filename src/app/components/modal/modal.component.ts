@@ -13,6 +13,7 @@ export class ModalComponent implements OnInit {
   @Input() size: 'small' | 'medium' | 'large';
   @Input() buttonLabel = 'Save';
   @Input() buttonColor = 'blue';
+  @Input() submit = true;
 
   @Input() loading: boolean;
   @Input() success: boolean;

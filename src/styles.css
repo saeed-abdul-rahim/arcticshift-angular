@@ -20772,6 +20772,9 @@ video {
   align-items: center;
   font-size: 0.875rem;
   padding-right: 1.5rem;
+  --text-opacity: 1;
+  color: #718096;
+  color: rgba(113, 128, 150, var(--text-opacity));
 }
 
 .arc-label {

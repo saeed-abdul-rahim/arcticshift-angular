@@ -28,6 +28,12 @@ export interface QueryConfig {
     joinId?: string;
 }
 
+export type CatalogTypeApi = {
+    productId?: string[]
+    categoryId?: string[]
+    collectionId?: string[]
+};
+
 export interface TimestampInterface {
     createdAt?: number;
     updatedAt?: number;

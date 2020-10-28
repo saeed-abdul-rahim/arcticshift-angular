@@ -4,70 +4,80 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { Subject } from 'rxjs/internal/Subject';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 
 import { AuthService } from '@services/auth/auth.service';
 import { AdminService } from '@services/admin/admin.service';
+import { AlertService } from '@services/alert/alert.service';
 import { ProductInterface } from '@models/Product';
 import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
-import { AlertService } from '@services/alert/alert.service';
 import { uniqueArr } from '@utils/arrUtils';
-import { Subject } from 'rxjs/internal/Subject';
-
-type CatalogType = 'category' | 'collection' | 'product';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { CatalogType, AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
+import { inOut } from '@animations/inOut';
 
 @Component({
   selector: 'app-catalog-tab-list',
   templateUrl: './catalog-tab-list.component.html',
-  styleUrls: ['./catalog-tab-list.component.css']
+  styleUrls: ['./catalog-tab-list.component.css'],
+  animations: [inOut]
 })
 export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
 
   @Input() productIds: string[] = [];
   @Input() categoryIds: string[] = [];
   @Input() collectionIds: string[] = [];
+  @Input() modalLoading: boolean;
+  @Input() modalSuccess: boolean;
+  @Input() removeLoading: boolean;
+  @Input() showModal = false;
 
-  @Output() productCallback = new EventEmitter<string[]>();
-  @Output() categoryCallback = new EventEmitter<string[]>();
-  @Output() collectionCallback = new EventEmitter<string[]>();
+  @Output() addCatalog = new EventEmitter<AddCatalogEvent>();
+  @Output() removeCatalog = new EventEmitter<RemoveCatalogEvent>();
+  @Output() showModalChange = new EventEmitter<boolean>();
 
-  productIdsDiffer: IterableDiffer<string>;
-  categoryIdsDiffer: IterableDiffer<string>;
-  collectionIdsDiffer: IterableDiffer<string>;
-
-  modalLoading = false;
-  modalSuccess = false;
-  productsLoading = false;
-  categoriesLoading = false;
-  collectionsLoading = false;
+  faTrash = faTrash;
+  catalogLoading = false;
   allCatalogLoading = false;
-  showModal = false;
   type: CatalogType;
+  heading: string;
   filteredCatalog: any[] = [];
   selectedIds: string[] = [];
   existingIds: string[] = [];
 
   shopId: string;
+  catalogDeleteId: string;
   allCatalogColumns = ['select', 'name'];
   allCatalog: MatTableDataSource<any>;
   allCatalogData = new Subject<any>();
+  catalogColumns = ['name'];
+  catalog: MatTableDataSource<any>;
+  catalogData = new BehaviorSubject<any[]>([]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  products: ProductInterface[];
-  categories: CategoryInterface[];
-  collections: CollectionInterface[];
-  allProducts: ProductInterface[];
-  allCategories: CategoryInterface[];
-  allCollections: CollectionInterface[];
+  products: ProductInterface[] = [];
+  categories: CategoryInterface[] = [];
+  collections: CollectionInterface[] = [];
+  allProducts: ProductInterface[] = [];
+  allCategories: CategoryInterface[] = [];
+  allCollections: CollectionInterface[] = [];
 
-  productsSubscription: Subscription;
-  collectionsSubscription: Subscription;
-  categoriesSubscription: Subscription;
-  allProductSubscription: Subscription;
-  allCollectionSubscription: Subscription;
-  allCategorySubscription: Subscription;
-  userSubscription: Subscription;
+  private productIdsDiffer: IterableDiffer<string>;
+  private categoryIdsDiffer: IterableDiffer<string>;
+  private collectionIdsDiffer: IterableDiffer<string>;
+
+  private catalogSubscription: Subscription;
+  private allCatalogSubscription: Subscription;
+  private productsSubscription: Subscription;
+  private collectionsSubscription: Subscription;
+  private categoriesSubscription: Subscription;
+  private allProductSubscription: Subscription;
+  private allCollectionSubscription: Subscription;
+  private allCategorySubscription: Subscription;
+  private userSubscription: Subscription;
 
   constructor(private admin: AdminService, private auth: AuthService, private iterableDiffers: IterableDiffers,
               private cdr: ChangeDetectorRef, private alert: AlertService) { }
@@ -82,14 +92,23 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
         this.shopId = shopId;
       }
     });
+    this.type = 'category'; // Initially load category
     this.allCatalogData.next([]);
-    this.getProductByIds(this.productIds);
-    this.getCategoryByIds(this.categoryIds);
-    this.getCollectionByIds(this.collectionIds);
+    this.catalogData.next([]);
     this.fillAllCatalogTable();
+    this.fillCatalogTable();
   }
 
   ngOnDestroy(): void {
+    if (this.catalogSubscription && !this.catalogSubscription.closed) {
+      this.catalogSubscription.unsubscribe();
+    }
+    if (this.allCatalogSubscription && !this.allCatalogSubscription.closed) {
+      this.allCatalogSubscription.unsubscribe();
+    }
+    if (this.allCategorySubscription && !this.allCategorySubscription.closed) {
+      this.allCategorySubscription.unsubscribe();
+    }
     if (this.allProductSubscription && !this.allProductSubscription.closed) {
       this.allProductSubscription.unsubscribe();
     }
@@ -111,14 +130,17 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     const productIdChange = this.productIdsDiffer.diff(this.productIds);
     const categoryIdChange = this.categoryIdsDiffer.diff(this.categoryIds);
     const collectionIdChange = this.collectionIdsDiffer.diff(this.collectionIds);
+    if (productIdChange || categoryIdChange || collectionIdChange) {
+      this.existingIds = [ ...this.productIds, ...this.categoryIds, ...this.collectionIds ];
+    }
     if (productIdChange) {
-      this.getProductByIds(this.productIds);
+      this.getProductByIds(this.productIds, true);
     }
     if (categoryIdChange) {
-      this.getCategoryByIds(this.categoryIds);
+      this.getCategoryByIds(this.categoryIds, true);
     }
     if (collectionIdChange) {
-      this.getCollectionByIds(this.collectionIds);
+      this.getCollectionByIds(this.collectionIds, true);
     }
   }
 
@@ -140,46 +162,76 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  getProductByIds(ids: string[]) {
-    this.unsubscribeProducts();
-    this.productsLoading = true;
-    this.productsSubscription = this.admin.getProductbyIds(ids)
-      .subscribe(products => {
-        this.productsLoading = false;
-        this.products = products;
-        this.addToExistingIds(products);
-      }, err => {
-        this.productsLoading = false;
-        this.handleError(err);
-      });
+  getProductByIds(ids: string[], change = false) {
+    if (change) {
+      this.addToExistingIds(ids);
+      this.unsubscribeProducts();
+    }
+    if ((!this.productsSubscription || this.productsSubscription.closed) && this.productIds && this.productIds.length > 0) {
+      this.catalogLoading = true;
+      this.productsSubscription = this.admin.getProductbyIds(ids)
+        .subscribe(products => {
+          this.catalogLoading = false;
+          this.products = products;
+          this.addToExistingIds(products);
+          if (this.type === 'product') {
+            this.catalogData.next(products);
+          }
+        }, err => {
+          this.catalogLoading = false;
+          this.handleError(err);
+        });
+    } else {
+      this.catalogData.next(this.products);
+    }
   }
 
-  getCategoryByIds(ids: string[]) {
-    this.unsubscribeCategories();
-    this.categoriesLoading = true;
-    this.categoriesSubscription = this.admin.getCategorybyIds(ids)
-      .subscribe(categories => {
-        this.categoriesLoading = false;
-        this.categories = categories;
-        this.addToExistingIds(categories);
-      }, err => {
-        this.categoriesLoading = false;
-        this.handleError(err);
-      });
+  getCategoryByIds(ids: string[], change = false) {
+    if (change) {
+      this.addToExistingIds(ids);
+      this.unsubscribeCategories();
+    }
+    if ((!this.categoriesSubscription || this.categoriesSubscription.closed) && this.categoryIds && this.categoryIds.length > 0) {
+      this.catalogLoading = true;
+      this.categoriesSubscription = this.admin.getCategorybyIds(ids)
+        .subscribe(categories => {
+          this.catalogLoading = false;
+          this.categories = categories;
+          this.addToExistingIds(categories);
+          if (this.type === 'category') {
+            this.catalogData.next(categories);
+          }
+        }, err => {
+          this.catalogLoading = false;
+          this.handleError(err);
+        });
+    } else {
+      this.catalogData.next(this.categories);
+    }
   }
 
-  getCollectionByIds(ids: string[]) {
-    this.unsubscribeCollections();
-    this.collectionsLoading = true;
-    this.collectionsSubscription = this.admin.getCollectionbyIds(ids)
-      .subscribe(collections => {
-        this.collectionsLoading = false;
-        this.collections = collections;
-        this.addToExistingIds(collections);
-      }, err => {
-        this.collectionsLoading = false;
-        this.handleError(err);
-      });
+  getCollectionByIds(ids: string[], change = false) {
+    if (change) {
+      this.addToExistingIds(ids);
+      this.unsubscribeCollections();
+    }
+    if ((!this.collectionsSubscription || this.collectionsSubscription.closed) && this.collectionIds && this.collectionIds.length > 0) {
+      this.catalogLoading = true;
+      this.collectionsSubscription = this.admin.getCollectionbyIds(ids)
+        .subscribe(collections => {
+          this.catalogLoading = false;
+          this.collections = collections;
+          this.addToExistingIds(collections);
+          if (this.type === 'collection') {
+            this.catalogData.next(collections);
+          }
+        }, err => {
+          this.catalogLoading = false;
+          this.handleError(err);
+        });
+    } else {
+      this.catalogData.next(this.collections);
+    }
   }
 
   getAllProducts() {
@@ -190,14 +242,14 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
           this.allCatalogLoading = false;
           this.allProducts = products;
           if (this.type === 'product') {
-            this.assignFilteredCatalog(products);
+            this.allCatalogData.next(this.allProducts);
           }
         }, err => {
           this.allCatalogLoading = false;
           this.handleError(err);
         });
     } else {
-      this.assignFilteredCatalog(this.allProducts);
+      this.allCatalogData.next(this.allProducts);
     }
   }
 
@@ -209,14 +261,14 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
           this.allCatalogLoading = false;
           this.allCategories = categories;
           if (this.type === 'category') {
-            this.assignFilteredCatalog(categories);
+            this.allCatalogData.next(this.allCategories);
           }
         }, err => {
           this.allCatalogLoading = false;
           this.handleError(err);
         });
     } else {
-      this.assignFilteredCatalog(this.allCategories);
+      this.allCatalogData.next(this.allCategories);
     }
   }
 
@@ -228,28 +280,55 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
           this.allCatalogLoading = false;
           this.allCollections = collections;
           if (this.type === 'collection') {
-            this.assignFilteredCatalog(collections);
+            this.allCatalogData.next(this.allCollections);
           }
         }, err => {
           this.allCatalogLoading = false;
           this.handleError(err);
         });
     } else {
-      this.assignFilteredCatalog(this.allCollections);
+      this.allCatalogData.next(this.allCollections);
     }
   }
 
   modalCallback() {
     const { type } = this;
-    switch (type) {
-      case 'product':
-        this.productCallback.emit(this.selectedIds);
+    this.addCatalog.emit({
+      type,
+      ids: this.selectedIds
+    });
+  }
+
+  deleteId(id: string) {
+    this.catalogDeleteId = id;
+    const { type } = this;
+    this.removeCatalog.emit({
+      type, id
+    });
+  }
+
+  setCatalogData($event: number) {
+    this.selectedIds = [];
+    switch ($event) {
+      // Category Tab
+      case 0:
+        this.type = 'category';
+        this.heading = 'Category';
+        this.getCategoryByIds(this.productIds);
         break;
-      case 'category':
-        this.categoryCallback.emit(this.selectedIds);
+
+      // Collection Tab
+      case 1:
+        this.type = 'collection';
+        this.heading = 'Collection';
+        this.getCollectionByIds(this.collectionIds);
         break;
-      case 'collection':
-        this.collectionCallback.emit(this.selectedIds);
+
+      // Product Tab
+      case 2:
+        this.type = 'product';
+        this.heading = 'Product';
+        this.getProductByIds(this.productIds);
         break;
     }
   }
@@ -261,19 +340,23 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     } catch (err) {}
   }
 
-  fillAllCatalogTable() {
-    this.allCatalogData.subscribe(data => {
-    try {
-      console.log(data);
-      this.allCatalog = new MatTableDataSource(data);
-      this.cdr.detectChanges();
-      } catch (err) { }
+  fillCatalogTable() {
+    this.catalogSubscription = this.catalogData.subscribe(data => {
+      try {
+        this.catalog = new MatTableDataSource(data);
+        this.cdr.detectChanges();
+      } catch (err) {}
     });
   }
 
-  assignFilteredCatalog(data: any[]) {
-    this.filteredCatalog = data.filter(d => !this.existingIds.includes(d.id));
-    this.allCatalogData.next(this.filteredCatalog);
+  fillAllCatalogTable() {
+    this.allCatalogSubscription = this.allCatalogData.subscribe((data: any[]) => {
+    try {
+      this.filteredCatalog = data.filter(d => !this.existingIds.includes(d.id));
+      this.allCatalog = new MatTableDataSource(this.filteredCatalog);
+      this.cdr.detectChanges();
+      } catch (err) { }
+    });
   }
 
   applyFilter(event: Event) {
@@ -290,10 +373,10 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  toggleShowModal(type: CatalogType) {
-    this.type = type;
+  toggleShowModal() {
     this.showModal = !this.showModal;
-    switch (type) {
+    this.showModalChange.emit(this.showModal);
+    switch (this.type) {
       case 'product':
         this.getAllProducts();
         break;

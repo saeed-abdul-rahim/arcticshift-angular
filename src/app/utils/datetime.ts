@@ -49,3 +49,19 @@ export function dateToUTC(date: Date) {
         date.getUTCSeconds()
     );
 }
+
+export function mergeDateTime(date: string, time: string) {
+    try {
+        let datetime = -1;
+        if (date) {
+            datetime = Date.parse(date);
+            if (time) {
+            const { hour, minute } = getTimeObjFromStr(time);
+            datetime = new Date(datetime).setHours(hour, minute);
+            }
+        }
+        return datetime;
+    } catch (e) {
+        throw e;
+    }
+}

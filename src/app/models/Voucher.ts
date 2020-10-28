@@ -1,11 +1,21 @@
 import { CommonInterface, ValueType, OrderBy } from './Common';
 
+export type VoucherValueType = ValueType | 'shipping';
+export type MinimumRequirementType = 'orderValue' | 'quantity';
+export type OrderType = 'entireOrder' | 'specificProducts';
+
+export type MinimumRequirement = {
+    type: MinimumRequirementType
+    value: number
+} | null;
+
 export interface VoucherInterface extends CommonInterface {
     id?: string;
     shopId?: string;
     voucherId?: string;
     code?: string;
     valueType?: VoucherValueType;
+    orderType?: OrderType;
     value?: number;
     entireOrder?: boolean;
     oncePerOrder?: boolean;
@@ -24,10 +34,3 @@ export type VoucherFields = keyof VoucherInterface;
 export type VoucherOrderBy = OrderBy & {
     field: VoucherFields
 };
-
-type MinimumRequirement = {
-    type: MinimumRequirementType
-    value: number
-} | null;
-type VoucherValueType = ValueType | 'shipping';
-type MinimumRequirementType = 'orderValue' | 'quantity';

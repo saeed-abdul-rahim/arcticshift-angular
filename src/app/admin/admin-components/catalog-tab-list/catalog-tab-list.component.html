@@ -1,50 +1,64 @@
-<div class="mt-20"></div>
-<app-tab [labels]="['Category', 'Collection', 'Product']" [templates]="[categoryTab, collectionTab, productTab]">
+<app-tab
+    [labels]="['Categories ' + '(' + categories.length + ')', 'Collection ' + '(' + collections.length + ')', 'Product ' + '(' + products.length + ')']"
+    [templates]="[categoryTab, collectionTab, productTab]" (openTabChange)="setCatalogData($event)">
 </app-tab>
 
 <!-- MODAL -->
 
-<app-modal [(showModal)]="showModal" [loading]="modalLoading" [success]="modalSuccess" [heading]="'Assign Attribute'"
-    [size]="'medium'" [bodyTemplate]="allCatalogTable" (modalCallback)="modalCallback()"></app-modal>
+<app-modal [(showModal)]="showModal" [loading]="modalLoading" [success]="modalSuccess" [heading]="'Assign ' + heading"
+    [size]="'medium'" [bodyTemplate]="allCatalogTable" (modalCallback)="modalCallback()" [submit]="false"></app-modal>
 
 <!-- TABS -->
 
 <ng-template #categoryTab>
-    <app-card [heading]="'Categories'" [actions]="assignCategory" [body]="catalogTable"></app-card>
+    <app-card [heading]="'Categories'" [actions]="assign" [body]="catalogTable"></app-card>
 </ng-template>
 
 <ng-template #collectionTab>
-    <app-card [heading]="'Collections'" [actions]="assignCollection" [body]="catalogTable"></app-card>
+    <app-card [heading]="'Collections'" [actions]="assign" [body]="catalogTable"></app-card>
 </ng-template>
 
 <ng-template #productTab>
-    <app-card [heading]="'Products'" [actions]="assignProduct" [body]="catalogTable"></app-card>
+    <app-card [heading]="'Products'" [actions]="assign" [body]="catalogTable"></app-card>
 </ng-template>
 
 <!-- BUTTON TEMPLATES -->
 
-<ng-template #assignCategory>
+<ng-template #assign>
     <label class="arc-link-button" type="button">
-        <a (click)="toggleShowModal('category')">Assign Category</a>
-    </label>
-</ng-template>
-
-<ng-template #assignCollection>
-    <label class="arc-link-button" type="button">
-        <a (click)="toggleShowModal('collection')">Assign Collection</a>
-    </label>
-</ng-template>
-
-<ng-template #assignProduct>
-    <label class="arc-link-button" type="button">
-        <a (click)="toggleShowModal('product')">Assign Product</a>
+        <a (click)="toggleShowModal()">Assign {{ heading }}</a>
     </label>
 </ng-template>
 
 <!-- TABLE TEMPLATES -->
 
 <ng-template #catalogTable>
+    <app-spinner class="flex justify-center pt-10" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
+    <div *ngIf="!catalogLoading">
+        <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
+            available</div>
+        <div class="overflow-x-auto scrollbar" *ngIf="catalogData && catalogData.value && catalogData.value.length > 0">
+            <table mat-table [dataSource]="catalog">
 
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>{{ heading }} Name</th>
+                    <td mat-cell *matCellDef="let row" class="padding-0">
+                        <div class="flex flex-wrap relative align-middle" *ngIf="row">
+                            <div class="relative w-full px-5 py-3">{{row.name}}</div>
+                            <app-spinner class="absolute right-0 mx-4 py-3" *ngIf="removeLoading && catalogDeleteId === row.id" [size]="'5'" [@inOutAnimation]></app-spinner>
+                            <div class="absolute right-0 mx-2 py-3" *ngIf="!removeLoading || catalogDeleteId !== row.id" (click)="deleteId(row.id)" [@inOutAnimation]>
+                                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0"></tr>
+
+            </table>
+        </div>
+    </div>
 </ng-template>
 
 <ng-template #allCatalogTable>
@@ -52,8 +66,7 @@
     <div class="w-full" *ngIf="!allCatalogLoading">
         <div *ngIf="filteredCatalog.length === 0" class="data-empty">No data available</div>
         <div *ngIf="filteredCatalog.length > 0" class="overflow-x-auto scrollbar">
-            <input class="arc-input sticky-input w-full" (keyup)="applyFilter($event)" placeholder="Search"
-                #input>
+            <input class="arc-input sticky-input w-full" (keyup)="applyFilter($event)" placeholder="Search" #input>
             <table mat-table [dataSource]="allCatalog">
 
                 <ng-container matColumnDef="select">
