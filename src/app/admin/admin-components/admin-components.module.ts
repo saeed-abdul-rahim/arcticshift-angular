@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { DragAndDropDirective } from '@directives/DragAndDrop.directive';
@@ -31,7 +30,6 @@ import { CatalogTabListComponent } from './catalog-tab-list/catalog-tab-list.com
     CommonModule,
     ComponentsModule,
     MatTableModule,
-    MatPaginatorModule,
     FontAwesomeModule
   ],
   exports: [

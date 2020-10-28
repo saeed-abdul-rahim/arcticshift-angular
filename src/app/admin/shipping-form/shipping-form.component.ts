@@ -65,16 +65,16 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   shopSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private router: Router, private cdr: ChangeDetectorRef,
-              private adminService: AdminService) {
+              private admin: AdminService) {
     const shippingId = this.router.url.split('/').pop();
     this.countriesSource = new MatTableDataSource(countryAlphaList);
-    this.shopSubscription = this.adminService.getCurrentShop().subscribe(shop => this.shop = shop);
-    this.warehouseSubscription = this.adminService.getWarehousesByShopId()
+    this.shopSubscription = this.admin.getCurrentShop().subscribe(shop => this.shop = shop);
+    this.warehouseSubscription = this.admin.getWarehousesByShopId()
       .subscribe(warehouses => this.warehouses = warehouses);
     if (shippingId !== ADD) {
       this.edit = true;
       this.loading = true;
-      this.warehouseSubscription = this.adminService.getShippingById(shippingId).subscribe(shipping => {
+      this.warehouseSubscription = this.admin.getShippingById(shippingId).subscribe(shipping => {
         this.loading = false;
         this.shipping = shipping;
         if (!shipping) {
@@ -142,13 +142,13 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         warehouseId: this.selectedWarehouses,
       };
       if (this.edit) {
-        await this.adminService.updateShipping({
+        await this.admin.updateShipping({
           ...setData,
           shippingId: this.shipping.shippingId
         });
       }
       else {
-        const data = await this.adminService.createShipping(setData);
+        const data = await this.admin.createShipping(setData);
         if (data.id) {
           const { id } = data;
           this.router.navigateByUrl(`/${this.shippingRoute}/${id}`);
@@ -185,7 +185,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         shippingData.weightBased.push(setData);
       }
       console.log(this.shipping);
-      await this.adminService.updateShipping(shippingData);
+      await this.admin.updateShipping(shippingData);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
       this.showRateModal = false;
@@ -201,7 +201,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     this.loadingDelete = true;
     try {
       const { shippingId } = this.shipping;
-      await this.adminService.deleteShipping(shippingId);
+      await this.admin.deleteShipping(shippingId);
       this.successDelete = true;
       setTimeout(() => this.successDelete = false, 2000);
       this.router.navigateByUrl(this.shippingRoute);
@@ -214,7 +214,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   async saveCountries() {
     this.loading = true;
     try {
-      await this.adminService.updateShipping({
+      await this.admin.updateShipping({
         countries: this.selectedCountries,
         shippingId: this.shipping.shippingId
       });
@@ -226,7 +226,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   async deleteCountry(alpha3: string) {
     this.loading = true;
     try {
-      await this.adminService.updateShipping({
+      await this.admin.updateShipping({
         countries: this.selectedCountries.filter(country => country !== alpha3),
         shippingId: this.shipping.shippingId
       });
@@ -270,7 +270,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     let { priceBased } = this.shipping;
     try {
       priceBased = priceBased.filter(r => r.name !== this.selectedRateName);
-      await this.adminService.updateShipping({
+      await this.admin.updateShipping({
         priceBased,
         shippingId: this.shipping.shippingId
       });
@@ -283,7 +283,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     let { weightBased } = this.shipping;
     try {
       weightBased = weightBased.filter(r => r.name !== this.selectedRateName);
-      await this.adminService.updateShipping({
+      await this.admin.updateShipping({
         weightBased,
         shippingId: this.shipping.shippingId
       });

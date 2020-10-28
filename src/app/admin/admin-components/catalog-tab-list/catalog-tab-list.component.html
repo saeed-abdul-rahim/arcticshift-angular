@@ -33,7 +33,7 @@
 <!-- TABLE TEMPLATES -->
 
 <ng-template #catalogTable>
-    <app-spinner class="flex justify-center pt-10" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
+    <app-spinner class="data-empty" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
     <div *ngIf="!catalogLoading">
         <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
             available</div>
@@ -62,7 +62,7 @@
 </ng-template>
 
 <ng-template #allCatalogTable>
-    <app-spinner class="flex justify-center pt-10" *ngIf="allCatalogLoading" [size]="'5'"></app-spinner>
+    <app-spinner class="data-empty" *ngIf="allCatalogLoading" [size]="'5'"></app-spinner>
     <div class="w-full" *ngIf="!allCatalogLoading">
         <div *ngIf="filteredCatalog.length === 0" class="data-empty">No data available</div>
         <div *ngIf="filteredCatalog.length > 0" class="overflow-x-auto scrollbar">

@@ -90,7 +90,7 @@
 </ng-template>
 
 <ng-template #variantAttributeListTemplate>
-  <app-spinner class="flex justify-center pt-10" *ngIf="variantAttributeLoading" [size]="'5'"></app-spinner>
+  <app-spinner class="data-empty" *ngIf="variantAttributeLoading" [size]="'5'"></app-spinner>
   <div *ngIf="!variantAttributeLoading">
     <div *ngIf="variantAttributes && variantAttributes.length === 0" class="data-empty">No data available</div>
     <div class="overflow-x-auto scrollbar" *ngIf="variantAttributes && variantAttributes.length > 0">
@@ -117,7 +117,7 @@
 </ng-template>
 
 <ng-template #attributeListTemplate>
-  <app-spinner class="flex justify-center pt-10" *ngIf="attributeLoading" [size]="'5'"></app-spinner>
+  <app-spinner class="data-empty" *ngIf="attributeLoading" [size]="'5'"></app-spinner>
   <div class="w-full" *ngIf="!attributeLoading">
     <div *ngIf="filteredAttributes && filteredAttributes.length === 0" class="data-empty">No data available</div>
     <div *ngIf="filteredAttributes && filteredAttributes.length > 0" class="overflow-x-auto scrollbar">

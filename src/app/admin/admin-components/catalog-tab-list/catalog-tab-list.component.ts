@@ -1,7 +1,6 @@
 import {
-  ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnDestroy, OnInit, Output, ViewChild
+  ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnDestroy, OnInit, Output
 } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Subject } from 'rxjs/internal/Subject';
@@ -53,10 +52,8 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
   allCatalog: MatTableDataSource<any>;
   allCatalogData = new Subject<any>();
   catalogColumns = ['name'];
-  catalog: MatTableDataSource<any>;
+  catalog: MatTableDataSource<any> = new MatTableDataSource([]);
   catalogData = new BehaviorSubject<any[]>([]);
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: ProductInterface[] = [];
   categories: CategoryInterface[] = [];
