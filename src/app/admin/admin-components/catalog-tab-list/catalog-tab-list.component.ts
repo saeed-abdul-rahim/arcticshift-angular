@@ -3,10 +3,8 @@ import {
 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { Subject } from 'rxjs/internal/Subject';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 
-import { AuthService } from '@services/auth/auth.service';
 import { AdminService } from '@services/admin/admin.service';
 import { AlertService } from '@services/alert/alert.service';
 import { ProductInterface } from '@models/Product';
@@ -14,8 +12,9 @@ import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
 import { uniqueArr } from '@utils/arrUtils';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { CatalogType, AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
+import { AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
 import { inOut } from '@animations/inOut';
+import { CatalogType } from '@models/Metadata';
 
 @Component({
   selector: 'app-catalog-tab-list',
@@ -41,16 +40,9 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
   catalogLoading = false;
   allCatalogLoading = false;
   type: CatalogType;
-  heading: string;
-  filteredCatalog: any[] = [];
-  selectedIds: string[] = [];
   existingIds: string[] = [];
 
-  shopId: string;
   catalogDeleteId: string;
-  allCatalogColumns = ['select', 'name'];
-  allCatalog: MatTableDataSource<any>;
-  allCatalogData = new Subject<any>();
   catalogColumns = ['name'];
   catalog: MatTableDataSource<any> = new MatTableDataSource([]);
   catalogData = new BehaviorSubject<any[]>([]);
@@ -58,65 +50,31 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
   products: ProductInterface[] = [];
   categories: CategoryInterface[] = [];
   collections: CollectionInterface[] = [];
-  allProducts: ProductInterface[] = [];
-  allCategories: CategoryInterface[] = [];
-  allCollections: CollectionInterface[] = [];
 
   private productIdsDiffer: IterableDiffer<string>;
   private categoryIdsDiffer: IterableDiffer<string>;
   private collectionIdsDiffer: IterableDiffer<string>;
 
   private catalogSubscription: Subscription;
-  private allCatalogSubscription: Subscription;
   private productsSubscription: Subscription;
   private collectionsSubscription: Subscription;
   private categoriesSubscription: Subscription;
-  private allProductSubscription: Subscription;
-  private allCollectionSubscription: Subscription;
-  private allCategorySubscription: Subscription;
-  private userSubscription: Subscription;
 
-  constructor(private admin: AdminService, private auth: AuthService, private iterableDiffers: IterableDiffers,
+  constructor(private admin: AdminService, private iterableDiffers: IterableDiffers,
               private cdr: ChangeDetectorRef, private alert: AlertService) { }
 
   ngOnInit(): void {
     this.productIdsDiffer = this.iterableDiffers.find([]).create(null);
     this.categoryIdsDiffer = this.iterableDiffers.find([]).create(null);
     this.collectionIdsDiffer = this.iterableDiffers.find([]).create(null);
-    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => {
-      if (user) {
-        const { shopId } = user;
-        this.shopId = shopId;
-      }
-    });
     this.type = 'category'; // Initially load category
-    this.allCatalogData.next([]);
     this.catalogData.next([]);
-    this.fillAllCatalogTable();
     this.fillCatalogTable();
   }
 
   ngOnDestroy(): void {
     if (this.catalogSubscription && !this.catalogSubscription.closed) {
       this.catalogSubscription.unsubscribe();
-    }
-    if (this.allCatalogSubscription && !this.allCatalogSubscription.closed) {
-      this.allCatalogSubscription.unsubscribe();
-    }
-    if (this.allCategorySubscription && !this.allCategorySubscription.closed) {
-      this.allCategorySubscription.unsubscribe();
-    }
-    if (this.allProductSubscription && !this.allProductSubscription.closed) {
-      this.allProductSubscription.unsubscribe();
-    }
-    if (this.allCollectionSubscription && !this.allCollectionSubscription.closed) {
-      this.allCollectionSubscription.unsubscribe();
-    }
-    if (this.allCategorySubscription && !this.allCategorySubscription.closed) {
-      this.allCategorySubscription.unsubscribe();
-    }
-    if (this.userSubscription && !this.userSubscription.closed) {
-      this.userSubscription.unsubscribe();
     }
     this.unsubscribeProducts();
     this.unsubscribeCategories();
@@ -231,71 +189,6 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  getAllProducts() {
-    if (!this.allProductSubscription || this.allProductSubscription.closed) {
-      this.allCatalogLoading = true;
-      this.allProductSubscription = this.admin.getProductsByShopId(this.shopId)
-        .subscribe(products => {
-          this.allCatalogLoading = false;
-          this.allProducts = products;
-          if (this.type === 'product') {
-            this.allCatalogData.next(this.allProducts);
-          }
-        }, err => {
-          this.allCatalogLoading = false;
-          this.handleError(err);
-        });
-    } else {
-      this.allCatalogData.next(this.allProducts);
-    }
-  }
-
-  getAllCategories() {
-    if (!this.allCategorySubscription || this.allCategorySubscription.closed) {
-      this.allCatalogLoading = true;
-      this.allCategorySubscription = this.admin.getCategoriesByShopId(this.shopId)
-        .subscribe(categories => {
-          this.allCatalogLoading = false;
-          this.allCategories = categories;
-          if (this.type === 'category') {
-            this.allCatalogData.next(this.allCategories);
-          }
-        }, err => {
-          this.allCatalogLoading = false;
-          this.handleError(err);
-        });
-    } else {
-      this.allCatalogData.next(this.allCategories);
-    }
-  }
-
-  getAllCollections() {
-    if (!this.allCollectionSubscription || this.allCollectionSubscription.closed){
-      this.allCatalogLoading = true;
-      this.allCollectionSubscription = this.admin.getCollectionsByShopId(this.shopId)
-        .subscribe(collections => {
-          this.allCatalogLoading = false;
-          this.allCollections = collections;
-          if (this.type === 'collection') {
-            this.allCatalogData.next(this.allCollections);
-          }
-        }, err => {
-          this.allCatalogLoading = false;
-          this.handleError(err);
-        });
-    } else {
-      this.allCatalogData.next(this.allCollections);
-    }
-  }
-
-  modalCallback() {
-    const { type } = this;
-    this.addCatalog.emit({
-      type,
-      ids: this.selectedIds
-    });
-  }
-
   deleteId(id: string) {
     this.catalogDeleteId = id;
     const { type } = this;
@@ -305,26 +198,22 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   setCatalogData($event: number) {
-    this.selectedIds = [];
     switch ($event) {
       // Category Tab
       case 0:
         this.type = 'category';
-        this.heading = 'Category';
         this.getCategoryByIds(this.productIds);
         break;
 
       // Collection Tab
       case 1:
         this.type = 'collection';
-        this.heading = 'Collection';
         this.getCollectionByIds(this.collectionIds);
         break;
 
       // Product Tab
       case 2:
         this.type = 'product';
-        this.heading = 'Product';
         this.getProductByIds(this.productIds);
         break;
     }
@@ -346,44 +235,9 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     });
   }
 
-  fillAllCatalogTable() {
-    this.allCatalogSubscription = this.allCatalogData.subscribe((data: any[]) => {
-    try {
-      this.filteredCatalog = data.filter(d => !this.existingIds.includes(d.id));
-      this.allCatalog = new MatTableDataSource(this.filteredCatalog);
-      this.cdr.detectChanges();
-      } catch (err) { }
-    });
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.allCatalog.filter = filterValue.trim().toLowerCase();
-  }
-
-  assignCheckbox(event: Event, id: string) {
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      this.selectedIds.push(id);
-    } else {
-      this.selectedIds = this.selectedIds.filter(i => id !== i);
-    }
-  }
-
   toggleShowModal() {
-    this.showModal = !this.showModal;
+    this.showModal = true;
     this.showModalChange.emit(this.showModal);
-    switch (this.type) {
-      case 'product':
-        this.getAllProducts();
-        break;
-      case 'category':
-        this.getAllCategories();
-        break;
-      case 'collection':
-        this.getAllCollections();
-        break;
-    }
   }
 
   handleError(err: any) {

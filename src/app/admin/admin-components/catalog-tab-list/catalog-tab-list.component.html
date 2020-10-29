@@ -1,12 +1,12 @@
 <app-tab
-    [labels]="['Categories ' + '(' + categories.length + ')', 'Collection ' + '(' + collections.length + ')', 'Product ' + '(' + products.length + ')']"
+    [labels]="['Categories ' + '(' + categories.length + ')', 'Collections ' + '(' + collections.length + ')', 'Products ' + '(' + products.length + ')']"
     [templates]="[categoryTab, collectionTab, productTab]" (openTabChange)="setCatalogData($event)">
 </app-tab>
 
 <!-- MODAL -->
 
-<app-modal [(showModal)]="showModal" [loading]="modalLoading" [success]="modalSuccess" [heading]="'Assign ' + heading"
-    [size]="'medium'" [bodyTemplate]="allCatalogTable" (modalCallback)="modalCallback()" [submit]="false"></app-modal>
+<app-catalog-modal-list [(showModal)]="showModal" [loading]="modalLoading" [success]="modalSuccess" 
+   [existingIds]="existingIds" [type]="type" (addCatalog)="addCatalog.emit($event)"></app-catalog-modal-list>
 
 <!-- TABS -->
 
@@ -25,8 +25,8 @@
 <!-- BUTTON TEMPLATES -->
 
 <ng-template #assign>
-    <label class="arc-link-button" type="button">
-        <a (click)="toggleShowModal()">Assign {{ heading }}</a>
+    <label class="arc-link-button capitalize" type="button">
+        <a (click)="toggleShowModal()">Assign {{ type }}</a>
     </label>
 </ng-template>
 
@@ -41,7 +41,7 @@
             <table mat-table [dataSource]="catalog">
 
                 <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>{{ heading }} Name</th>
+                    <th mat-header-cell *matHeaderCellDef>{{ type }} Name</th>
                     <td mat-cell *matCellDef="let row" class="padding-0">
                         <div class="flex flex-wrap relative align-middle" *ngIf="row">
                             <div class="relative w-full px-5 py-3">{{row.name}}</div>
@@ -55,35 +55,6 @@
 
                 <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0"></tr>
-
-            </table>
-        </div>
-    </div>
-</ng-template>
-
-<ng-template #allCatalogTable>
-    <app-spinner class="data-empty" *ngIf="allCatalogLoading" [size]="'5'"></app-spinner>
-    <div class="w-full" *ngIf="!allCatalogLoading">
-        <div *ngIf="filteredCatalog.length === 0" class="data-empty">No data available</div>
-        <div *ngIf="filteredCatalog.length > 0" class="overflow-x-auto scrollbar">
-            <input class="arc-input sticky-input w-full" (keyup)="applyFilter($event)" placeholder="Search" #input>
-            <table mat-table [dataSource]="allCatalog">
-
-                <ng-container matColumnDef="select">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let row">
-                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400"
-                            (change)="assignCheckbox($event, row.id)">
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Attribute Name</th>
-                    <td mat-cell *matCellDef="let row">{{row.name}}</td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="allCatalogColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: allCatalogColumns;"></tr>
 
             </table>
         </div>

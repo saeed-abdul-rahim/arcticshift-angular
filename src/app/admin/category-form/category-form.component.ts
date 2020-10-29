@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN, CATALOG, CATEGORY } from '@constants/routes';
+import { categoryRoute } from '@constants/routes';
 import { IMAGE_SM } from '@constants/imageSize';
 import { CategoryInterface } from '@models/Category';
 import { ContentStorage, ContentType } from '@models/Common';
@@ -27,7 +27,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   nameDanger: boolean;
 
-  categoryRoute = `/${ADMIN}/${CATALOG}/${CATEGORY}`;
+  categoryRoute = categoryRoute;
   category: CategoryInterface;
   addCategoryForm: FormGroup;
 
@@ -103,7 +103,7 @@ constructor(private formbuilder: FormBuilder, private storageService: StorageSer
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${CATALOG}/${CATEGORY}/${id}`);
+          this.router.navigateByUrl(`${categoryRoute}/${id}`);
         }
       }
 

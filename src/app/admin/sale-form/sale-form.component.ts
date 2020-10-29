@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADD, ADMIN, DISCOUNT, SALE } from '@constants/routes';
+import { ADD, saleDiscountRoute } from '@constants/routes';
 import { CatalogTypeApi } from '@models/Common';
 import { AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
@@ -33,7 +33,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   minDate = new Date();
 
   shopData: ShopInterface;
-  saleRoute = `/${ADMIN}/${DISCOUNT}/${SALE}`;
+  saleRoute = saleDiscountRoute;
   saleDiscount: SaleDiscountInterface;
   saleForm: FormGroup;
 
@@ -126,7 +126,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${ADMIN}/${DISCOUNT}/${SALE}/${id}`);
+          this.router.navigateByUrl(`${saleDiscountRoute}/${id}`);
         }
       }
 

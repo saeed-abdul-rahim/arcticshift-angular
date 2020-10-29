@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-import { ADD, ADMIN, DISCOUNT, VOUCHER } from '@constants/routes';
+import { ADD, voucherRoute } from '@constants/routes';
 import { AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
 import { VoucherInterface } from '@models/Voucher';
 import { AdminService } from '@services/admin/admin.service';
@@ -33,7 +33,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   minDate = new Date();
 
   shopData: ShopInterface;
-  voucherRoute = `/${ADMIN}/${DISCOUNT}/${VOUCHER}`;
+  voucherRoute = voucherRoute;
   voucher: VoucherInterface;
   voucherForm: FormGroup;
 
@@ -176,7 +176,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
         });
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${this.voucherRoute}/${id}`);
+          this.router.navigateByUrl(`${this.voucherRoute}/${id}`);
         }
       }
 

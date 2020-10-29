@@ -4,7 +4,7 @@ import { User } from '@models/User';
 import { AuthService } from '@services/auth/auth.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { ContentType } from '@models/Common';
-import { Metadata } from '@models/Storage';
+import { Metadata } from '@models/Metadata';
 
 @Injectable()
 export class StorageService {

@@ -3,9 +3,8 @@ import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ADD, VARIANT } from '@constants/routes';
-import { IMAGE_SM, IMAGE_SS } from '@constants/imageSize';
 import { AttributeJoinInterface } from '@models/Attribute';
-import { Content, ContentStorage, ContentType } from '@models/Common';
+import { ContentStorage, ContentType } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { VariantInterface } from '@models/Variant';
 import { WarehouseInterface } from '@models/Warehouse';
@@ -14,6 +13,8 @@ import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
 import { getFormGroupArrayValues } from '@utils/formUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
+import { AlertService } from '@services/alert/alert.service';
 
 @Component({
   selector: 'app-variant-form',
@@ -32,8 +33,6 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   file: File;
   fileType: ContentType;
   thumbnails: ContentStorage[] = [];
-  invalidFile = false;
-  isUploaded = false;
   uploadProgress = 0;
 
   variantRoute: string;
@@ -41,6 +40,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
 
   displayedColumns = ['image', 'name'];
   variantsSource: MatTableDataSource<VariantInterface>;
+  getSmallestThumbnail = getSmallestThumbnail;
 
   product: ProductInterface;
   variant: VariantInterface;
@@ -56,9 +56,9 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   warehouseSubscription: Subscription;
   inventorySubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService, private shopService: ShopService,
-              private storageService: StorageService, private router: Router, private cdr: ChangeDetectorRef,
-              private route: ActivatedRoute) {
+  constructor(private formbuilder: FormBuilder, private admin: AdminService, private shop: ShopService,
+              private storage: StorageService, private router: Router, private cdr: ChangeDetectorRef,
+              private route: ActivatedRoute, private alert: AlertService) {
     this.route.params.subscribe(() => this.initialize());
   }
 
@@ -104,28 +104,29 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     const productId = urlSplit[urlSplit.indexOf(VARIANT) - 1];
     const variantId = urlSplit.pop();
     this.variantRoute = urlSplit.join('/');
-    this.warehouseSubscription = this.adminService.getWarehousesByShopId().subscribe(warehouses => {
+    this.warehouseSubscription = this.admin.getWarehousesByShopId().subscribe(warehouses => {
       this.warehouses = warehouses;
       this.setWarehouseForm();
     });
-    this.productSubscription = this.shopService.getProductById(productId).subscribe(product => {
+    this.productSubscription = this.shop.getProductById(productId).subscribe(product => {
       this.product = product;
       const { productTypeId } = product;
-      this.productTypeSubscription = this.shopService.getProductTypeById(productTypeId)
+      this.productTypeSubscription = this.shop.getProductTypeById(productTypeId)
         .subscribe(productType => {
           const { variantAttributeId } = productType;
-          this.attributeSubscription = this.shopService.getAttributeAndValuesByIds(variantAttributeId)
+          this.attributeSubscription = this.shop.getAttributeAndValuesByIds(variantAttributeId)
             .subscribe(attributes => {
               this.attributes = attributes;
               this.setAttributeForm();
               if (variantId !== ADD) {
                 this.edit = true;
-                this.variantSubscription = this.shopService.getVariantById(variantId).subscribe(variant => {
+                this.variantSubscription = this.shop.getVariantById(variantId).subscribe(variant => {
                   this.variant = variant;
+                  const { images } = variant;
                   this.setVariantForm();
                   this.patchAttributeForm();
                   this.patchWarehouseForm();
-                  this.getPreviewImages();
+                  this.thumbnails = getUploadPreviewImages(images);
                 });
               }
             });
@@ -135,7 +136,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   }
 
   getVariants(productId: string) {
-    this.variantsSubscription = this.shopService.getVariantsByProductId(productId)
+    this.variantsSubscription = this.shop.getVariantsByProductId(productId)
       .subscribe(variants => {
         this.variants = variants;
         this.variantsSource = new MatTableDataSource(variants);
@@ -222,12 +223,12 @@ export class VariantFormComponent implements OnInit, OnDestroy {
         warehouseQuantity
       };
       if (this.edit) {
-        await this.adminService.updateVariant({
+        await this.admin.updateVariant({
           ...setData,
           variantId: this.variant.variantId
         });
       } else {
-        const data = await this.adminService.createVariant(setData);
+        const data = await this.admin.createVariant(setData);
         if (data.id) {
           const { id } = data;
           this.router.navigateByUrl(`/${this.variantRoute}/${id}`);
@@ -237,7 +238,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
       this.success = false;
-      console.log(err);
+      this.handleError(err);
     }
     this.loading = false;
   }
@@ -246,12 +247,12 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     this.loadingDelete = true;
     try {
       const { variantId } = this.variant;
-      await this.adminService.deleteVariant(variantId);
+      await this.admin.deleteVariant(variantId);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
       this.router.navigateByUrl(this.variantRoute);
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
     }
     this.loadingDelete = false;
   }
@@ -261,28 +262,9 @@ export class VariantFormComponent implements OnInit, OnDestroy {
       const { variant } = this;
       const { variantId, images } = variant;
       const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
-      await this.adminService.deleteVariantImage(variantId, image.content.path);
-    } catch (_) { }
-  }
-
-  getTableThumbnails(images?: Content[]) {
-    if (images && images.length > 0) {
-      const image = images[0];
-      const thumbnail = image.thumbnails.find(thumb => thumb.dimension === IMAGE_SS);
-      return thumbnail.url;
-    }
-  }
-
-  getPreviewImages() {
-    const { variant } = this;
-    if (variant.images) {
-      const { images } = variant;
-      this.thumbnails = images.map(img => {
-        if (img.thumbnails) {
-          const { thumbnails } = img;
-          return thumbnails.find(thumb => thumb.dimension === IMAGE_SM);
-        }
-      });
+      await this.admin.deleteVariantImage(variantId, image.content.path);
+    } catch (err) {
+      this.handleError(err);
     }
   }
 
@@ -297,13 +279,13 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   }
 
   async processFile() {
-    this.fileType = this.checkFileType(this.file);
-    if (this.fileType === 'image'){
-      this.storageService.upload(this.file, this.fileType, {
+    this.fileType = checkImage(this.file);
+    if (this.fileType){
+      this.storage.upload(this.file, this.fileType, {
         id: this.variant.variantId,
         type: 'variant'
       });
-      this.storageService.getUploadProgress().subscribe(progress =>
+      this.storage.getUploadProgress().subscribe(progress =>
         this.uploadProgress = progress,
         () => {},
         () => this.uploadProgress = 0);
@@ -312,31 +294,18 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkFileType(file: File) {
-    if (!file) { return; }
-    const fileTypes = ['image/png', 'image/jpeg'];
-    if (!fileTypes.includes(file.type)) {
-      this.invalidFile = true;
-      this.removeFile();
-      return null;
-    } else {
-      this.invalidFile = false;
-      let fileType = file.type.split('/')[0];
-      fileType = fileType === 'application' ? 'document' : fileType;
-      return fileType as ContentType;
-    }
-  }
-
   removeFile() {
     this.file = null;
     this.fileType = null;
-    this.isUploaded = false;
-    this.invalidFile = true;
   }
 
   navigateToVariant(id?: string) {
     const path = id ? id : ADD;
     this.router.navigateByUrl(`${this.variantRoute}/${path}`);
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err });
   }
 
 }

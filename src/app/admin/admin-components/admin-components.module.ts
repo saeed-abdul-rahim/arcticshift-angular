@@ -13,6 +13,7 @@ import { UploadComponent } from './upload/upload.component';
 import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
 import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
 import { CatalogTabListComponent } from './catalog-tab-list/catalog-tab-list.component';
+import { CatalogModalListComponent } from './catalog-modal-list/catalog-modal-list.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { CatalogTabListComponent } from './catalog-tab-list/catalog-tab-list.com
     UploadComponent,
     NotificationDropdownComponent,
     UserDropdownComponent,
-    CatalogTabListComponent
+    CatalogTabListComponent,
+    CatalogModalListComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +41,8 @@ import { CatalogTabListComponent } from './catalog-tab-list/catalog-tab-list.com
     UploadComponent,
     NotificationDropdownComponent,
     UserDropdownComponent,
-    CatalogTabListComponent
+    CatalogTabListComponent,
+    CatalogModalListComponent
   ]
 })
 export class AdminComponentsModule { }

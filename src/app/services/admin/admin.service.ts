@@ -167,6 +167,24 @@ export class AdminService {
     }
   }
 
+  async addProductToCollection(collectionId: string, productId: string[]) {
+    const { apiCollection } = this;
+    try {
+      return await this.req.put(apiCollection, { data: { collectionId, productId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async removeProductFromCollection(collectionId: string, productId: string) {
+    const { apiCollection } = this;
+    try {
+      return await this.req.patch(`${apiCollection}/${collectionId}/product`, { data: { productId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async deleteCollectionImage(id: string, path: string) {
     const { apiCollection } = this;
     try {
@@ -508,6 +526,24 @@ export class AdminService {
   getProductbyIds(ids: string[]): Observable<ProductInterface[]> {
     const { dbProductsRoute } = this.dbS;
     return this.dbS.queryByIds(dbProductsRoute, ids);
+  }
+
+  getProductsByCollectionId(id: string): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'collectionId',
+      type: 'array-contains',
+      value: id
+    }]);
+    return getDataFromCollection(products);
+  }
+
+  getProductsByCategoryId(id: string): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'categoryId',
+      type: 'array-contains',
+      value: id
+    }]);
+    return getDataFromCollection(products);
   }
 
   getCategorybyIds(ids: string[]): Observable<CategoryInterface[]> {

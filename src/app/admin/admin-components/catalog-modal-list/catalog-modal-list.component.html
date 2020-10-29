@@ -1,0 +1,38 @@
+<app-modal [(showModal)]="showModal" (showModalChange)="showModalChange.emit($event)" [loading]="loading" [success]="success" [heading]="'Assign ' + type"
+[size]="'medium'" [bodyTemplate]="allCatalogTable" (modalCallback)="modalCallback()" [submit]="false"></app-modal>
+
+<ng-template #allCatalogTable>
+    <app-spinner class="data-empty" *ngIf="allCatalogLoading" [size]="'5'"></app-spinner>
+    <div class="w-full" *ngIf="!allCatalogLoading">
+        <div *ngIf="filteredCatalog.length === 0" class="data-empty">No data available</div>
+        <div *ngIf="filteredCatalog.length > 0" class="overflow-x-auto scrollbar">
+            <input class="arc-input sticky-input w-full" (keyup)="applyFilter($event)" placeholder="Search" #input>
+            <table mat-table [dataSource]="allCatalog">
+
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400"
+                            (change)="assignCheckbox($event, row.id)">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="image">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row" class="w-32 content-center">
+                      <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3" />
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>{{type}} Name</th>
+                    <td mat-cell *matCellDef="let row">{{row.name}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="allCatalogColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: allCatalogColumns;"></tr>
+
+            </table>
+        </div>
+    </div>
+</ng-template>

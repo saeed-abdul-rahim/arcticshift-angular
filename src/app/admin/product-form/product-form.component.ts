@@ -12,8 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { editorConfig } from '@settings/editorConfig';
-import { ADD, ADMIN, CATALOG, PRODUCT, VARIANT } from '@constants/routes';
-import { IMAGE_SM } from '@constants/imageSize';
+import { ADD, productRoute, VARIANT } from '@constants/routes';
 import { StorageService } from '@services/storage/storage.service';
 import { AuthService } from '@services/auth/auth.service';
 import { ProductTypeInterface } from '@models/ProductType';
@@ -21,6 +20,8 @@ import { AttributeJoinInterface } from '@models/Attribute';
 import { VariantInterface } from '@models/Variant';
 import { MatTableDataSource } from '@angular/material/table';
 import { getFormGroupArrayValues } from '@utils/formUtils';
+import { AlertService } from '@services/alert/alert.service';
+import { checkImage, getUploadPreviewImages } from '@utils/media';
 
 @Component({
   selector: 'app-product-form',
@@ -50,7 +51,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   collections: CollectionInterface[] = [];
   attributes: AttributeJoinInterface[] = [];
 
-  productRoute = `/${ADMIN}/${CATALOG}/${PRODUCT}`;
+  productRoute = productRoute;
   selectedCollections: string[] | null = [];
   productForm: FormGroup;
 
@@ -60,8 +61,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   file: File;
   fileType: ContentType;
   thumbnails: ContentStorage[] = [];
-  invalidFile = false;
-  isUploaded = false;
   uploadProgress = 0;
 
   userSubscription: Subscription;
@@ -77,10 +76,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     placeholder: 'Description',
   };
 
-  constructor(private formbuilder: FormBuilder, private storageService: StorageService,
-              private authService: AuthService, private admin: AdminService, private shop: ShopService,
+  constructor(private formbuilder: FormBuilder, private storageService: StorageService, private alert: AlertService,
+              private auth: AuthService, private admin: AdminService, private shop: ShopService,
               private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
-    this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => {
       if (user) {
         const { shopId } = user;
         this.shopId = shopId;
@@ -94,8 +93,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.edit = true;
       this.productSubscription = this.shop.getProductById(productId).subscribe(product => {
         if (product) {
+          const { images } = product;
           this.product = product;
-          this.getPreviewImages();
+          this.thumbnails = getUploadPreviewImages(images);
           this.setFormValue();
         }
       });
@@ -207,7 +207,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         const data = await this.admin.createProduct(setData);
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${this.productRoute}/${id}`);
+          this.router.navigateByUrl(`${this.productRoute}/${id}`);
         }
       }
       this.nameDanger = false;
@@ -217,7 +217,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
       this.success = false;
-      console.log(err);
+      this.handleError(err);
     }
     this.loading = false;
   }
@@ -231,7 +231,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       setTimeout(() => this.success = false, 2000);
       this.router.navigateByUrl(this.productRoute);
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
     }
     this.loadingDelete = false;
   }
@@ -242,7 +242,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       const { productId, images } = product;
       const image = images.find(img => img.thumbnails.find(thumb => thumb.path === path));
       await this.admin.deleteProductImage(productId, image.content.path);
-    } catch (_) { }
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   getProductTypes() {
@@ -293,8 +295,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   async processFile() {
-    this.fileType = this.checkFileType(this.file);
-    if (this.fileType === 'image'){
+    this.fileType = checkImage(this.file);
+    if (this.fileType){
       this.storageService.upload(this.file, this.fileType, {
         id: this.product.productId,
         type: 'product'
@@ -308,39 +310,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkFileType(file: File) {
-    if (!file) { return; }
-    const fileTypes = ['image/png', 'image/jpeg'];
-    if (!fileTypes.includes(file.type)) {
-      this.invalidFile = true;
-      this.removeFile();
-      return null;
-    } else {
-      this.invalidFile = false;
-      let fileType = file.type.split('/')[0];
-      fileType = fileType === 'application' ? 'document' : fileType;
-      return fileType as ContentType;
-    }
-  }
-
   removeFile() {
     this.file = null;
     this.fileType = null;
-    this.isUploaded = false;
-    this.invalidFile = true;
-  }
-
-  getPreviewImages() {
-    const { product } = this;
-    if (product.images) {
-      const { images } = product;
-      this.thumbnails = images.map(img => {
-        if (img.thumbnails) {
-          const { thumbnails } = img;
-          return thumbnails.find(thumb => thumb.dimension === IMAGE_SM);
-        }
-      });
-    }
   }
 
   setFormValue() {
@@ -362,6 +334,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   navigateToVariant(id?: string) {
     const path = id ? id : ADD;
     this.router.navigate([`${VARIANT}/${path}`], { relativeTo: this.route });
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err });
   }
 
 }

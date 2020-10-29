@@ -47,3 +47,12 @@ export const ADD: ADD = 'add';
 export const CHECKOUT: CHECKOUT = 'checkout';
 export const CART: CART = 'cart';
 export const WISHLIST: WISHLIST = 'wishlist';
+
+export const adminRoute = `/${ADMIN}`;
+export const catalogRoute = `${adminRoute}/${CATALOG}`;
+export const discountRoute = `${adminRoute}/${DISCOUNT}`;
+export const productRoute = `${catalogRoute}/${PRODUCT}`;
+export const categoryRoute = `${catalogRoute}/${CATEGORY}`;
+export const collectionRoute = `${catalogRoute}/${COLLECTION}`;
+export const saleDiscountRoute = `${discountRoute}/${SALE}`;
+export const voucherRoute = `${discountRoute}/${VOUCHER}`;

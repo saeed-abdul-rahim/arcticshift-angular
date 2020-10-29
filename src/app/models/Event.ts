@@ -1,5 +1,4 @@
-
-export type CatalogType = 'category' | 'collection' | 'product';
+import { CatalogType } from './Metadata';
 
 export type AddCatalogEvent = {
     type: CatalogType

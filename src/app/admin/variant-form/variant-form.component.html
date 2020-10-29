@@ -126,7 +126,7 @@
 
       <ng-container matColumnDef="image">
         <td mat-cell *matCellDef="let row" class="w-32 content-center">
-          <img src="{{ getTableThumbnails(row.images) }}" width="48" height="48" class="m-3"/>
+          <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3"/>
         </td>
       </ng-container>
 
