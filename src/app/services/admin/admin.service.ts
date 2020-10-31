@@ -221,6 +221,24 @@ export class AdminService {
     }
   }
 
+  async addProductToCategory(categoryId: string, productId: string[]) {
+    const { apiCategory } = this;
+    try {
+      return await this.req.put(apiCategory, { data: { categoryId, productId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async removeProductFromCategory(categoryId: string, productId: string) {
+    const { apiCategory } = this;
+    try {
+      return await this.req.patch(`${apiCategory}/${categoryId}/product`, { data: { productId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async deleteCategoryImage(id: string, path: string) {
     const { apiCategory } = this;
     try {

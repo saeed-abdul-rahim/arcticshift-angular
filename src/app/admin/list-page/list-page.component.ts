@@ -156,7 +156,11 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         subCategoryId: 'Subcategories',
         productId: 'No. of products'
-      });
+      }, [{
+        field: 'parentCategoryId',
+        type: '==',
+        value: ''
+      }]);
       this.getPageLength(categories, this.dataLengthKey);
 
     } else if (urlSplit.includes(PRODUCTTYPE)) {

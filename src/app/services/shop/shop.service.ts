@@ -179,6 +179,15 @@ export class ShopService {
     return combineLatest(queries);
   }
 
+  getCategoryByParentId(categoryId: string): Observable<CategoryInterface[]> {
+    const products = this.dbS.queryCategories([{
+      field: 'parentCategoryId',
+      type: '==',
+      value: categoryId
+    }]);
+    return getDataFromCollection(products);
+  }
+
   getAttributeValuesByAttributeId(attributeId: string) {
     const attributeValueRef = this.dbS.queryAttributeValues([{ field: 'attributeId', type: '==', value: attributeId }]);
     return getDataFromCollection(attributeValueRef) as Observable<AttributeValueInterface[]>;

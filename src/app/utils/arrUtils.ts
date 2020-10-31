@@ -1,3 +1,5 @@
+export const isBothArrEqual = (a: any[], b: any[]) => a.length === b.length && a.every((el, ix) => el === b[ix]);
+
 export function removeDuplicatesArrObj(objArr: any[], prop: string) {
     return objArr.filter((v, i, a) => a.findIndex(t => (t[prop] === v[prop])) === i);
 }

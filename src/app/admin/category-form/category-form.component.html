@@ -1,4 +1,4 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addCategoryForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
 
   <!-- TEMPLATES -->
 
@@ -7,7 +7,8 @@
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full mb-3">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Category Name"
-            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+            [ngClass]="categoryFormControls.name.touched && categoryFormControls.name.invalid ? 'border-red' : ''"
+            formControlName="name" />
         </div>
         <div class="field pt-3">
           <div class="control">
@@ -18,49 +19,110 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUploadAction>
-    <label class="arc-link-button" type="button">
-      Upload Image
-      <input type='file' class="hidden" />
-    </label>
-  </ng-template>
-
   <ng-template #imageUpload>
-    <app-upload
-      [uploadProgress]="uploadProgress"
-      [thumbnails]="thumbnails"
-      (fileClickedCallback)="onFileClicked($event)"
-      (fileDroppedCallback)="onFileDropped($event)"
-      (deleteImageCallback)="deleteCategoryImage($event)"
-    ></app-upload>
-  </ng-template>
-
-  <ng-template #textArea>
-    <div class="flex w-full justify-center pt-3">
-      <textarea class="w-1/2 h-32 mb-3 resize border rounded focus:outline-none focus:shadow-outline"></textarea>
-    </div>
+    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
+      (deleteImageCallback)="deleteCategoryImage($event)"></app-upload>
   </ng-template>
 
   <!-- BODY -->
 
-  <div class="relative md:pt-32 pt-12">
+  <div class="relative pt-12">
     <div class="px-4 md:px-10 mx-auto w-full">
-      <div class="flex flex-wrap mt-4">
+      <div class="flex flex-wrap mt-4 mb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="Category"></app-card>
           <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
+          <app-tab *ngIf="category"
+            [labels]="['Subcategories ' + '(' + category.subCategoryId.length + ')', 'Products ' + '(' + category.productId.length + ')']"
+            [templates]="[categoryTab, productTab]" (openTabChange)="setCatalogData($event)">
+          </app-tab>
         </div>
       </div>
     </div>
   </div>
 
-  <app-footer-form
-  [loading]="loading"
-  [success]="success"
-  [showDelete]="edit"
-  [loadingDelete]="loadingDelete"
-  [successDelete]="successDelete"
-  (deleteCallback)="deleteCategory()"
-></app-footer-form>
+  <app-footer-form [loading]="loading" [success]="success" [showDelete]="edit" [loadingDelete]="loadingDelete"
+    [successDelete]="successDelete" (deleteCallback)="deleteCategory()"></app-footer-form>
 
 </form>
+
+<!-- BUTTON TEMPLATES -->
+
+<ng-template #imageUploadAction>
+  <label class="arc-link-button" type="button">
+    Upload Image
+    <input type='file' class="hidden" />
+  </label>
+</ng-template>
+
+<ng-template #assignProduct>
+  <label class="arc-link-button capitalize" type="button">
+    <a routerLink="{{addProductRoute}}">Create Product</a>
+  </label>
+</ng-template>
+
+<ng-template #createCategory>
+  <label class="arc-link-button capitalize" type="button">
+    <a routerLink="{{addRoute}}">Create Subcategory</a>
+  </label>
+</ng-template>
+
+<!-- TABS -->
+
+<ng-template #categoryTab>
+  <app-card [heading]="'Subcategories'" [actions]="createCategory" [body]="catalogTable"></app-card>
+</ng-template>
+
+<ng-template #productTab>
+  <app-card [heading]="'Products'" [actions]="assignProduct" [body]="catalogTable"></app-card>
+</ng-template>
+
+
+<ng-template #catalogTable>
+  <app-spinner class="data-empty" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
+  <div *ngIf="!catalogLoading">
+    <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
+      available</div>
+    <div class="overflow-x-auto scrollbar" *ngIf="catalogData && catalogData.value && catalogData.value.length > 0">
+      <table mat-table [dataSource]="catalog">
+
+        <ng-container matColumnDef="image" *ngIf="type === 'product'">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" class="w-32 content-center">
+            <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ type }} Name</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle" *ngIf="row">
+              <div class="relative w-full px-5 py-3">{{row.name}}</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container *ngIf="type === 'category'" matColumnDef="subCategory">
+          <th mat-header-cell *matHeaderCellDef>Subcategories</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="px-5 py-3"> {{ row.subCategoryId.length }} </div>
+          </td>
+        </ng-container>
+
+        <ng-container *ngIf="type === 'category'" matColumnDef="product">
+          <th mat-header-cell *matHeaderCellDef>Products</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle" *ngIf="row">
+              <div class="relative w-full px-5 py-3">{{row.productId.length}}</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0" (click)="navigateById(row.id)"></tr>
+
+      </table>
+    </div>
+  </div>
+</ng-template>

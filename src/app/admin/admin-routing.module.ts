@@ -69,7 +69,8 @@ const routes: Routes = [
             children: [
               { path: '', component: ListPageComponent },
               { path: ADD, component: CategoryFormComponent },
-              { path: ':id', component: CategoryFormComponent }
+              { path: ':id', component: CategoryFormComponent },
+              { path: `:id/${ADD}`, component: CategoryFormComponent },
             ]
           },
           {

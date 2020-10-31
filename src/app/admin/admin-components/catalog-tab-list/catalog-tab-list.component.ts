@@ -122,6 +122,9 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
       this.addToExistingIds(ids);
       this.unsubscribeProducts();
     }
+    if (ids.length === 0) {
+      this.products = [];
+    }
     if ((!this.productsSubscription || this.productsSubscription.closed) && this.productIds && this.productIds.length > 0) {
       this.catalogLoading = true;
       this.productsSubscription = this.admin.getProductbyIds(ids)
@@ -146,6 +149,9 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
       this.addToExistingIds(ids);
       this.unsubscribeCategories();
     }
+    if (ids.length === 0) {
+      this.categories = [];
+    }
     if ((!this.categoriesSubscription || this.categoriesSubscription.closed) && this.categoryIds && this.categoryIds.length > 0) {
       this.catalogLoading = true;
       this.categoriesSubscription = this.admin.getCategorybyIds(ids)
@@ -169,6 +175,9 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     if (change) {
       this.addToExistingIds(ids);
       this.unsubscribeCollections();
+    }
+    if (ids.length === 0) {
+      this.collections = [];
     }
     if ((!this.collectionsSubscription || this.collectionsSubscription.closed) && this.collectionIds && this.collectionIds.length > 0) {
       this.catalogLoading = true;
@@ -202,7 +211,7 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
       // Category Tab
       case 0:
         this.type = 'category';
-        this.getCategoryByIds(this.productIds);
+        this.getCategoryByIds(this.categoryIds);
         break;
 
       // Collection Tab
