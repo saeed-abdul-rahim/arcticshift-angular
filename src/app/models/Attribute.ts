@@ -1,7 +1,6 @@
 import { Condition, CommonInterface, OrderBy } from './Common';
 
 export interface AttributeInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     productTypeId?: string[];
     attributeId?: string;
@@ -11,7 +10,6 @@ export interface AttributeInterface extends CommonInterface {
 }
 
 export interface AttributeValueInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     productTypeId?: string[];
     attributeId?: string;

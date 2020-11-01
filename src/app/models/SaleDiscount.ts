@@ -1,7 +1,6 @@
 import { CommonInterface, ValueType, OrderBy } from './Common';
 
 export interface SaleDiscountInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     saleDiscountId?: string;
     name?: string;

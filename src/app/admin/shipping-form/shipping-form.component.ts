@@ -2,12 +2,14 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD, ADMIN, SHIPPING } from '@constants/routes';
+import { ADD, shippingRoute } from '@constants/routes';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { Rate, RateType, ShippingInterface } from '@models/Shipping';
+import { RateType, ShippingInterface, ShippingRateInterface } from '@models/Shipping';
 import { ShopInterface } from '@models/Shop';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';
+import { AlertService } from '@services/alert/alert.service';
+import { ShopService } from '@services/shop/shop.service';
 import { CountryAlphaList, countryAlphaList } from '@utils/countryAlphaList';
 import { toTitle } from '@utils/strUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -20,9 +22,9 @@ import { Subscription } from 'rxjs/internal/Subscription';
 export class ShippingFormComponent implements OnInit, OnDestroy {
 
   faTrash = faTrash;
-  shippingRoute = `/${ADMIN}/${SHIPPING}`;
 
   edit = false;
+  isEditRate = false;
   showCountryModal = false;
   showRateModal = false;
   showDeleteModal = false;
@@ -32,6 +34,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   freeShipping = false;
   loading = false;
   success = false;
+  shippingRateLoading = false;
   loadingDelete = false;
   successDelete = false;
   loadingDeleteModal = false;
@@ -50,47 +53,54 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   countriesSource: MatTableDataSource<CountryAlphaList>;
   selectedCountriesSource: MatTableDataSource<CountryAlphaList>;
   selectedZipCodeSource: MatTableDataSource<any>;
-  priceBasedRateSource: MatTableDataSource<Rate>;
-  weightBasedRateSource: MatTableDataSource<Rate>;
+  priceBasedRateSource: MatTableDataSource<ShippingRateInterface>;
+  weightBasedRateSource: MatTableDataSource<ShippingRateInterface>;
   countryAlphaList = countryAlphaList;
 
-  shop: ShopInterface;
+  shopData: ShopInterface;
   shipping: ShippingInterface;
-  warehouses: WarehouseInterface[];
+  shippingRate: ShippingRateInterface;
+  shippingRates: ShippingRateInterface[] = [];
+  priceBased: ShippingRateInterface[] = [];
+  weightBased: ShippingRateInterface[] = [];
+  warehouses: WarehouseInterface[] = [];
   shippingForm: FormGroup;
   rateForm: FormGroup;
 
   shippingSubscription: Subscription;
+  shippingRateSubscription: Subscription;
   warehouseSubscription: Subscription;
   shopSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private router: Router, private cdr: ChangeDetectorRef,
-              private admin: AdminService) {
+              private admin: AdminService, private shop: ShopService, private alert: AlertService) {
     const shippingId = this.router.url.split('/').pop();
     this.countriesSource = new MatTableDataSource(countryAlphaList);
-    this.shopSubscription = this.admin.getCurrentShop().subscribe(shop => this.shop = shop);
+    this.shopSubscription = this.admin.getCurrentShop().subscribe(shopData => this.shopData = shopData);
     this.warehouseSubscription = this.admin.getWarehousesByShopId()
       .subscribe(warehouses => this.warehouses = warehouses);
     if (shippingId !== ADD) {
       this.edit = true;
       this.loading = true;
-      this.warehouseSubscription = this.admin.getShippingById(shippingId).subscribe(shipping => {
+      this.shippingRateLoading = true;
+      this.shippingSubscription = this.admin.getShippingById(shippingId).subscribe(shipping => {
         this.loading = false;
         this.shipping = shipping;
         if (!shipping) {
           return;
         }
-        const { name, radius, warehouseId, countries, zipCode, weightBased, priceBased } = this.shipping;
-        this.shippingForm.patchValue({
-          name, radius
-        });
-        this.selectedWarehouses = warehouseId;
-        this.selectedCountries = countries;
-        this.selectedZipCodes = zipCode;
-        this.setSelectedCountriesTable(countries);
-        this.setSelectedZipCodeTable(zipCode);
-        this.setPriceBasedTable(priceBased);
-        this.setWeightBasedTable(weightBased);
+        this.setShippingForm();
+      });
+      this.shippingRateSubscription = this.shop.getShippingRateByShippingId(shippingId).subscribe(shippingRates => {
+        this.shippingRateLoading = false;
+        if (!shippingRates) {
+          return;
+        }
+        this.shippingRates = shippingRates;
+        this.priceBased = shippingRates.filter(sR => sR.type === 'price');
+        this.weightBased = shippingRates.filter(sR => sR.type === 'weight');
+        this.setPriceBasedTable(this.priceBased);
+        this.setWeightBasedTable(this.weightBased);
       });
     }
   }
@@ -115,12 +125,27 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     if (this.shippingSubscription && !this.shippingSubscription.closed) {
       this.shippingSubscription.unsubscribe();
     }
+    if (this.shippingRateSubscription && !this.shippingRateSubscription.closed) {
+      this.shippingRateSubscription.unsubscribe();
+    }
     if (this.warehouseSubscription && !this.warehouseSubscription.closed) {
       this.warehouseSubscription.unsubscribe();
     }
     if (this.shopSubscription && !this.shopSubscription.closed) {
       this.shopSubscription.unsubscribe();
     }
+  }
+
+  setShippingForm() {
+    const { name, radius, warehouseId, countries, zipCode } = this.shipping;
+    this.shippingForm.patchValue({
+      name, radius
+    });
+    this.selectedWarehouses = warehouseId;
+    this.selectedCountries = countries;
+    this.selectedZipCodes = zipCode;
+    this.setSelectedCountriesTable(countries);
+    this.setSelectedZipCodeTable(zipCode);
   }
 
   get shippingFormControls() { return this.shippingForm.controls; }
@@ -151,14 +176,14 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         const data = await this.admin.createShipping(setData);
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${this.shippingRoute}/${id}`);
+          this.router.navigateByUrl(`/${shippingRoute}/${id}`);
         }
       }
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
       this.success = false;
-      console.log(err);
+      this.handleError(err);
     }
     this.loading = false;
   }
@@ -170,8 +195,9 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      const shippingData = this.shipping;
-      const setData: Rate = {
+      const setData: ShippingRateInterface = {
+        shippingId: this.shipping.shippingId,
+        type: this.rateModalType,
         name: name.value,
         noValueLimit: noValueLimit.value,
         freeShipping: freeShipping.value,
@@ -179,19 +205,20 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         maxValue: maxValue.value,
         price: price.value
       };
-      if (this.rateModalType === 'price') {
-        shippingData.priceBased.push(setData);
+      if (this.isEditRate) {
+        await this.admin.updateShippingRate({
+          ...setData,
+          shippingRateId: this.shippingRate.shippingRateId
+        });
       } else {
-        shippingData.weightBased.push(setData);
+        await this.admin.createShippingRate(setData);
       }
-      console.log(this.shipping);
-      await this.admin.updateShipping(shippingData);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
       this.showRateModal = false;
       this.resetRateForm();
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
       this.success = false;
     }
     this.loading = false;
@@ -204,9 +231,9 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
       await this.admin.deleteShipping(shippingId);
       this.successDelete = true;
       setTimeout(() => this.successDelete = false, 2000);
-      this.router.navigateByUrl(this.shippingRoute);
+      this.router.navigateByUrl(shippingRoute);
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
     }
     this.loadingDelete = false;
   }
@@ -236,16 +263,24 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
 
   editRate(type: RateType, rateName: string) {
     this.resetRateForm();
+    this.isEditRate = true;
     this.showRateModal = true;
     this.rateModalType = type;
     const rate = this.findRate(type, rateName);
     const { name, price, freeShipping, noValueLimit, minValue, maxValue } = rate;
     this.rateForm.patchValue({
-      name, price, freeShipping, noValueLimit, minValue, maxValue
+      name,
+      price: price >= 0 ? price : null,
+      freeShipping,
+      noValueLimit,
+      minValue: minValue >= 0 ? minValue : null,
+      maxValue: maxValue >= 0 ? maxValue : null
     });
+    this.shippingRate = rate;
   }
 
-  deleteModal(type: RateType, rateName: string) {
+  deleteModal(type: RateType, rateName: string, id: string) {
+    this.shippingRate = this.shippingRates.find(s => s.id === id);
     this.selectedRateName = rateName;
     this.rateModalType = type;
     this.deleteModalTitle = `Delete ${toTitle(type)} Rate?`;
@@ -254,48 +289,21 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   }
 
   async deleteRate() {
+    const { shippingRateId } = this.shippingRate;
     this.loadingDeleteModal = true;
     try {
-      if (this.rateModalType === 'price') {
-        await this.deletePriceRate();
-      } else {
-        this.deleteWeightRate();
-      }
+      await this.admin.deleteShippingRate(shippingRateId);
       this.showDeleteModal = false;
     } catch (err) {}
     this.loadingDeleteModal = false;
   }
 
-  async deletePriceRate() {
-    let { priceBased } = this.shipping;
-    try {
-      priceBased = priceBased.filter(r => r.name !== this.selectedRateName);
-      await this.admin.updateShipping({
-        priceBased,
-        shippingId: this.shipping.shippingId
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async deleteWeightRate() {
-    let { weightBased } = this.shipping;
-    try {
-      weightBased = weightBased.filter(r => r.name !== this.selectedRateName);
-      await this.admin.updateShipping({
-        weightBased,
-        shippingId: this.shipping.shippingId
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-
   findRate(type: RateType, rateName: string) {
-    const { priceBased, weightBased } = this.shipping;
-    const allRates = type === 'price' ? priceBased : weightBased;
-    return allRates.find(r => r.name === rateName);
+    try {
+      return this.shippingRates.find(sR => sR.type === type && sR.name === rateName);
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   addZipcode(code: string) {
@@ -333,12 +341,12 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  setPriceBasedTable(priceBased: Rate[]) {
+  setPriceBasedTable(priceBased: ShippingRateInterface[]) {
     this.priceBasedRateSource = new MatTableDataSource(priceBased);
     this.cdr.detectChanges();
   }
 
-  setWeightBasedTable(weightBased: Rate[]) {
+  setWeightBasedTable(weightBased: ShippingRateInterface[]) {
     this.weightBasedRateSource = new MatTableDataSource(weightBased);
     this.cdr.detectChanges();
   }
@@ -346,8 +354,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   showRateModalFn(type: RateType) {
     this.rateModalType = type;
     this.showRateModal = true;
-    if (type === 'price') {
-    } else {}
+    this.isEditRate = false;
   }
 
   toggleCountries() {
@@ -381,4 +388,9 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
       this.freeShipping = false;
     }
   }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err });
+  }
+
 }

@@ -10,7 +10,6 @@ export type MinimumRequirement = {
 } | null;
 
 export interface VoucherInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     voucherId?: string;
     code?: string;

@@ -1,36 +1,44 @@
-import { Condition, OrderBy } from './Common';
+import { CommonInterface, Condition, OrderBy } from './Common';
 
-export interface ShippingInterface {
+export type RateType = 'price' | 'weight';
+
+export interface ShippingInterface extends CommonInterface {
     shopId?: string;
     shippingId?: string;
     name?: string;
     countries?: string[];
     zipCode?: string[];
     radius?: number;
-    priceBased?: Rate[];
-    weightBased?: Rate[];
+    rates?: string[];
     warehouseId?: string[];
     taxId?: string;
 }
 
-export type RateType = 'price' | 'weight';
-
-export type Rate = {
-    name: string
-    minValue?: number
-    maxValue?: number
-    price?: number
-    noValueLimit?: boolean
-    freeShipping?: boolean
-};
+export interface ShippingRateInterface extends CommonInterface {
+    shippingId?: string;
+    shippingRateId?: string;
+    name?: string;
+    type?: RateType;
+    minValue?: number;
+    maxValue?: number;
+    price?: number;
+    noValueLimit?: boolean;
+    freeShipping?: boolean;
+}
 
 export type ShippingCondition = Condition & {
     field: ShippingFields
-    parentFields?: ShippingFields[]
+};
+export type ShippingRateCondition = Condition & {
+    field: ShippingRateFields
 };
 
 export type ShippingFields = keyof ShippingInterface;
+export type ShippingRateFields = keyof ShippingRateInterface;
 
 export type ShippingOrderBy = OrderBy & {
     field: ShippingFields
+};
+export type ShippingRateOrderBy = OrderBy & {
+    field: ShippingRateFields
 };

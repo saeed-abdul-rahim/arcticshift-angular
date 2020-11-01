@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { RequestService } from '@services/request/request.service';
 import { environment } from '@environment';
 import { OrderInterface } from '@models/Order';
+import { ShippingRateInterface } from '@models/Shipping';
 
 @Injectable()
 export class ShopService {
@@ -204,6 +205,13 @@ export class ShopService {
       { field: 'type', type: '==', value: type }
     ]);
     return getDataFromCollection(taxes) as Observable<TaxInterface[]>;
+  }
+
+  getShippingRateByShippingId(shippingId: string) {
+    const shippingRate = this.dbS.queryShippingRate([
+      { field: 'shippingId', type: '==', value: shippingId }
+    ]);
+    return getDataFromCollection(shippingRate) as Observable<ShippingRateInterface[]>;
   }
 
   getAttributesByProductTypeId(productTypeId: string): Observable<AttributeJoinInterface[]> {

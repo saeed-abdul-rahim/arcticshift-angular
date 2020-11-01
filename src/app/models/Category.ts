@@ -1,7 +1,6 @@
 import { Condition, Content, CommonInterface, OrderBy } from './Common';
 
 export interface CategoryInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     categoryId?: string;
     parentCategoryId?: string;

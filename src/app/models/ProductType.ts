@@ -1,13 +1,13 @@
 import { Condition, CommonInterface, OrderBy } from './Common';
 
 export interface ProductTypeInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     productTypeId?: string;
     name?: string;
     productAttributeId?: string[];
     variantAttributeId?: string[];
     taxId?: string;
+    weight?: number;
 }
 
 export type ProductTypeCondition = Condition & {

@@ -56,3 +56,4 @@ export const categoryRoute = `${catalogRoute}/${CATEGORY}`;
 export const collectionRoute = `${catalogRoute}/${COLLECTION}`;
 export const saleDiscountRoute = `${discountRoute}/${SALE}`;
 export const voucherRoute = `${discountRoute}/${VOUCHER}`;
+export const shippingRoute = `${adminRoute}/${SHIPPING}`;

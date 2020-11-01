@@ -20,7 +20,7 @@ import { CollectionCondition, CollectionOrderBy } from '@models/Collection';
 import { Condition, OrderBy } from '@models/Common';
 import { ProductCondition, ProductOrderBy } from '@models/Product';
 import { ProductTypeCondition, ProductTypeOrderBy } from '@models/ProductType';
-import { ShippingCondition, ShippingOrderBy } from '@models/Shipping';
+import { ShippingCondition, ShippingOrderBy, ShippingRateCondition, ShippingRateOrderBy } from '@models/Shipping';
 import { TaxCondition, TaxOrderBy } from '@models/Tax';
 import { VariantCondition, VariantOrderBy } from '@models/Variant';
 import { WarehouseCondition, WarehouseOrderBy } from '@models/Warehouse';
@@ -47,6 +47,7 @@ export class DbService {
   dbInventoriesRoute: string;
   dbWarehouseRoute: string;
   dbShippingRoute: string;
+  dbShippingRatesRoute: string;
   dbOrdersRoute: string;
 
   dbAttributeValuesRoutePath: string;
@@ -70,6 +71,7 @@ export class DbService {
       inventories,
       warehouses,
       shippings,
+      shippingRates,
       orders,
       settings,
       general
@@ -92,6 +94,7 @@ export class DbService {
     this.dbVouchersRoute = vouchers;
     this.dbWarehouseRoute = warehouses;
     this.dbShippingRoute = shippings;
+    this.dbShippingRatesRoute = shippingRates;
     this.dbOrdersRoute = orders;
     this.dbInventoriesRoute = inventories;
 
@@ -171,6 +174,11 @@ export class DbService {
   queryShipping(conditions?: ShippingCondition[], orderBy?: ShippingOrderBy, limit?: number) {
     const { db, dbShippingRoute } = this;
     return this.query(db, dbShippingRoute, conditions, orderBy, limit);
+  }
+
+  queryShippingRate(conditions?: ShippingRateCondition[], orderBy?: ShippingRateOrderBy, limit?: number) {
+    const { db, dbShippingRatesRoute } = this;
+    return this.query(db, dbShippingRatesRoute, conditions, orderBy, limit);
   }
 
   queryOrders(conditions?: OrderCondition[], orderBy?: OrderOrderBy, limit?: number) {

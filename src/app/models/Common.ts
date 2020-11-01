@@ -85,6 +85,7 @@ export type AuthType = {
 };
 
 export interface CommonInterface extends TimestampInterface {
+    id?: string;
     status?: Status;
 }
 
