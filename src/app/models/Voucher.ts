@@ -16,7 +16,6 @@ export interface VoucherInterface extends CommonInterface {
     valueType?: VoucherValueType;
     orderType?: OrderType;
     value?: number;
-    entireOrder?: boolean;
     oncePerOrder?: boolean;
     categoryId?: string[];
     collectionId?: string[];

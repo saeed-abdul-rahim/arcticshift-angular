@@ -5,13 +5,15 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { ADD, ADMIN, PRODUCTATTRIBUTE, PRODUCTTYPE } from '@constants/routes';
+import { ADD, productAttributeRoute, productTypeRoute } from '@constants/routes';
 import { AttributeInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
 import { AdminService } from '@services/admin/admin.service';
 import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
+import { AlertService } from '@services/alert/alert.service';
+import { ShopInterface } from '@models/Shop';
 
 type ListType = 'product' | 'variant';
 
@@ -38,7 +40,6 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
 
   showModal = false;
   edit = false;
-  nameDanger: boolean;
   selectedList: ListType;
   productTypeForm: FormGroup;
 
@@ -49,24 +50,24 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   attributesSource: MatTableDataSource<AttributeInterface>;
   selectedAttributeIds: string[] = [];
 
-  productTypeRoute = `/${ADMIN}/${PRODUCTTYPE}`;
-  attributeRoute = `/${ADMIN}/${PRODUCTATTRIBUTE}`;
-
   productType: ProductTypeInterface;
   tax$: Observable<TaxInterface[]>;
   productAttributes: AttributeInterface[];
   variantAttributes: AttributeInterface[];
   attributes: AttributeInterface[];
   filteredAttributes: AttributeInterface[];
+  shopData: ShopInterface;
 
   userSubscription: Subscription;
   productTypeSubscription: Subscription;
   productAttributeSubscription: Subscription;
   variantAttributeSubscription: Subscription;
   attributeSubscription: Subscription;
+  shopSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private admin: AdminService, private authService: AuthService,
-              private router: Router, private shop: ShopService, private cdr: ChangeDetectorRef) {
+              private router: Router, private shop: ShopService, private cdr: ChangeDetectorRef, private alert: AlertService) {
+    this.shopSubscription = this.admin.getCurrentShop().subscribe(shopData => this.shopData = shopData);
     this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
       if (user) {
         const { shopId } = user;
@@ -85,6 +86,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.productTypeForm = this.formbuilder.group({
       name: ['', Validators.required],
+      weight: [null],
       tax: ['']
     });
   }
@@ -98,6 +100,9 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     }
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.shopSubscription && !this.shopSubscription.closed) {
+      this.shopSubscription.unsubscribe();
     }
     this.unsubscribeProductAttributes();
     this.unsubscribeVariantAttributes();
@@ -125,37 +130,33 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   get productTypeFormControls() { return this.productTypeForm.controls; }
 
   async onSubmit() {
-    const { name, tax } = this.productTypeFormControls;
+    const { name, weight, tax } = this.productTypeFormControls;
     if (this.productTypeForm.invalid) {
-      if (name.errors) {
-        this.nameDanger = true;
-      }
       return;
     }
     this.loading = true;
     try {
+      const setData: ProductTypeInterface = {
+        name: name.value,
+        taxId: tax.value,
+        weight: weight.value
+      };
       if (this.edit) {
         await this.admin.updateProductType({
-          name: name.value,
-          taxId: tax.value,
+          ...setData,
           productTypeId: this.productType.productTypeId
         });
       } else {
-        const data = await this.admin.createProductType({
-          name: name.value,
-          taxId: tax.value
-        });
+        const data = await this.admin.createProductType(setData);
         if (data.id) {
           const { id } = data;
-          this.router.navigateByUrl(`/${this.productTypeRoute}/${id}`);
+          this.router.navigateByUrl(`${productTypeRoute}/${id}`);
         }
       }
-
       this.success = true;
       setTimeout(() => this.success = false, 2000);
     } catch (err) {
-      this.success = false;
-      console.log(err);
+      this.handleError(err);
     }
     this.loading = false;
   }
@@ -167,9 +168,9 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
       await this.admin.deleteProductType(productTypeId);
       this.success = true;
       setTimeout(() => this.success = false, 2000);
-      this.router.navigateByUrl(this.productTypeRoute);
+      this.router.navigateByUrl(productTypeRoute);
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
     }
     this.loadingDelete = false;
   }
@@ -192,7 +193,9 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
         });
       }
       this.showModal = false;
-    } catch (err) {}
+    } catch (err) {
+      this.handleError(err);
+    }
     this.selectedAttributeIds = [];
     this.loadingAttributeModal = false;
   }
@@ -216,7 +219,9 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
         });
       }
       this.showModal = false;
-    } catch (err) {}
+    } catch (err) {
+      this.handleError(err);
+    }
     this.attributeLoading = false;
   }
 
@@ -224,14 +229,15 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     this.productTypeSubscription = this.shop.getProductTypeById(productTypeId).subscribe(productType => {
       if (productType) {
         this.productType = productType;
-        const { name, taxId, productAttributeId, variantAttributeId } = productType;
+        const { name, taxId, weight, productAttributeId, variantAttributeId } = productType;
         this.unsubscribeProductAttributes();
         this.unsubscribeVariantAttributes();
         this.getProductAttributeByIds(productAttributeId);
         this.getVariantAttributeByIds(variantAttributeId);
         this.productTypeForm.patchValue({
           name,
-          tax: taxId
+          tax: taxId,
+          weight
         });
       }
     });
@@ -280,7 +286,7 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   }
 
   navigateToAttribute(attributeId: string) {
-    this.router.navigateByUrl(`${this.attributeRoute}/${attributeId}`);
+    this.router.navigateByUrl(`${productAttributeRoute}/${attributeId}`);
   }
 
   applyAttributeListFilter(event: Event) {
@@ -295,6 +301,10 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     } else {
       this.selectedAttributeIds = this.selectedAttributeIds.filter(id => id !== attributeId);
     }
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err });
   }
 
 }

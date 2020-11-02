@@ -57,7 +57,7 @@ export class AdminService {
       tax,
       warehouse,
       shipping,
-      shippingRate
+      rate
     } = api;
     const { analytics, shops } = db;
     this.getCurrentUser();
@@ -74,7 +74,7 @@ export class AdminService {
     this.apiTax = url + tax;
     this.apiWarehouse = url + warehouse;
     this.apiShipping = url + shipping;
-    this.apiShippingRate = url + shippingRate;
+    this.apiShippingRate = this.apiShipping + rate;
 
     this.dbAnalytics = this.dbS.db.collection(analytics);
     this.dbShop = this.dbS.db.collection(shops).doc(shopId);
@@ -405,9 +405,9 @@ export class AdminService {
   }
 
   async createShippingRate(data: ShippingRateInterface) {
-    const { apiShippingRate } = this;
+    const { apiShipping } = this;
     try {
-      return await this.req.post(apiShippingRate, { data });
+      return await this.req.put(apiShipping, { data });
     } catch (err) {
       throw err;
     }

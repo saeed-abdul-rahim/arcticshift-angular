@@ -20,7 +20,7 @@ export const environment = {
     attribute: '/attribute',
     warehouse: '/warehouse',
     shipping: '/shipping',
-    shippingRate: '/shipping-rate',
+    rate: '/rate',
     order: '/order',
     tax: '/tax'
   },
