@@ -5,12 +5,12 @@ import { AttributeJoinInterface } from '@models/Attribute';
 import { Content, ObjNumber, ObjString } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { VariantInterface } from '@models/Variant';
-import { AuthService } from '@services/auth/auth.service';
 import { SeoService } from '@services/seo/seo.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { percentDecrease } from '@utils/percentDecrease';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { AlertService } from '@services/alert/alert.service';
 
 @Component({
   selector: 'app-variant',
@@ -54,7 +54,7 @@ export class VariantComponent implements OnInit, OnDestroy {
   attributeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService,
-              private auth: AuthService, private cart: CartService) {
+              private cart: CartService, private alert: AlertService) {
     const params = this.route.snapshot.paramMap;
     const title = params.get('title');
     const id = params.get('id');
@@ -91,20 +91,21 @@ export class VariantComponent implements OnInit, OnDestroy {
   }
 
   async addToCart() {
-    const { variant, quantity, shop, auth } = this;
+    const { variant, quantity, shop } = this;
+    if (!variant || !quantity) {
+      return;
+    }
     const { warehouseQuantity, variantId } = variant;
     let maxQuantity = 0;
     maxQuantity = Object.keys(warehouseQuantity)
       .map(key => warehouseQuantity[key])
       .reduce((prev, curr) => prev > curr ? prev : curr);
     if (maxQuantity < 1) {
-      console.log('Out of stock');
+      this.handleError('Out of stock');
     }
     this.cartLoading = true;
     try {
-      const user = await auth.getCurrentUser();
       await shop.addToCart({
-        userId: user.uid,
         variants: [{
           variantId,
           quantity
@@ -113,7 +114,7 @@ export class VariantComponent implements OnInit, OnDestroy {
       this.cartSuccess = true;
       setInterval(() => this.cartSuccess = false, 2000);
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
     }
     this.cartLoading = false;
   }
@@ -128,8 +129,10 @@ export class VariantComponent implements OnInit, OnDestroy {
             [variant.variantId]: variant.quantity
           });
         });
-        this.draftVariantQuantity = draftVariantQuantity;
-        this.quantity = this.draftVariantQuantity[this.variant.id];
+        if (Object.keys(draftVariantQuantity).length > 0) {
+          this.draftVariantQuantity = draftVariantQuantity;
+          this.quantity = this.draftVariantQuantity[this.variant.id];
+        }
       }
     });
   }
@@ -150,7 +153,7 @@ export class VariantComponent implements OnInit, OnDestroy {
         this.seo.updateDescription(description);
         this.getVariantsByProduct(productId);
       }
-    }, error => console.log(error));
+    }, error => this.handleError(error.message));
   }
 
   getProductType(id: string) {
@@ -169,7 +172,7 @@ export class VariantComponent implements OnInit, OnDestroy {
         this.variant = variants[0];
         this.setVariant(this.variant);
       }
-    }, error => console.log(error));
+    }, error => this.handleError(error.message));
   }
 
   setVariant(variant: VariantInterface) {
@@ -222,7 +225,7 @@ export class VariantComponent implements OnInit, OnDestroy {
         ...attributeOptions,
         ...this.selectedAttribute
       };
-    }, error => console.log(error));
+    }, error => this.handleError(error.message));
   }
 
   changeAttribute(attributeId: string, valueId: string) {
@@ -248,6 +251,10 @@ export class VariantComponent implements OnInit, OnDestroy {
     const thumbnail = thumbnails.find(thumb => thumb.dimension === this.selectedImageSize);
     this.selectedImage = content.url;
     this.selectedThumbnail = thumbnail.url;
+  }
+
+  handleError(err: any) {
+    this.alert.alert(err);
   }
 
   @HostListener('window:resize', ['$event'])

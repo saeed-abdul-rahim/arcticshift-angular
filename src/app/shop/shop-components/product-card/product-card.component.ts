@@ -1,8 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { inOut } from '@animations/inOut';
-import { slideInOut } from '@animations/slideInOut';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons/faHeart';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { inOut } from '@animations/inOut';
+import { slideInOut } from '@animations/slideInOut';
+import { ShopService } from '@services/shop/shop.service';
+import { GeneralSettings } from '@models/GeneralSettings';
 
 type Image = {
   url: string;
@@ -15,7 +18,7 @@ type Image = {
   styleUrls: ['./product-card.component.css'],
   animations: [inOut, slideInOut]
 })
-export class ProductCardComponent implements OnInit {
+export class ProductCardComponent implements OnInit, OnDestroy {
 
   @Input() id: string;
   @Input() url: string;
@@ -31,9 +34,19 @@ export class ProductCardComponent implements OnInit {
   faHeartR = faHeartR;
   faHeartS = faHeartS;
 
-  constructor() { }
+  settings: GeneralSettings;
+  settingsSubscription: Subscription;
+
+  constructor(private shop: ShopService) { }
 
   ngOnInit(): void {
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
+  }
+
+  ngOnDestroy(): void {
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
+    }
   }
 
   toggleHover() {

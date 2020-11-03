@@ -19,14 +19,20 @@ export interface OrderInterface extends CommonInterface {
     paymentStatus?: PaymentStatus;
     billingAddress?: Address | null;
     shippingAddress?: Address | null;
+    shippingRateId?: string;
     voucherId?: string;
     giftCardId?: string;
     shippingId?: string;
     variants?: VariantQuantity[];
     fullfilled?: Fulfilled[];
-    subtotal?: number;
+    subTotal?: number;
+    saleDiscount?: number;
+    voucherDiscount?: number;
+    taxCharge?: number;
+    shippingCharge?: number;
     total?: number;
     payment?: Payment[];
+    data?: any;
 }
 
 export type OrderCondition = Condition & {

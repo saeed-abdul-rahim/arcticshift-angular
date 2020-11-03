@@ -6,7 +6,8 @@
         <div class="divide-y divide-gray-200">
             <div class="flex justify-between py-5" *ngFor="let variant of variants">
                 <div class="flex">
-                    <img class="object-contain" src="{{ getImage(variant.images) }}" alt="{{ variant.productName }}" width="{{imageSize}}" height="{{imageSize}}">
+                    <img class="object-contain" src="{{ getImage(variant.images) }}" alt="{{ variant.productName }}"
+                        width="{{imageSize}}" height="{{imageSize}}">
                     <div class="flex flex-col font-light ml-6 ">
                         <div class="mb-auto md:my-auto text-base md:text-xl">
                             {{ variant.productName }} - {{ variant.name }}
@@ -16,14 +17,17 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <fa-icon class="absolute right-0 hover:text-gray-700 cursor-pointer" [icon]="faTimes" size="xs"></fa-icon>
+                    <fa-icon class="absolute right-0 hover:text-gray-700 cursor-pointer" [icon]="faTimes" size="xs"
+                        (click)="removeVariant(variant.id)">
+                    </fa-icon>
                     <div class="absolute bottom-0 right-0 font-light">
                         {{variant.price | currency: settings.currency }}
                     </div>
                 </div>
             </div>
             <div class="flex pt-5 text-gray-600">
-                <app-button class="w-full" [secondary]="true" [label]="'Update Cart'" [color]="'white'" [fullWidth]="true"></app-button>
+                <app-button class="w-full" [secondary]="true" [label]="'Update Cart'" [color]="'white'"
+                    [fullWidth]="true"></app-button>
             </div>
         </div>
     </div>
@@ -40,15 +44,23 @@
                 <fa-icon [icon]="faChevronDown"></fa-icon>
             </div>
             <div class="flex flex-col overflow-x-hidden slider" [ngClass]="showCoupon ? '' : 'closed'">
-                <input class="arc-input placeholder-gray-400 my-5 mx-1" type="text" placeholder="Coupon Code" />
-                <app-button color="gray" [label]="'Apply Coupon'" [dark]="true" [fullWidth]="true"></app-button>
+                <input #voucherInput class="arc-input placeholder-gray-400 my-5 mx-1" type="text"
+                    placeholder="Coupon Code" />
+                <app-button color="gray" [label]="'Apply Coupon'" [dark]="true" [fullWidth]="true"
+                    (click)="addVoucher(voucherInput.value)" [loading]="voucherLoading" [success]="voucherSuccess">
+                </app-button>
             </div>
         </div>
         <div class="border border-gray-300 bg-gray-100 rounded-md my-5 font-light text-sm">
-            <div class="border-b border-gray-300 p-5">
-                Subtotal
+            <div class="border-b border-gray-300 p-5 flex justify-between">
+                <div>
+                    Subtotal
+                </div>
+                <div>
+                    {{ draft.subTotal | currency: settings.currency }}
+                </div>
             </div>
-            <div class="border-b border-gray-300 p-5">
+            <div class="border-b border-gray-300 p-5" *ngIf="draft.shippingAddress">
                 Shipping
                 <div class="flex my-auto py-5">
                     <input type="radio" name="shippingType" class="my-auto" />
@@ -70,25 +82,63 @@
                         <input type="text" class="mb-2 arc-input placeholder-gray-400" placeholder="Address line" />
                         <input type="text" class="mb-2 arc-input placeholder-gray-400" placeholder="Town / City" />
                         <ng-select class="mb-2" placeholder="State / County"></ng-select>
-                        <ng-select class="mb-2" placeholder="Country"></ng-select>
+                        <ng-select class="mb-2" placeholder="Country" [items]="countryAlphaList" bindValue="alpha3"
+                            bindLabel="name"></ng-select>
                         <input type="text" class="mb-3 arc-input placeholder-gray-400" placeholder="Postcode / ZIP" />
                         <app-button color="gray" [label]="'Update'" [dark]="true" [fullWidth]="true"></app-button>
                     </div>
                 </div>
             </div>
-            <div class="border-t border-gray-300 p-4 flex justify-between text-xl">
+            <div class="border-b border-gray-300 p-5"
+                *ngIf="draft.saleDiscount > 0 || draft.voucherDiscount > 0 || draft.taxCharge > 0 || draft.shippingCharge > 0">
+                <div class="flex justify-between" *ngIf="draft.saleDiscount > 0">
+                    <div>
+                        Discount
+                    </div>
+                    <div>
+                        -{{ draft.saleDiscount | currency: settings.currency }}
+                    </div>
+                </div>
+                <div class="flex justify-between" *ngIf="draft.taxCharge > 0">
+                    <div>
+                        Taxes
+                    </div>
+                    <div>
+                        +{{ draft.taxCharge | currency: settings.currency }}
+                    </div>
+                </div>
+                <div class="flex justify-between" *ngIf="draft.shippingCharge > 0">
+                    <div>
+                        Shipping
+                    </div>
+                    <div>
+                        +{{ draft.shippingCharge | currency: settings.currency }}
+                    </div>
+                </div>
+                <div class="flex justify-between" *ngIf="draft.voucherDiscount > 0">
+                    <div>
+                        Voucher
+                    </div>
+                    <div>
+                        -{{ draft.voucherDiscount | currency: settings.currency }}
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 flex justify-between text-xl">
                 <div>
                     Total
                 </div>
                 <div>
-                    Price
+                    {{ draft.total | currency: settings.currency }}
                 </div>
             </div>
         </div>
-        <app-button color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()"></app-button>
+        <app-button color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
+        </app-button>
     </div>
 </div>
-<div *ngIf="variantsLoading || draftLoading" class="w-full h-full bg-white opacity-50 z-20 flex items-center justify-center">
+<div *ngIf="variantsLoading || draftLoading"
+    class="w-full h-full bg-white opacity-50 z-20 flex items-center justify-center">
     <app-spinner class="-mt-96" [size]="10"></app-spinner>
 </div>
 <app-empty-page *ngIf="variants.length === 0" [label]="'cart'"></app-empty-page>

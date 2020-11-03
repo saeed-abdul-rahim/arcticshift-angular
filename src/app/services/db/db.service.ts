@@ -216,17 +216,17 @@ export class DbService {
             const { field, type, value, parentFields } = condition;
             if (parentFields && parentFields.length > 0) {
                 const whereField = `${parentFields.join('.')}.${field}`;
-                newRef = ref.where(whereField, type, value);
+                newRef = newRef.where(whereField, type, value);
             } else {
-                newRef = ref.where(field, type, value);
+                newRef = newRef.where(field, type, value);
             }
         });
         if (orderBy) {
           const { field, direction } = orderBy;
-          newRef.orderBy(field, direction);
+          newRef = newRef.orderBy(field, direction);
         }
         if (limit) {
-          newRef.limit(limit);
+          newRef = newRef.limit(limit);
         }
         return newRef;
     });
