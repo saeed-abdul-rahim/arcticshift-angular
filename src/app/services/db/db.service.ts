@@ -25,6 +25,7 @@ import { TaxCondition, TaxOrderBy } from '@models/Tax';
 import { VariantCondition, VariantOrderBy } from '@models/Variant';
 import { WarehouseCondition, WarehouseOrderBy } from '@models/Warehouse';
 import { OrderCondition, OrderOrderBy } from '@models/Order';
+import { SaleDiscountCondition, SaleDiscountOrderBy } from '@models/SaleDiscount';
 
 @Injectable()
 export class DbService {
@@ -159,6 +160,11 @@ export class DbService {
   queryAttributeValues(conditions?: AttributeValueCondition[], orderBy?: AttributeValueOrderBy, limit?: number) {
     const { db, dbAttributeValuesRoute } = this;
     return this.query(db, dbAttributeValuesRoute, conditions, orderBy, limit);
+  }
+
+  querySaleDiscounts(conditions?: SaleDiscountCondition[], orderBy?: SaleDiscountOrderBy, limit?: number) {
+    const { db, dbSalesRoute } = this;
+    return this.query(db, dbSalesRoute, conditions, orderBy, limit);
   }
 
   queryTax(conditions?: TaxCondition[], orderBy?: TaxOrderBy, limit?: number) {
