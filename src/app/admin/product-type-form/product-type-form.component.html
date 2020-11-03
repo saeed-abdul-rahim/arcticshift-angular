@@ -5,7 +5,7 @@
       <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
         <div class="w-full mb-3">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Name"
-            [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
+            [ngClass]="productTypeFormControls.name.touched && productTypeFormControls.name.invalid ? 'border-red' : ''" formControlName="name" />
         </div>
       </div>
     </div>
@@ -22,6 +22,19 @@
     </div>
   </ng-template>
 
+  <ng-template #weightTemplate>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="w-full mb-3 relative">
+          <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Weight" formControlName="weight"/>
+          <span class="input-right-label">
+            {{shopData && shopData.weightUnit}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
   <div class="relative pt-12">
     <div class="px-4 md:px-10 mx-auto w-full">
       <div class="flex flex-wrap mt-4">
@@ -32,6 +45,9 @@
             [actions]="assignProductAttributeTemplate"></app-card>
           <app-card *ngIf="edit" [heading]="'Variant Attributes'" [body]="variantAttributeListTemplate"
             [actions]="assignVariantAttributeTemplate"></app-card>
+        </div>
+        <div class="w-full xl:w-4/12 px-4">
+          <app-card [heading]="'Shipping'" [body]="weightTemplate"></app-card>
         </div>
       </div>
     </div>

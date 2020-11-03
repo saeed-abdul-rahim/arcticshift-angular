@@ -1,7 +1,6 @@
 import { CommonInterface, Status, Condition, Content, ObjString, ObjNumber, Price, OrderBy } from './Common';
 
 export interface VariantInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     productId?: string;
     variantId?: string;

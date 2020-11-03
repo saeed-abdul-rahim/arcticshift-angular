@@ -209,8 +209,8 @@
 
 <ng-template #priceRateTemplate>
   <div class="w-full">
-    <div *ngIf="shipping.priceBased && shipping.priceBased.length === 0" class="data-empty">No data available</div>
-    <div *ngIf="shipping.priceBased && shipping.priceBased.length > 0" class="relative overflow-x-auto scrollbar">
+    <div *ngIf="priceBased && priceBased.length === 0" class="data-empty">No data available</div>
+    <div *ngIf="priceBased && priceBased.length > 0" class="relative overflow-x-auto scrollbar">
       <table mat-table [dataSource]="priceBasedRateSource">
 
         <ng-container matColumnDef="name">
@@ -223,8 +223,8 @@
           <td mat-cell *matCellDef="let row" (click)="editRate('price', row.name)">
             <div *ngIf="row.noValueLimit">No Limit</div>
             <div *ngIf="!row.noValueLimit">
-              from {{row.minValue | currency: shop.currency}}
-              {{ row.maxValue && row.maxValue > 0 ? 'to ' + (row.maxValue | currency: shop.currency) : ''}}
+              from {{row.minValue | currency: shopData.currency}}
+              {{ row.maxValue && row.maxValue > 0 ? 'to ' + (row.maxValue | currency: shopData.currency) : ''}}
             </div>
           </td>
         </ng-container>
@@ -234,9 +234,9 @@
           <td mat-cell *matCellDef="let row" class="padding-0">
             <div class="flex flex-wrap relative align-middle">
               <div class="relative w-full pl-0 pr-5 py-3" (click)="editRate('price', row.name)">
-                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shop.currency)}}&nbsp;
+                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shopData.currency)}}&nbsp;
               </div>
-              <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('price', row.name)">
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('price', row.name, row.id)">
                 <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
               </div>
             </div>
@@ -253,8 +253,8 @@
 
 <ng-template #weightRateTemplate>
   <div class="w-full">
-    <div *ngIf="shipping.weightBased && shipping.weightBased.length === 0" class="data-empty">No data available</div>
-    <div *ngIf="shipping.weightBased && shipping.weightBased.length > 0" class="relative overflow-x-auto scrollbar">
+    <div *ngIf="weightBased && weightBased.length === 0" class="data-empty">No data available</div>
+    <div *ngIf="weightBased && weightBased.length > 0" class="relative overflow-x-auto scrollbar">
       <table mat-table [dataSource]="weightBasedRateSource">
 
         <ng-container matColumnDef="name">
@@ -267,8 +267,8 @@
           <td mat-cell *matCellDef="let row" (click)="editRate('weight', row.name)">
             <div *ngIf="row.noValueLimit">No Limit</div>
             <div *ngIf="!row.noValueLimit">
-              from {{row.minValue}} {{shop.weightUnit}}
-              {{ row.maxValue && row.maxValue > 0 ? 'to ' + row.maxValue + ' ' + shop.weightUnit : ''}}
+              from {{row.minValue}} {{shopData.weightUnit}}
+              {{ row.maxValue && row.maxValue > 0 ? 'to ' + row.maxValue + ' ' + shopData.weightUnit : ''}}
             </div>
           </td>
         </ng-container>
@@ -278,9 +278,9 @@
           <td mat-cell *matCellDef="let row" class="padding-0">
             <div class="flex flex-wrap relative align-middle">
               <div class="relative w-full pl-0 pr-5 py-3" (click)="editRate('weight', row.name)">
-                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shop.currency)}}&nbsp;
+                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shopData.currency)}}&nbsp;
               </div>
-              <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('weight', row.name)">
+              <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('weight', row.name, row.id)">
                 <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
               </div>
             </div>
@@ -355,7 +355,7 @@
               <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Rate Price"
                 formControlName="price">
               <span class="input-right-label">
-                {{shop.currency}}
+                {{shopData.currency}}
               </span>
             </div>
           </div>

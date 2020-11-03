@@ -20,6 +20,7 @@ export const environment = {
     attribute: '/attribute',
     warehouse: '/warehouse',
     shipping: '/shipping',
+    rate: '/rate',
     order: '/order',
     tax: '/tax'
   },
@@ -36,6 +37,7 @@ export const environment = {
     collections: 'collections',
     categories: 'categories',
     shippings: 'shipping',
+    shippingRates: 'shippingRates',
     inventories: 'inventory',
     warehouses: 'warehouse',
     vouchers: 'vouchers',

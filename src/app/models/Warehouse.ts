@@ -2,7 +2,6 @@ import { CommonInterface, Condition, OrderBy, Point } from './Common';
 import { Address } from './User';
 
 export interface WarehouseInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     warehouseId?: string;
     name?: string;

@@ -20,13 +20,17 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { RequestService } from '@services/request/request.service';
 import { environment } from '@environment';
 import { OrderInterface } from '@models/Order';
+import { ShippingRateInterface } from '@models/Shipping';
 
 @Injectable()
 export class ShopService {
 
-  generalSettings = new BehaviorSubject<GeneralSettings>(null);
+  private saleDiscountSubscription: Subscription;
+  private generalSettingsSubscription: Subscription;
+  private saleDiscounts = new BehaviorSubject<SaleDiscountInterface[]>(null);
+  private generalSettings = new BehaviorSubject<GeneralSettings>(null);
   generalSettings$ = this.generalSettings.asObservable();
-  generalSettingsSubscription: Subscription;
+  saleDiscounts$ = this.saleDiscounts.asObservable();
 
   products$: Observable<ProductInterface[]>;
   attributes$: Observable<AttributeInterface[]>;
@@ -69,6 +73,9 @@ export class ShopService {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
     }
+    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
+      this.saleDiscountSubscription.unsubscribe();
+    }
   }
 
   setGeneralSettings(data: GeneralSettings) {
@@ -83,6 +90,14 @@ export class ShopService {
     const { dbGeneralSettings } = this.dbS;
     this.generalSettingsSubscription =  getDataFromDocument(dbGeneralSettings)
       .subscribe((data: GeneralSettings) => this.generalSettings.next(data));
+  }
+
+  setSaleDiscounts() {
+    this.saleDiscountSubscription = this.getSaleDiscountsFromDb().subscribe(sales => this.saleDiscounts.next(sales));
+  }
+
+  getSaleDiscounts() {
+    return this.saleDiscounts$;
   }
 
   getProductById(productId: string): Observable<ProductInterface> {
@@ -206,6 +221,13 @@ export class ShopService {
     return getDataFromCollection(taxes) as Observable<TaxInterface[]>;
   }
 
+  getShippingRateByShippingId(shippingId: string) {
+    const shippingRate = this.dbS.queryShippingRate([
+      { field: 'shippingId', type: '==', value: shippingId }
+    ]);
+    return getDataFromCollection(shippingRate) as Observable<ShippingRateInterface[]>;
+  }
+
   getAttributesByProductTypeId(productTypeId: string): Observable<AttributeJoinInterface[]> {
     const attributes = this.dbS.queryAttributes([
       { field: 'productTypeId', type: 'array-contains', value: productTypeId }
@@ -221,6 +243,16 @@ export class ShopService {
       field: 'createdAt', direction: 'desc'
     }, 1);
     return getDataFromCollection(orders) as Observable<OrderInterface[]>;
+  }
+
+  getSaleDiscountsFromDb(): Observable<SaleDiscountInterface[]> {
+    const now = Date.now();
+    const saleDiscounts = this.dbS.querySaleDiscounts([
+      { field: 'status', type: '==', value: 'active' },
+      { field: 'startDate', type: '>=', value: now },
+      { field: 'endDate', type: '<=', value: now }
+    ]);
+    return getDataFromCollection(saleDiscounts);
   }
 
 }

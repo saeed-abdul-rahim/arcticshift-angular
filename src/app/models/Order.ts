@@ -20,7 +20,6 @@ export interface OrderInterface extends CommonInterface {
     billingAddress?: Address | null;
     shippingAddress?: Address | null;
     voucherId?: string;
-    saleDiscountId?: string;
     giftCardId?: string;
     shippingId?: string;
     variants?: VariantQuantity[];

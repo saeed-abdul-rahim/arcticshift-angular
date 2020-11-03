@@ -17,7 +17,7 @@ import { TaxInterface } from '@models/Tax';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
 import { Observable } from 'rxjs';
-import { ShippingInterface } from '@models/Shipping';
+import { ShippingInterface, ShippingRateInterface } from '@models/Shipping';
 import { DbService } from '@services/db/db.service';
 import { CatalogTypeApi } from '@models/Common';
 
@@ -34,6 +34,7 @@ export class AdminService {
   private apiAttribute: string;
   private apiWarehouse: string;
   private apiShipping: string;
+  private apiShippingRate: string;
   private apiTax: string;
 
   private dbShop: AngularFirestoreDocument;
@@ -56,6 +57,7 @@ export class AdminService {
       tax,
       warehouse,
       shipping,
+      rate
     } = api;
     const { analytics, shops } = db;
     this.getCurrentUser();
@@ -72,6 +74,7 @@ export class AdminService {
     this.apiTax = url + tax;
     this.apiWarehouse = url + warehouse;
     this.apiShipping = url + shipping;
+    this.apiShippingRate = this.apiShipping + rate;
 
     this.dbAnalytics = this.dbS.db.collection(analytics);
     this.dbShop = this.dbS.db.collection(shops).doc(shopId);
@@ -396,6 +399,33 @@ export class AdminService {
     const { apiShipping } = this;
     try {
       return await this.req.delete(`${apiShipping}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createShippingRate(data: ShippingRateInterface) {
+    const { apiShipping } = this;
+    try {
+      return await this.req.put(apiShipping, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateShippingRate(data: ShippingRateInterface) {
+    const { apiShippingRate } = this;
+    try {
+      return await this.req.patch(apiShippingRate, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteShippingRate(id: string) {
+    const { apiShippingRate } = this;
+    try {
+      return await this.req.delete(`${apiShippingRate}/${id}`);
     } catch (err) {
       throw err;
     }

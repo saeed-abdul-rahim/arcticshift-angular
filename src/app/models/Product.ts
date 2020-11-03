@@ -1,7 +1,6 @@
 import { CommonInterface, Tax, Condition, Content, ObjString, OrderBy } from './Common';
 
 export interface ProductInterface extends CommonInterface {
-    id?: string;
     shopId?: string;
     productId?: string;
     name?: string;
