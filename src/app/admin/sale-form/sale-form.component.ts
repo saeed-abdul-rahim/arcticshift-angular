@@ -30,7 +30,6 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   modalSuccess = false;
   showModal = false;
   tabDeleteLoading = false;
-  minDate = new Date();
 
   shopData: ShopInterface;
   saleRoute = saleDiscountRoute;

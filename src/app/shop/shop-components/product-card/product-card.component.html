@@ -1,6 +1,7 @@
 <div class="w-full p-3 flex flex-col flex-grow" (mouseenter)="hover = true" (mouseleave)="hover = false"
     ng-touch [timemove]="3" (touch)="toggleHover()">
     <div class="relative w-full flex flex-col">
+        <div class="absolute bg-gray-100 h-48 w-48"></div>
         <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; let first = first"
             [ngClass]="first ? 'relative' : 'absolute opacity-0'" src="{{img.url}}" alt="{{img.title}}"
             [class.opacity-100]="!first && hover" [class.opacity-0]="!first && !hover">
@@ -12,8 +13,8 @@
     </div>
     <div class="relative flex flex-col w-full text-gray-700">
         <p class="relative pt-1 font-light">
-            <span class="line-through text-gray-500">{{strikePrice}}</span>
-            {{price}}
+            <span class="line-through text-gray-500">{{strikePrice | currency: settings.currency}}</span>
+            {{price | currency: settings.currency}}
         </p>
         <p class="absolute bg-white pt-1 font-hairline cursor-pointer hover:text-blue-500" *ngIf="hover" [@slideInOutAnimation]>
             Show more

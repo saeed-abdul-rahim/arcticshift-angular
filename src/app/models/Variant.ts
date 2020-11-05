@@ -8,15 +8,10 @@ export interface VariantInterface extends CommonInterface {
     name?: string;
     productName?: string;
     description?: string;
-    keywords?: string[];
     url?: string;
     images?: Content[];
     productTypeId?: string;
-    attributeId?: string[];
-    attributeValueId?: string[];
     attributes?: ObjString;
-    categoryId?: string;
-    collectionId?: string[];
     prices?: Price[];
     price?: number;
     variantIds?: string[];

@@ -30,7 +30,6 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   tabDeleteLoading = false;
   edit = false;
   showMeEndDate = false;
-  minDate = new Date();
 
   shopData: ShopInterface;
   voucherRoute = voucherRoute;

@@ -21,6 +21,9 @@ import { RequestService } from '@services/request/request.service';
 import { environment } from '@environment';
 import { OrderInterface } from '@models/Order';
 import { ShippingRateInterface } from '@models/Shipping';
+import { map } from 'rxjs/internal/operators/map';
+import { AuthService } from '@services/auth/auth.service';
+import { User } from '@models/User';
 
 @Injectable()
 export class ShopService {
@@ -43,12 +46,15 @@ export class ShopService {
   private apiWishlist: string;
   private apiOrder: string;
 
-  constructor(private dbS: DbService, private req: RequestService) {
+  private user: User;
+
+  constructor(private dbS: DbService, private req: RequestService, private auth: AuthService) {
     const { api } = environment;
     const { url, user, wishlist, order } = api;
     this.apiUser = url + user;
     this.apiWishlist = this.apiUser + wishlist;
     this.apiOrder = url + order;
+    this.getCurrentUser();
   }
 
   async addToWishlist(productId: string) {
@@ -60,10 +66,46 @@ export class ShopService {
     }
   }
 
+  async removeFromWishlist(productId: string) {
+    const { req, apiWishlist } = this;
+    try {
+      return await req.delete(`${apiWishlist}/${productId}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async addToCart(data: OrderInterface) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.put(apiOrder, { data: { ...data, userId: user.uid } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getCartTotal() {
     const { req, apiOrder } = this;
     try {
-      return await req.put(apiOrder, { data });
+      return await req.get(`${apiOrder}/total`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async removeVariantFromCart(orderId: string, variantId: string) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.patch(`${apiOrder}/${orderId}/variant`, { data: { userId: user.uid, variantId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async addVoucher(orderId: string, code: string) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.put(`${apiOrder}/${orderId}/voucher`, { data: { userId: user.uid, code } });
     } catch (err) {
       throw err;
     }
@@ -239,9 +281,7 @@ export class ShopService {
     const orders = this.dbS.queryOrders([
       { field: 'userId', type: '==', value: userId},
       { field: 'orderStatus', type: '==', value: 'draft' }
-    ], {
-      field: 'createdAt', direction: 'desc'
-    }, 1);
+    ], null, 1);
     return getDataFromCollection(orders) as Observable<OrderInterface[]>;
   }
 
@@ -249,10 +289,16 @@ export class ShopService {
     const now = Date.now();
     const saleDiscounts = this.dbS.querySaleDiscounts([
       { field: 'status', type: '==', value: 'active' },
-      { field: 'startDate', type: '>=', value: now },
-      { field: 'endDate', type: '<=', value: now }
+      { field: 'startDate', type: '<=', value: now },
+      { field: 'startDate', type: '>', value: 0 }
     ]);
-    return getDataFromCollection(saleDiscounts);
+    return getDataFromCollection(saleDiscounts).pipe(
+        map((data: SaleDiscountInterface[]) => data.filter(s => s.endDate < now))
+      );
+  }
+
+  private getCurrentUser() {
+    this.auth.getCurrentUserStream().subscribe(user => this.user = user);
   }
 
 }
