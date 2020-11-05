@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { inOut, inOut5 } from '@animations/inOut';
 
 @Component({
@@ -12,8 +12,11 @@ export class ModalComponent implements OnInit {
   @Input() showModal: boolean;
   @Input() size: 'small' | 'medium' | 'large';
   @Input() buttonLabel = 'Save';
-  @Input() buttonColor = 'blue';
+  @Input() buttonColor = 'gray';
   @Input() submit = true;
+  @Input() showHeader = true;
+  @Input() showFooter = true;
+  @Input() enableScroll = true;
 
   @Input() loading: boolean;
   @Input() success: boolean;
@@ -24,18 +27,28 @@ export class ModalComponent implements OnInit {
   @Output() showModalChange = new EventEmitter<boolean>();
   @Output() modalCallback = new EventEmitter<any>();
 
-  constructor() { }
+  @ViewChild('modal') modal: ElementRef;
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
-  toggleModal() {
-    this.showModal = !this.showModal;
+  closeModal() {
+    this.showModal = false;
     this.showModalChange.emit(this.showModal);
   }
 
   modalFn() {
     this.modalCallback.emit();
+  }
+
+  @HostListener('document:mousedown', ['$event'])
+  onGlobalClick(event: Event): void {
+     if (!this.modal?.nativeElement.contains(event.target)) {
+        this.closeModal();
+     }
   }
 
 }

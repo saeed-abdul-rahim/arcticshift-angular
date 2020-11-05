@@ -33,67 +33,43 @@ export class CartComponent implements OnInit, OnDestroy {
   checkoutRoute = `/${CHECKOUT}`;
   imageSize = IMAGE_XS;
   showCoupon = false;
-  showAddress = false;
   variantsLoading = false;
   voucherLoading = false;
   voucherSuccess = false;
   draftLoading = false;
   totalLoading = false;
-  initCartTotalLoad = false;
 
   settings: GeneralSettings;
   draft: OrderInterface;
   variants: VariantInterface[] = [];
 
-  draftSubscription: Subscription;
-  variantsSubscription: Subscription;
-  settingsSubscription: Subscription;
+  private draftSubscription: Subscription;
+  private variantsSubscription: Subscription;
+  private settingsSubscription: Subscription;
 
   constructor(private cart: CartService, private shop: ShopService, private router: Router, private alert: AlertService) { }
 
   ngOnInit(): void {
-    this.draftLoading = true;
-    this.draftSubscription = this.cart.getDraft().subscribe(draft => {
-      this.draftLoading = false;
-      if (!draft) { return; }
-      this.draft = draft;
-      if (!this.initCartTotalLoad) {
-        this.getCartTotal();
-        this.initCartTotalLoad = true;
+    this.cart.getProductsFromDraft().subscribe(data => {
+      if (data) {
+        const { draft, variants } = data;
+        this.draft = draft;
+        this.variants = variants;
       }
-      const { variants } = draft;
-      const variantIds = variants.map(variant => variant.variantId);
-      this.variantsLoading = true;
-      this.variantsSubscription = this.shop.getVariantByIds(variantIds).subscribe(vars => {
-        this.variantsLoading = false;
-        if (!vars) { return; }
-        this.variants = vars.map(v => {
-          const variantQuantity = variants.find(vq => vq.variantId === v.id);
-          v.quantity = variantQuantity.quantity;
-          return v;
-        });
-      }, _ => this.variantsLoading = false);
-    }, _ => this.draftLoading = false);
+    });
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
   }
 
   ngOnDestroy(): void {
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
+    }
     if (this.draftSubscription && !this.draftSubscription.closed) {
       this.draftSubscription.unsubscribe();
     }
     if (this.variantsSubscription && !this.variantsSubscription.closed) {
       this.variantsSubscription.unsubscribe();
     }
-  }
-
-  async getCartTotal() {
-    this.totalLoading = true;
-    try {
-      await this.shop.getCartTotal();
-    } catch (err) {
-      this.handleError(err);
-    }
-    this.totalLoading = false;
   }
 
   async addVoucher(code: string) {
@@ -130,10 +106,6 @@ export class CartComponent implements OnInit, OnDestroy {
 
   toggleCoupon() {
     this.showCoupon = !this.showCoupon;
-  }
-
-  toggleAddress() {
-    this.showAddress = !this.showAddress;
   }
 
   navigateToCheckout() {

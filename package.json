@@ -37,6 +37,7 @@
     "browser-image-compression": "^1.0.12",
     "firebase": "^7.21.1",
     "module-alias": "^2.2.2",
+    "ng-otp-input": "^1.7.1",
     "ngx-image-zoom": "^0.6.0",
     "ngx-material-timepicker": "^5.5.3",
     "rxjs": "~6.5.4",

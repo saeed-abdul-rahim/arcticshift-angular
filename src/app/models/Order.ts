@@ -13,8 +13,13 @@ export interface OrderInterface extends CommonInterface {
     shopId?: string;
     userId?: string;
     customerName?: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    email?: string;
     orderId?: string;
     orderNo?: number;
+    gatewayOrderId?: string;
     orderStatus?: OrderStatus;
     paymentStatus?: PaymentStatus;
     billingAddress?: Address | null;
@@ -32,7 +37,7 @@ export interface OrderInterface extends CommonInterface {
     shippingCharge?: number;
     total?: number;
     payment?: Payment[];
-    data?: any;
+    notes?: string;
 }
 
 export type OrderCondition = Condition & {

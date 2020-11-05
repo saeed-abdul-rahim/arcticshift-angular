@@ -13,9 +13,10 @@ export class ShopComponent implements OnInit, OnDestroy {
   constructor(private auth: AuthService, private product: ProductService, private shop: ShopService) { }
 
   ngOnInit(): void {
+    this.shop.getCurrentLocationDetails();
+    this.shop.setSaleDiscounts();
     this.product.getProducts();
     this.product.getAttributesFromDb();
-    this.shop.setSaleDiscounts();
     this.login();
   }
 

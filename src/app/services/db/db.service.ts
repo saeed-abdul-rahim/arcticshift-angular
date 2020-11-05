@@ -26,6 +26,7 @@ import { VariantCondition, VariantOrderBy } from '@models/Variant';
 import { WarehouseCondition, WarehouseOrderBy } from '@models/Warehouse';
 import { OrderCondition, OrderOrderBy } from '@models/Order';
 import { SaleDiscountCondition, SaleDiscountOrderBy } from '@models/SaleDiscount';
+import { UserCondition, UserOrderBy } from '@models/User';
 
 @Injectable()
 export class DbService {
@@ -35,6 +36,7 @@ export class DbService {
   dbGeneralSettings: AngularFirestoreDocument;
   dbPath: string;
 
+  dbUsersRoute: string;
   dbProductsRoute: string;
   dbVariantsRoute: string;
   dbProductTypesRoute: string;
@@ -59,6 +61,7 @@ export class DbService {
     const {
       version,
       name,
+      users,
       products,
       variants,
       productTypes,
@@ -82,7 +85,7 @@ export class DbService {
     this.dbGeneralSettings = this.db.collection(settings).doc(general);
     this.dbPath = `/${version}/${name}`;
 
-
+    this.dbUsersRoute = users;
     this.dbProductsRoute = products;
     this.dbVariantsRoute = variants;
     this.dbCategoriesRoute = categories;
@@ -125,6 +128,11 @@ export class DbService {
     return getDataFromCollection(dbRef).pipe(
       leftJoin(this.afs, 'attributeId', dbAttributeValuesRoutePath)
     ) as Observable<AttributeJoinInterface[]>;
+  }
+
+  queryUsers(conditions?: UserCondition[], orderBy?: UserOrderBy, limit?: number) {
+    const { db, dbUsersRoute } = this;
+    return this.query(db, dbUsersRoute, conditions, orderBy, limit);
   }
 
   queryCategories(conditions?: CategoryCondition[], orderBy?: CategoryOrderBy, limit?: number) {

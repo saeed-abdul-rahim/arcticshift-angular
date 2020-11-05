@@ -59,6 +59,9 @@ export const environment = {
     messagingSenderId: '461509042504',
     appId: '1:461509042504:web:8d15de5711ded9f673d37d',
     measurementId: 'G-RK6Z478XFG'
+  },
+  razorPay: {
+    key: 'rzp_test_aFcsYY4hiiEcvL'
   }
 };
 
@@ -69,4 +72,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+import 'zone.js/dist/zone-error';  // Included with Angular CLI.

@@ -7,6 +7,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { CollectionComponent } from './collection/collection.component';
 import { HomeComponent } from './home/home.component';
 import { ShopComponent } from './shop.component';
+import { SignInComponent } from './sign-in/sign-in.component';
 import { VariantComponent } from './variant/variant.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 
@@ -16,6 +17,7 @@ const routes: Routes = [
     path: '', component: ShopComponent,
     children: [
       { path: '', component: HomeComponent },
+      { path: 'sign', component: SignInComponent },
       { path: `${PRODUCT}/:title/:id`, component: VariantComponent },
       { path: CATEGORY, component: CategoryComponent },
       { path: COLLECTION, component: CollectionComponent },

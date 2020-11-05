@@ -9,13 +9,11 @@ import { first } from 'rxjs/internal/operators/first';
 import { environment } from '@environment';
 import { User, UserClaim, UserInterface } from '@models/User';
 import { FirebaseError } from '@utils/FirebaseError';
-import localStorageHelper from '@utils/localStorageHelper';
 import { getDataFromDocument } from '@utils/getFirestoreData';
 
 @Injectable()
 export class AuthService {
 
-  private localKey: string;
   private apiUser: string;
   private dbUsers: AngularFirestoreCollection;
   private user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
@@ -28,12 +26,11 @@ export class AuthService {
   userDoc$: Observable<UserInterface>;
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private httpClient: HttpClient) {
-    const { api, db, localStorageKey } = environment;
+    const { api, db } = environment;
     const { url, user } = api;
     const { version, name, users } = db;
     this.dbUsers = this.afs.collection(version).doc(name).collection(users);
     this.apiUser = url + user;
-    this.localKey = localStorageKey;
   }
 
   async createUser(displayName: string, email: string, password: string) {
@@ -109,20 +106,6 @@ export class AuthService {
     }
   }
 
-  async signUpWithEmail(email: string) {
-    try {
-      await this.afAuth.sendSignInLinkToEmail(email, this.getActionCodeSettings());
-      const local = localStorageHelper.getItem(this.localKey);
-      if (local) {
-        localStorageHelper.setItem(this.localKey, { ...local, email });
-      } else {
-        localStorageHelper.setItem(this.localKey, { email });
-      }
-    } catch (err) {
-      throw err.message;
-    }
-  }
-
   async signInWithPhone(phone: string, recaptchaVerifier: firebase.auth.RecaptchaVerifier) {
     try {
       this.confirmationResult.next(await this.afAuth.signInWithPhoneNumber(phone, recaptchaVerifier));
@@ -134,24 +117,6 @@ export class AuthService {
   async fetchEmail(email: string) {
     try {
       return await this.afAuth.fetchSignInMethodsForEmail(email);
-    } catch (err) {
-      throw err.message;
-    }
-  }
-
-  async confirmSignInWithLink(url: string) {
-    try {
-      if (this.afAuth.isSignInWithEmailLink(url)) {
-        const local = localStorageHelper.getItem(this.localKey);
-        if (!local || !local.email) {
-          throw new Error('Are you in same browser? Please signup again');
-        }
-        const { email } = local;
-        const result = await this.afAuth.signInWithEmailLink(email, url);
-        delete local.email;
-        localStorageHelper.setItem(this.localKey, { ...local });
-        return result;
-      }
     } catch (err) {
       throw err.message;
     }
@@ -200,10 +165,10 @@ export class AuthService {
         await this.signInAnonymously();
         currentUser = await this.getAfsCurrentUser();
       }
-      const { displayName, email, phoneNumber, uid } = currentUser;
+      const { displayName, email, phoneNumber, uid, isAnonymous } = currentUser;
       const { token, claims, expirationTime } = await currentUser.getIdTokenResult(true);
       const expiry = Date.parse(expirationTime);
-      const authDetails = { uid, token, name: displayName, email, phone: phoneNumber, expiry };
+      const authDetails = { uid, isAnonymous, token, name: displayName, email, phone: phoneNumber, expiry };
       if (claims.claims && claims.claims.length === 1) {
         const { shopId, role, } = claims.claims[0];
         this.setUser({ ...authDetails, shopId, role, allClaims: claims.claims });
