@@ -447,6 +447,10 @@ h5 {
     @apply mb-2;
 }
 
+.otp-input {
+    @apply arc-input !important;
+}
+
 .ng-select {
     @apply arc-input;
     @apply relative;

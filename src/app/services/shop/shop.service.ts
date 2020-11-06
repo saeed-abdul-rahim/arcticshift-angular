@@ -23,7 +23,7 @@ import { OrderInterface } from '@models/Order';
 import { ShippingRateInterface } from '@models/Shipping';
 import { map } from 'rxjs/internal/operators/map';
 import { AuthService } from '@services/auth/auth.service';
-import { User, UserInterface } from '@models/User';
+import { User } from '@models/User';
 import { GeoIp } from '@models/GeoIp';
 import { ExchangeRate } from '@models/ExchangeRate';
 import { currencyList } from '@utils/currencyList';
@@ -129,13 +129,6 @@ export class ShopService {
     }
   }
 
-  async getUserByPhone(phone: string): Promise<UserInterface[]> {
-    const query = this.dbS.queryUsers([{
-      field: 'phone', type: '==', value: phone
-    }], undefined, 1);
-    return await getDataFromCollection(query).toPromise() as UserInterface[];
-  }
-
   destroy(): void {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
@@ -216,9 +209,9 @@ export class ShopService {
     return getDataFromDocument(saleRef);
   }
 
-  getVoucherById(saleId: string): Observable<VoucherInterface> {
+  getVoucherById(voucherId: string): Observable<VoucherInterface> {
     const { db, dbVouchersRoute } = this.dbS;
-    const saleRef = db.collection(dbVouchersRoute).doc(saleId);
+    const saleRef = db.collection(dbVouchersRoute).doc(voucherId);
     return getDataFromDocument(saleRef);
   }
 

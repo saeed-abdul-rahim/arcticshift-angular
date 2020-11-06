@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgOtpInputModule } from 'ng-otp-input';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -57,6 +58,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
     ComponentsModule,
     ShopComponentsModule,
     FontAwesomeModule,
+    NgOtpInputModule,
     IvyCarouselModule,
     NgxImageZoomModule,
     NgSelectModule

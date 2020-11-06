@@ -21297,6 +21297,23 @@ h5 {
   margin-bottom: 0.5rem;
 }
 
+.otp-input {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+  --text-opacity: 1 !important;
+  color: #4a5568 !important;
+  color: rgba(74, 85, 104, var(--text-opacity)) !important;
+  --bg-opacity: 1 !important;
+  background-color: #fff !important;
+  background-color: rgba(255, 255, 255, var(--bg-opacity)) !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.875rem !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.15s ease 0s !important;
+}
+
 .ng-select {
   padding-left: 0.75rem;
   padding-right: 0.75rem;

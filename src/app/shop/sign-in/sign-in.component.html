@@ -1,16 +1,33 @@
-<app-modal [(showModal)]="showModal" [bodyTemplate]="signInTemplate" [showHeader]="false" [showFooter]="false" [enableScroll]="false"></app-modal>
+<app-modal [(showModal)]="showModal" [bodyTemplate]="signInTemplate" [showHeader]="false" [showFooter]="false"
+    [enableScroll]="false"></app-modal>
 
 <ng-template #signInTemplate>
     <div class="font-light">
         <div class="text-2xl text-center font-light">
             Sign In
         </div>
-        <div class="flex items-center justify-center p-5 relative">
-            <div class="flex flex-wrap items-stretch mb-4 relative shadow rounded">
-                <ng-select class="input-group-left w-20" [items]="countryCallCodes" bindValue="callCode" bindLabel="callCode" [clearable]="false" [(ngModel)]="selectedCallCode"></ng-select>
-                <input #phone type="number" class="input-group-right w-40" placeholder="999 999 9999" />
+        <div *ngIf="!showOtp">
+            <div class="flex items-center justify-center p-5 relative">
+                <div class="flex flex-wrap items-stretch relative shadow rounded">
+                    <ng-select class="input-group-left w-20" [items]="countryCallCodes" bindValue="callCode"
+                        bindLabel="callCode" [clearable]="false" [(ngModel)]="selectedCallCode"></ng-select>
+                    <input #phone type="number" class="input-group-right w-40" placeholder="999 999 9999" />
+                </div>
             </div>
-            <app-button [label]="'Sign In'" [color]="'gray'" [dark]="true" (click)="getUserByPhone(selectedCallCode+phone.value)"></app-button>
+            <div class="flex justify-center">
+                <app-button class="text-center" [label]="'Get OTP'" [color]="'gray'" [dark]="true" [loading]="loading"
+                    (click)="getUserByPhone(selectedCallCode+phone.value)"></app-button>
+            </div>
+        </div>
+        <div *ngIf="showOtp">
+            <div class="flex items-center justify-center py-5 relative">
+                <ng-otp-input (onInputChange)="onOtpChange($event)" [config]="otpConfig"></ng-otp-input>
+            </div>
+            <div class="flex justify-center">
+                <app-button class="text-center" [label]="'Sign In'" [color]="'gray'" [dark]="true" [loading]="loading"
+                (click)="verify()"></app-button>
+            </div>
         </div>
     </div>
 </ng-template>
+<div id="recaptcha-container" style="display: none;"></div>
