@@ -1,4 +1,4 @@
-import { AuthType, CommonInterface, OrderBy, Role } from './Common';
+import { AuthType, CommonInterface, Condition, OrderBy, Role } from './Common';
 import { PaymentMethod } from './Payment';
 
 type Gender = 'Male' | 'Female' | 'Transgender' | '';
@@ -6,6 +6,7 @@ export const genders: Gender[] = [ 'Male', 'Female', 'Transgender' ];
 
 export interface User {
     uid: string;
+    isAnonymous: boolean;
     token: string;
     name: string;
     email: string;
@@ -59,6 +60,12 @@ export type Address = {
 } | null;
 
 export type UserFields = keyof UserInterface;
+export type AllUserFields = keyof UserInterface & Address;
+
+export type UserCondition = Condition & {
+    field: AllUserFields
+    parentFields?: UserFields[]
+};
 
 export type UserOrderBy = OrderBy & {
     field: UserFields

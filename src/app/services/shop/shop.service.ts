@@ -23,7 +23,10 @@ import { OrderInterface } from '@models/Order';
 import { ShippingRateInterface } from '@models/Shipping';
 import { map } from 'rxjs/internal/operators/map';
 import { AuthService } from '@services/auth/auth.service';
-import { User } from '@models/User';
+import { User, UserInterface } from '@models/User';
+import { GeoIp } from '@models/GeoIp';
+import { ExchangeRate } from '@models/ExchangeRate';
+import { currencyList } from '@utils/currencyList';
 
 @Injectable()
 export class ShopService {
@@ -32,8 +35,12 @@ export class ShopService {
   private generalSettingsSubscription: Subscription;
   private saleDiscounts = new BehaviorSubject<SaleDiscountInterface[]>(null);
   private generalSettings = new BehaviorSubject<GeneralSettings>(null);
+  private currentLocation = new BehaviorSubject<GeoIp>(null);
+  private currentExchangeRate = new BehaviorSubject<number>(null);
   generalSettings$ = this.generalSettings.asObservable();
   saleDiscounts$ = this.saleDiscounts.asObservable();
+  currentLocation$ = this.currentLocation.asObservable();
+  currentExchangeRate$ = this.currentExchangeRate.asObservable();
 
   products$: Observable<ProductInterface[]>;
   attributes$: Observable<AttributeInterface[]>;
@@ -55,6 +62,17 @@ export class ShopService {
     this.apiWishlist = this.apiUser + wishlist;
     this.apiOrder = url + order;
     this.getCurrentUser();
+  }
+
+  async getCurrentLocationDetails() {
+    try {
+      const location = await this.getLocation();
+      const countryCode = location.country_code;
+      const currencyCode = currencyList[countryCode];
+      await this.getExchangeRate(currencyCode);
+    } catch (err) {
+      throw err;
+    }
   }
 
   async addToWishlist(productId: string) {
@@ -111,10 +129,21 @@ export class ShopService {
     }
   }
 
+  async getUserByPhone(phone: string): Promise<UserInterface[]> {
+    const query = this.dbS.queryUsers([{
+      field: 'phone', type: '==', value: phone
+    }], undefined, 1);
+    return await getDataFromCollection(query).toPromise() as UserInterface[];
+  }
+
   destroy(): void {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
     }
+    this.unsubscribeSaleDiscounts();
+  }
+
+  unsubscribeSaleDiscounts() {
     if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
       this.saleDiscountSubscription.unsubscribe();
     }
@@ -128,6 +157,14 @@ export class ShopService {
     return this.generalSettings$;
   }
 
+  getCurrentLocation() {
+    return this.currentLocation$;
+  }
+
+  getCurrentExchangeRate() {
+    return this.currentExchangeRate$;
+  }
+
   getGeneralSettingsFromDb() {
     const { dbGeneralSettings } = this.dbS;
     this.generalSettingsSubscription =  getDataFromDocument(dbGeneralSettings)
@@ -135,6 +172,7 @@ export class ShopService {
   }
 
   setSaleDiscounts() {
+    this.unsubscribeSaleDiscounts();
     this.saleDiscountSubscription = this.getSaleDiscountsFromDb().subscribe(sales => this.saleDiscounts.next(sales));
   }
 
@@ -299,6 +337,37 @@ export class ShopService {
 
   private getCurrentUser() {
     this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+  }
+
+  private async getLocation() {
+    try {
+      const location = await (await fetch('https://freegeoip.app/json/')).json() as GeoIp;
+      this.currentLocation.next(location);
+      return location;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private async getExchangeRate(currency: string) {
+    this.generalSettings.subscribe(async settings => {
+      if (settings) {
+        const baseCurrency = settings.currency;
+        if (baseCurrency && baseCurrency !== currency) {
+          try {
+            const rate = await (await fetch(`https://api.exchangerate.host/latest?base=${baseCurrency}&symbols=${currency}`))
+              .json() as ExchangeRate;
+            this.currentExchangeRate.next(rate.rates[currency]);
+            return rate;
+          } catch (err) {
+            throw err;
+          }
+        } else {
+          this.currentExchangeRate.next(1);
+          return 1;
+        }
+      }
+    });
   }
 
 }

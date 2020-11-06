@@ -1,36 +1,34 @@
 <div *ngIf="showModal"
-    class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex" [@inOutAnimation]>
+    class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+    [@inOutAnimation]>
     <div
         class="relative w-11/12 my-3 mx-auto {{ size === 'large' ? 'max-w-6xl' : size === 'medium' ? 'max-w-3xl' : 'max-w-sm' }}">
         <!--content-->
-        <div
-            class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+        <div #modal class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <!--header-->
-            <div class="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
+            <div class="flex items-start justify-between p-3 border-b border-solid border-gray-300 rounded-t" *ngIf="showHeader">
                 <h2 class="text-xl font-semibold text-gray-800 capitalize">
                     {{heading}}
                 </h2>
                 <button
                     class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    (click)="toggleModal()" type="button">
+                    (click)="closeModal()" type="button">
                     <span
-                        class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                        class="bg-transparent text-gray-700 opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
                         ×
                     </span>
                 </button>
             </div>
             <!--body-->
             <div class="relative p-6 flex-auto">
-                <p class="text-gray-600 text-lg leading-relaxed max-h-64 overflow-y-auto overflow-x-hidden scrollbar">
+                <p class="text-gray-600 text-lg leading-relaxed max-h-64 relative" *ngIf="enableScroll ? 'overflow-y-auto overflow-x-hidden scrollbar' : 'overflow-visible'">
                     <ng-container [ngTemplateOutlet]="bodyTemplate"></ng-container>
                 </p>
             </div>
             <!--footer-->
-            <div class="flex items-center justify-end px-6 py-3 border-t border-solid border-gray-300 rounded-b">
-                <button class="arc-button-secondary text-gray-500" type="button" (click)="toggleModal()">
-                    Close
-                </button>
-                <app-button [loading]="loading" [success]="success" [color]="buttonColor" [label]="buttonLabel" [submit]="submit" (click)="modalFn()">
+            <div class="flex items-center justify-end p-3 border-t border-solid border-gray-300 rounded-b" *ngIf="showFooter">
+                <app-button [loading]="loading" [success]="success" [color]="buttonColor" [label]="buttonLabel"
+                    [submit]="submit" (click)="modalFn()">
                 </app-button>
             </div>
         </div>

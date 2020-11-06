@@ -1,0 +1,16 @@
+<app-modal [(showModal)]="showModal" [bodyTemplate]="signInTemplate" [showHeader]="false" [showFooter]="false" [enableScroll]="false"></app-modal>
+
+<ng-template #signInTemplate>
+    <div class="font-light">
+        <div class="text-2xl text-center font-light">
+            Sign In
+        </div>
+        <div class="flex items-center justify-center p-5 relative">
+            <div class="flex flex-wrap items-stretch mb-4 relative shadow rounded">
+                <ng-select class="input-group-left w-20" [items]="countryCallCodes" bindValue="callCode" bindLabel="callCode" [clearable]="false" [(ngModel)]="selectedCallCode"></ng-select>
+                <input #phone type="number" class="input-group-right w-40" placeholder="999 999 9999" />
+            </div>
+            <app-button [label]="'Sign In'" [color]="'gray'" [dark]="true" (click)="getUserByPhone(selectedCallCode+phone.value)"></app-button>
+        </div>
+    </div>
+</ng-template>

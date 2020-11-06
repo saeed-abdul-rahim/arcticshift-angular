@@ -3,21 +3,42 @@
         <div class="font-light text-2xl mb-3">
             Billing Details
         </div>
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-2" [formGroup]="billingForm">
             <div class="flex justify-between">
-                <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name" />
-                <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name" />
+                <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name"
+                    formControlName="firstName"
+                    [ngClass]="billingFormControls.firstName.touched && billingFormControls.firstName.invalid ? 'border-red': ''" />
+                <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name"
+                    formControlName="lastName"
+                    [ngClass]="billingFormControls.lastName.touched && billingFormControls.lastName.invalid ? 'border-red' : ''" />
             </div>
-            <ng-select placeholder="Country"></ng-select>
+            <ng-select placeholder="Country" [items]="countryList" bindValue="alpha3" bindLabel="name"
+                formControlName="country" (change)="setBillingState($event)"
+                [ngClass]="billingFormControls.country.touched && billingFormControls.country.invalid ? 'border-red' : ''">
+            </ng-select>
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="House number and street name"
+                formControlName="line1"
+                [ngClass]="billingFormControls.line1.touched && billingFormControls.line1.invalid ? 'border-red' : ''" />
             <input type="text" class="arc-input placeholder-gray-400 w-full"
-                placeholder="House number and street name" />
-            <input type="text" class="arc-input placeholder-gray-400 w-full"
-                placeholder="Apartment, suite, unit, etc. (optional)" />
-            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City" />
-            <ng-select placeholder="State / County"></ng-select>
-            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP" />
-            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Phone" />
-            <input type="email" class="arc-input placeholder-gray w-full" placeholder="Email" />
+                placeholder="Apartment, suite, unit, etc. (optional)" formControlName="line2" />
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City"
+                formControlName="city"
+                [ngClass]="billingFormControls.city.touched && billingFormControls.city.invalid ? 'border-red' : ''" />
+            <ng-select placeholder="State / County" [items]="billingStates" bindValue="name" bindLabel="name"
+                formControlName="state" *ngIf="billingStates.length > 0"
+                [ngClass]="billingFormControls.state.touched && billingFormControls.state.invalid ? 'border-red' : ''">
+            </ng-select>
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="State / County"
+                *ngIf="billingStates.length === 0" formControlName="state"
+                [ngClass]="billingFormControls.state.touched && billingFormControls.state.invalid ? 'border-red' : ''" />
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP"
+                formControlName="zip"
+                [ngClass]="billingFormControls.zip.touched && billingFormControls.zip.invalid ? 'border-red' : ''" />
+            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Phone"
+                formControlName="phone"
+                [ngClass]="billingFormControls.phone.touched && billingFormControls.phone.invalid ? 'border-red' : ''" />
+            <input type="email" class="arc-input placeholder-gray w-full" placeholder="Email" formControlName="email"
+                [ngClass]="billingFormControls.email.touched && billingFormControls.email.invalid ? 'border-red' : ''" />
         </div>
         <div class="font-light text-2xl mb-3 mt-10">
             Shipping Details
@@ -33,19 +54,34 @@
             </label>
         </div>
         <div class="slider" [class.closed]="!shippingAddressCheck">
-            <div class="p-1 flex flex-col space-y-2 mt-3">
+            <div class="p-1 flex flex-col space-y-2 mt-3" [formGroup]="shippingForm">
                 <div class="flex justify-between">
-                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name" />
-                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name" />
+                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name"
+                        formControlName="firstName"
+                        [ngClass]="shippingFormControls.firstName.touched && shippingFormControls.firstName.invalid ? 'border-red': ''" />
+                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name"
+                        formControlName="lastName"
+                        [ngClass]="shippingFormControls.lastName.touched && shippingFormControls.lastName.invalid ? 'border-red' : ''" />
                 </div>
-                <ng-select placeholder="Country"></ng-select>
+                <ng-select placeholder="Country" [items]="countryList" bindValue="alpha3" bindLabel="name"
+                    formControlName="country" (change)="setBillingState($event)"
+                    [ngClass]="shippingFormControls.country.touched && shippingFormControls.country.invalid ? 'border-red' : ''">
+                </ng-select>
                 <input type="text" class="arc-input placeholder-gray-400 w-full"
-                    placeholder="House number and street name" />
+                    placeholder="House number and street name" formControlName="line1"
+                    [ngClass]="shippingFormControls.line1.touched && shippingFormControls.line1.invalid ? 'border-red' : ''" />
                 <input type="text" class="arc-input placeholder-gray-400 w-full"
-                    placeholder="Apartment, suite, unit, etc. (optional)" />
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City" />
-                <ng-select placeholder="State / County"></ng-select>
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP" />
+                    placeholder="Apartment, suite, unit, etc. (optional)" formControlName="line2" />
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City"
+                    formControlName="city"
+                    [ngClass]="shippingFormControls.city.touched && shippingFormControls.city.invalid ? 'border-red' : ''" />
+                <ng-select placeholder="State / County" [items]="billingStates" bindValue="name" bindLabel="name"
+                    formControlName="state"
+                    [ngClass]="shippingFormControls.state.touched && shippingFormControls.state.invalid ? 'border-red' : ''">
+                </ng-select>
+                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP"
+                    formControlName="zip"
+                    [ngClass]="shippingFormControls.zip.touched && shippingFormControls.zip.invalid ? 'border-red' : ''" />
             </div>
         </div>
         <div class="font-light mt-5">
@@ -54,6 +90,31 @@
         <textarea class="arc-input mt-3 w-full" placeholder="Notes about your order"></textarea>
     </div>
     <div class="w-full md:w-4/12">
-
+        <div class="font-light text-2xl">
+            Your Order
+        </div>
+        <div class="divide-y divide-gray-200">
+            <div class="flex justify-between py-5" *ngFor="let variant of variants">
+                <div class="flex">
+                    <img class="object-contain" src="{{ getImage(variant.images) }}" alt="{{ variant.productName }}"
+                        width="{{imageSize}}" height="{{imageSize}}">
+                    <div class="flex flex-col font-light ml-6 ">
+                        <div class="text-base">
+                            {{ variant.productName }} - {{ variant.name }}
+                        </div>
+                        <div class="arc-tag">
+                            x {{ variant.quantity }}
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute right-0 font-light">
+                        {{variant.price | currency: settings.currency }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-cart-total [disableAddress]="true"></app-cart-total>
+        <app-button color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
     </div>
 </div>

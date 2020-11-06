@@ -27,6 +27,8 @@ import { CategoryComponent } from './category/category.component';
 import { CollectionComponent } from './collection/collection.component';
 import { CartService } from '@services/cart/cart.service';
 import { FooterComponent } from './footer/footer.component';
+import { CartTotalComponent } from './cart-total/cart-total.component';
+import { SignInComponent } from './sign-in/sign-in.component';
 
 
 @NgModule({
@@ -45,7 +47,9 @@ import { FooterComponent } from './footer/footer.component';
     ProfileComponent,
     CategoryComponent,
     CollectionComponent,
-    FooterComponent
+    FooterComponent,
+    CartTotalComponent,
+    SignInComponent
   ],
   imports: [
     CommonModule,
