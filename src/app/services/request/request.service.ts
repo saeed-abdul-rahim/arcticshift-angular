@@ -1,13 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { SuccessResponse } from '@models/Response';
 
 import { AuthService } from '@services/auth/auth.service';
-
-export interface SuccessResponse {
-    data: any;
-    timestamp: number;
-}
 
 @Injectable()
 export class RequestService {

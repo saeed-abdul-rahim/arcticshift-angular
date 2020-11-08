@@ -48,7 +48,8 @@ export const CHECKOUT: CHECKOUT = 'checkout';
 export const CART: CART = 'cart';
 export const WISHLIST: WISHLIST = 'wishlist';
 
-export const adminRoute = `/${ADMIN}`;
+export const homeRoute = '/';
+export const adminRoute = `${homeRoute}${ADMIN}`;
 export const catalogRoute = `${adminRoute}/${CATALOG}`;
 export const discountRoute = `${adminRoute}/${DISCOUNT}`;
 export const productRoute = `${catalogRoute}/${PRODUCT}`;

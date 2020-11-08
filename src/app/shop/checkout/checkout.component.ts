@@ -1,16 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/internal/Subscription';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs/internal/Subscription';
 import { AuthService } from '@services/auth/auth.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
+import { RazorpayOptions } from '@models/RazorpayOptions';
 import { OrderInterface } from '@models/Order';
 import { VariantInterface } from '@models/Variant';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { Content } from '@models/Common';
+import { Address, User } from '@models/User';
+import { homeRoute } from '@constants/routes';
 import { IMAGE_SS } from '@constants/imageSize';
 import { countryList, CountryListType, CountryStateType } from '@utils/countryList';
-import { User } from '@models/User';
+import { AlertService } from '@services/alert/alert.service';
+import { environment } from '@environment';
 
 @Component({
   selector: 'app-checkout',
@@ -27,11 +32,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   isAnonymous = true;
   payButtonLabel = 'Sign In & Pay';
 
+  invalidBillingForm = false;
+  invalidShippingForm = false;
   billingForm: FormGroup;
   shippingForm: FormGroup;
   addressFormGroup = {
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
     line1: ['', Validators.required],
     line2: [''],
     state: [null, Validators.required],
@@ -47,24 +52,31 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   imageSize = IMAGE_SS;
   draftLoading = false;
   variantsLoading = false;
+  showSignInModal = false;
 
+  private razorpayKey: string;
   private draftSubscription: Subscription;
   private variantsSubscription: Subscription;
   private settingsSubscription: Subscription;
 
-  constructor(private formBuilder: FormBuilder, private cart: CartService, private shop: ShopService, private auth: AuthService) { }
+  constructor(private formBuilder: FormBuilder, private cart: CartService, private shop: ShopService,
+              private auth: AuthService, private router: Router, private alert: AlertService) { }
 
   ngOnInit(): void {
+    const { razorPay } = environment;
+    this.razorpayKey = razorPay.key;
     this.billingForm = this.formBuilder.group({
       ...this.addressFormGroup,
-      email: ['', Validators.required],
-      phone: [null, Validators.required],
+      name: ['', Validators.required]
     });
     this.shippingForm = this.formBuilder.group(this.addressFormGroup);
     this.clearShippingAddressValidators();
     this.getProducts();
     this.auth.getCurrentUserStream().subscribe(user => {
       if (user) {
+        if (this.user && user.uid !== this.user.uid) {
+          this.router.navigateByUrl(homeRoute);
+        }
         this.user = user;
         const { isAnonymous } = user;
         this.isAnonymous = isAnonymous;
@@ -98,15 +110,21 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   setShippingAddressValidators() {
-    Object.keys(this.addressFormGroup).forEach(key => {
+    Object.keys(this.shippingFormControls).forEach(key => {
       if (key !== 'line2') {
         this.shippingForm.get(key).setValidators([Validators.required]);
+        this.shippingForm.get(key).updateValueAndValidity();
       }
     });
   }
 
   clearShippingAddressValidators() {
-    this.shippingForm.clearValidators();
+    Object.keys(this.shippingFormControls).forEach(key => {
+      if (key !== 'line2') {
+        this.shippingForm.get(key).clearValidators();
+        this.shippingForm.get(key).updateValueAndValidity();
+      }
+    });
   }
 
   toggleShippingAddressCheck() {
@@ -148,6 +166,89 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     return thumbnail.url;
   }
 
-  pay() {}
+  async pay() {
+    if (this.isAnonymous) {
+      this.showSignInModal = true;
+      return;
+    }
+    if (this.billingForm.invalid) {
+      this.invalidBillingForm = true;
+      return;
+    }
+    if (this.shippingForm.invalid) {
+      this.invalidShippingForm = true;
+      return;
+    }
+    try {
+      const { user, draft, billingFormControls } = this;
+      const { orderId } = draft;
+      const { phone } = user;
+      const { name } = billingFormControls;
+      const billingAddress = this.getAddress(this.billingForm);
+      billingAddress.name = name.value;
+      let shippingAddress: Address = null;
+      if (this.shippingAddressCheck) {
+        shippingAddress = this.getAddress(this.shippingForm);
+        shippingAddress.name = name.value;
+      }
+      const data: OrderInterface = {
+        orderId,
+        phone,
+        billingAddress,
+        shippingAddress
+      };
+      const gatewayOrderDetails = await this.shop.finalizeCart(data);
+      const { amount, currency, id } = gatewayOrderDetails;
+      const options: RazorpayOptions = {
+        key: this.razorpayKey,
+        amount,
+        currency,
+        order_id: id,
+        prefill: {
+          contact: user.phone
+        },
+        handler: this.razorpayResponseHandler
+      };
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  afterSignIn(isSignedIn: boolean) {
+    if (isSignedIn) {
+      this.pay();
+    }
+  }
+
+  getAddress(address: FormGroup): Address {
+    try {
+      const { phone } = this.user;
+      const { controls } = address;
+      const { line1, line2, state, city, zip, country } = controls;
+      return {
+        phone,
+        line1: line1.value,
+        line2: line2.value,
+        area: state.value,
+        city: city.value,
+        zip: zip.value,
+        country: country.value,
+        company: '',
+        email: '',
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  razorpayResponseHandler(response: any) {
+    console.log(response);
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err });
+  }
 
 }

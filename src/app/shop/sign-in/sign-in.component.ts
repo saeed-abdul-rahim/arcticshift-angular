@@ -7,6 +7,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
 import { countryCallCodes } from '@utils/countryCallCodes';
 import { otpConfig } from '@settings/otpConfig';
+import { CartService } from '@services/cart/cart.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -17,6 +18,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   @Input() showModal = true;
   @Output() showModalChange = new EventEmitter<boolean>();
+  @Output() signedIn = new EventEmitter<boolean>();
 
   countryCallCodes = countryCallCodes;
   selectedCallCode: string;
@@ -28,7 +30,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   locationSubscription: Subscription;
 
-  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService, private cart: CartService) { }
 
   ngOnInit(): void {
     this.locationSubscription = this.shop.getCurrentLocation().subscribe(location => {
@@ -86,11 +88,15 @@ export class SignInComponent implements OnInit, OnDestroy {
       if (newUser) {
         await this.auth.createPhoneUser();
       }
+      await this.auth.getUser();
+      this.cart.getDraftOrdersDb();
+      this.signedIn.emit(true);
       this.closeModal();
     } catch (err) {
-      console.log(err);
       this.handleError(err);
+      this.signedIn.emit(false);
     }
+    this.showOtp = false;
     this.loading = false;
   }
 

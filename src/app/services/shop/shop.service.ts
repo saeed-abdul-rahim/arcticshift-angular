@@ -111,6 +111,15 @@ export class ShopService {
     }
   }
 
+  async finalizeCart(data: OrderInterface) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.patch(apiOrder, { data: { ...data, userId: user.uid } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async removeVariantFromCart(orderId: string, variantId: string) {
     const { req, apiOrder, user } = this;
     try {

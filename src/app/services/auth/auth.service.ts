@@ -117,11 +117,8 @@ export class AuthService {
     try {
       const user = await this.getAfsCurrentUser();
       const headers = await this.setDefaultHeaders();
-      const result = await this.http.patch<SuccessResponse>(`${this.apiUser}/phone`, {
-        data: {
-          userId: user.uid
-        }
-      }, { headers }).toPromise();
+      const { uid } = user;
+      const result = await this.http.patch<SuccessResponse>(`${this.apiUser}/${uid}/phone`, null, { headers }).toPromise();
       return result.data;
     } catch (err) {
       throw err;
@@ -146,9 +143,9 @@ export class AuthService {
     }
   }
 
-  signOut() {
-    this.afAuth.signOut();
-    this.user.next(null);
+  async signOut() {
+    await this.afAuth.signOut();
+    await this.getUser();
   }
 
   setUser(user: User) {

@@ -14,10 +14,27 @@
             [ngClass]="showMenu ? '' : 'closed'" id="menu">
             <nav>
                 <ul class="md:flex items-center justify-between text-base text-gray-700 pt-4 md:pt-0">
-                    <li><a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
-                            href="#">Categories</a></li>
-                    <li><a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
-                            href="#">Collections</a></li>
+                    <li>
+                        <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4">
+                            <span *ngIf="!user || user.isAnonymous" (click)="toggleSignInModal()">
+                                Sign In
+                            </span>
+                            <span *ngIf="user && !user.isAnonymous">
+                                {{ user.name || user.phone || user.email }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
+                            href="#">Categories</a>
+                    </li>
+                    <li>
+                        <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
+                            href="#">Collections</a>
+                    </li>
+                    <li *ngIf="user && !user.isAnonymous">
+                        Sign Out
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -50,3 +67,4 @@
 
     </div>
 </div>
+<app-sign-in [(showModal)]="showSignInModal"></app-sign-in>

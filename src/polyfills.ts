@@ -64,7 +64,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 
 declare global {
     interface Window {
-        razorpay: any;
+        Razorpay: any;
         recaptchaVerifier: any;
     }
 }
