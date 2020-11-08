@@ -1,7 +1,7 @@
 
 <carousel class="pt-3" style="width: {{ innerWidth > 767 ? '75%' : '100%' }};" *ngIf="carouselImages.length > 0"
     [height]="144" [cellWidth]="144" [arrows]="false" [arrowsOutside]="true">
-    <div class="carousel-cell" *ngFor="let img of carouselImages" (click)="setCarouselImages(img.image)">
+    <div class="carousel-cell" *ngFor="let img  of carouselImages">
         <img src="{{img.url}}" alt="{{img.name}}" />
     </div>
 </carousel>
