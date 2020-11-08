@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CART, CATEGORY, CHECKOUT, COLLECTION, PRODUCT, WISHLIST } from '@constants/routes';
+import { CarouselComponent } from 'angular-responsive-carousel';
 import { CartComponent } from './cart/cart.component';
 import { CategoryComponent } from './category/category.component';
 import { CheckoutComponent } from './checkout/checkout.component';
@@ -24,6 +25,7 @@ const routes: Routes = [
       { path: WISHLIST, component: WishlistComponent },
       { path: CART, component: CartComponent },
       { path: CHECKOUT, component: CheckoutComponent },
+      { path: 'carousel', component: CarouselComponent },
     ]
   },
 ];

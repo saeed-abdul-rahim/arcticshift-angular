@@ -29,6 +29,7 @@ import { CartService } from '@services/cart/cart.service';
 import { FooterComponent } from './footer/footer.component';
 import { CartTotalComponent } from './cart-total/cart-total.component';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { CarouselComponent } from './carousel/carousel.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { SignInComponent } from './sign-in/sign-in.component';
     CollectionComponent,
     FooterComponent,
     CartTotalComponent,
-    SignInComponent
+    SignInComponent,
+    CarouselComponent
   ],
   imports: [
     CommonModule,
