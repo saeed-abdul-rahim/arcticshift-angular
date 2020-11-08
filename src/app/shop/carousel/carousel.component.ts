@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.css']
 })
-export class CarouselComponent implements OnInit, OnDestroy{
+export class CarouselComponent implements OnInit, OnDestroy {
 
   innerWidth: any;
 
@@ -30,6 +30,7 @@ export class CarouselComponent implements OnInit, OnDestroy{
   constructor(private shop: ShopService, private alert: AlertService) { }
 
   ngOnInit(): void {
+    this.getCollections();
   }
   ngOnDestroy(): void {
     if (this.collectionSubscription && !this.collectionSubscription.closed) {
@@ -37,31 +38,30 @@ export class CarouselComponent implements OnInit, OnDestroy{
     }
   }
 
-  getCollectionsByImages(id: string) {
+  getCollections() {
     this.collectionLoading = true;
-    this.collectionSubscription = this.shop.getCollectionByfeatureOnHomePage(id).subscribe(collections => {
+    this.collectionSubscription = this.shop.getCollectionByfeatureOnHomePage().subscribe(collections => {
       this.collectionLoading = false;
-      if (collections){
+      if (collections) {
         const thumbnails = collections.map(collection => {
           const { collectionId, name, images } = collection;
-          const thumbnail = this.setCarouselImages(images, name);
-          return { collectionId, ...thumbnail};
+          if (images.length > 0) {
+            const thumbnail = this.setCarouselImages(images, name);
+            console.log(thumbnail);
+            return {collectionId, ...thumbnail};
+          }
         });
         this.carouselImages = thumbnails;
+        console.log(this.carouselImages);
       }
     }, error => this.handleError(error.message));
   }
 
   setCarouselImages(images: Content[], name: string) {
-    let thumbnails: any[] = images.map(image => {
-      const thumbnail = image.thumbnails.find(thumb => thumb.dimension === this.carouselImageSize);
-      return { ...thumbnail, image };
-    });
-    thumbnails = thumbnails.map(thumbnail => {
-      thumbnail.name = name;
-      return thumbnail;
-    });
-    return thumbnails;
+    const image = images[0];
+    const thumbnail = image.thumbnails.find(thumb => thumb.dimension === this.carouselImageSize);
+    thumbnail.name = name;
+    return { ...thumbnail, image };
   }
 
   handleError(err: any) {

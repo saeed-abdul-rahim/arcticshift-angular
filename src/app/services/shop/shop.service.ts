@@ -293,7 +293,7 @@ export class ShopService {
     return getDataFromCollection(variantsRef) as Observable<VariantInterface[]>;
   }
 
-  getCollectionByfeatureOnHomePage(collectionId: string) {
+  getCollectionByfeatureOnHomePage() {
     const collectionsRef = this.dbS.queryCollections([{ field: 'featureOnHomePage', type: '==', value: true }]);
     return getDataFromCollection(collectionsRef) as Observable<CollectionInterface[]>;
   }
