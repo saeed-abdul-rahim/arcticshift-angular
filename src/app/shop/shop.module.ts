@@ -6,6 +6,7 @@ import { NgOtpInputModule } from 'ng-otp-input';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SidebarModule } from 'ng-sidebar';
 
 import { ComponentsModule } from '@components/components.module';
 
@@ -29,6 +30,7 @@ import { CollectionComponent } from './collection/collection.component';
 import { CartService } from '@services/cart/cart.service';
 import { CartTotalComponent } from './cart-total/cart-total.component';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { NavbarService } from '@services/navbar/navbar.service';
 
 
 @NgModule({
@@ -61,11 +63,13 @@ import { SignInComponent } from './sign-in/sign-in.component';
     NgOtpInputModule,
     IvyCarouselModule,
     NgxImageZoomModule,
-    NgSelectModule
+    NgSelectModule,
+    SidebarModule.forRoot()
   ],
   providers: [
+    NavbarService,
     CartService,
-    ProductService
+    ProductService,
   ]
 })
 export class ShopModule { }

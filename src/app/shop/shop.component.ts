@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '@services/auth/auth.service';
+import { NavbarService } from '@services/navbar/navbar.service';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-shop',
@@ -10,9 +12,14 @@ import { ShopService } from '@services/shop/shop.service';
 })
 export class ShopComponent implements OnInit, OnDestroy {
 
-  constructor(private auth: AuthService, private product: ProductService, private shop: ShopService) { }
+  sidebarOpened = false;
+
+  sidebarOpenedSubscription: Subscription;
+
+  constructor(private auth: AuthService, private product: ProductService, private shop: ShopService, private nav: NavbarService) { }
 
   ngOnInit(): void {
+    this.getSidebarOpened();
     this.shop.getCurrentLocationDetails();
     this.shop.setSaleDiscounts();
     this.product.getProducts();
@@ -22,10 +29,17 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.product.destroy();
+    if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
+      this.sidebarOpenedSubscription.unsubscribe();
+    }
   }
 
   async login() {
     await this.auth.getUser();
+  }
+
+  getSidebarOpened() {
+    this.sidebarOpenedSubscription = this.nav.getSidebarOpened().subscribe(open => this.sidebarOpened = open);
   }
 
 }

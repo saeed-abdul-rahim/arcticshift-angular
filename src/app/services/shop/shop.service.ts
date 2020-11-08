@@ -31,9 +31,14 @@ import { currencyList } from '@utils/currencyList';
 @Injectable()
 export class ShopService {
 
+  private categoriesSubscription: Subscription;
+  private collectionsSubscription: Subscription;
   private saleDiscountSubscription: Subscription;
   private generalSettingsSubscription: Subscription;
+
   private saleDiscounts = new BehaviorSubject<SaleDiscountInterface[]>(null);
+  private categories = new BehaviorSubject<CategoryInterface[]>(null);
+  private collections = new BehaviorSubject<CollectionInterface[]>(null);
   private generalSettings = new BehaviorSubject<GeneralSettings>(null);
   private currentLocation = new BehaviorSubject<GeoIp>(null);
   private currentExchangeRate = new BehaviorSubject<number>(null);
@@ -151,6 +156,18 @@ export class ShopService {
     }
   }
 
+  unsubscribeCategories() {
+    if (this.categoriesSubscription && !this.categoriesSubscription.closed) {
+      this.categoriesSubscription.unsubscribe();
+    }
+  }
+
+  unsubscribeCollections() {
+    if (this.collectionsSubscription && !this.collectionsSubscription) {
+      this.collectionsSubscription.unsubscribe();
+    }
+  }
+
   setGeneralSettings(data: GeneralSettings) {
     this.generalSettings.next(data);
   }
@@ -176,6 +193,16 @@ export class ShopService {
   setSaleDiscounts() {
     this.unsubscribeSaleDiscounts();
     this.saleDiscountSubscription = this.getSaleDiscountsFromDb().subscribe(sales => this.saleDiscounts.next(sales));
+  }
+
+  setCategories() {
+    this.unsubscribeCategories();
+    this.categoriesSubscription = this.getCategoriesFromDb().subscribe(categories => this.categories.next(categories));
+  }
+
+  setCollections() {
+    this.unsubscribeCollections();
+    this.collectionsSubscription = this.getCollectionsFromDb().subscribe(collections => this.collections.next(collections));
   }
 
   getSaleDiscounts() {
@@ -335,6 +362,20 @@ export class ShopService {
     return getDataFromCollection(saleDiscounts).pipe(
         map((data: SaleDiscountInterface[]) => data.filter(s => s.endDate < now))
       );
+  }
+
+  getCategoriesFromDb(): Observable<CategoryInterface[]> {
+    const categories = this.dbS.queryCategories([
+      { field: 'status', type: '==', value: 'active' }
+    ]);
+    return getDataFromCollection(categories);
+  }
+
+  getCollectionsFromDb(): Observable<CollectionInterface[]> {
+    const collections = this.dbS.queryCollections([
+      { field: 'status', type: '==', value: 'active' }
+    ]);
+    return getDataFromCollection(collections);
   }
 
   private getCurrentUser() {

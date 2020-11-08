@@ -8,6 +8,7 @@ import { OrderInterface } from '@models/Order';
 import { CART } from '@constants/routes';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
+import { NavbarService } from '@services/navbar/navbar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -27,10 +28,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   user: User;
   draft: OrderInterface;
-  draftSubscription: Subscription;
-  userSubscription: Subscription;
 
-  constructor(private cart: CartService, private auth: AuthService) { }
+  private draftSubscription: Subscription;
+  private userSubscription: Subscription;
+
+  constructor(private cart: CartService, private auth: AuthService, private nav: NavbarService) { }
 
   ngOnInit(): void {
     this.draftSubscription = this.cart.getDraft().subscribe(draft => this.draft = draft);
@@ -48,7 +50,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleMenu() {
-    this.showMenu = !this.showMenu;
+    this.nav.setSidebarOpened(true);
   }
 
   toggleSignInModal() {

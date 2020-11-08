@@ -564,6 +564,11 @@ h5 {
     width: unset !important;
 }
 
+.ng-sidebar{
+    @apply z-20 !important;
+    @apply shadow;
+}
+
 .mat-form-field-wrapper {
     @apply pb-0 !important;
 }
