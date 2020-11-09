@@ -2,7 +2,10 @@
     <ng-sidebar [(opened)]="sidebarOpened" [closeOnClickOutside]="true">
         <div class="h-full bg-white relative z-40 p-5 px-8">
             <div class="mt-16">
-                Hi there!
+                <ng-container
+                    [ngTemplateOutlet]="categoriesTemplate"
+                    [ngTemplateOutletContext]="{ categories: data }"
+                ></ng-container>
             </div>
         </div>
     </ng-sidebar>
@@ -13,3 +16,16 @@
         </div>
     </div>
 </ng-sidebar-container>
+
+<ng-template #categoriesTemplate let-categories="categories">
+    <div *ngFor="let category of categories">
+        <div *ngIf="category.name && !category.hidden">
+            {{category.name}}
+            <span *ngIf="category.subs && category.subs.length > 0"> &nbsp;> </span>
+        </div>
+        <ng-container
+            [ngTemplateOutlet]="categoriesTemplate"
+            [ngTemplateOutletContext]="{categories: category.subs}"
+        ></ng-container>
+    </div>
+</ng-template>

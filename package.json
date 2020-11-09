@@ -35,6 +35,7 @@
     "angular-ontouch": "^1.0.5",
     "angular-responsive-carousel": "^1.5.11",
     "browser-image-compression": "^1.0.12",
+    "find-and": "^1.3.0",
     "firebase": "^7.21.1",
     "module-alias": "^2.2.2",
     "ng-otp-input": "^1.7.1",
