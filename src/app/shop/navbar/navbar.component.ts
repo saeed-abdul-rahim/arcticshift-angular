@@ -6,7 +6,6 @@ import { faShoppingBag } from '@fortawesome/free-solid-svg-icons/faShoppingBag';
 import { CartService } from '@services/cart/cart.service';
 import { OrderInterface } from '@models/Order';
 import { CART } from '@constants/routes';
-import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
 import { NavbarService } from '@services/navbar/navbar.service';
 
@@ -24,30 +23,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
   faSearch = faSearch;
 
   showMenu = false;
-  showSignInModal = false;
   sidebarOpened: boolean;
 
   user: User;
   draft: OrderInterface;
 
   private draftSubscription: Subscription;
-  private userSubscription: Subscription;
   private sidebarOpenedSubscription: Subscription;
 
-  constructor(private cart: CartService, private auth: AuthService, private nav: NavbarService) { }
+  constructor(private cart: CartService, private nav: NavbarService) { }
 
   ngOnInit(): void {
     this.draftSubscription = this.cart.getDraft().subscribe(draft => this.draft = draft);
-    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
     this.sidebarOpenedSubscription = this.nav.getSidebarOpened().subscribe(sidebarOpened => this.sidebarOpened = sidebarOpened);
   }
 
   ngOnDestroy(): void {
     if (this.draftSubscription && !this.draftSubscription.closed) {
       this.draftSubscription.unsubscribe();
-    }
-    if (this.userSubscription && !this.userSubscription.closed) {
-      this.userSubscription.unsubscribe();
     }
     if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
       this.sidebarOpenedSubscription.unsubscribe();
@@ -57,14 +50,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleMenu() {
     this.nav.setSidebarOpened(!this.sidebarOpened);
-  }
-
-  toggleSignInModal() {
-    this.showSignInModal = true;
-  }
-
-  signOut() {
-    this.auth.signOut();
   }
 
 }
