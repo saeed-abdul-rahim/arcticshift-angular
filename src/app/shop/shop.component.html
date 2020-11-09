@@ -1,5 +1,39 @@
+<<<<<<< HEAD
 <app-navbar class="mt-0 fixed w-full z-40 top-0 shadow-sm"></app-navbar>
 <div class="container mx-auto bg-white mt-20">
     <router-outlet class="h-screen"></router-outlet>
 </div>
 <app-footer></app-footer>
+=======
+<ng-sidebar-container style="height: 100vh;">
+    <ng-sidebar [(opened)]="sidebarOpened" [closeOnClickOutside]="true">
+        <div class="h-full bg-white relative z-40 p-5 px-8">
+            <div class="mt-16">
+                <ng-container
+                    [ngTemplateOutlet]="categoriesTemplate"
+                    [ngTemplateOutletContext]="{ categories: data }"
+                ></ng-container>
+            </div>
+        </div>
+    </ng-sidebar>
+    <div ng-sidebar-content style="position: relative;">
+        <app-navbar class="mt-0 fixed w-full z-30 top-0 shadow-sm"></app-navbar>
+        <div class="container mx-auto bg-white mt-10 h-screen">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</ng-sidebar-container>
+
+<ng-template #categoriesTemplate let-categories="categories">
+    <div *ngFor="let category of categories">
+        <div *ngIf="category.name && !category.hidden">
+            {{category.name}}
+            <span *ngIf="category.subs && category.subs.length > 0"> &nbsp;> </span>
+        </div>
+        <ng-container
+            [ngTemplateOutlet]="categoriesTemplate"
+            [ngTemplateOutletContext]="{categories: category.subs}"
+        ></ng-container>
+    </div>
+</ng-template>
+>>>>>>> f392ff1eae2f8f0f5f0626cf617b77ae823ed292

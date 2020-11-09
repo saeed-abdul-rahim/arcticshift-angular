@@ -447,6 +447,10 @@ h5 {
     @apply mb-2;
 }
 
+.otp-input {
+    @apply arc-input !important;
+}
+
 .ng-select {
     @apply arc-input;
     @apply relative;
@@ -558,6 +562,11 @@ h5 {
 
 .carousel-cells {
     width: unset !important;
+}
+
+.ng-sidebar{
+    @apply z-20 !important;
+    @apply shadow;
 }
 
 .mat-form-field-wrapper {

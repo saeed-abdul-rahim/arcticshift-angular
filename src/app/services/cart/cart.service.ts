@@ -68,6 +68,8 @@ export class CartService {
       this.setDraftLoading(false);
       if (order && order.length > 0) {
         this.draft.next(order[0]);
+      } else {
+        this.draft.next(null);
       }
     }, err => {
       this.setDraftLoading(false);

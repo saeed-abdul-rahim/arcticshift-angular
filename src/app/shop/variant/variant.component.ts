@@ -129,7 +129,7 @@ export class VariantComponent implements OnInit, OnDestroy {
             [variant.variantId]: variant.quantity
           });
         });
-        if (Object.keys(draftVariantQuantity).length > 0) {
+        if (Object.keys(draftVariantQuantity).length > 0 && this.variant) {
           this.draftVariantQuantity = draftVariantQuantity;
           this.quantity = this.draftVariantQuantity[this.variant.id];
         }

@@ -1,44 +1,34 @@
-<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between">
+<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between" *ngIf="variants && variants.length > 0">
     <div class="w-full md:w-7/12 mb-5">
         <div class="font-light text-2xl mb-3">
             Billing Details
         </div>
         <div class="flex flex-col space-y-2" [formGroup]="billingForm">
-            <div class="flex justify-between">
-                <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name"
-                    formControlName="firstName"
-                    [ngClass]="billingFormControls.firstName.touched && billingFormControls.firstName.invalid ? 'border-red': ''" />
-                <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name"
-                    formControlName="lastName"
-                    [ngClass]="billingFormControls.lastName.touched && billingFormControls.lastName.invalid ? 'border-red' : ''" />
-            </div>
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Full Name"
+                formControlName="name"
+                [ngClass]="(billingFormControls.name.touched || invalidBillingForm) && billingFormControls.name.invalid ? 'border-red' : ''" />
             <ng-select placeholder="Country" [items]="countryList" bindValue="alpha3" bindLabel="name"
                 formControlName="country" (change)="setBillingState($event)"
-                [ngClass]="billingFormControls.country.touched && billingFormControls.country.invalid ? 'border-red' : ''">
+                [ngClass]="(billingFormControls.country.touched || invalidBillingForm) && billingFormControls.country.invalid ? 'border-red' : ''">
             </ng-select>
             <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="House number and street name"
                 formControlName="line1"
-                [ngClass]="billingFormControls.line1.touched && billingFormControls.line1.invalid ? 'border-red' : ''" />
+                [ngClass]="(billingFormControls.line1.touched || invalidBillingForm) && billingFormControls.line1.invalid ? 'border-red' : ''" />
             <input type="text" class="arc-input placeholder-gray-400 w-full"
                 placeholder="Apartment, suite, unit, etc. (optional)" formControlName="line2" />
             <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City"
                 formControlName="city"
-                [ngClass]="billingFormControls.city.touched && billingFormControls.city.invalid ? 'border-red' : ''" />
+                [ngClass]="(billingFormControls.city.touched || invalidBillingForm) && billingFormControls.city.invalid ? 'border-red' : ''" />
             <ng-select placeholder="State / County" [items]="billingStates" bindValue="name" bindLabel="name"
                 formControlName="state" *ngIf="billingStates.length > 0"
-                [ngClass]="billingFormControls.state.touched && billingFormControls.state.invalid ? 'border-red' : ''">
+                [ngClass]="(billingFormControls.state.touched || invalidBillingForm) && billingFormControls.state.invalid ? 'border-red' : ''">
             </ng-select>
             <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="State / County"
                 *ngIf="billingStates.length === 0" formControlName="state"
-                [ngClass]="billingFormControls.state.touched && billingFormControls.state.invalid ? 'border-red' : ''" />
+                [ngClass]="(billingFormControls.state.touched || invalidBillingForm) && billingFormControls.state.invalid ? 'border-red' : ''" />
             <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP"
                 formControlName="zip"
-                [ngClass]="billingFormControls.zip.touched && billingFormControls.zip.invalid ? 'border-red' : ''" />
-            <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Phone"
-                formControlName="phone"
-                [ngClass]="billingFormControls.phone.touched && billingFormControls.phone.invalid ? 'border-red' : ''" />
-            <input type="email" class="arc-input placeholder-gray w-full" placeholder="Email" formControlName="email"
-                [ngClass]="billingFormControls.email.touched && billingFormControls.email.invalid ? 'border-red' : ''" />
+                [ngClass]="(billingFormControls.zip.touched || invalidBillingForm) && billingFormControls.zip.invalid ? 'border-red' : ''" />
         </div>
         <div class="font-light text-2xl mb-3 mt-10">
             Shipping Details
@@ -55,33 +45,26 @@
         </div>
         <div class="slider" [class.closed]="!shippingAddressCheck">
             <div class="p-1 flex flex-col space-y-2 mt-3" [formGroup]="shippingForm">
-                <div class="flex justify-between">
-                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 mr-1" placeholder="First Name"
-                        formControlName="firstName"
-                        [ngClass]="shippingFormControls.firstName.touched && shippingFormControls.firstName.invalid ? 'border-red': ''" />
-                    <input type="text" class="arc-input placeholder-gray-400 w-1/2 ml-1" placeholder="Last Name"
-                        formControlName="lastName"
-                        [ngClass]="shippingFormControls.lastName.touched && shippingFormControls.lastName.invalid ? 'border-red' : ''" />
-                </div>
+            [ngClass]="(shippingFormControls.name.touched || invalidBillingForm) && shippingFormControls.name.invalid ? 'border-red' : ''" />
                 <ng-select placeholder="Country" [items]="countryList" bindValue="alpha3" bindLabel="name"
                     formControlName="country" (change)="setBillingState($event)"
-                    [ngClass]="shippingFormControls.country.touched && shippingFormControls.country.invalid ? 'border-red' : ''">
+                    [ngClass]="(shippingFormControls.country.touched || invalidShippingForm) && shippingFormControls.country.invalid ? 'border-red' : ''">
                 </ng-select>
                 <input type="text" class="arc-input placeholder-gray-400 w-full"
                     placeholder="House number and street name" formControlName="line1"
-                    [ngClass]="shippingFormControls.line1.touched && shippingFormControls.line1.invalid ? 'border-red' : ''" />
+                    [ngClass]="(shippingFormControls.line1.touched || invalidShippingForm) && shippingFormControls.line1.invalid ? 'border-red' : ''" />
                 <input type="text" class="arc-input placeholder-gray-400 w-full"
                     placeholder="Apartment, suite, unit, etc. (optional)" formControlName="line2" />
                 <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Town / City"
                     formControlName="city"
-                    [ngClass]="shippingFormControls.city.touched && shippingFormControls.city.invalid ? 'border-red' : ''" />
+                    [ngClass]="(shippingFormControls.city.touched || invalidShippingForm) && shippingFormControls.city.invalid ? 'border-red' : ''" />
                 <ng-select placeholder="State / County" [items]="billingStates" bindValue="name" bindLabel="name"
                     formControlName="state"
-                    [ngClass]="shippingFormControls.state.touched && shippingFormControls.state.invalid ? 'border-red' : ''">
+                    [ngClass]="(shippingFormControls.state.touched || invalidShippingForm) && shippingFormControls.state.invalid ? 'border-red' : ''">
                 </ng-select>
                 <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Postcode / ZIP"
                     formControlName="zip"
-                    [ngClass]="shippingFormControls.zip.touched && shippingFormControls.zip.invalid ? 'border-red' : ''" />
+                    [ngClass]="(shippingFormControls.zip.touched || invalidShippingForm) && shippingFormControls.zip.invalid ? 'border-red' : ''" />
             </div>
         </div>
         <div class="font-light mt-5">
@@ -118,3 +101,5 @@
         <app-button color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
     </div>
 </div>
+<app-sign-in [(showModal)]="showSignInModal" (signedIn)="afterSignIn($event)"></app-sign-in>
+<app-empty-page *ngIf="!variants || variants.length === 0" [label]="'cart'"></app-empty-page>

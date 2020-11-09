@@ -55,8 +55,8 @@ export class DbService {
 
   dbAttributeValuesRoutePath: string;
 
-  constructor(private firestore: AngularFirestore) {
-    this.afs = this.firestore;
+  constructor(private angularFire: AngularFirestore) {
+    this.afs = this.angularFire;
     const { db } = environment;
     const {
       version,

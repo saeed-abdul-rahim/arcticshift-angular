@@ -10,44 +10,34 @@ import { environment } from '@environment';
 import { User, UserClaim, UserInterface } from '@models/User';
 import { FirebaseError } from '@utils/FirebaseError';
 import { getDataFromDocument } from '@utils/getFirestoreData';
+import { SuccessResponse } from '@models/Response';
 
 @Injectable()
 export class AuthService {
 
-  private apiUser: string;
+  private dbFirestore: firebase.firestore.DocumentReference;
   private dbUsers: AngularFirestoreCollection;
+  private dbUsersRoute: string;
+  private apiUser: string;
+
   private user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
   private emailPhone: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private confirmationResult: BehaviorSubject<firebase.auth.ConfirmationResult> =
     new BehaviorSubject<firebase.auth.ConfirmationResult>(null);
+
   confirmationResult$ = this.confirmationResult.asObservable();
   user$: Observable<User> = this.user.asObservable();
   emailPhone$: Observable<string> = this.emailPhone.asObservable();
   userDoc$: Observable<UserInterface>;
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private httpClient: HttpClient) {
+  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private http: HttpClient) {
     const { api, db } = environment;
     const { url, user } = api;
     const { version, name, users } = db;
+    this.dbFirestore = this.afs.firestore.collection(version).doc(name);
     this.dbUsers = this.afs.collection(version).doc(name).collection(users);
     this.apiUser = url + user;
-  }
-
-  async createUser(displayName: string, email: string, password: string) {
-    try {
-      const data = { displayName, email, password };
-      await this.httpClient.post(`${this.apiUser}/signUp`, data).toPromise();
-    } catch (err) {
-      this.errorHandler(err);
-    }
-  }
-
-  async createUserByPhone(phone: string) {
-    try {
-      await this.httpClient.post(`${this.apiUser}/signUp`, { phone }).toPromise();
-    } catch (err) {
-      this.errorHandler(err);
-    }
+    this.dbUsersRoute = users;
   }
 
   async getAfsCurrentUser() {
@@ -114,6 +104,37 @@ export class AuthService {
     }
   }
 
+  async linkUserToPhone(phoneNumber: string, recaptchaVerifier: firebase.auth.RecaptchaVerifier) {
+    try {
+      const user = await this.getAfsCurrentUser();
+      return this.confirmationResult.next(await user.linkWithPhoneNumber(phoneNumber, recaptchaVerifier));
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createPhoneUser() {
+    try {
+      const user = await this.getAfsCurrentUser();
+      const headers = await this.setDefaultHeaders();
+      const { uid } = user;
+      const result = await this.http.patch<SuccessResponse>(`${this.apiUser}/${uid}/phone`, null, { headers }).toPromise();
+      return result.data;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getUserByPhone(phone: string): Promise<UserInterface | null> {
+    const { dbFirestore, dbUsersRoute } = this;
+    const data = await dbFirestore.collection(dbUsersRoute).where('phone', '==', phone).limit(1).get();
+    if (!data.empty) {
+      return data.docs[0].data() as UserInterface;
+    } else {
+      return null;
+    }
+  }
+
   async fetchEmail(email: string) {
     try {
       return await this.afAuth.fetchSignInMethodsForEmail(email);
@@ -122,9 +143,9 @@ export class AuthService {
     }
   }
 
-  signOut() {
-    this.afAuth.signOut();
-    this.user.next(null);
+  async signOut() {
+    await this.afAuth.signOut();
+    await this.getUser();
   }
 
   setUser(user: User) {
@@ -281,10 +302,19 @@ export class AuthService {
     };
   }
 
-  private errorHandler(err: any) {
-    const { error, message } = err;
-    if (error) { throw error.message; }
-    else { throw message; }
+  private async setDefaultHeaders() {
+    try {
+        const user = await this.getCurrentUser();
+        if (user.expiry < Date.now()) {
+            await this.getUser();
+        }
+        const { token } = user;
+        return {
+            Authorization: `Bearer ${token}`
+        };
+    } catch (err) {
+        throw err;
+    }
   }
 
 }

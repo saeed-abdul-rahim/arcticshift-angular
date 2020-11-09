@@ -23,7 +23,7 @@ import { OrderInterface } from '@models/Order';
 import { ShippingRateInterface } from '@models/Shipping';
 import { map } from 'rxjs/internal/operators/map';
 import { AuthService } from '@services/auth/auth.service';
-import { User, UserInterface } from '@models/User';
+import { User } from '@models/User';
 import { GeoIp } from '@models/GeoIp';
 import { ExchangeRate } from '@models/ExchangeRate';
 import { currencyList } from '@utils/currencyList';
@@ -31,9 +31,14 @@ import { currencyList } from '@utils/currencyList';
 @Injectable()
 export class ShopService {
 
+  private categoriesSubscription: Subscription;
+  private collectionsSubscription: Subscription;
   private saleDiscountSubscription: Subscription;
   private generalSettingsSubscription: Subscription;
+
   private saleDiscounts = new BehaviorSubject<SaleDiscountInterface[]>(null);
+  private categories = new BehaviorSubject<CategoryInterface[]>(null);
+  private collections = new BehaviorSubject<CollectionInterface[]>(null);
   private generalSettings = new BehaviorSubject<GeneralSettings>(null);
   private currentLocation = new BehaviorSubject<GeoIp>(null);
   private currentExchangeRate = new BehaviorSubject<number>(null);
@@ -111,6 +116,15 @@ export class ShopService {
     }
   }
 
+  async finalizeCart(data: OrderInterface) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.patch(apiOrder, { data: { ...data, userId: user.uid } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async removeVariantFromCart(orderId: string, variantId: string) {
     const { req, apiOrder, user } = this;
     try {
@@ -129,13 +143,6 @@ export class ShopService {
     }
   }
 
-  async getUserByPhone(phone: string): Promise<UserInterface[]> {
-    const query = this.dbS.queryUsers([{
-      field: 'phone', type: '==', value: phone
-    }], undefined, 1);
-    return await getDataFromCollection(query).toPromise() as UserInterface[];
-  }
-
   destroy(): void {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
@@ -146,6 +153,18 @@ export class ShopService {
   unsubscribeSaleDiscounts() {
     if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
       this.saleDiscountSubscription.unsubscribe();
+    }
+  }
+
+  unsubscribeCategories() {
+    if (this.categoriesSubscription && !this.categoriesSubscription.closed) {
+      this.categoriesSubscription.unsubscribe();
+    }
+  }
+
+  unsubscribeCollections() {
+    if (this.collectionsSubscription && !this.collectionsSubscription) {
+      this.collectionsSubscription.unsubscribe();
     }
   }
 
@@ -174,6 +193,16 @@ export class ShopService {
   setSaleDiscounts() {
     this.unsubscribeSaleDiscounts();
     this.saleDiscountSubscription = this.getSaleDiscountsFromDb().subscribe(sales => this.saleDiscounts.next(sales));
+  }
+
+  setCategories() {
+    this.unsubscribeCategories();
+    this.categoriesSubscription = this.getCategoriesFromDb().subscribe(categories => this.categories.next(categories));
+  }
+
+  setCollections() {
+    this.unsubscribeCollections();
+    this.collectionsSubscription = this.getCollectionsFromDb().subscribe(collections => this.collections.next(collections));
   }
 
   getSaleDiscounts() {
@@ -216,9 +245,9 @@ export class ShopService {
     return getDataFromDocument(saleRef);
   }
 
-  getVoucherById(saleId: string): Observable<VoucherInterface> {
+  getVoucherById(voucherId: string): Observable<VoucherInterface> {
     const { db, dbVouchersRoute } = this.dbS;
-    const saleRef = db.collection(dbVouchersRoute).doc(saleId);
+    const saleRef = db.collection(dbVouchersRoute).doc(voucherId);
     return getDataFromDocument(saleRef);
   }
 
@@ -338,6 +367,20 @@ export class ShopService {
     return getDataFromCollection(saleDiscounts).pipe(
         map((data: SaleDiscountInterface[]) => data.filter(s => s.endDate < now))
       );
+  }
+
+  getCategoriesFromDb(): Observable<CategoryInterface[]> {
+    const categories = this.dbS.queryCategories([
+      { field: 'status', type: '==', value: 'active' }
+    ]);
+    return getDataFromCollection(categories);
+  }
+
+  getCollectionsFromDb(): Observable<CollectionInterface[]> {
+    const collections = this.dbS.queryCollections([
+      { field: 'status', type: '==', value: 'active' }
+    ]);
+    return getDataFromCollection(collections);
   }
 
   private getCurrentUser() {

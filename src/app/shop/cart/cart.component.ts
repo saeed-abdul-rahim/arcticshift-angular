@@ -55,6 +55,8 @@ export class CartComponent implements OnInit, OnDestroy {
         const { draft, variants } = data;
         this.draft = draft;
         this.variants = variants;
+      } else {
+        this.variants = [];
       }
     });
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
