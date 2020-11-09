@@ -33,6 +33,7 @@ import { CartTotalComponent } from './cart-total/cart-total.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { CarouselComponent } from './carousel/carousel.component';
 import { NavbarService } from '@services/navbar/navbar.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { NavbarService } from '@services/navbar/navbar.service';
     FooterComponent,
     CartTotalComponent,
     SignInComponent,
-    CarouselComponent
+    CarouselComponent,
+    SidebarComponent
   ],
   imports: [
     CommonModule,

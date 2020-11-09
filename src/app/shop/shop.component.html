@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <app-navbar class="mt-0 fixed w-full z-40 top-0 shadow-sm"></app-navbar>
 <div class="container mx-auto bg-white mt-20">
   <router-outlet class="h-screen"></router-outlet>
@@ -14,14 +15,20 @@
                 ></ng-container>
             </div>
         </div>
+=======
+<ng-sidebar-container style="height: 100vh;">
+    <ng-sidebar [(opened)]="sidebarOpened">
+        <app-sidebar></app-sidebar>
+>>>>>>> e2a39088cceed9bb312cbbbdef79f2621744c5e8
     </ng-sidebar>
     <div ng-sidebar-content style="position: relative;">
-        <app-navbar class="mt-0 fixed w-full z-30 top-0 shadow-sm"></app-navbar>
+        <app-navbar class="mt-0 fixed w-full z-30 top-0 shadow"></app-navbar>
         <div class="container mx-auto bg-white mt-10 h-screen">
             <router-outlet></router-outlet>
         </div>
     </div>
 </ng-sidebar-container>
+<<<<<<< HEAD
 
 <ng-template #categoriesTemplate let-categories="categories">
     <div *ngFor="let category of categories">
@@ -68,3 +75,5 @@
 
 
 <app-footer></app-footer>
+=======
+>>>>>>> e2a39088cceed9bb312cbbbdef79f2621744c5e8
