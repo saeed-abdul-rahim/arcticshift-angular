@@ -1,25 +1,6 @@
-<<<<<<< HEAD
-<app-navbar class="mt-0 fixed w-full z-40 top-0 shadow-sm"></app-navbar>
-<div class="container mx-auto bg-white mt-20">
-  <router-outlet class="h-screen"></router-outlet>
-</div>
-
-
-<!-- <ng-sidebar-container style="height: 100vh;">
-    <ng-sidebar [(opened)]="sidebarOpened" [closeOnClickOutside]="true">
-        <div class="h-full bg-white relative z-40 p-5 px-8">
-            <div class="mt-16">
-                <ng-container
-                    [ngTemplateOutlet]="categoriesTemplate"
-                    [ngTemplateOutletContext]="{ categories: data }"
-                ></ng-container>
-            </div>
-        </div>
-=======
 <ng-sidebar-container style="height: 100vh;">
     <ng-sidebar [(opened)]="sidebarOpened">
         <app-sidebar></app-sidebar>
->>>>>>> e2a39088cceed9bb312cbbbdef79f2621744c5e8
     </ng-sidebar>
     <div ng-sidebar-content style="position: relative;">
         <app-navbar class="mt-0 fixed w-full z-30 top-0 shadow"></app-navbar>
@@ -28,52 +9,3 @@
         </div>
     </div>
 </ng-sidebar-container>
-<<<<<<< HEAD
-
-<ng-template #categoriesTemplate let-categories="categories">
-    <div *ngFor="let category of categories">
-        <div *ngIf="category.name && !category.hidden">
-            {{category.name}}
-            <span *ngIf="category.subs && category.subs.length > 0"> &nbsp;> </span>
-        </div>
-        <ng-container
-            [ngTemplateOutlet]="categoriesTemplate"
-            [ngTemplateOutletContext]="{categories: category.subs}"
-        ></ng-container>
-    </div>
-</ng-template> -->
-
-
-<div class="h-full bg-white relative z-40 p-5 px-8">
-  <div class="p-4 w-64 ">
-    <div class="w-full py-4 px-2 text-gray-900 bg-white rounded-lg text-left capitalize font-medium shadow-lg">
-      
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-200 hover:text-gray-700 rounded block mb-5">
-        <span class="mx-2">MEN</span>
-      </span>
-
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-200 hover:text-gray-700 rounded block mb-5">
-        <span class="mx-2">WOMEN</span>
-      </span>
-
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-200 hover:text-gray-700 rounded block mb-5"> 
-        <span class="mx-2">CHILD</span>
-      </span>
-
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-200 hover:text-gray-700 rounded block mb-5">
-        <span class="mx-2">DISCOUNT</span>
-      </span>
-
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-200 hover:text-gray-700 rounded block mb-5">
-        <span class="mx-2">SIGN OUT</span>
-      </span>
-
-    </div>
-  </div>
-</div>
-
-
-
-<app-footer></app-footer>
-=======
->>>>>>> e2a39088cceed9bb312cbbbdef79f2621744c5e8
