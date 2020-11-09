@@ -1,8 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { slideInOut } from '@animations/slideInOut';
 import { CategoryInterface } from '@models/Category';
+import { CollectionInterface } from '@models/Collection';
+import { User } from '@models/User';
+import { AuthService } from '@services/auth/auth.service';
+import { ModalService } from '@services/modal/modal.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+
+type JoinedCategories = CategoryInterface & {
+  subCategories: JoinedCategories[];
+};
 
 @Component({
   selector: 'app-sidebar',
@@ -12,54 +20,42 @@ import { Subscription } from 'rxjs/internal/Subscription';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
 
-  displayCategories: any;
+  displayCategories: JoinedCategories[];
   prevData: any[] = [];
   backLabels: string[] = [];
 
-  categories: any[];
+  user: User;
+  collections: CollectionInterface[];
+  categories: CategoryInterface[];
   initCategories = false;
-
-  data = [
-    {
-      id: 'hdjksa7dsa90as',
-      name: 'MEN',
-      subs: [
-        {
-          id: 'hud8a79',
-          name: 'SHIRTS',
-          parentId: 'hdjksa7dsa90as',
-          subs: [
-            { id: 'hjdksal', name: 'T-SHIRTS' },
-            { id: 'hds8a98', name: 'SHIRTS' }
-          ]
-        },
-        { id: '898dhah', name: 'PANTS',
-        parentId: 'hdjksa7dsa90as' }
-      ]
-    },
-    {
-      id: 'hudia8yhusa2eq',
-      name: 'WOMEN',
-      subs: [
-        { id: 'hud8a79', name: 'BAGS' },
-        { id: '898dhah', name: 'PURSES' }
-      ]
-    }
-  ];
 
   private categoriesData: CategoryInterface[];
   private categoriesSubscription: Subscription;
+  private collectionsSubscription: Subscription;
+  private userSubscription: Subscription;
 
-  constructor(private shop: ShopService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private modal: ModalService) { }
 
   ngOnInit(): void {
     this.getCategories();
+    this.getCollections();
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
   }
 
   ngOnDestroy() {
     if (this.categoriesSubscription && !this.categoriesSubscription.closed) {
       this.categoriesSubscription.unsubscribe();
     }
+    if (this.collectionsSubscription && !this.collectionsSubscription.closed) {
+      this.collectionsSubscription.unsubscribe();
+    }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
+  getCollections() {
+    this.collectionsSubscription = this.shop.getCollections().subscribe(collections => this.collections = collections);
   }
 
   getCategories() {
@@ -71,13 +67,24 @@ export class SidebarComponent implements OnInit, OnDestroy {
           return { ...category, subCategories: this.joinCategories(category) };
         });
         if (!this.initCategories) {
-          this.displayCategories = this.categories;
+          this.displayCategories = this.categories as JoinedCategories[];
+          this.initCategories = true;
+        } else {
+          this.displayCategories = this.displayCategories.map(category => {
+            const { id } = category;
+            const updatedCategory = categories.find(c => c.id === id);
+            if (updatedCategory) {
+              return { ...updatedCategory, subCategories: this.joinCategories(updatedCategory) };
+            } else {
+              return null;
+            }
+          }).filter(e => e);
         }
       }
     });
   }
 
-  joinCategories(category?: CategoryInterface) {
+  joinCategories(category?: CategoryInterface): JoinedCategories[] {
     if (category && category.subCategoryId && category.subCategoryId.length > 0) {
       const { subCategoryId } = category;
       return subCategoryId.map(id => {
@@ -90,7 +97,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toSubmenu(id: string) {
-    const subData = this.displayCategories.find((d: any) => d.id === id);
+    const subData = this.displayCategories.find((d) => d.id === id);
     if (!subData || !subData.subCategories || subData.subCategories.length === 0) {
       return;
     }
@@ -102,6 +109,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toPrevMenu() {
     this.displayCategories = this.prevData.pop();
     this.backLabels.shift();
+  }
+
+  toggleSignInModal() {
+    this.modal.setShowSignInModal(true);
+  }
+
+  signOut() {
+    this.auth.signOut();
   }
 
 }

@@ -1,4 +1,4 @@
-<app-modal [(showModal)]="showModal" (showModalChange)="showModalChange.emit($event)" [bodyTemplate]="signInTemplate" [showHeader]="false" [showFooter]="false"
+<app-modal [(showModal)]="showModal" (showModalChange)="onModalChange($event)" [bodyTemplate]="signInTemplate" [showHeader]="false" [showFooter]="false"
     [enableScroll]="false"></app-modal>
 
 <ng-template #signInTemplate>

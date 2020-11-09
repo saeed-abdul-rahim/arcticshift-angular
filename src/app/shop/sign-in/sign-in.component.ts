@@ -8,6 +8,7 @@ import { ShopService } from '@services/shop/shop.service';
 import { countryCallCodes } from '@utils/countryCallCodes';
 import { otpConfig } from '@settings/otpConfig';
 import { CartService } from '@services/cart/cart.service';
+import { ModalService } from '@services/modal/modal.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -28,9 +29,11 @@ export class SignInComponent implements OnInit, OnDestroy {
   newUser = false;
   otpConfig = otpConfig;
 
-  locationSubscription: Subscription;
+  private locationSubscription: Subscription;
+  private modalSubscription: Subscription;
 
-  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService, private cart: CartService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService,
+              private cart: CartService, private modal: ModalService) { }
 
   ngOnInit(): void {
     this.locationSubscription = this.shop.getCurrentLocation().subscribe(location => {
@@ -43,11 +46,15 @@ export class SignInComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.modalSubscription = this.modal.getShowSignInModal().subscribe(show => this.showModal = show);
   }
 
   ngOnDestroy(): void {
     if (this.locationSubscription && !this.locationSubscription.closed) {
       this.locationSubscription.unsubscribe();
+    }
+    if (this.modalSubscription && !this.modalSubscription.closed) {
+      this.modalSubscription.unsubscribe();
     }
     this.showOtp = false;
     this.newUser = false;
@@ -103,6 +110,12 @@ export class SignInComponent implements OnInit, OnDestroy {
   closeModal() {
     this.showModal = false;
     this.showModalChange.emit(this.showModal);
+    this.modal.setShowSignInModal(false);
+  }
+
+  onModalChange($event: boolean) {
+    this.showModalChange.emit($event);
+    this.modal.setShowSignInModal($event);
   }
 
   onOtpChange($event: string) {

@@ -22,6 +22,7 @@ export class ShopComponent implements OnInit, OnDestroy {
     this.getSidebarOpened();
     this.shop.getCurrentLocationDetails();
     this.shop.setCategories();
+    this.shop.setCollections();
     this.shop.setSaleDiscounts();
     this.product.getProducts();
     this.product.getAttributesFromDb();

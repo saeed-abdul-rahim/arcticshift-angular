@@ -19,14 +19,3 @@ export function patchArrObj(newArrObj: any[], origArrObj: any[], property: strin
     });
     return origArrObj;
 }
-
-export function leftJoinArrObj(leftArr: any[], rightArr: any[], key1: string, key2: string) {
-  return leftArr.map(
-    leftObj => ({
-        ...rightArr.find(
-            rightObj => leftObj[key1] === rightObj[key2]
-        ),
-        ...leftObj
-    })
-  );
-}
