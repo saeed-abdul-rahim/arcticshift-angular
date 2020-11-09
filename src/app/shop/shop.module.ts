@@ -31,11 +31,8 @@ import { CartService } from '@services/cart/cart.service';
 import { FooterComponent } from './footer/footer.component';
 import { CartTotalComponent } from './cart-total/cart-total.component';
 import { SignInComponent } from './sign-in/sign-in.component';
-<<<<<<< HEAD
 import { CarouselComponent } from './carousel/carousel.component';
-=======
 import { NavbarService } from '@services/navbar/navbar.service';
->>>>>>> f392ff1eae2f8f0f5f0626cf617b77ae823ed292
 
 
 @NgModule({
