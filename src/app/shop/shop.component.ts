@@ -21,6 +21,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getSidebarOpened();
     this.shop.getCurrentLocationDetails();
+    this.shop.setCategories();
     this.shop.setSaleDiscounts();
     this.product.getProducts();
     this.product.getAttributesFromDb();

@@ -43,14 +43,14 @@ export class ShopService {
   private currentLocation = new BehaviorSubject<GeoIp>(null);
   private currentExchangeRate = new BehaviorSubject<number>(null);
   generalSettings$ = this.generalSettings.asObservable();
+  categories$ = this.categories.asObservable();
+  collections$ = this.collections.asObservable();
   saleDiscounts$ = this.saleDiscounts.asObservable();
   currentLocation$ = this.currentLocation.asObservable();
   currentExchangeRate$ = this.currentExchangeRate.asObservable();
 
   products$: Observable<ProductInterface[]>;
   attributes$: Observable<AttributeInterface[]>;
-  collections$: Observable<CollectionInterface[]>;
-  categories$: Observable<CategoryInterface[]>;
   productTypes$: Observable<ProductTypeInterface[]>;
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
@@ -147,6 +147,8 @@ export class ShopService {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
     }
+    this.unsubscribeCategories();
+    this.unsubscribeCollections();
     this.unsubscribeSaleDiscounts();
   }
 

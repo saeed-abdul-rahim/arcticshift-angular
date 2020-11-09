@@ -4,11 +4,11 @@
             class="cursor-pointer px-5 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2">
             {{ backLabels[0] }}
         </div>
-        <div *ngFor="let category of displayData"
+        <div *ngFor="let category of displayCategories"
             class="cursor-pointer px-8 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2">
-            <div *ngIf="category.name" (click)="toSubmenu(category.id)" [@slideInOutAnimation] class="flex justify-between">
+            <div *ngIf="category && category.name" (click)="toSubmenu(category.id)" [@slideInOutAnimation] class="flex justify-between">
                 {{ category.name }}
-                <span *ngIf="category.subs && category.subs.length > 0" class="text-right font-light"> &nbsp;> </span>
+                <span *ngIf="category.subCategories && category.subCategories.length > 0" class="text-right font-light"> &nbsp;> </span>
             </div>
         </div>
     </div>
