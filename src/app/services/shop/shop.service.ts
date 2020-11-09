@@ -176,6 +176,14 @@ export class ShopService {
     return this.generalSettings$;
   }
 
+  getCategories() {
+    return this.categories$;
+  }
+
+  getCollections() {
+    return this.collections$;
+  }
+
   getCurrentLocation() {
     return this.currentLocation$;
   }

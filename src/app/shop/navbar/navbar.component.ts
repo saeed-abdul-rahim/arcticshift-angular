@@ -25,18 +25,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   showMenu = false;
   showSignInModal = false;
+  sidebarOpened: boolean;
 
   user: User;
   draft: OrderInterface;
 
   private draftSubscription: Subscription;
   private userSubscription: Subscription;
+  private sidebarOpenedSubscription: Subscription;
 
   constructor(private cart: CartService, private auth: AuthService, private nav: NavbarService) { }
 
   ngOnInit(): void {
     this.draftSubscription = this.cart.getDraft().subscribe(draft => this.draft = draft);
     this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+    this.sidebarOpenedSubscription = this.nav.getSidebarOpened().subscribe(sidebarOpened => this.sidebarOpened = sidebarOpened);
   }
 
   ngOnDestroy(): void {
@@ -46,11 +49,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
     }
+    if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
+      this.sidebarOpenedSubscription.unsubscribe();
+    }
     this.cart.destroy();
   }
 
   toggleMenu() {
-    this.nav.setSidebarOpened(true);
+    this.nav.setSidebarOpened(!this.sidebarOpened);
   }
 
   toggleSignInModal() {

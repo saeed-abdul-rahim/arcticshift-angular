@@ -31,6 +31,7 @@ import { CartService } from '@services/cart/cart.service';
 import { CartTotalComponent } from './cart-total/cart-total.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { NavbarService } from '@services/navbar/navbar.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { NavbarService } from '@services/navbar/navbar.service';
     CategoryComponent,
     CollectionComponent,
     CartTotalComponent,
-    SignInComponent
+    SignInComponent,
+    SidebarComponent
   ],
   imports: [
     CommonModule,
