@@ -49,14 +49,9 @@ import { ModalService } from '@services/modal/modal.service';
     OrderStatusComponent,
     OrdersComponent,
     ProfileComponent,
-<<<<<<< HEAD
-    CategoryComponent,
-    CollectionComponent,
-    FooterComponent,
-=======
->>>>>>> d6dc383e07ab04931190c4684a16e76358f039e1
     CartTotalComponent,
     SignInComponent,
+    FooterComponent,
     CarouselComponent,
     SidebarComponent
   ],
