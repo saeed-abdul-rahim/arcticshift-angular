@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
-import { ProductCondition, ProductInterface } from '@models/Product';
-import { ProductTypeInterface } from '@models/ProductType';
-import { AlertService } from '@services/alert/alert.service';
-import { DbService } from '@services/db/db.service';
-import { PaginationService } from '@services/pagination/pagination.service';
-import { patchArrObj, uniqueArr } from '@utils/arrUtils';
-import { getDataFromCollection } from '@utils/getFirestoreData';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { Subscription } from 'rxjs/internal/Subscription';
+
+import { AlertService } from '@services/alert/alert.service';
+import { DbService } from '@services/db/db.service';
+import { PaginationService } from '@services/pagination/pagination.service';
+import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
+import { ProductCondition, ProductInterface } from '@models/Product';
+import { ProductTypeInterface } from '@models/ProductType';
+import { patchArrObj, uniqueArr } from '@utils/arrUtils';
+import { getDataFromCollection } from '@utils/getFirestoreData';
 
 @Injectable()
 export class ProductService {
@@ -77,6 +78,12 @@ export class ProductService {
   }
 
   getProductsFromDb(filters: ProductCondition[] = []) {
+    const statusFilter = filters.find(filter => filter.field === 'status');
+    if (!statusFilter) {
+      filters.push({
+        field: 'status', type: '==', value: 'active'
+      });
+    }
     const { dbProductsRoute } = this.dbS;
     this.unsubscribeProducts();
     this.page.destroy();
@@ -91,6 +98,8 @@ export class ProductService {
         this.productList.next(productList);
       } else if (data && data.length > 0) {
         this.productList.next(data);
+      } else if (data && data.length === 0) {
+        this.productList.next([]);
       }
     },
     err => {
@@ -134,6 +143,7 @@ export class ProductService {
 
   setProductFilters(productFilters: ProductCondition[]) {
     this.productFilters.next(productFilters);
+    this.getProductsFromDb(productFilters);
   }
 
   getProductFilters() {

@@ -566,7 +566,7 @@ h5 {
 
 .ng-sidebar{
     @apply z-20 !important;
-    @apply shadow;
+    @apply shadow-xl;
 }
 
 .mat-form-field-wrapper {

@@ -36,6 +36,11 @@ export class PaginationService {
   }
 
   destroy() {
+    this.data = null;
+    this._data.next([]);
+    this._done.next(false);
+    this._loading.next(false);
+    this.colSubscriptions = [];
     this.unsubscribe();
   }
 
@@ -43,9 +48,6 @@ export class PaginationService {
     this.colSubscriptions.forEach(subs => {
       if (subs && !subs.closed) { subs.unsubscribe(); }
     });
-    this.data = null;
-    this._data.next([]);
-    this._done.next(false);
   }
 
   init(path: string, opts?: QueryConfig) {

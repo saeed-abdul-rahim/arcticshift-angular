@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
+
 import { IMAGE_L } from '@constants/imageSize';
 import { PRODUCT } from '@constants/routes';
 import { Content } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { ProductService } from '@services/product/product.service';
-import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-product-list',
@@ -50,11 +51,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   getProductList() {
-    this.productService.getProductList().subscribe(products => {
-      if (products) {
-        this.setProducts(products);
-      }
-    });
+    this.productService.getProductList().subscribe(products => this.setProducts(products));
   }
 
   moreProducts() {
@@ -71,7 +68,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productService.isProductsLoading().subscribe(loading => this.loading = loading);
   }
 
-  setProducts(products: ProductInterface[]) {
+  setProducts(products?: ProductInterface[]) {
+    if (!products) {
+      this.products = [];
+    }
     this.products = products.map(product => {
       if (!product) { return; }
       const { id, images, price, name } = product;
@@ -80,7 +80,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
         id, price, name,
         images: thumbnails
       };
-    });
+    }).filter(e => e);
   }
 
   setThumbnails(images: Content[], name: string) {
