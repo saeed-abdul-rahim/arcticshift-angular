@@ -18,12 +18,22 @@ export class ButtonComponent implements OnInit {
   @Input() color = 'blue';
   @Input() dark: boolean;
   @Input() submit = false;
+  @Input() large = false;
 
   faCheck = faCheck;
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  setBgColor() {
+    if (this.secondary) {
+      return 'bg-white';
+    } else {
+      const color = `bg-${this.color}-`;
+      return `${color}${this.dark ? '800' : '500'} active:${color}${this.dark ? '800' : '900'} `;
+    }
   }
 
 }

@@ -57,4 +57,8 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     this.heartCallback.emit(this.id);
   }
 
+  trackByFn(index: number, item: Image) {
+    return item.url;
+  }
+
 }

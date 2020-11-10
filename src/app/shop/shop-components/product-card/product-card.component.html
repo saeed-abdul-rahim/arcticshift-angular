@@ -1,8 +1,8 @@
-<div class="w-full p-3 flex flex-col flex-grow" (mouseenter)="hover = true" (mouseleave)="hover = false"
+<div class="product-card w-full p-3 flex flex-col flex-grow hover:grow hover:shadow-lg" (mouseenter)="hover = true" (mouseleave)="hover = false"
     ng-touch [timemove]="3" (touch)="toggleHover()">
     <div class="relative w-full flex flex-col">
         <div class="absolute bg-gray-100 h-48 w-48"></div>
-        <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; let first = first"
+        <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; trackBy: trackByFn; let first = first"
             [ngClass]="first ? 'relative' : 'absolute opacity-0'" src="{{img.url}}" alt="{{img.title}}"
             [class.opacity-100]="!first && hover" [class.opacity-0]="!first && !hover">
     </div>

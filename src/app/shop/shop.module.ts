@@ -25,8 +25,6 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderStatusComponent } from './order-status/order-status.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
-import { CategoryComponent } from './category/category.component';
-import { CollectionComponent } from './collection/collection.component';
 import { CartService } from '@services/cart/cart.service';
 import { FooterComponent } from './footer/footer.component';
 import { CartTotalComponent } from './cart-total/cart-total.component';
@@ -51,9 +49,12 @@ import { ModalService } from '@services/modal/modal.service';
     OrderStatusComponent,
     OrdersComponent,
     ProfileComponent,
+<<<<<<< HEAD
     CategoryComponent,
     CollectionComponent,
     FooterComponent,
+=======
+>>>>>>> d6dc383e07ab04931190c4684a16e76358f039e1
     CartTotalComponent,
     SignInComponent,
     CarouselComponent,

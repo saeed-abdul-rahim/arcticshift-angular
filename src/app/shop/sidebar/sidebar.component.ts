@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { slideInOut } from '@animations/slideInOut';
 import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
+import { ProductCondition } from '@models/Product';
 import { User } from '@models/User';
 import { AuthService } from '@services/auth/auth.service';
 import { ModalService } from '@services/modal/modal.service';
+import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -15,8 +16,7 @@ type JoinedCategories = CategoryInterface & {
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css'],
-  animations: [slideInOut]
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
 
@@ -27,22 +27,28 @@ export class SidebarComponent implements OnInit, OnDestroy {
   user: User;
   collections: CollectionInterface[];
   categories: CategoryInterface[];
+  productFilters: ProductCondition[];
   initCategories = false;
 
+  private productFilterSubscription: Subscription;
   private categoriesData: CategoryInterface[];
   private categoriesSubscription: Subscription;
   private collectionsSubscription: Subscription;
   private userSubscription: Subscription;
 
-  constructor(private shop: ShopService, private auth: AuthService, private modal: ModalService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private modal: ModalService, private productService: ProductService) { }
 
   ngOnInit(): void {
     this.getCategories();
     this.getCollections();
     this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+    this.productFilterSubscription = this.productService.getProductFilters().subscribe(filters => this.productFilters = filters);
   }
 
   ngOnDestroy() {
+    if (this.productFilterSubscription && !this.productFilterSubscription.closed) {
+      this.productFilterSubscription.unsubscribe();
+    }
     if (this.categoriesSubscription && !this.categoriesSubscription.closed) {
       this.categoriesSubscription.unsubscribe();
     }
@@ -89,8 +95,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
       const { subCategoryId } = category;
       return subCategoryId.map(id => {
         const subCategory = this.categoriesData.find(c => c.id === id);
+        if (!subCategory) { return null; }
         return { ...subCategory, subCategories: this.joinCategories(subCategory) };
-      });
+      }).filter(e => e);
     } else {
       return null;
     }
@@ -98,7 +105,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   toSubmenu(id: string) {
     const subData = this.displayCategories.find((d) => d.id === id);
-    if (!subData || !subData.subCategories || subData.subCategories.length === 0) {
+    if (!subData) { return; }
+    if (!subData.subCategories || subData.subCategories.length === 0) {
+      this.filterProductsByCategory(id);
       return;
     }
     this.prevData.push(this.displayCategories);
@@ -117,6 +126,30 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   signOut() {
     this.auth.signOut();
+  }
+
+  filterProductsByCategory(id: string) {
+    const nxtFilters = this.productFilters.filter(p => p.field !== 'collectionId');
+    const categoryFilterIdx = nxtFilters.findIndex(p => p.field === 'categoryId');
+    const categoryFilter: ProductCondition = { field: 'categoryId', type: 'array-contains', value: id };
+    if (categoryFilterIdx > -1) {
+      nxtFilters[categoryFilterIdx] = categoryFilter;
+    } else {
+      nxtFilters.push(categoryFilter);
+    }
+    this.productService.setProductFilters(nxtFilters);
+  }
+
+  filterProductsByCollection(id: string) {
+    const nxtFilters = this.productFilters.filter(p => p.field !== 'categoryId');
+    const collectionFilterIdx = nxtFilters.findIndex(p => p.field === 'collectionId');
+    const collectionFilter: ProductCondition = { field: 'collectionId', type: 'array-contains', value: id };
+    if (collectionFilterIdx > -1) {
+      nxtFilters[collectionFilterIdx] = collectionFilter;
+    } else {
+      nxtFilters.push(collectionFilter);
+    }
+    this.productService.setProductFilters(nxtFilters);
   }
 
 }

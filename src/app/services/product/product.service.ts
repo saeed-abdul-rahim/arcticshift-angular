@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
-import { ProductCondition, ProductInterface } from '@models/Product';
-import { ProductTypeInterface } from '@models/ProductType';
-import { DbService } from '@services/db/db.service';
-import { PaginationService } from '@services/pagination/pagination.service';
-import { patchArrObj, uniqueArr } from '@utils/arrUtils';
-import { getDataFromCollection } from '@utils/getFirestoreData';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { Subscription } from 'rxjs/internal/Subscription';
+
+import { AlertService } from '@services/alert/alert.service';
+import { DbService } from '@services/db/db.service';
+import { PaginationService } from '@services/pagination/pagination.service';
+import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
+import { ProductCondition, ProductInterface } from '@models/Product';
+import { ProductTypeInterface } from '@models/ProductType';
+import { patchArrObj, uniqueArr } from '@utils/arrUtils';
+import { getDataFromCollection } from '@utils/getFirestoreData';
 
 @Injectable()
 export class ProductService {
@@ -20,16 +22,12 @@ export class ProductService {
   private productList = new BehaviorSubject<ProductInterface[]>([]);
   private attributeList = new BehaviorSubject<AttributeJoinInterface[]>([]);
   private productFilters = new BehaviorSubject<ProductCondition[]>([]);
-  private productListLoading = new BehaviorSubject<boolean>(false);
-  private productListError = new BehaviorSubject<string>('');
 
   productList$ = this.productList.asObservable();
-  productListError$ = this.productListError.asObservable();
   attributeList$ = this.attributeList.asObservable();
   productFilters$ = this.productFilters.asObservable();
-  productListLoading$ = this.productListLoading.asObservable();
 
-  constructor(private dbS: DbService, private page: PaginationService) { }
+  constructor(private dbS: DbService, private page: PaginationService, private alert: AlertService) { }
 
   destroy(): void {
     this.unsubscribeProducts();
@@ -80,14 +78,18 @@ export class ProductService {
   }
 
   getProductsFromDb(filters: ProductCondition[] = []) {
+    const statusFilter = filters.find(filter => filter.field === 'status');
+    if (!statusFilter) {
+      filters.push({
+        field: 'status', type: '==', value: 'active'
+      });
+    }
     const { dbProductsRoute } = this.dbS;
     this.unsubscribeProducts();
     this.page.destroy();
-    this.resetProductListLoaders();
-    this.productListLoading.next(true);
     this.page.init(dbProductsRoute, {
       where: filters,
-      limit: 2
+      limit: 1
     });
     this.productsSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
       if (data && data.length > 0 && this.productList.value.length > 0) {
@@ -96,13 +98,25 @@ export class ProductService {
         this.productList.next(productList);
       } else if (data && data.length > 0) {
         this.productList.next(data);
+      } else if (data && data.length === 0) {
+        this.productList.next([]);
       }
-      this.productListLoading.next(false);
     },
     err => {
-      this.productListError.next(err);
-      console.log(err);
+      this.handleError(err);
     });
+  }
+
+  loadMoreProducts() {
+    this.page.more();
+  }
+
+  isProductsDone() {
+    return this.page.done;
+  }
+
+  isProductsLoading() {
+    return this.page.loading;
   }
 
   getProducts() {
@@ -127,24 +141,9 @@ export class ProductService {
     return this.attributeList$;
   }
 
-  setProductsLoading(productListLoading: boolean) {
-    this.productListLoading.next(productListLoading);
-  }
-
-  getProductsLoading() {
-    return this.productListLoading$;
-  }
-
-  setProductsError(productListError: string) {
-    this.productListError.next(productListError);
-  }
-
-  getProductsError() {
-    return this.productListError$;
-  }
-
   setProductFilters(productFilters: ProductCondition[]) {
     this.productFilters.next(productFilters);
+    this.getProductsFromDb(productFilters);
   }
 
   getProductFilters() {
@@ -153,11 +152,6 @@ export class ProductService {
 
   resetProductFilters() {
     this.productFilters.next([]);
-  }
-
-  resetProductListLoaders() {
-    this.productListLoading.next(false);
-    this.productListError.next('');
   }
 
   addProductFilter(filter: ProductCondition) {
@@ -169,6 +163,10 @@ export class ProductService {
     const { value } = this.productFilters;
     const filteredValue = value.filter(v => v.value !== conditionValue);
     this.productFilters.next(filteredValue);
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err.message });
   }
 
 }
