@@ -89,8 +89,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
       const { subCategoryId } = category;
       return subCategoryId.map(id => {
         const subCategory = this.categoriesData.find(c => c.id === id);
+        if (!subCategory) { return null; }
         return { ...subCategory, subCategories: this.joinCategories(subCategory) };
-      });
+      }).filter(e => e);
     } else {
       return null;
     }

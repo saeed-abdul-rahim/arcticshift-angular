@@ -6,7 +6,7 @@
         [price]="product.price"
         (click)="navigateToVariant(product.name, product.id)"
     ></app-product-card>
-    <div class="flex justify-center w-full py-10 text-gray-700">
-        <app-button class="w-48" [secondary]="true" [label]="'More'" [color]="'gray'" [fullWidth]="true" [large]="true" (click)="moreProducts()"></app-button>
+    <div class="flex justify-center w-full py-10 text-gray-700" *ngIf="!done">
+        <app-button class="w-48" [secondary]="true" [label]="'More'" [color]="'gray'" [fullWidth]="true" [large]="true" [loading]="loading" (click)="moreProducts()"></app-button>
     </div>
 </div>
