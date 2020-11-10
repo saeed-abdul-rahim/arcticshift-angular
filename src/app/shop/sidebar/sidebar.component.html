@@ -1,14 +1,39 @@
 <div class="h-full bg-white relative z-40 py-5 w-64 capitalize font-medium text-gray-900">
     <div class="mt-16">
-        <div *ngIf="backLabels && backLabels.length > 0" (click)="toPrevMenu()" [@slideInOutAnimation]
-            class="cursor-pointer px-5 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2">
-            {{ backLabels[0] }}
-        </div>
-        <div *ngFor="let category of displayData"
-            class="cursor-pointer px-8 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2">
-            <div *ngIf="category.name" (click)="toSubmenu(category.id)" [@slideInOutAnimation] class="flex justify-between">
-                {{ category.name }}
-                <span *ngIf="category.subs && category.subs.length > 0" class="text-right font-light"> &nbsp;> </span>
+        <div class="arc-transition divide-y">
+            <div class="cursor-pointer px-5 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2 arc-transition"
+                *ngIf="!user || user.isAnonymous" (click)="toggleSignInModal()">
+                Sign In
+            </div>
+            <div class="cursor-pointer px-5 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2 arc-transition"
+                *ngIf="user && !user.isAnonymous">
+                {{ user.name || user.phone || user.email }}
+            </div>
+            <div class="arc-transition">
+                <div *ngIf="backLabels && backLabels.length > 0" (click)="toPrevMenu()" [@slideInOutAnimation]
+                    class="cursor-pointer px-5 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block my-2 arc-transition">
+                    {{ backLabels[0] }}
+                </div>
+                <div *ngFor="let category of displayCategories"
+                    class="cursor-pointer px-8 py-2 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block my-2 arc-transition"
+                    (click)="toSubmenu(category.id)" [@slideInOutAnimation]>
+                    <div *ngIf="category.name" class="flex justify-between">
+                        {{ category.name }}
+                        <span *ngIf="category.subCategories && category.subCategories.length > 0"
+                            class="text-right font-light">
+                            &nbsp;> </span>
+                    </div>
+                </div>
+            </div>
+            <div class="arc-transition">
+                <div *ngFor="let collection of collections"
+                    class="cursor-pointer px-8 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block my-2 arc-transition">
+                    {{ collection.name }}
+                </div>
+            </div>
+            <div class="cursor-pointer px-5 py-1 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2 arc-transition"
+                (click)="signOut()" *ngIf="user && !user.isAnonymous">
+                Sign Out
             </div>
         </div>
     </div>

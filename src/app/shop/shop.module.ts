@@ -34,6 +34,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { CarouselComponent } from './carousel/carousel.component';
 import { NavbarService } from '@services/navbar/navbar.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ModalService } from '@services/modal/modal.service';
 
 
 @NgModule({
@@ -74,6 +75,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   ],
   providers: [
     NavbarService,
+    ModalService,
     CartService,
     ProductService,
   ]

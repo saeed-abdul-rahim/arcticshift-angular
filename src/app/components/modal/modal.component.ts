@@ -27,7 +27,7 @@ export class ModalComponent implements OnInit {
   @Output() showModalChange = new EventEmitter<boolean>();
   @Output() modalCallback = new EventEmitter<any>();
 
-  @ViewChild('modal') modal: ElementRef;
+  @ViewChild('modalDiv') modal: ElementRef;
 
   constructor() {
   }
@@ -46,7 +46,7 @@ export class ModalComponent implements OnInit {
 
   @HostListener('document:mousedown', ['$event'])
   onGlobalClick(event: Event): void {
-     if (!this.modal?.nativeElement.contains(event.target)) {
+     if (this.modal && !this.modal.nativeElement.contains(event.target)) {
         this.closeModal();
      }
   }
