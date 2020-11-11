@@ -66,7 +66,7 @@ export class PaginationService {
         newRef = this.setWhere(newRef);
       }
       if (this.query.orderBy) {
-        newRef = newRef.orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc');
+        newRef = this.setOrderBy(newRef);
       }
       return newRef.limit(this.query.limit);
     });
@@ -80,6 +80,10 @@ export class PaginationService {
 
   }
 
+  setOrderBy(ref: Query) {
+    return ref.orderBy(this.query.orderBy.field, this.query.orderBy.direction);
+  }
+
   more() {
     const cursor = this.getCursor();
 
@@ -90,7 +94,7 @@ export class PaginationService {
         newRef = this.setWhere(newRef);
       }
       if (this.query.orderBy) {
-        newRef = newRef.orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc');
+        newRef = this.setOrderBy(newRef);
       }
       return newRef
               .limit(this.query.limit)
@@ -140,7 +144,7 @@ export class PaginationService {
           this._done.next(true);
         }
       })
-    ).subscribe(() => {}, (err) => this.alert.alert(err.message));
+    ).subscribe(() => {}, (err) => { console.log(err); this.alert.alert({ message: err.message }); });
     this.colSubscriptions.push(colSubscription);
     return colSubscription;
   }

@@ -1,4 +1,4 @@
-<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between" *ngIf="variants && variants.length > 0">
+<div class="flex flex-wrap px-3 md:px-10 md:justify-between" *ngIf="variants && variants.length > 0">
     <div class="w-full md:w-7/12 mb-5">
         <div class="font-light text-2xl mb-3">
             Billing Details
@@ -45,7 +45,6 @@
         </div>
         <div class="slider" [class.closed]="!shippingAddressCheck">
             <div class="p-1 flex flex-col space-y-2 mt-3" [formGroup]="shippingForm">
-            [ngClass]="(shippingFormControls.name.touched || invalidBillingForm) && shippingFormControls.name.invalid ? 'border-red' : ''" />
                 <ng-select placeholder="Country" [items]="countryList" bindValue="alpha3" bindLabel="name"
                     formControlName="country" (change)="setBillingState($event)"
                     [ngClass]="(shippingFormControls.country.touched || invalidShippingForm) && shippingFormControls.country.invalid ? 'border-red' : ''">

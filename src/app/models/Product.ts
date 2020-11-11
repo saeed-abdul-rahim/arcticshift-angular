@@ -21,6 +21,7 @@ export interface ProductInterface extends CommonInterface {
     voucherId?: string;
     like?: number;
     rating?: number;
+    clicks?: number;
 }
 
 export type ProductCondition = Condition & {

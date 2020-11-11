@@ -145,7 +145,6 @@ export class AuthService {
 
   async signOut() {
     await this.afAuth.signOut();
-    await this.getUser();
   }
 
   setUser(user: User) {
@@ -221,7 +220,7 @@ export class AuthService {
     const authenticated = await this.isLoggedIn();
     if (!authenticated) { return false; }
     let user = await this.getCurrentUser();
-    if (!user) {
+    if (!user || user.uid !== authenticated.uid) {
       await this.getUser();
       user = await this.getCurrentUser();
     }

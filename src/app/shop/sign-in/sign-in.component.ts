@@ -114,7 +114,6 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   onModalChange($event: boolean) {
-    console.log($event);
     this.showModalChange.emit($event);
     this.modal.setShowSignInModal($event);
   }

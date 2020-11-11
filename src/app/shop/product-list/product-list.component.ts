@@ -69,18 +69,19 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   setProducts(products?: ProductInterface[]) {
-    if (!products) {
+    if (!products || products.length === 0) {
       this.products = [];
+    } else if (products.length > 0) {
+      this.products = products.map(product => {
+        if (!product) { return; }
+        const { id, images, price, name } = product;
+        const thumbnails = this.setThumbnails(images, name);
+        return {
+          id, price, name,
+          images: thumbnails
+        };
+      }).filter(e => e);
     }
-    this.products = products.map(product => {
-      if (!product) { return; }
-      const { id, images, price, name } = product;
-      const thumbnails = this.setThumbnails(images, name);
-      return {
-        id, price, name,
-        images: thumbnails
-      };
-    }).filter(e => e);
   }
 
   setThumbnails(images: Content[], name: string) {
