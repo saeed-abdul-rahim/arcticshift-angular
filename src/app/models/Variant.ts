@@ -24,6 +24,10 @@ export interface VariantInterface extends CommonInterface {
     bookedQuantity?: number;
 }
 
+export interface VariantSale extends VariantInterface {
+    discountPrice: number;
+}
+
 export type VariantCondition = Condition & {
     field: string
     parentFields?: VariantFields[]

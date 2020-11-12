@@ -1,4 +1,4 @@
-<div class="container flex flex-wrap justify-center">
+<div class="container flex flex-wrap justify-center text-gray-700">
     <div class="flex flex-wrap justify-center w-screen md:w-7/12">
         <lib-ngx-image-zoom [thumbImage]="selectedThumbnail" [fullImage]="selectedImage" [enableLens]="true"
             [circularLens]="true"></lib-ngx-image-zoom>
@@ -9,7 +9,7 @@
             </div>
         </carousel>
     </div>
-    <div class="w-screen px-2 md:w-5/12 text-gray-700">
+    <div class="w-screen px-2 md:w-5/12">
         <div class="text-3xl font-light py-3">
             {{ product && product.name || '' }}
         </div>
@@ -39,7 +39,7 @@
                             bindValue="id" bindLabel="name"></ng-select>
                     </div>
                 </div>
-                <app-counter-input [label]="'Quantity'" [(value)]="quantity" [valueMin]="1" [valueMax]="20">
+                <app-counter-input [label]="'Quantity'" [(value)]="quantity" [valueMin]="1">
                 </app-counter-input>
             </div>
         </div>
@@ -49,6 +49,15 @@
                 [fullWidth]="true" [color]="'gray'" [dark]="true"
                 [label]="draftVariantQuantity && variant && draftVariantQuantity[variant.id] ? 'Update Bag' : 'Add to Bag'">
             </app-button>
+        </div>
+    </div>
+    <div class="w-screen py-3 mt-12 border-t border-gray-300" *ngIf="product">
+        <div class="text-3xl font-light py-3 px-2">
+            Related Products
+        </div>
+        <div>
+            <app-product-list [id]="product.collectionId" [type]="'collection'" [filterProducts]="[product.id]" (allProducts)="productsInCollection($event)"></app-product-list>
+            <app-product-list [id]="product.categoryId" [type]="'category'" [filterProducts]="filterList"></app-product-list>
         </div>
     </div>
 </div>

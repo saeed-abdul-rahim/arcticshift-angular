@@ -45,6 +45,10 @@
 	max-height: 0;
 }
 
+.carousel {
+    z-index: unset !important;
+}
+
 .carousel-open:checked + .carousel-item {
     position: static;
     opacity: 100;

@@ -585,15 +585,6 @@ export class AdminService {
     return getDataFromCollection(products);
   }
 
-  getProductsByCategoryId(id: string): Observable<ProductInterface[]> {
-    const products = this.dbS.queryProducts([{
-      field: 'categoryId',
-      type: 'array-contains',
-      value: id
-    }]);
-    return getDataFromCollection(products);
-  }
-
   getCategorybyIds(ids: string[]): Observable<CategoryInterface[]> {
     const { dbCategoriesRoute } = this.dbS;
     return this.dbS.queryByIds(dbCategoriesRoute, ids);

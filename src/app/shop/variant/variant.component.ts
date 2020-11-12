@@ -8,9 +8,12 @@ import { VariantInterface } from '@models/Variant';
 import { SeoService } from '@services/seo/seo.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
-import { percentDecrease } from '@utils/percentDecrease';
+import { percentDecrease } from '@utils/calculation';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertService } from '@services/alert/alert.service';
+import { getIds } from '@utils/arrUtils';
+import { SaleDiscountInterface } from '@models/SaleDiscount';
+import { getProductDiscount, getSaleDiscountForProduct } from '@utils/saleDiscount';
 
 @Component({
   selector: 'app-variant',
@@ -33,7 +36,8 @@ export class VariantComponent implements OnInit, OnDestroy {
   quantity = 1;
   price: number;
   strikePrice: number;
-  discountPercentage: string;
+  discountPercentage: number;
+
   selectedAttribute: ObjString;
   selectedImage = '';
   selectedThumbnail = '';
@@ -46,12 +50,15 @@ export class VariantComponent implements OnInit, OnDestroy {
   variants: VariantInterface[] = [];
   variant: VariantInterface;
   attributes: AttributeJoinInterface[];
+  saleDiscounts: SaleDiscountInterface[] = [];
+  filterList: string[] = [];
 
   draftSubscription: Subscription;
   productSubscription: Subscription;
   variantSubscription: Subscription;
   productTypeSubscription: Subscription;
   attributeSubscription: Subscription;
+  saleDiscountSubscription: Subscription;
 
   constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService,
               private cart: CartService, private alert: AlertService) {
@@ -65,6 +72,7 @@ export class VariantComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
+    this.getSaleDiscounts();
     this.getDraft();
     this.shop.getGeneralSettings().subscribe(generalSettings => {
       if (generalSettings) {
@@ -88,6 +96,13 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (this.draftSubscription && !this.draftSubscription.closed) {
       this.draftSubscription.unsubscribe();
     }
+    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
+      this.saleDiscountSubscription.unsubscribe();
+    }
+  }
+
+  getSaleDiscounts() {
+    this.saleDiscountSubscription = this.shop.getSaleDiscounts().subscribe(saleDiscounts => this.saleDiscounts = saleDiscounts);
   }
 
   async addToCart() {
@@ -184,6 +199,15 @@ export class VariantComponent implements OnInit, OnDestroy {
       this.price = price;
       this.discountPercentage = percentDecrease(price, this.strikePrice);
     }
+    if (this.saleDiscounts && this.saleDiscounts.length > 0) {
+      const saleDiscount = getSaleDiscountForProduct(this.saleDiscounts, this.product);
+      if (saleDiscount) {
+        const discount = getProductDiscount(saleDiscount, price);
+        this.strikePrice = price;
+        this.price = discount.price;
+        this.discountPercentage = discount.discount;
+      }
+    }
     if (attributes) {
       Object.keys(attributes).forEach(attributeId => {
         this.selectedAttribute = {
@@ -251,6 +275,10 @@ export class VariantComponent implements OnInit, OnDestroy {
     const thumbnail = thumbnails.find(thumb => thumb.dimension === this.selectedImageSize);
     this.selectedImage = content.url;
     this.selectedThumbnail = thumbnail.url;
+  }
+
+  productsInCollection(productsInCollection: ProductInterface[]) {
+    this.filterList = [this.product.id, ...getIds(productsInCollection)];
   }
 
   handleError(err: any) {

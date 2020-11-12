@@ -10,12 +10,14 @@ import { CHECKOUT } from '@constants/routes';
 import { IMAGE_XS } from '@constants/imageSize';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { Content } from '@models/Common';
-import { OrderInterface } from '@models/Order';
+import { OrderInterface, VariantQuantity } from '@models/Order';
 import { VariantInterface } from '@models/Variant';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AlertService } from '@services/alert/alert.service';
 import { countryAlphaList } from '@utils/countryAlphaList';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { SaleDiscountInterface } from '@models/SaleDiscount';
 
 @Component({
   selector: 'app-cart',
@@ -38,16 +40,22 @@ export class CartComponent implements OnInit, OnDestroy {
   voucherSuccess = false;
   draftLoading = false;
   totalLoading = false;
+  updateLoading = false;
+  updateSuccess = false;
 
   settings: GeneralSettings;
   draft: OrderInterface;
   variants: VariantInterface[] = [];
+  saleDiscounts: SaleDiscountInterface[] = [];
+  variantForm: FormGroup;
 
   private draftSubscription: Subscription;
   private variantsSubscription: Subscription;
   private settingsSubscription: Subscription;
+  private saleDiscountSubscription: Subscription;
 
-  constructor(private cart: CartService, private shop: ShopService, private router: Router, private alert: AlertService) { }
+  constructor(private cart: CartService, private shop: ShopService, private router: Router,
+              private alert: AlertService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.cart.getProductsFromDraft().subscribe(data => {
@@ -55,6 +63,16 @@ export class CartComponent implements OnInit, OnDestroy {
         const { draft, variants } = data;
         this.draft = draft;
         this.variants = variants;
+        if (this.variantForm) {
+          this.variantForm.reset();
+        }
+        let variantFormControls = variants.map(variant => {
+          return { [variant.id]: [variant.quantity] };
+        });
+        variantFormControls = Object.assign({}, ...variantFormControls);
+        this.variantForm = this.formBuilder.group({
+          ...variantFormControls
+        });
       } else {
         this.variants = [];
       }
@@ -72,6 +90,13 @@ export class CartComponent implements OnInit, OnDestroy {
     if (this.variantsSubscription && !this.variantsSubscription.closed) {
       this.variantsSubscription.unsubscribe();
     }
+    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
+      this.saleDiscountSubscription.unsubscribe();
+    }
+  }
+
+  getSaleDiscounts() {
+    this.saleDiscountSubscription = this.shop.getSaleDiscounts().subscribe(saleDiscounts => this.saleDiscounts = saleDiscounts);
   }
 
   async addVoucher(code: string) {
@@ -96,6 +121,32 @@ export class CartComponent implements OnInit, OnDestroy {
       this.handleError(err);
     }
     this.totalLoading = false;
+  }
+
+  async updateCart() {
+    const variantControls = this.variantForm.controls;
+    const variants: VariantQuantity[] = Object.keys(variantControls).map(key => {
+      return {
+        variantId: key,
+        quantity: variantControls[key].value
+      };
+    });
+    if (variants && variants.length > 0) {
+      const { orderId } = this.draft;
+      this.updateLoading = true;
+      try {
+        await this.shop.updateCartVariants(orderId, { variants });
+        this.updateSuccess = true;
+        setInterval(() => this.updateSuccess = false, 2000);
+      } catch (err) {
+        this.handleError(err);
+      }
+      this.updateLoading = false;
+    }
+  }
+
+  trackByFn(index: number, item: VariantInterface) {
+    return item.id;
   }
 
   getImage(images: Content[]) {

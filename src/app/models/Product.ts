@@ -11,6 +11,7 @@ export interface ProductInterface extends CommonInterface {
     attributes?: ObjString;
     productTypeId?: string;
     categoryId?: string;
+    allCategoryId?: string[];
     collectionId?: string[];
     prices?: Price[];
     price?: number;

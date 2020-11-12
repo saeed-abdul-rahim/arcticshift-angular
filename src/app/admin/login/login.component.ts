@@ -64,10 +64,8 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     try {
       await this.auth.signOut();
-      console.log(await this.auth.getAfsCurrentUser());
       await this.auth.signIn(email.value, password.value);
       const isShopUser = await this.isShopUser();
-      console.log(isShopUser);
       if (isShopUser) {
         this.success = true;
         setTimeout(() => this.success = false, 2000);
@@ -77,7 +75,6 @@ export class LoginComponent implements OnInit {
         this.passwordDanger = true;
       }
     } catch (err) {
-      console.log(err);
       this.success = false;
       this.emailDanger = true;
       this.passwordDanger = true;
@@ -91,7 +88,6 @@ export class LoginComponent implements OnInit {
       this.loading = false;
       return this.auth.isShopUser();
     } catch (err) {
-      console.log(err);
       this.loading = false;
       return false;
     }

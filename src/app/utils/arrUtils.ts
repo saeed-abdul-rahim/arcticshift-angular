@@ -19,3 +19,7 @@ export function patchArrObj(newArrObj: any[], origArrObj: any[], property: strin
     });
     return origArrObj;
 }
+
+export function getIds(objArr: any[]): string[] {
+  return objArr.map(o => o.id);
+}
