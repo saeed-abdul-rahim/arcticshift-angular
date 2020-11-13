@@ -129,6 +129,14 @@
     @apply outline-none;
 }
 
+.danger-label {
+    @apply font-light;
+    @apply pt-5;
+    @apply text-center;
+    @apply text-red-400;
+    @apply text-xl;
+    @apply uppercase;
+}
 
 .arc-label {
     @apply block;

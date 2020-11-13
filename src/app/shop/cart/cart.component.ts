@@ -11,13 +11,14 @@ import { IMAGE_XS } from '@constants/imageSize';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { Content } from '@models/Common';
 import { OrderInterface, VariantQuantity } from '@models/Order';
-import { VariantInterface } from '@models/Variant';
+import { VariantExtended, VariantInterface } from '@models/Variant';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AlertService } from '@services/alert/alert.service';
 import { countryAlphaList } from '@utils/countryAlphaList';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
+import { isProductAvailable } from '@utils/isProductAvailable';
 
 @Component({
   selector: 'app-cart',
@@ -42,10 +43,11 @@ export class CartComponent implements OnInit, OnDestroy {
   totalLoading = false;
   updateLoading = false;
   updateSuccess = false;
+  available = false;
 
   settings: GeneralSettings;
   draft: OrderInterface;
-  variants: VariantInterface[] = [];
+  variants: VariantExtended[] = [];
   saleDiscounts: SaleDiscountInterface[] = [];
   variantForm: FormGroup;
 
@@ -62,7 +64,16 @@ export class CartComponent implements OnInit, OnDestroy {
       if (data) {
         const { draft, variants } = data;
         this.draft = draft;
-        this.variants = variants;
+        this.variants = variants.map(variant => {
+          const available = isProductAvailable(variant);
+          return { ...variant, available };
+        });
+        const allAvailable = this.variants.map(variant => variant.available);
+        if (allAvailable.includes(false)) {
+          this.available = false;
+        } else {
+          this.available = true;
+        }
         if (this.variantForm) {
           this.variantForm.reset();
         }

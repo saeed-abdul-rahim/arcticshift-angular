@@ -84,9 +84,10 @@
                         <div class="text-base">
                             {{ variant.productName }} - {{ variant.name }}
                         </div>
-                        <div class="arc-tag">
+                        <div class="arc-tag" *ngIf="variant.available">
                             x {{ variant.quantity }}
                         </div>
+                        <div *ngIf="!variant.available" class="danger-label">Out of stock</div>
                     </div>
                 </div>
                 <div class="relative">
@@ -97,7 +98,7 @@
             </div>
         </div>
         <app-cart-total [disableAddress]="true"></app-cart-total>
-        <app-button color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
+        <app-button *ngIf="available" color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
     </div>
 </div>
 <app-sign-in [(showModal)]="showSignInModal" (signedIn)="afterSignIn($event)"></app-sign-in>

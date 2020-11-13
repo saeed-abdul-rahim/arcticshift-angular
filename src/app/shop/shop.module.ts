@@ -69,7 +69,7 @@ import { ModalService } from '@services/modal/modal.service';
     NavbarService,
     ModalService,
     CartService,
-    ProductService,
+    ProductService
   ]
 })
 export class ShopModule { }

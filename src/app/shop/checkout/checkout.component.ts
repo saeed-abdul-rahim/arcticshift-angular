@@ -7,7 +7,7 @@ import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { RazorpayOptions } from '@models/RazorpayOptions';
 import { OrderInterface } from '@models/Order';
-import { VariantInterface } from '@models/Variant';
+import { VariantExtended } from '@models/Variant';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { Content } from '@models/Common';
 import { Address, User } from '@models/User';
@@ -16,6 +16,7 @@ import { IMAGE_SS } from '@constants/imageSize';
 import { countryList, CountryListType, CountryStateType } from '@utils/countryList';
 import { AlertService } from '@services/alert/alert.service';
 import { environment } from '@environment';
+import { isProductAvailable } from '@utils/isProductAvailable';
 
 @Component({
   selector: 'app-checkout',
@@ -48,11 +49,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   user: User;
   settings: GeneralSettings;
   draft: OrderInterface;
-  variants: VariantInterface[];
+  variants: VariantExtended[];
   imageSize = IMAGE_SS;
   draftLoading = false;
   variantsLoading = false;
   showSignInModal = false;
+  available = false;
 
   private razorpayKey: string;
   private draftSubscription: Subscription;
@@ -152,7 +154,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       if (data) {
         const { draft, variants } = data;
         this.draft = draft;
-        this.variants = variants;
+        this.variants = variants.map(variant => {
+          const available = isProductAvailable(variant);
+          return { ...variant, available };
+        });
+        const allAvailable = this.variants.map(variant => variant.available);
+        if (allAvailable.includes(false)) {
+          this.available = false;
+        } else {
+          this.available = true;
+        }
       }
     });
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);

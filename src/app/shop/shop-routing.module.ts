@@ -6,11 +6,13 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { HomeComponent } from './home/home.component';
 import { ShopComponent } from './shop.component';
+import { SignInComponent } from './sign-in/sign-in.component';
 import { VariantComponent } from './variant/variant.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 
 
 const routes: Routes = [
+  {path: 'sign', component: SignInComponent},
   {
     path: '', component: ShopComponent, canActivate: [AuthGuard], canActivateChild: [AuthGuard],
     children: [

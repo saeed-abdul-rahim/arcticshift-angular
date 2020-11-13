@@ -14,6 +14,7 @@ import { AlertService } from '@services/alert/alert.service';
 import { getIds } from '@utils/arrUtils';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { getProductDiscount, getSaleDiscountForProduct } from '@utils/saleDiscount';
+import { isProductAvailable } from '@utils/isProductAvailable';
 
 @Component({
   selector: 'app-variant',
@@ -182,17 +183,18 @@ export class VariantComponent implements OnInit, OnDestroy {
     this.variantLoading = true;
     this.variantSubscription = this.shop.getVariantsByProductId(id).subscribe(variants => {
       this.variantLoading = false;
-      if (variants && variants.length > 0) {
+      if (variants) {
         this.variants = variants;
-        this.variant = variants[0];
-        this.setVariant(this.variant);
+        if (!this.variant || this.variant.id === variants[0].id) {
+          this.setVariant(variants[0]);
+        }
       }
     }, error => this.handleError(error.message));
   }
 
   setVariant(variant: VariantInterface) {
     this.variant = variant;
-    const { price, prices, attributes } = variant;
+    const { price, prices, attributes, images } = variant;
     const strikePrice = prices.find(prs => prs.name === 'strike');
     if (strikePrice) {
       this.strikePrice = strikePrice.value;
@@ -216,20 +218,12 @@ export class VariantComponent implements OnInit, OnDestroy {
         };
       });
     }
-    const { warehouseQuantity, bookedQuantity, trackInventory, images } = variant;
-    if (trackInventory && warehouseQuantity && bookedQuantity) {
-      let availableQuantity = 0;
-      availableQuantity = Object.keys(warehouseQuantity).map(key => {
-        return warehouseQuantity[key];
-      }).reduce((acc, curr) => acc + curr);
-      availableQuantity = availableQuantity - bookedQuantity;
-      this.available = availableQuantity > 0 ? true : false;
-    }
+    this.available = isProductAvailable(this.variant);
     if (images && images.length > 0) {
       this.setSelectedImage(images[0]);
       this.setCarouselImages(images);
     }
-    if (this.draftVariantQuantity) {
+    if (this.draftVariantQuantity && this.draftVariantQuantity[this.variant.id]) {
       this.quantity = this.draftVariantQuantity[this.variant.id];
     }
   }
@@ -275,6 +269,17 @@ export class VariantComponent implements OnInit, OnDestroy {
     const thumbnail = thumbnails.find(thumb => thumb.dimension === this.selectedImageSize);
     this.selectedImage = content.url;
     this.selectedThumbnail = thumbnail.url;
+  }
+
+  hasVariantInDraft() {
+    const { variant, draftVariantQuantity } = this;
+    if (variant && draftVariantQuantity) {
+      const variantIds = Object.keys(draftVariantQuantity).map(key => key);
+      if (draftVariantQuantity[variant.id] && variantIds.includes(variant.id)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   productsInCollection(productsInCollection: ProductInterface[]) {

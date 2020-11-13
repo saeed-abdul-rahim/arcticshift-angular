@@ -12,8 +12,9 @@
                         <div class="mb-auto md:my-auto text-base md:text-xl">
                             {{ variant.productName }} - {{ variant.name }}
                         </div>
-                        <app-counter-input [formControl]="variantForm.controls[variant.id]" [label]="'Quantity'" [value]="variant.quantity" [valueMin]="1">
+                        <app-counter-input *ngIf="variant.available" [formControl]="variantForm.controls[variant.id]" [label]="'Quantity'" [value]="variant.quantity" [valueMin]="1">
                         </app-counter-input>
+                        <div *ngIf="!variant.available" class="danger-label">Out of stock</div>
                     </div>
                 </div>
                 <div class="relative">
@@ -52,7 +53,7 @@
             </div>
         </div>
         <app-cart-total></app-cart-total>
-        <app-button color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
+        <app-button *ngIf="available" color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
         </app-button>
     </div>
 </div>

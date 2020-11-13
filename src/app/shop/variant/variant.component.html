@@ -39,15 +39,16 @@
                             bindValue="id" bindLabel="name"></ng-select>
                     </div>
                 </div>
-                <app-counter-input [label]="'Quantity'" [(value)]="quantity" [valueMin]="1">
+                <app-counter-input *ngIf="available" [label]="'Quantity'" [(value)]="quantity" [valueMin]="1">
                 </app-counter-input>
+                <div *ngIf="!available" class="danger-label">Out of stock</div>
             </div>
         </div>
         <div class="pt-4">
-            <app-button (click)="addToCart()" [loading]="cartLoading"
-                [success]="cartSuccess || (draftVariantQuantity && variant && draftVariantQuantity[variant.id] === quantity)"
+            <app-button *ngIf="available" (click)="addToCart()" [loading]="cartLoading"
+                [success]="cartSuccess || hasVariantInDraft()"
                 [fullWidth]="true" [color]="'gray'" [dark]="true"
-                [label]="draftVariantQuantity && variant && draftVariantQuantity[variant.id] ? 'Update Bag' : 'Add to Bag'">
+                [label]="hasVariantInDraft() ? 'Update Bag' : 'Add to Bag'">
             </app-button>
         </div>
     </div>

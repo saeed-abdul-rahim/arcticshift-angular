@@ -20829,6 +20829,17 @@ video {
   outline: 0;
 }
 
+.danger-label {
+  font-weight: 300;
+  padding-top: 1.25rem;
+  text-align: center;
+  --text-opacity: 1;
+  color: #fc8181;
+  color: rgba(252, 129, 129, var(--text-opacity));
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
 .arc-label {
   display: block;
   text-transform: uppercase;

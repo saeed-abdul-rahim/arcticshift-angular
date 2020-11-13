@@ -322,6 +322,15 @@ export class ShopService {
     return combineLatest(queries);
   }
 
+  getProductsByKeyword(keyword: string): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'keyword',
+      type: 'array-contains',
+      value: keyword
+    }], null, 10);
+    return getDataFromCollection(products);
+  }
+
   getProductsByCollectionIds(ids: string[], limit?: number): Observable<ProductInterface[]> {
     ids = ids.slice(0, 10);
     const products = this.dbS.queryProducts([{
