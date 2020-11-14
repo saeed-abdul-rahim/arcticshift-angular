@@ -111,7 +111,7 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (!variant || !quantity) {
       return;
     }
-    const { warehouseQuantity, variantId } = variant;
+    const { warehouseQuantity, variantId, shopId } = variant;
     let maxQuantity = 0;
     maxQuantity = Object.keys(warehouseQuantity)
       .map(key => warehouseQuantity[key])
@@ -122,6 +122,7 @@ export class VariantComponent implements OnInit, OnDestroy {
     this.cartLoading = true;
     try {
       await shop.addToCart({
+        shopId,
         variants: [{
           variantId,
           quantity

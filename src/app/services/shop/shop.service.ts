@@ -313,6 +313,11 @@ export class ShopService {
     return this.dbS.getAttributeByIds(attributeIds);
   }
 
+  getProductbyIds(ids: string[]): Observable<ProductInterface[]> {
+    const { dbProductsRoute } = this.dbS;
+    return this.dbS.queryByIds(dbProductsRoute, ids);
+  }
+
   getVariantByIds(variantIds: string[]) {
     const { db, dbVariantsRoute } = this.dbS;
     const queries = variantIds.map(id => {

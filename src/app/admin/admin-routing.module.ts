@@ -38,6 +38,7 @@ import { VoucherFormComponent } from './voucher-form/voucher-form.component';
 import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
+import { OrderFormComponent } from './order-form/order-form.component';
 
 
 const routes: Routes = [
@@ -88,14 +89,13 @@ const routes: Routes = [
         children: [
           { path: '', component: ListPageComponent },
           // { path: 'add' },
-          { path: ':id' }
+          { path: ':id', component: OrderFormComponent }
         ]
       },
       {
         path: CUSTOMER,
         children: [
           { path: '', component: ListPageComponent },
-          // { path: 'add', component: CustomerFormComponent },
           { path: ':id' }
         ]
       },

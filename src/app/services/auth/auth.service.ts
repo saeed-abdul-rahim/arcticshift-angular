@@ -64,11 +64,11 @@ export class AuthService {
   }
 
   getCurrentUserDocument() {
-    const { uid } = this.user.value;
-    return this.getUserDocument(uid);
+    return this.userDoc$;
   }
 
-  getUserDocument(uid: string) {
+  getUserDocument() {
+    const { uid } = this.user.value;
     const user = this.dbUsers.doc<UserInterface>(uid);
     this.userDoc$ = getDataFromDocument(user);
     return this.userDoc$;

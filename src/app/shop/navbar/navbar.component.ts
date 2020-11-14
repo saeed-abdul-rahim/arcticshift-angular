@@ -83,10 +83,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.showSearch = false;
   }
 
-  test() {
-    console.log('hi');
-  }
-
   openSearch($event: Event) {
     $event.preventDefault();
     $event.stopPropagation();
