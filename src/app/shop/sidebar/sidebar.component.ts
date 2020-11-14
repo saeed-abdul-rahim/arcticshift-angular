@@ -5,6 +5,7 @@ import { ProductCondition } from '@models/Product';
 import { User } from '@models/User';
 import { AuthService } from '@services/auth/auth.service';
 import { ModalService } from '@services/modal/modal.service';
+import { NavbarService } from '@services/navbar/navbar.service';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -36,7 +37,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private collectionsSubscription: Subscription;
   private userSubscription: Subscription;
 
-  constructor(private shop: ShopService, private auth: AuthService, private modal: ModalService, private productService: ProductService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private nav: NavbarService,
+              private modal: ModalService, private productService: ProductService) { }
 
   ngOnInit(): void {
     this.getCategories();
@@ -120,8 +122,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.backLabels.shift();
   }
 
-  toggleSignInModal() {
+  showSignInModal() {
     this.modal.setShowSignInModal(true);
+  }
+
+  closeSidnav() {
+    this.nav.setSidebarOpened(false);
   }
 
   signOut() {
@@ -138,6 +144,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       nxtFilters.push(categoryFilter);
     }
     this.productService.setProductFilters(nxtFilters);
+    this.closeSidnav();
   }
 
   filterProductsByCollection(id: string) {
@@ -150,6 +157,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       nxtFilters.push(collectionFilter);
     }
     this.productService.setProductFilters(nxtFilters);
+    this.closeSidnav();
   }
 
 }

@@ -8,9 +8,13 @@ import { VariantInterface } from '@models/Variant';
 import { SeoService } from '@services/seo/seo.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
-import { percentDecrease } from '@utils/percentDecrease';
+import { percentDecrease } from '@utils/calculation';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertService } from '@services/alert/alert.service';
+import { getIds } from '@utils/arrUtils';
+import { SaleDiscountInterface } from '@models/SaleDiscount';
+import { getProductDiscount, getSaleDiscountForProduct } from '@utils/saleDiscount';
+import { isProductAvailable } from '@utils/isProductAvailable';
 
 @Component({
   selector: 'app-variant',
@@ -33,7 +37,8 @@ export class VariantComponent implements OnInit, OnDestroy {
   quantity = 1;
   price: number;
   strikePrice: number;
-  discountPercentage: string;
+  discountPercentage: number;
+
   selectedAttribute: ObjString;
   selectedImage = '';
   selectedThumbnail = '';
@@ -46,12 +51,15 @@ export class VariantComponent implements OnInit, OnDestroy {
   variants: VariantInterface[] = [];
   variant: VariantInterface;
   attributes: AttributeJoinInterface[];
+  saleDiscounts: SaleDiscountInterface[] = [];
+  filterList: string[] = [];
 
   draftSubscription: Subscription;
   productSubscription: Subscription;
   variantSubscription: Subscription;
   productTypeSubscription: Subscription;
   attributeSubscription: Subscription;
+  saleDiscountSubscription: Subscription;
 
   constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService,
               private cart: CartService, private alert: AlertService) {
@@ -65,6 +73,7 @@ export class VariantComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
+    this.getSaleDiscounts();
     this.getDraft();
     this.shop.getGeneralSettings().subscribe(generalSettings => {
       if (generalSettings) {
@@ -88,6 +97,13 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (this.draftSubscription && !this.draftSubscription.closed) {
       this.draftSubscription.unsubscribe();
     }
+    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
+      this.saleDiscountSubscription.unsubscribe();
+    }
+  }
+
+  getSaleDiscounts() {
+    this.saleDiscountSubscription = this.shop.getSaleDiscounts().subscribe(saleDiscounts => this.saleDiscounts = saleDiscounts);
   }
 
   async addToCart() {
@@ -167,22 +183,32 @@ export class VariantComponent implements OnInit, OnDestroy {
     this.variantLoading = true;
     this.variantSubscription = this.shop.getVariantsByProductId(id).subscribe(variants => {
       this.variantLoading = false;
-      if (variants && variants.length > 0) {
+      if (variants) {
         this.variants = variants;
-        this.variant = variants[0];
-        this.setVariant(this.variant);
+        if (!this.variant || this.variant.id === variants[0].id) {
+          this.setVariant(variants[0]);
+        }
       }
     }, error => this.handleError(error.message));
   }
 
   setVariant(variant: VariantInterface) {
     this.variant = variant;
-    const { price, prices, attributes } = variant;
+    const { price, prices, attributes, images } = variant;
     const strikePrice = prices.find(prs => prs.name === 'strike');
     if (strikePrice) {
       this.strikePrice = strikePrice.value;
       this.price = price;
       this.discountPercentage = percentDecrease(price, this.strikePrice);
+    }
+    if (this.saleDiscounts && this.saleDiscounts.length > 0) {
+      const saleDiscount = getSaleDiscountForProduct(this.saleDiscounts, this.product);
+      if (saleDiscount) {
+        const discount = getProductDiscount(saleDiscount, price);
+        this.strikePrice = price;
+        this.price = discount.price;
+        this.discountPercentage = discount.discount;
+      }
     }
     if (attributes) {
       Object.keys(attributes).forEach(attributeId => {
@@ -192,20 +218,12 @@ export class VariantComponent implements OnInit, OnDestroy {
         };
       });
     }
-    const { warehouseQuantity, bookedQuantity, trackInventory, images } = variant;
-    if (trackInventory && warehouseQuantity && bookedQuantity) {
-      let availableQuantity = 0;
-      availableQuantity = Object.keys(warehouseQuantity).map(key => {
-        return warehouseQuantity[key];
-      }).reduce((acc, curr) => acc + curr);
-      availableQuantity = availableQuantity - bookedQuantity;
-      this.available = availableQuantity > 0 ? true : false;
-    }
+    this.available = isProductAvailable(this.variant);
     if (images && images.length > 0) {
       this.setSelectedImage(images[0]);
       this.setCarouselImages(images);
     }
-    if (this.draftVariantQuantity) {
+    if (this.draftVariantQuantity && this.draftVariantQuantity[this.variant.id]) {
       this.quantity = this.draftVariantQuantity[this.variant.id];
     }
   }
@@ -251,6 +269,21 @@ export class VariantComponent implements OnInit, OnDestroy {
     const thumbnail = thumbnails.find(thumb => thumb.dimension === this.selectedImageSize);
     this.selectedImage = content.url;
     this.selectedThumbnail = thumbnail.url;
+  }
+
+  hasVariantInDraft() {
+    const { variant, draftVariantQuantity } = this;
+    if (variant && draftVariantQuantity) {
+      const variantIds = Object.keys(draftVariantQuantity).map(key => key);
+      if (draftVariantQuantity[variant.id] && variantIds.includes(variant.id)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  productsInCollection(productsInCollection: ProductInterface[]) {
+    this.filterList = [this.product.id, ...getIds(productsInCollection)];
   }
 
   handleError(err: any) {

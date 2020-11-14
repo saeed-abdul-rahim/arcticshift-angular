@@ -37,6 +37,7 @@
     "browser-image-compression": "^1.0.12",
     "firebase": "^7.21.1",
     "module-alias": "^2.2.2",
+    "ng-click-outside": "^7.0.1",
     "ng-otp-input": "^1.7.1",
     "ng-sidebar": "^9.4.2",
     "ngx-image-zoom": "^0.6.0",

@@ -1,16 +1,52 @@
-<div class="container mx-auto flex flex-1 pt-8">
-    <div class="w-1/4 font-light p-3 top-0 flex flex-wrap content-start text-gray-800"
-        [ngClass]="isColorAttribute(attribute) ? 'flex-row' : 'flex-col'" *ngFor="let attribute of attributes">
-        <p class="w-full py-3">{{attribute.name}}</p>
-        <p class="font-thin flex py-1 text-sm hover:text-blue-500 arc-transition"
-            *ngFor="let attributeValue of attribute.attributeValues"
-            [ngClass]="attributeValue.name[0] !== '#' && attributeValue.name.length !== 7 ? '' : 'px-1'"
-            [ngClass]="isActiveAttributeFilter(attribute.id, attributeValue.id) ? 'text-blue-500' : 'cursor-pointer'"
-            (click)="setProductFilter(attribute.id, attributeValue.id)">
-            <span *ngIf="attributeValue.name[0] !== '#' && attributeValue.name.length !== 7"> {{attributeValue.name}}
-            </span>
-            <span *ngIf="attributeValue.name[0] === '#' && attributeValue.name.length === 7"
-                class="rounded-lg w-4 h-4 px-2" style="background-color: {{attributeValue.name}};"></span>
-        </p>
+<div class="container mx-auto flex flex-1 flex-wrap bg-white w-screen shadow rounded-lg">
+    <div class="w-full p-3 font-semibold text-gray-800 flex flex-wrap justify-between">
+        <div>
+            <div class="arc-link-button-secondary" *ngIf="productFilters.length > 1" (click)="clearFilters()">Clear all
+                filters</div>
+        </div>
+        <div class="flex py-1">
+            <div class="px-1 cursor-pointer" (click)="toggleFilter()" [class.text-blue-500]="showFilter">
+                Filter
+                <sup *ngIf="productFilters.length > 1" class="text-blue-500">{{ productFilters.length - 1 }}</sup>
+            </div>
+            <div class="px-1">
+                /
+            </div>
+            <div class="px-1 cursor-pointer" (click)="toggleSort()" [class.text-blue-500]="showSort">
+                Sort
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-wrap w-full mx-auto px-5 slider" [class.closed]="!showFilter">
+        <div class="w-1/4 pb-3 font-light flex flex-wrap content-start text-gray-800 border-t border-gray-200"
+            [ngClass]="isColorAttribute(attribute) ? 'flex-1' : 'flex-col'" *ngFor="let attribute of attributes">
+            <p class="w-full py-3 mx-1">{{attribute.name}}</p>
+            <p class="font-thin flex py-1 mx-1 text-sm hover:text-blue-500 cursor-pointer arc-transition"
+                *ngFor="let attributeValue of attribute.attributeValues"
+                [class.px-1]="attributeValue.name[0] !== '#' && attributeValue.name.length !== 7"
+                [class.text-blue-500]="isActiveAttributeFilter(attribute.id, attributeValue.id)"
+                (click)="setProductFilter(attribute.id, attributeValue.id)">
+                <span class="-ml-1 -mt-1" *ngIf="attributeValue.name[0] !== '#' && attributeValue.name.length !== 7">
+                    {{attributeValue.name}}
+                </span>
+                <span *ngIf="attributeValue.name[0] === '#' && attributeValue.name.length === 7"
+                    class="rounded-lg w-4 h-4 px-2"
+                    [class.shadow-outline]="isActiveAttributeFilter(attribute.id, attributeValue.id)"
+                    style="background-color: {{attributeValue.name}};"></span>
+            </p>
+        </div>
+    </div>
+    <div class="flex flex-wrap w-full mx-auto px-5 font-light content-start text-gray-800 slider"
+        [class.closed]="!showSort">
+        <div class="py-3 flex flex-wrap w-full flex-col border-t border-gray-200">
+            <div class="w-full pb-1" *ngFor="let sortBy of sortByData">
+                <p class="w-full mx-1 cursor-pointer" (click)="setProductSort(sortBy.sortBy)"
+                    [class.text-blue-500]="(
+                        productSort && sortBy.sortBy && productSort.field && productSort.field === sortBy.sortBy.field && productSort.direction === sortBy.sortBy.direction
+                        )">
+                    {{sortBy.name}}
+                </p>
+            </div>
+        </div>
     </div>
 </div>

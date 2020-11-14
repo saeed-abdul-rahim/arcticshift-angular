@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ADMIN, LOGIN } from '@constants/routes';
 import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 import { AuthService } from '@services/auth/auth.service';
+import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,18 +17,23 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   userSubscription: Subscription;
 
-  constructor(private auth: AuthService, private router: Router, private adminNavService: AdminNavService) {
-  }
+  constructor(private auth: AuthService, private router: Router, private adminNavService: AdminNavService, private shop: ShopService) {}
 
   ngOnInit(): void {
     this.getRoute();
+    this.shop.getGeneralSettingsFromDb();
   }
 
   ngOnDestroy(): void {
+    this.unsubscribeUser();
+    this.adminNavService.destroy();
+    this.shop.destroy();
+  }
+
+  unsubscribeUser() {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
     }
-    this.adminNavService.destroy();
   }
 
   async getRoute() {
@@ -37,8 +43,12 @@ export class AdminComponent implements OnInit, OnDestroy {
         if (!user$) {
           this.toLogin();
         } else {
+          this.unsubscribeUser();
           this.userSubscription = user$.subscribe(user => {
             if (!user) {
+              this.toLogin();
+            } else if (user.isAnonymous) {
+              this.auth.signOut();
               this.toLogin();
             } else if (user.role !== 'admin' && user.role !== 'staff') {
               this.toLogin();
@@ -48,13 +58,14 @@ export class AdminComponent implements OnInit, OnDestroy {
           });
         }
       });
-    } catch (_) {
+    } catch (err) {
       this.toLogin();
     }
   }
 
   toLogin() {
-    this.router.navigateByUrl(`${ADMIN}/${LOGIN}`);
+    this.shop.destroy();
+    this.router.navigateByUrl(`/${ADMIN}/${LOGIN}`);
   }
 
 }

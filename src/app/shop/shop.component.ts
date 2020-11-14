@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '@services/auth/auth.service';
+import { CartService } from '@services/cart/cart.service';
 import { NavbarService } from '@services/navbar/navbar.service';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -16,11 +17,13 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   sidebarOpenedSubscription: Subscription;
 
-  constructor(private auth: AuthService, private product: ProductService, private shop: ShopService, private nav: NavbarService) { }
+  constructor(private auth: AuthService, private product: ProductService, private shop: ShopService,
+              private nav: NavbarService, private cart: CartService) { }
 
   ngOnInit(): void {
     this.getSidebarOpened();
     this.shop.getCurrentLocationDetails();
+    this.shop.getGeneralSettingsFromDb();
     this.shop.setCategories();
     this.shop.setCollections();
     this.shop.setSaleDiscounts();
@@ -31,6 +34,7 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.product.destroy();
+    this.cart.destroy();
     if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
       this.sidebarOpenedSubscription.unsubscribe();
     }

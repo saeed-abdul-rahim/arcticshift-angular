@@ -7,7 +7,7 @@ import { AlertService } from '@services/alert/alert.service';
 import { DbService } from '@services/db/db.service';
 import { PaginationService } from '@services/pagination/pagination.service';
 import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
-import { ProductCondition, ProductInterface } from '@models/Product';
+import { ProductCondition, ProductInterface, ProductOrderBy } from '@models/Product';
 import { ProductTypeInterface } from '@models/ProductType';
 import { patchArrObj, uniqueArr } from '@utils/arrUtils';
 import { getDataFromCollection } from '@utils/getFirestoreData';
@@ -15,34 +15,45 @@ import { getDataFromCollection } from '@utils/getFirestoreData';
 @Injectable()
 export class ProductService {
 
-  private productsSubscription: Subscription;
+  private productListSubscription: Subscription;
   private productFilterSubscription: Subscription;
+  private productSortSubscription: Subscription;
   private attributesSubscription: Subscription;
 
   private productList = new BehaviorSubject<ProductInterface[]>([]);
   private attributeList = new BehaviorSubject<AttributeJoinInterface[]>([]);
   private productFilters = new BehaviorSubject<ProductCondition[]>([]);
+  private productSort = new BehaviorSubject<ProductOrderBy>(null);
 
   productList$ = this.productList.asObservable();
   attributeList$ = this.attributeList.asObservable();
   productFilters$ = this.productFilters.asObservable();
+  productSort$ = this.productSort.asObservable();
 
   constructor(private dbS: DbService, private page: PaginationService, private alert: AlertService) { }
 
   destroy(): void {
-    this.unsubscribeProducts();
+    this.unsubscribeProductList();
+    this.unsubscribeProductFilters();
+    this.unsubscribeProductSort();
     this.unsubscribeAttributes();
   }
 
-  unsubscribeProducts() {
-    if (this.productsSubscription && !this.productsSubscription.closed) {
-      this.productsSubscription.unsubscribe();
+  unsubscribeProductList() {
+    if (this.productListSubscription && !this.productListSubscription.closed) {
+      this.productListSubscription.unsubscribe();
     }
   }
 
   unsubscribeProductFilters() {
     if (this.productFilterSubscription && !this.productFilterSubscription.closed) {
       this.productFilterSubscription.unsubscribe();
+    }
+  }
+
+  unsubscribeProductSort() {
+    if (this.productSortSubscription && !this.productSortSubscription.closed) {
+      this.productSortSubscription.unsubscribe();
     }
   }
 
@@ -59,9 +70,14 @@ export class ProductService {
 
   setProductAttributeFilter(attributeId: string, attributeValueId: string) {
     const oldValues = this.productFilters.value;
-    const filtered = oldValues.filter(data => data.field !== attributeId);
     const productFilter: ProductCondition = { field: attributeId, type: '==', value: attributeValueId, parentFields: ['attributes'] };
-    this.setProductFilters([...filtered, productFilter]);
+    this.setProductFilters([...oldValues, productFilter]);
+  }
+
+  removeProductAttributeFilter(attributeValueId: string) {
+    let values = this.productFilters.value;
+    values = values.filter(filter => filter.value !== attributeValueId);
+    this.setProductFilters(values);
   }
 
   getAttributesFromDb() {
@@ -77,7 +93,7 @@ export class ProductService {
     ).subscribe(attributes => this.attributeList.next(attributes));
   }
 
-  getProductsFromDb(filters: ProductCondition[] = []) {
+  getProductsFromDb(filters: ProductCondition[] = [], orderBy?: ProductOrderBy) {
     const statusFilter = filters.find(filter => filter.field === 'status');
     if (!statusFilter) {
       filters.push({
@@ -85,13 +101,14 @@ export class ProductService {
       });
     }
     const { dbProductsRoute } = this.dbS;
-    this.unsubscribeProducts();
+    this.unsubscribeProductList();
     this.page.destroy();
     this.page.init(dbProductsRoute, {
       where: filters,
+      orderBy,
       limit: 1
     });
-    this.productsSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
+    this.productListSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
       if (data && data.length > 0 && this.productList.value.length > 0) {
         let productList = this.productList.value;
         productList = patchArrObj(data, productList, 'id');
@@ -142,27 +159,29 @@ export class ProductService {
   }
 
   setProductFilters(productFilters: ProductCondition[]) {
+    const sort = this.productSort.value;
     this.productFilters.next(productFilters);
-    this.getProductsFromDb(productFilters);
+    this.getProductsFromDb(productFilters, sort);
   }
 
   getProductFilters() {
     return this.productFilters$;
   }
 
+  setProductSort(sort: ProductOrderBy) {
+    const productFilters = this.productFilters.value;
+    this.productSort.next(sort);
+    this.getProductsFromDb(productFilters, sort);
+  }
+
+  getProductSort() {
+    return this.productSort$;
+  }
+
   resetProductFilters() {
     this.productFilters.next([]);
-  }
-
-  addProductFilter(filter: ProductCondition) {
-    const { value } = this.productFilters;
-    this.productFilters.next([...value, filter]);
-  }
-
-  removeProductFilter(conditionValue: any) {
-    const { value } = this.productFilters;
-    const filteredValue = value.filter(v => v.value !== conditionValue);
-    this.productFilters.next(filteredValue);
+    this.productSort.next(null);
+    this.getProductsFromDb();
   }
 
   handleError(err: any) {

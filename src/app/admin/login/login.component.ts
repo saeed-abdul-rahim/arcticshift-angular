@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
     const { email, password } = isValidForm;
     this.loading = true;
     try {
-      this.auth.signOut();
+      await this.auth.signOut();
       await this.auth.signIn(email.value, password.value);
       const isShopUser = await this.isShopUser();
       if (isShopUser) {
@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit {
     try {
       this.loading = false;
       return this.auth.isShopUser();
-    } catch (_) {
+    } catch (err) {
       this.loading = false;
       return false;
     }

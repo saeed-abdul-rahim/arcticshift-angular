@@ -6,6 +6,8 @@ import { inOut } from '@animations/inOut';
 import { slideInOut } from '@animations/slideInOut';
 import { ShopService } from '@services/shop/shop.service';
 import { GeneralSettings } from '@models/GeneralSettings';
+import { ValueType } from '@models/Common';
+import { getDiscountPrice, percentDecrease } from '@utils/calculation';
 
 type Image = {
   url: string;
@@ -25,14 +27,18 @@ export class ProductCardComponent implements OnInit, OnDestroy {
   @Input() images: Image[] = [];
   @Input() heart = false;
   @Input() title: string;
-  @Input() strikePrice: string;
-  @Input() price: string;
+  @Input() strikePrice: number;
+  @Input() price: number;
+  @Input() discountType: ValueType;
+  @Input() discountValue: number;
 
   @Output() heartCallback = new EventEmitter<string>();
 
+  discount: number;
   hover = false;
   faHeartR = faHeartR;
   faHeartS = faHeartS;
+  accentText: string;
 
   settings: GeneralSettings;
   settingsSubscription: Subscription;
@@ -40,7 +46,11 @@ export class ProductCardComponent implements OnInit, OnDestroy {
   constructor(private shop: ShopService) { }
 
   ngOnInit(): void {
-    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => {
+      this.settings = settings;
+      this.accentText = `text-${settings.accentColor}-500`;
+    });
+    this.setDiscount();
   }
 
   ngOnDestroy(): void {
@@ -59,6 +69,24 @@ export class ProductCardComponent implements OnInit, OnDestroy {
 
   trackByFn(index: number, item: Image) {
     return item.url;
+  }
+
+  setDiscount() {
+    if (!this.discountType) {
+      return;
+    }
+    switch (this.discountType) {
+      case 'fixed':
+        this.discount = percentDecrease(this.price, this.discountValue);
+        this.strikePrice = this.price;
+        this.price -= this.discountValue;
+        break;
+      case 'percent':
+        this.discount = this.discountValue;
+        this.strikePrice = this.price;
+        this.price = getDiscountPrice(this.price, this.discountValue);
+        break;
+    }
   }
 
 }

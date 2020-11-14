@@ -293,8 +293,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.displayedColumns = [];
     this.dataKeys = [];
     this.page.init(path, {
-      orderBy: 'createdAt',
-      reverse: true,
+      orderBy: { field: 'createdAt', direction: 'desc' },
       where: [{ field: 'shopId', type: '==', value: this.shopId }, ...where],
       limit: this.pageSize
     });

@@ -19,7 +19,7 @@ export type Price = {
 
 export interface QueryConfig {
     path?: string;
-    orderBy?: string;
+    orderBy?: OrderBy;
     where?: Condition[];
     limit?: number;
     reverse?: boolean;

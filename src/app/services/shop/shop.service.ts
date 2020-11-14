@@ -125,10 +125,19 @@ export class ShopService {
     }
   }
 
+  async updateCartVariants(orderId: string, data: OrderInterface) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.patch(`${apiOrder}/${orderId}/variant`, { data: { ...data, userId: user.uid } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async removeVariantFromCart(orderId: string, variantId: string) {
     const { req, apiOrder, user } = this;
     try {
-      return await req.patch(`${apiOrder}/${orderId}/variant`, { data: { userId: user.uid, variantId } });
+      return await req.patch(`${apiOrder}/${orderId}/variant/delete`, { data: { userId: user.uid, variantId } });
     } catch (err) {
       throw err;
     }
@@ -311,6 +320,34 @@ export class ShopService {
       return getDataFromDocument(variant) as Observable<VariantInterface>;
     });
     return combineLatest(queries);
+  }
+
+  getProductsByKeyword(keyword: string): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'keywords',
+      type: 'array-contains',
+      value: keyword
+    }], null, 10);
+    return getDataFromCollection(products);
+  }
+
+  getProductsByCollectionIds(ids: string[], limit?: number): Observable<ProductInterface[]> {
+    ids = ids.slice(0, 10);
+    const products = this.dbS.queryProducts([{
+      field: 'collectionId',
+      type: 'array-contains-any',
+      value: ids
+    }], null, limit);
+    return getDataFromCollection(products);
+  }
+
+  getProductsByCategoryId(id: string, limit?: number): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'categoryId',
+      type: '==',
+      value: id
+    }], null, limit);
+    return getDataFromCollection(products);
   }
 
   getCategoryByParentId(categoryId: string): Observable<CategoryInterface[]> {

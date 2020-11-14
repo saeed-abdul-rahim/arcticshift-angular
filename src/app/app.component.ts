@@ -1,22 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ShopService } from '@services/shop/shop.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   title = 'articshift';
 
-  constructor(private shop: ShopService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.shop.getGeneralSettingsFromDb();
-  }
-
-  ngOnDestroy(): void {
-    this.shop.destroy();
   }
 
 }

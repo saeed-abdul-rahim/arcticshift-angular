@@ -20702,6 +20702,10 @@ video {
   max-height: 0;
 }
 
+.carousel {
+  z-index: unset !important;
+}
+
 .carousel-open:checked + .carousel-item {
   position: static;
   opacity: 100;
@@ -20823,6 +20827,17 @@ video {
 
 .input-group-right:focus {
   outline: 0;
+}
+
+.danger-label {
+  font-weight: 300;
+  padding-top: 1.25rem;
+  text-align: center;
+  --text-opacity: 1;
+  color: #fc8181;
+  color: rgba(252, 129, 129, var(--text-opacity));
+  font-size: 1.25rem;
+  text-transform: uppercase;
 }
 
 .arc-label {
