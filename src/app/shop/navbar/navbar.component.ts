@@ -5,7 +5,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons/faShoppingBag';
 import { CartService } from '@services/cart/cart.service';
 import { OrderInterface } from '@models/Order';
-import { CART, shopProductRoute } from '@constants/routes';
+import { CART, WISHLIST, shopProductRoute } from '@constants/routes';
 import { User } from '@models/User';
 import { NavbarService } from '@services/navbar/navbar.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit, OnDestroy {
 
   cartRoute = `/${CART}`;
+  wishlistRoute = `/${WISHLIST}`;
 
   faShoppingBag = faShoppingBag;
   faHeart = faHeart;

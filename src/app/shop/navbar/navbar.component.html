@@ -43,7 +43,7 @@
             </a>
 
             <a class="px-3 inline-block no-underline hover:text-black cursor-pointer"
-                *ngIf="(!showSearch && isMobile) || !isMobile">
+            routerLink="{{wishlistRoute}}" *ngIf="(!showSearch && isMobile) || !isMobile">
                 <fa-icon [icon]="faHeart"></fa-icon>
             </a>
 
