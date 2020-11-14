@@ -7,6 +7,7 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SidebarModule } from 'ng-sidebar';
+import { ClickOutsideModule } from 'ng-click-outside';
 
 import { ComponentsModule } from '@components/components.module';
 
@@ -63,6 +64,7 @@ import { ModalService } from '@services/modal/modal.service';
     IvyCarouselModule,
     NgxImageZoomModule,
     NgSelectModule,
+    ClickOutsideModule,
     SidebarModule.forRoot()
   ],
   providers: [

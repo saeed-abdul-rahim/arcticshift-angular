@@ -324,7 +324,7 @@ export class ShopService {
 
   getProductsByKeyword(keyword: string): Observable<ProductInterface[]> {
     const products = this.dbS.queryProducts([{
-      field: 'keyword',
+      field: 'keywords',
       type: 'array-contains',
       value: keyword
     }], null, 10);

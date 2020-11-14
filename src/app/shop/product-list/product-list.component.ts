@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { IMAGE_L } from '@constants/imageSize';
-import { PRODUCT } from '@constants/routes';
+import { shopProductRoute } from '@constants/routes';
 import { Content, ValueType } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { CatalogType } from '@models/Metadata';
@@ -24,8 +24,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   @Input() limit = 8;
   @Input() filterProducts: string[] = []; // Product Ids
   @Output() allProducts = new EventEmitter<ProductInterface & SaleDiscountInterface[]>();
-
-  productUrl = `/${PRODUCT}`;
 
   saleDiscounts: SaleDiscountInterface[];
   products: ProductInterface & SaleDiscountInterface[] = [];
@@ -160,7 +158,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   navigateToVariant(title: string, id: string) {
     const routeTitle = encodeURIComponent(title.split(' ').join('-'));
-    this.router.navigateByUrl(`${this.productUrl}/${routeTitle}/${id}`);
+    this.router.navigateByUrl(`${shopProductRoute}/${routeTitle}/${id}`);
   }
 
 }
