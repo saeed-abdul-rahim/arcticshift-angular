@@ -1,2 +1,145 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="orderForm" (ngSubmit)="onSubmit()">
-</form>
+
+<!-- BODY -->
+<div class="flex flex-col h-screen justify-between">
+    <div class="relative pt-12 mb-auto h-10">
+        <div class="px-4 md:px-10 mx-auto w-full">
+            <div class="flex flex-wrap mt-4 mb-12" *ngIf="order">
+                <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+                    <app-card *ngIf="edit" [heading]="order.orderStatus.toUpperCase()" [body]="productListTemplate"></app-card>
+                    <app-card *ngIf="edit" [heading]="order.paymentStatus.toUpperCase()" [body]="chargeTemplate"></app-card>
+                </div>
+                <div class="w-full xl:w-4/12 px-4">
+                    <app-card [heading]="'Customer'" [body]="customerTemplate"></app-card>
+                    <app-card [heading]="'Notes'" [body]="notesTemplate"></app-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TEMPLATES -->
+
+<ng-template #chargeTemplate>
+    <div class="divide-y">
+        <div class="flex flex-wrap flex-col px-4 py-3 text-gray-800">
+            <div class="flex relative w-full py-1">
+                <div class="w-4/12">Subtotal</div>
+                <div class="w-5/12">{{totalQuantity}} items</div>
+                <div class="w-3/12 text-right">{{order.subTotal | currency: settings.currency }}</div>
+            </div>
+            <div class="flex relative w-full py-1">
+                <div class="w-4/12">Taxes</div>
+                <div class="w-5/12">
+                    <span *ngIf="order.taxCharge === 0">does not apply</span>
+                </div>
+                <div class="w-3/12 text-right">{{order.taxCharge | currency: settings.currency }}</div>
+            </div>
+            <div class="flex relative w-full py-1">
+                <div class="w-4/12">Shipping</div>
+                <div class="w-5/12">
+                    <span *ngIf="order.shippingCharge === 0">does not apply</span>
+                    <span *ngIf="order.shippingCharge > 0">order.data.shippingRateData.name</span>
+                </div>
+                <div class="w-3/12 text-right">{{order.shippingCharge | currency: settings.currency }}</div>
+            </div>
+            <div class="flex relative w-full py-1">
+                <div class="w-4/12">Sale Discount</div>
+                <div class="w-5/12"></div>
+                <div class="w-3/12 text-right">{{order.saleDiscount | currency: settings.currency }}</div>
+            </div>
+            <div class="flex relative w-full py-1">
+                <div class="w-4/12">Voucher</div>
+                <div class="w-5/12">{{order.data?.voucherData?.code}}</div>
+                <div class="w-3/12 text-right">{{order.voucherDiscount | currency: settings.currency }}</div>
+            </div>
+            <div class="flex relative w-full py-1 font-semibold" *ngIf="order">
+                <div class="w-4/12">Total</div>
+                <div class="w-5/12"></div>
+                <div class="w-3/12 text-right">{{order.total | currency: settings.currency }}</div>
+            </div>
+        </div>
+        <div class="flex flex-wrap flex-col px-4 py-3 text-gray-800">
+            <div class="flex relative w-full py-1">
+                <div class="w-6/12">Captured Amount</div>
+                <div class="w-6/12 text-right">{{order.capturedAmount | currency: settings.currency }}</div>
+            </div>
+            <div class="flex relative w-full py-1 font-semibold">
+                <div class="w-6/12">Outstanding Balance</div>
+                <div class="w-6/12 text-right">{{order.total - order.capturedAmount | currency: settings.currency }}</div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #customerTemplate>
+    <div class="divide-y">
+        <div class="px-4 py-3 text-gray-800">
+            <span>{{order.customerName || order?.firstName + ' ' + order?.lastName}}</span>
+            <span *ngIf="order.phone"> {{order.phone}} </span>
+            <span *ngIf="order.email"> {{order.email}} </span>
+        </div>
+        <div class="px-4 py-3 text-gray-800 flex flex-col">
+            <span class="uppercase font-semibold mb-2">Shipping Address</span>
+            <p>{{ order?.firstName + ' ' + order?.lastName }}</p>
+            <p>{{ order.shippingAddress.line1 }}</p>
+            <p>{{ order.shippingAddress.line2 }}</p>
+            <p>{{ order.shippingAddress.city }}</p>
+            <p>{{ order.shippingAddress.zip }}</p>
+            <p>{{ order.shippingAddress.area }}</p>
+            <p>{{ getCountry(order.shippingAddress.country) }}</p>
+        </div>
+        <div class="px-4 py-3 text-gray-800 flex flex-col">
+            <span class="uppercase font-semibold mb-2">Billing Address</span>
+            <p>{{ order?.firstName + ' ' + order?.lastName }}</p>
+            <p>{{ order.billingAddress.line1 }}</p>
+            <p>{{ order.billingAddress.line2 }}</p>
+            <p>{{ order.billingAddress.city }}</p>
+            <p>{{ order.billingAddress.zip }}</p>
+            <p>{{ order.billingAddress.area }}</p>
+            <p>{{ getCountry(order.billingAddress.country) }}</p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #notesTemplate>
+    <div class="flex flex-wrap flex-col px-4 py-3 text-gray-800">
+        {{order.notes || 'No notes from customer' }}
+    </div>
+</ng-template>
+
+<!-- TABLE TEMPLATES -->
+
+<ng-template #productListTemplate>
+      <div *ngIf="products && products.length === 0" class="data-empty">No data available</div>
+      <table *ngIf="products && products.length > 0" mat-table [dataSource]="productsSource">
+  
+        <ng-container matColumnDef="product">
+          <th mat-header-cell *matHeaderCellDef>Product</th>
+          <td mat-cell *matCellDef="let row" class="max-w-xs truncate">{{row.name}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="sku">
+          <th mat-header-cell *matHeaderCellDef>SKU</th>
+          <td mat-cell *matCellDef="let row">{{row.sku}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef>Quantity</th>
+            <td mat-cell *matCellDef="let row">{{row.orderQuantity}}</td>
+          </ng-container>
+  
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let row">{{row.price}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>Total</th>
+            <td mat-cell *matCellDef="let row">{{row.price * row.orderQuantity}}</td>
+          </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  
+      </table>
+  </ng-template>
