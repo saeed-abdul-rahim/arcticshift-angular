@@ -105,6 +105,12 @@ export class PaginationService {
 
   setWhere(ref: Query) {
     this.where.forEach(condition => {
+      const { field, type } = condition;
+      if (type === '!=' || type === '>=' || type === '<=' || type === '<' || type === '>') {
+        ref = ref.orderBy(field);
+      }
+    });
+    this.where.forEach(condition => {
       const { field, type, value } = condition;
       ref = ref.where(field, type, value);
     });

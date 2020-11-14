@@ -260,7 +260,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     }
     if ((!this.productsSubscription || this.productsSubscription.closed) && ids.length > 0) {
       this.catalogLoading = true;
-      this.productsSubscription = this.admin.getProductbyIds(ids)
+      this.productsSubscription = this.shop.getProductbyIds(ids)
         .subscribe(products => {
           this.catalogLoading = false;
           this.products = products;

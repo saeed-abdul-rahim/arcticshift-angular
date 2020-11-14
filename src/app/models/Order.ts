@@ -1,5 +1,12 @@
 import { CommonInterface, Condition, OrderBy } from './Common';
+import { ProductInterface } from './Product';
+import { ProductTypeInterface } from './ProductType';
+import { SaleDiscountInterface } from './SaleDiscount';
+import { ShippingRateInterface } from './Shipping';
+import { TaxInterface } from './Tax';
 import { Address } from './User';
+import { VariantInterface } from './Variant';
+import { VoucherInterface } from './Voucher';
 
 export type OrderStatus = 'draft' | 'unfulfilled' | 'partiallyFulfilled' | 'fulfilled' | 'cancelled' | '';
 export type PaymentStatus = 'notCharged' | 'partiallyCharged' | 'fullyCharged' | 'partiallyRefunded' | 'fullyRefunded' | '';
@@ -38,11 +45,16 @@ export interface OrderInterface extends CommonInterface {
     total?: number;
     payment?: Payment[];
     notes?: string;
+    data?: OrderData;
 }
 
 export type OrderCondition = Condition & {
     field: AllOrderFields
     parentFields?: (OrderFields)[]
+};
+
+export type OrderOrderBy = OrderBy & {
+    field: OrderFields
 };
 
 export type OrderFields = keyof OrderInterface;
@@ -58,6 +70,16 @@ type Payment = {
     amount: number
 };
 
-export type OrderOrderBy = OrderBy & {
-    field: OrderFields
+type ProductData = VariantInterface & {
+    orderQuantity: number
+    baseProduct: ProductInterface
+    baseProductType: ProductTypeInterface
+    saleDiscount: SaleDiscountInterface | null
+    taxData?: TaxInterface | null
+};
+
+type OrderData = {
+    productsData: ProductData[]
+    shippingRateData: ShippingRateInterface
+    voucherData: VoucherInterface
 };
