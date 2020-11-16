@@ -1,0 +1,59 @@
+<!-- BODY -->
+<div class="flex flex-col h-screen justify-between">
+    <div class="relative pt-12 mb-auto h-10">
+        <div class="px-4 md:px-10 mx-auto w-full">
+            <div class="flex flex-wrap mt-4 mb-12" *ngIf="order">
+                <div class="w-full px-4">
+                    <app-card [heading]="'Items to fullfill'" [body]="productListTemplate"></app-card>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-footer-form></app-footer-form>
+</div>
+
+<!-- TABLE TEMPLATES -->
+
+<ng-template #productListTemplate>
+    <div *ngIf="productsSource && productsSource.data.length === 0" class="data-empty">No data available</div>
+    <form *ngIf="productsSource && productsSource.data.length > 0" [formGroup]="fullfillForm">
+        <table mat-table [dataSource]="productsSource">
+
+            <ng-container matColumnDef="product">
+                <th mat-header-cell *matHeaderCellDef>Product</th>
+                <td mat-cell *matCellDef="let row" class="max-w-xs truncate">
+                    <p>{{row.baseProduct.name}}</p>
+                    <p class="text-xs text-gray-600">{{row.name}}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="sku">
+                <th mat-header-cell *matHeaderCellDef>SKU</th>
+                <td mat-cell *matCellDef="let row">{{row.sku}}</td>
+            </ng-container>
+
+            <ng-container *ngFor="let warehouse of warehouses; trackBy: trackByFn" matColumnDef="{{warehouse.id}}">
+                <th mat-header-cell *matHeaderCellDef> {{warehouse.name}} </th>
+                <td class="pl-0" *matCellDef="let row" formGroupName="{{row.variantId}}">
+                    <div class="relative w-48 min-width-full">
+                        <input #inputQty type="number" class="arc-input w-full" placeholder="0"
+                            formControlName="{{warehouse.id}}" [ngClass]="isFormControlValid(row.variantId, warehouse.id) ? 'border border-red' : ''">
+                        <span class="input-right-label">
+                            /{{getWarehouseQuantity(row.variantId, warehouse.id)}}
+                        </span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantity to Fullfill</th>
+                <td mat-cell class="text-center" *matCellDef="let row">
+                    {{getFullfulledQuantity(row.variantId)}}/{{row.orderQuantity}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </form>
+</ng-template>

@@ -9,6 +9,7 @@ import {
   CUSTOMER,
   DASHBOARD,
   DISCOUNT,
+  FULLFILL,
   GIFTCARD,
   LOGIN,
   ORDER,
@@ -39,6 +40,7 @@ import { ListPageComponent } from './list-page/list-page.component';
 import { ProductTypeFormComponent } from './product-type-form/product-type-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
 import { OrderFormComponent } from './order-form/order-form.component';
+import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
 
 
 const routes: Routes = [
@@ -89,7 +91,8 @@ const routes: Routes = [
         children: [
           { path: '', component: ListPageComponent },
           // { path: 'add' },
-          { path: ':id', component: OrderFormComponent }
+          { path: ':id', component: OrderFormComponent },
+          { path: `:id/${FULLFILL}`, component: FullfillFormComponent }
         ]
       },
       {

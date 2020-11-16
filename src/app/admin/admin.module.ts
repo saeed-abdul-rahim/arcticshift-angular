@@ -42,6 +42,7 @@ import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
 import { OrderFormComponent } from './order-form/order-form.component';
+import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
 
 
 
@@ -66,7 +67,8 @@ import { OrderFormComponent } from './order-form/order-form.component';
     CustomerFormComponent,
     TaxFormComponent,
     ShippingFormComponent,
-    OrderFormComponent
+    OrderFormComponent,
+    FullfillFormComponent
   ],
   imports: [
     CommonModule,
