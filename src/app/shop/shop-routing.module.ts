@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: `${PRODUCT}/:title/:id`, component: VariantComponent },
       { path: WISHLIST, component: WishlistComponent },
       { path: CART, component: CartComponent },
-      { path: CHECKOUT, component: CheckoutComponent },
+      { path: CHECKOUT, component: CheckoutComponent }
     ]
   },
 ];

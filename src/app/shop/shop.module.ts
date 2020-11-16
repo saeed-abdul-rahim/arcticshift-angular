@@ -27,8 +27,10 @@ import { OrderStatusComponent } from './order-status/order-status.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CartService } from '@services/cart/cart.service';
+import { FooterComponent } from './footer/footer.component';
 import { CartTotalComponent } from './cart-total/cart-total.component';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { CarouselComponent } from './carousel/carousel.component';
 import { NavbarService } from '@services/navbar/navbar.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ModalService } from '@services/modal/modal.service';
@@ -50,6 +52,8 @@ import { ModalService } from '@services/modal/modal.service';
     ProfileComponent,
     CartTotalComponent,
     SignInComponent,
+    FooterComponent,
+    CarouselComponent,
     SidebarComponent
   ],
   imports: [
