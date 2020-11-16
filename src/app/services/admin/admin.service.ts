@@ -597,6 +597,11 @@ export class AdminService {
     return this.dbS.queryByIds(dbCollectionsRoute, ids);
   }
 
+  getWarehousebyIds(ids: string[]): Observable<WarehouseInterface[]> {
+    const { dbWarehouseRoute } = this.dbS;
+    return this.dbS.queryByIds(dbWarehouseRoute, ids);
+  }
+
   getWarehouseById(warehouseId: string): Observable<WarehouseInterface> {
     const { dbWarehouseRoute, db } = this.dbS;
     const warehouse = db.collection(dbWarehouseRoute).doc(warehouseId);

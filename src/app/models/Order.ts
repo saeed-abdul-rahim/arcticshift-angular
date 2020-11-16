@@ -36,7 +36,7 @@ export interface OrderInterface extends CommonInterface {
     giftCardId?: string;
     shippingId?: string;
     variants?: VariantQuantity[];
-    fullfilled?: Fulfilled[];
+    fullfilled?: VariantQuantity[];
     subTotal?: number;
     saleDiscount?: number;
     voucherDiscount?: number;
@@ -75,10 +75,6 @@ export type OrderData = {
 };
 
 type AllOrderFields = keyof (OrderInterface & Address);
-
-type Fulfilled = VariantQuantity & {
-    inventoryId: string
-};
 
 type Payment = {
     type: 'charge' | 'refund'

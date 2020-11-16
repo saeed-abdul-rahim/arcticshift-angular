@@ -10,7 +10,6 @@ import { ProductTypeInterface } from '@models/ProductType';
 import { AttributeInterface, AttributeJoinInterface, AttributeValueInterface } from '@models/Attribute';
 import { VoucherInterface } from '@models/Voucher';
 import { TaxInterface, TaxObjectType } from '@models/Tax';
-import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { VariantInterface } from '@models/Variant';
 import { InventoryInterface } from '@models/Inventory';
 import { DbService } from '@services/db/db.service';
@@ -301,12 +300,8 @@ export class ShopService {
   }
 
   getAttributeByIds(attributeIds: string[]): Observable<AttributeInterface[]> {
-    const { db, dbAttributesRoute } = this.dbS;
-    const queries = attributeIds.map(id => {
-      const attributeData = db.collection<AttributeInterface>(dbAttributesRoute).doc(id);
-      return getDataFromDocument(attributeData) as Observable<AttributeInterface>;
-    });
-    return combineLatest(queries);
+    const { dbAttributesRoute } = this.dbS;
+    return this.dbS.queryByIds(dbAttributesRoute, attributeIds);
   }
 
   getAttributeAndValuesByIds(attributeIds: string[]): Observable<AttributeJoinInterface[]> {
@@ -318,13 +313,9 @@ export class ShopService {
     return this.dbS.queryByIds(dbProductsRoute, ids);
   }
 
-  getVariantByIds(variantIds: string[]) {
-    const { db, dbVariantsRoute } = this.dbS;
-    const queries = variantIds.map(id => {
-      const variant = db.collection(dbVariantsRoute).doc(id);
-      return getDataFromDocument(variant) as Observable<VariantInterface>;
-    });
-    return combineLatest(queries);
+  getVariantByIds(variantIds: string[]): Observable<VariantInterface[]> {
+    const { dbVariantsRoute } = this.dbS;
+    return this.dbS.queryByIds(dbVariantsRoute, variantIds);
   }
 
   getProductsByKeyword(keyword: string): Observable<ProductInterface[]> {

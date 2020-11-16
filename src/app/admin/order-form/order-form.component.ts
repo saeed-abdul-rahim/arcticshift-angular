@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ADD } from '@constants/routes';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { ADD, FULLFILL } from '@constants/routes';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { OrderInterface, ProductData } from '@models/Order';
 import { AdminService } from '@services/admin/admin.service';
 import { AlertService } from '@services/alert/alert.service';
 import { ShopService } from '@services/shop/shop.service';
 import { countryAlphaList } from '@utils/countryAlphaList';
-import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-order-form',
@@ -20,6 +20,8 @@ export class OrderFormComponent implements OnInit, OnDestroy {
 
   edit = false;
   totalQuantity = 0;
+
+  fullfillRoute = FULLFILL;
 
   orderForm: FormGroup;
   order: OrderInterface;
@@ -59,13 +61,8 @@ export class OrderFormComponent implements OnInit, OnDestroy {
         this.getTotalQuantity();
         const { data } = order;
         const { productsData } = data;
-        const products = productsData.map(product => {
-          const { baseProduct, name } = product;
-          product.name = `${baseProduct.name} - ${name}`;
-          return product;
-        });
-        this.products = products;
-        this.productsSource = new MatTableDataSource(products);
+        this.products = productsData;
+        this.productsSource = new MatTableDataSource(productsData);
       }
     }, err => this.handleError(err));
   }
