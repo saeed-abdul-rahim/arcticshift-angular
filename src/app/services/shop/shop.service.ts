@@ -63,7 +63,7 @@ export class ShopService {
     const { api } = environment;
     const { url, user, wishlist, order } = api;
     this.apiUser = url + user;
-    this.apiWishlist = this.apiUser + wishlist;
+    this.apiWishlist = wishlist;
     this.apiOrder = url + order;
     this.getCurrentUser();
   }
@@ -80,9 +80,10 @@ export class ShopService {
   }
 
   async addToWishlist(productId: string) {
-    const { req, apiWishlist } = this;
+    const { req, apiUser, apiWishlist, user } = this;
+    const { uid } = user;
     try {
-      return await req.put(apiWishlist, { productId });
+      return await req.put(`${apiUser}/${uid}/${apiWishlist}`, { productId });
     } catch (err) {
       throw err;
     }
