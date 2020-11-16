@@ -63,12 +63,8 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     this.hover = !this.hover;
   }
 
-  async heartClick() {
+  heartClick() {
     this.heartCallback.emit(this.id);
-    try{
-      await this.shop.addToWishlist(this.id);
-    }
-    catch (err){}
   }
 
   trackByFn(index: number, item: Image) {

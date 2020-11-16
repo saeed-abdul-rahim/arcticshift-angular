@@ -5,14 +5,13 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons/faShoppingBag';
 import { CartService } from '@services/cart/cart.service';
 import { OrderInterface } from '@models/Order';
-import { CART, WISHLIST, shopProductRoute } from '@constants/routes';
-import { UserInterface } from '@models/User';
+import { CART, shopProductRoute } from '@constants/routes';
+import { User } from '@models/User';
 import { NavbarService } from '@services/navbar/navbar.service';
 import { ShopService } from '@services/shop/shop.service';
 import { ProductInterface } from '@models/Product';
 import { getSmallestThumbnail } from '@utils/media';
 import { Router } from '@angular/router';
-import { AuthService } from '@services/auth/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,7 +21,6 @@ import { AuthService } from '@services/auth/auth.service';
 export class NavbarComponent implements OnInit, OnDestroy {
 
   cartRoute = `/${CART}`;
-  wishlistRoute = `/${WISHLIST}`;
 
   faShoppingBag = faShoppingBag;
   faHeart = faHeart;
@@ -35,34 +33,28 @@ export class NavbarComponent implements OnInit, OnDestroy {
   sidebarOpened: boolean;
   getSmallestThumbnail = getSmallestThumbnail;
 
-  user: UserInterface;
+  user: User;
   draft: OrderInterface;
   products: ProductInterface[];
 
   @ViewChild('search') private search: ElementRef;
 
   private draftSubscription: Subscription;
-  private wishlistSubscription: Subscription;
   private sidebarOpenedSubscription: Subscription;
   private productsSubscription: Subscription;
 
-  constructor(private cart: CartService, private auth: AuthService, private shop: ShopService, private nav: NavbarService,
-              private router: Router) { }
+  constructor(private cart: CartService, private shop: ShopService, private nav: NavbarService, private router: Router) { }
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
     this.setView();
     this.draftSubscription = this.cart.getDraft().subscribe(draft => this.draft = draft);
-    this.wishlistSubscription = this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
     this.sidebarOpenedSubscription = this.nav.getSidebarOpened().subscribe(sidebarOpened => this.sidebarOpened = sidebarOpened);
   }
 
   ngOnDestroy(): void {
     if (this.draftSubscription && !this.draftSubscription.closed) {
       this.draftSubscription.unsubscribe();
-    }
-    if (this.wishlistSubscription && !this.wishlistSubscription.closed) {
-      this.wishlistSubscription.unsubscribe();
     }
     if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
       this.sidebarOpenedSubscription.unsubscribe();

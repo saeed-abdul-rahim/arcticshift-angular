@@ -365,11 +365,6 @@ export class ShopService {
     return getDataFromCollection(variantsRef) as Observable<VariantInterface[]>;
   }
 
-  getCollectionByfeatureOnHomePage() {
-    const collectionsRef = this.dbS.queryCollections([{ field: 'featureOnHomePage', type: '==', value: true }]);
-    return getDataFromCollection(collectionsRef) as Observable<CollectionInterface[]>;
-  }
-
   getTaxesByShopIdAndType(shopId: string, type: TaxObjectType) {
     const taxes = this.dbS.queryTax([
       { field: 'shopId', type: '==', value: shopId },
