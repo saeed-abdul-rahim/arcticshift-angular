@@ -12,6 +12,7 @@ import { FirebaseError } from '@utils/FirebaseError';
 import { getDataFromDocument } from '@utils/getFirestoreData';
 import { SuccessResponse } from '@models/Response';
 import * as firebase from 'firebase/app';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Injectable()
 export class AuthService {
@@ -21,17 +22,19 @@ export class AuthService {
   private dbUsersRoute: string;
   private apiUser: string;
 
-  private user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
-  private emailPhone: BehaviorSubject<string> = new BehaviorSubject<string>(null);
-  private confirmationResult: BehaviorSubject<firebase.auth.ConfirmationResult> =
-    new BehaviorSubject<firebase.auth.ConfirmationResult>(null);
+  private user = new BehaviorSubject<User>(null);
+  private userDoc = new BehaviorSubject<UserInterface>(null);
+  private emailPhone = new BehaviorSubject<string>(null);
+  private confirmationResult = new BehaviorSubject<firebase.auth.ConfirmationResult>(null);
 
   confirmationResult$ = this.confirmationResult.asObservable();
   user$: Observable<User> = this.user.asObservable();
   emailPhone$: Observable<string> = this.emailPhone.asObservable();
-  userDoc$: Observable<UserInterface>;
+  userDoc$ = this.userDoc.asObservable();
 
   firebase = firebase;
+
+  private userSubscription: Subscription;
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private http: HttpClient) {
     const { api, db } = environment;
@@ -41,6 +44,16 @@ export class AuthService {
     this.dbUsers = this.afs.collection(version).doc(name).collection(users);
     this.apiUser = url + user;
     this.dbUsersRoute = users;
+  }
+
+  destroy() {
+    this.unsubscribeUser();
+  }
+
+  unsubscribeUser() {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   async getAfsCurrentUser() {
@@ -68,10 +81,17 @@ export class AuthService {
   }
 
   getUserDocument() {
-    const { uid } = this.user.value;
-    const user = this.dbUsers.doc<UserInterface>(uid);
-    this.userDoc$ = getDataFromDocument(user);
-    return this.userDoc$;
+    this.getCurrentUserStream().subscribe(user => {
+      if (user) {
+        const { uid } = user;
+        if (this.userDoc.value && this.userDoc.value.uid === uid) {
+          return;
+        }
+        this.unsubscribeUser();
+        const userPath = this.dbUsers.doc<UserInterface>(uid);
+        this.userSubscription = getDataFromDocument(userPath).subscribe(userDoc => this.userDoc.next(userDoc));
+      }
+    });
   }
 
   async signIn(email: string, password: string) {
