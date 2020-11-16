@@ -43,6 +43,7 @@ export interface OrderInterface extends CommonInterface {
     taxCharge?: number;
     shippingCharge?: number;
     total?: number;
+    capturedAmount?: number;
     payment?: Payment[];
     notes?: string;
     data?: OrderData;
@@ -59,6 +60,20 @@ export type OrderOrderBy = OrderBy & {
 
 export type OrderFields = keyof OrderInterface;
 
+export type ProductData = VariantInterface & {
+    orderQuantity: number
+    baseProduct: ProductInterface
+    baseProductType: ProductTypeInterface
+    saleDiscount: SaleDiscountInterface | null
+    taxData?: TaxInterface | null
+};
+
+export type OrderData = {
+    productsData: ProductData[]
+    shippingRateData: ShippingRateInterface
+    voucherData: VoucherInterface
+};
+
 type AllOrderFields = keyof (OrderInterface & Address);
 
 type Fulfilled = VariantQuantity & {
@@ -70,16 +85,3 @@ type Payment = {
     amount: number
 };
 
-type ProductData = VariantInterface & {
-    orderQuantity: number
-    baseProduct: ProductInterface
-    baseProductType: ProductTypeInterface
-    saleDiscount: SaleDiscountInterface | null
-    taxData?: TaxInterface | null
-};
-
-type OrderData = {
-    productsData: ProductData[]
-    shippingRateData: ShippingRateInterface
-    voucherData: VoucherInterface
-};

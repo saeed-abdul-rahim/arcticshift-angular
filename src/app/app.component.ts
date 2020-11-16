@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ShopService } from '@services/shop/shop.service';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'articshift';
 
-  constructor() {}
+  constructor(private shop: ShopService) {}
 
   ngOnInit(): void {
+    this.shop.getGeneralSettingsFromDb();
   }
 
 }
