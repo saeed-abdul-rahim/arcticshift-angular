@@ -12,7 +12,7 @@
     </div>
     <div class="relative pt-3 w-full flex items-center justify-between">
         <p class="text-gray-600 font-light">{{title}}</p>
-        <fa-icon [icon]="heart ? faHeartS : faHeartR" (click)="heartClick()" size="1x"
+        <fa-icon [icon]="heart ? faHeartS : faHeartR" (click)="heartClick($event)" size="1x"
             class="h-6 w-6 text-gray-500 hover:text-black cursor-pointer"></fa-icon>
     </div>
     <div class="relative flex flex-col w-full text-gray-700">

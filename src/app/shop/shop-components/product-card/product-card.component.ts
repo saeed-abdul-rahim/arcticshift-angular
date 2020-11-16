@@ -63,7 +63,8 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     this.hover = !this.hover;
   }
 
-  async heartClick() {
+  async heartClick($event: Event) {
+    $event.stopPropagation();
     this.heartCallback.emit(this.id);
     try{
       await this.shop.addToWishlist(this.id);
