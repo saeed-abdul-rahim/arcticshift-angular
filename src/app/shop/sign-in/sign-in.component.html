@@ -1,31 +1,56 @@
-<app-modal [(showModal)]="showModal" (showModalChange)="showModalChange.emit($event)" [bodyTemplate]="signInTemplate" [showHeader]="false" [showFooter]="false"
-    [enableScroll]="false"></app-modal>
+<app-modal [(showModal)]="showModal" (showModalChange)="onModalChange($event)" [bodyTemplate]="signInTemplate"
+    [showHeader]="false" [showFooter]="false" [enableScroll]="false"></app-modal>
 
 <ng-template #signInTemplate>
     <div class="font-light">
         <div class="text-2xl text-center font-light">
+            <span class="absolute left-0 arc-link-button-secondary" *ngIf="showOtp || showPassword" (click)="goToMain()"
+                [@inOutWidthAnimation]>
+                <fa-icon class="text-gray-600" [icon]="faChevronLeft" size="2x"></fa-icon>
+            </span>
             Sign In
         </div>
-        <div *ngIf="!showOtp">
-            <div class="flex items-center justify-center p-5 relative">
-                <div class="flex flex-wrap items-stretch relative shadow rounded">
-                    <ng-select class="input-group-left w-20" [items]="countryCallCodes" bindValue="callCode"
-                        bindLabel="callCode" [clearable]="false" [(ngModel)]="selectedCallCode"></ng-select>
-                    <input #phone type="number" class="input-group-right w-40" placeholder="999 999 9999" />
+        <div *ngIf="!showOtp && !showPassword">
+            <div class="flex flex-col items-start justify-center p-5 relative">
+                <label class="w-full text-sm font-medium">Email / Phone</label>
+                <div class="flex flex-wrap items-stretch relative w-full arc-transition"
+                    [ngClass]="isPhone ? 'shadow rounded' : ''">
+                    <ng-select *ngIf="isPhone" class="input-group-left w-1/4" [items]="countryCallCodes"
+                        [@inOutWidthAnimation] bindValue="callCode" bindLabel="callCode" [clearable]="false"
+                        [(ngModel)]="selectedCallCode" placeholder="+00"></ng-select>
+                    <input type="text" placeholder="arc@example.com / 9999999999" [class.border-red-500]="!validInput"
+                        [class.border]="!validInput" [@inOutWidthAnimation]
+                        [ngClass]="isPhone ? 'input-group-right w-3/4' : 'arc-input w-full'"
+                        (keyup)="onInputChange($event)" />
                 </div>
             </div>
             <div class="flex justify-center">
-                <app-button class="text-center" [label]="'Get OTP'" [color]="'gray'" [dark]="true" [loading]="loading"
-                    (click)="getUserByPhone(selectedCallCode+phone.value)"></app-button>
+                <app-button class="text-center" [label]="mainButtonLabel" [color]="'gray'" [dark]="true"
+                    [loading]="loading" (click)="initSignIn()"></app-button>
             </div>
         </div>
         <div *ngIf="showOtp">
-            <div class="flex items-center justify-center py-5 relative">
+            <div class="flex items-center justify-center py-5 relative" [@inOutWidthAnimation]>
                 <ng-otp-input (onInputChange)="onOtpChange($event)" [config]="otpConfig"></ng-otp-input>
             </div>
             <div class="flex justify-center">
                 <app-button class="text-center" [label]="'Sign In'" [color]="'gray'" [dark]="true" [loading]="loading"
-                (click)="verify()"></app-button>
+                    (click)="verify()"></app-button>
+            </div>
+        </div>
+        <div *ngIf="showPassword">
+            <div class="flex flex-col items-start justify-center py-5 relative">
+                <label class="w-full text-xs">8 characters with at least one lowercase and uppercase letter, number and special character</label>
+                <input #password type="password" class="arc-input placeholder-gray-400 w-full mb-2"
+                    [ngClass]="validPassword && newPassword ? '' : 'border border-red-500'"
+                    placeholder="Password" (keyup)="onInputPassChange($event)" [@inOutWidthAnimation] />
+                <input #confirmPassword type="password" class="arc-input placeholder-gray-400 w-full"
+                    placeholder="Confirm Password" [class.hidden]="!newPassword" [@inOutWidthAnimation]
+                    [ngClass]="password.value && confirmPassword.value && password.value !== confirmPassword.value ? 'border border-red-500' : ''" />
+            </div>
+            <div class="flex justify-center">
+                <app-button class="text-center" [label]="mainButtonLabel" [color]="'gray'" [dark]="true"
+                    [loading]="loading" (click)="verifySignIn(password.value, confirmPassword.value)"></app-button>
             </div>
         </div>
     </div>

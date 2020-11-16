@@ -1,4 +1,4 @@
-<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between" *ngIf="variants && variants.length > 0">
+<div class="flex flex-wrap px-3 md:px-10 md:justify-between" *ngIf="variants && variants.length > 0">
     <div class="w-full md:w-7/12 mb-5">
         <div class="font-light text-2xl mb-3">
             Billing Details
@@ -45,7 +45,6 @@
         </div>
         <div class="slider" [class.closed]="!shippingAddressCheck">
             <div class="p-1 flex flex-col space-y-2 mt-3" [formGroup]="shippingForm">
-            [ngClass]="(shippingFormControls.name.touched || invalidBillingForm) && shippingFormControls.name.invalid ? 'border-red' : ''" />
                 <ng-select placeholder="Country" [items]="countryList" bindValue="alpha3" bindLabel="name"
                     formControlName="country" (change)="setBillingState($event)"
                     [ngClass]="(shippingFormControls.country.touched || invalidShippingForm) && shippingFormControls.country.invalid ? 'border-red' : ''">
@@ -85,9 +84,10 @@
                         <div class="text-base">
                             {{ variant.productName }} - {{ variant.name }}
                         </div>
-                        <div class="arc-tag">
+                        <div class="arc-tag" *ngIf="variant.available">
                             x {{ variant.quantity }}
                         </div>
+                        <div *ngIf="!variant.available" class="danger-label">Out of stock</div>
                     </div>
                 </div>
                 <div class="relative">
@@ -98,7 +98,7 @@
             </div>
         </div>
         <app-cart-total [disableAddress]="true"></app-cart-total>
-        <app-button color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
+        <app-button *ngIf="available" color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
     </div>
 </div>
 <app-sign-in [(showModal)]="showSignInModal" (signedIn)="afterSignIn($event)"></app-sign-in>

@@ -11,6 +11,7 @@ import { User, UserClaim, UserInterface } from '@models/User';
 import { FirebaseError } from '@utils/FirebaseError';
 import { getDataFromDocument } from '@utils/getFirestoreData';
 import { SuccessResponse } from '@models/Response';
+import * as firebase from 'firebase/app';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,8 @@ export class AuthService {
   user$: Observable<User> = this.user.asObservable();
   emailPhone$: Observable<string> = this.emailPhone.asObservable();
   userDoc$: Observable<UserInterface>;
+
+  firebase = firebase;
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private http: HttpClient) {
     const { api, db } = environment;
@@ -61,11 +64,11 @@ export class AuthService {
   }
 
   getCurrentUserDocument() {
-    const { uid } = this.user.value;
-    return this.getUserDocument(uid);
+    return this.userDoc$;
   }
 
-  getUserDocument(uid: string) {
+  getUserDocument() {
+    const { uid } = this.user.value;
     const user = this.dbUsers.doc<UserInterface>(uid);
     this.userDoc$ = getDataFromDocument(user);
     return this.userDoc$;
@@ -113,12 +116,34 @@ export class AuthService {
     }
   }
 
+  async linkUserToEmail(email: string, password: string) {
+    try {
+      const user = await this.getAfsCurrentUser();
+      const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+      return user.linkWithCredential(credential);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createPhoneUser() {
     try {
       const user = await this.getAfsCurrentUser();
       const headers = await this.setDefaultHeaders();
       const { uid } = user;
       const result = await this.http.patch<SuccessResponse>(`${this.apiUser}/${uid}/phone`, null, { headers }).toPromise();
+      return result.data;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createEmailUser() {
+    try {
+      const user = await this.getAfsCurrentUser();
+      const headers = await this.setDefaultHeaders();
+      const { uid } = user;
+      const result = await this.http.patch<SuccessResponse>(`${this.apiUser}/${uid}/email`, null, { headers }).toPromise();
       return result.data;
     } catch (err) {
       throw err;
@@ -145,7 +170,6 @@ export class AuthService {
 
   async signOut() {
     await this.afAuth.signOut();
-    await this.getUser();
   }
 
   setUser(user: User) {
@@ -221,7 +245,7 @@ export class AuthService {
     const authenticated = await this.isLoggedIn();
     if (!authenticated) { return false; }
     let user = await this.getCurrentUser();
-    if (!user) {
+    if (!user || user.uid !== authenticated.uid) {
       await this.getUser();
       user = await this.getCurrentUser();
     }

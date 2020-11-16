@@ -1,70 +1,66 @@
-<div class="w-sreen container mx-auto flex flex-wrap items-center justify-between mt-0 px-6 py-3 bg-white">
+<div class="relative">
+    <div
+        class="w-sreen container mx-auto flex flex-wrap items-center justify-between relative mt-0 px-6 py-3 bg-white arc-transition">
 
-    <div class="relative">
-        <label for="menu-toggle" class="cursor-pointer block" (click)="toggleMenu()">
+        <label for="menu-toggle" class="cursor-pointer block" (click)="toggleMenu()"
+            *ngIf="(!showSearch && isMobile) || !isMobile">
             <svg class="fill-current text-gray-900" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                 viewBox="0 0 20 20">
                 <title>menu</title>
                 <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
             </svg>
         </label>
-        <input class="hidden" type="checkbox" id="menu-toggle">
+        <input class="hidden" type="checkbox" id="menu-toggle" *ngIf="(!showSearch && isMobile) || !isMobile">
 
-        <div class="md:hidden w-screen order-3 md:order-1 slider absolute bg-white z-10"
-            [ngClass]="showMenu ? '' : 'closed'" id="menu">
-            <nav>
-                <ul class="md:flex items-center justify-between text-base text-gray-700 pt-4 md:pt-0">
-                    <li>
-                        <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4">
-                            <span *ngIf="!user || user.isAnonymous" (click)="toggleSignInModal()">
-                                Sign In
-                            </span>
-                            <span *ngIf="user && !user.isAnonymous">
-                                {{ user.name || user.phone || user.email }}
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
-                            href="#">Categories</a>
-                    </li>
-                    <li>
-                        <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
-                            href="#">Collections</a>
-                    </li>
-                    <li *ngIf="user && !user.isAnonymous">
-                        Sign Out
-                    </li>
-                </ul>
-            </nav>
+        <div class="flex flex-1 items-center md:justify-center" *ngIf="(!showSearch && isMobile) || !isMobile">
+            <a class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl pl-6"
+                routerLink="/">
+                ARCTIC
+            </a>
         </div>
-    </div>
 
-    <div class="flex flex-1 items-center md:justify-center">
-        <a class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl pl-6"
-            href="#">
-            ARCTIC
-        </a>
-    </div>
-
-    <div class="inset-y-0 right-0 flex items-center text-gray-800" id="nav-content">
-
-        <a class="px-3 inline-block no-underline hover:text-black" href="#">
-            <fa-icon [icon]="faSearch"></fa-icon>
-        </a>
-
-        <a class="px-3 inline-block no-underline hover:text-black" href="#">
-            <fa-icon [icon]="faHeart"></fa-icon>
-        </a>
-
-        <a class="px-3 inline-block no-underline hover:text-black relative" routerLink="{{cartRoute}}">
-            <fa-icon [icon]="faShoppingBag"></fa-icon>
-            <span *ngIf="draft && draft.variants.length > 0"
-                class="absolute inset-y-0 right-0 w-4 h-4 rounded-full bg-gray-800 text-white text-xs text-center">
-                {{ draft.variants.length }}
+        <div class="relative -my-2 flex" [class.block]="showSearch" [class.hidden]="!showSearch"
+            [ngClass]="isMobile ? 'w-full' : 'flex-1'" (clickOutside)="closeSearch()" [exclude]="'#searchButton'" [excludeBeforeClick]="true">
+            <input #search class="arc-input placeholder-gray-400 w-full" type="text"
+                (keyup)="searchProducts(search.value)" />
+            <span class="input-right-label">
+                <fa-icon [icon]="faSearch"></fa-icon>
             </span>
-        </a>
+            <div class="absolute bg-white flex flex-col arc-transition slider divide-y shadow rounded-b" style="margin-top: 3.25rem;"
+                *ngIf="products && products.length > 0" [ngClass]="isMobile ? '-ml-6 w-screen' : 'w-full'">
+                <div class="p-3 font-light text-gray-700 flex align-middle" *ngFor="let product of products" (click)="navigateToVariant(product.name, product.id)">
+                    <img class="px-3" src="{{getSmallestThumbnail(product.images)}}" alt="{{product.name}}" width="48" height="48">
+                    {{product.name}}
+                </div>
+            </div>
+        </div>
+
+        <div class="inset-y-0 right-0 flex items-center text-gray-800" id="nav-content">
+
+            <a #searchButton id="searchButton" class="px-3 inline-block no-underline hover:text-black cursor-pointer" (click)="openSearch($event)"
+                *ngIf="!showSearch">
+                <fa-icon [icon]="faSearch"></fa-icon>
+            </a>
+
+            <a class="px-3 inline-block no-underline hover:text-black cursor-pointer"
+            routerLink="{{wishlistRoute}}" *ngIf="(!showSearch && isMobile) || !isMobile">
+                <fa-icon [icon]="faHeart"></fa-icon>
+                <span *ngIf="user && user.wishlist.length > 0"
+                    class="absolute inset-y-0 right-0 w-4 h-4 rounded-full bg-gray-800 text-white text-xs text-center">
+                    {{ user.wishlist.length }}
+                </span>
+            </a>
+
+            <a class="px-3 inline-block no-underline hover:text-black relative cursor-pointer"
+                routerLink="{{cartRoute}}" *ngIf="(!showSearch && isMobile) || !isMobile">
+                <fa-icon [icon]="faShoppingBag"></fa-icon>
+                <span *ngIf="draft && draft.variants.length > 0"
+                    class="absolute inset-y-0 right-0 w-4 h-4 rounded-full bg-gray-800 text-white text-xs text-center">
+                    {{ draft.variants.length }}
+                </span>
+            </a>
+
+        </div>
 
     </div>
 </div>
-<app-sign-in [(showModal)]="showSignInModal"></app-sign-in>

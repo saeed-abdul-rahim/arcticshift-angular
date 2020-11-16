@@ -247,7 +247,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         orderStatus: 'Order Status',
         orderId: 'No. of Orders',
         total: 'Total'
-      });
+      }, [{ field: 'orderStatus', type: '!=', value: 'draft'}]);
       this.getPageLength(orders, this.dataLengthKey);
 
     } else if (urlSplit.includes(CUSTOMER)) {
@@ -293,9 +293,8 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.displayedColumns = [];
     this.dataKeys = [];
     this.page.init(path, {
-      orderBy: 'createdAt',
-      reverse: true,
-      where: [{ field: 'shopId', type: '==', value: this.shopId }, ...where],
+      orderBy: { field: 'createdAt', direction: 'desc' },
+      where: [...where],
       limit: this.pageSize
     });
     Object.entries(displayCols).forEach(([k, v]) => {

@@ -7,6 +7,7 @@ import { tap } from 'rxjs/internal/operators/tap';
 import { scan } from 'rxjs/internal/operators/scan';
 import { environment } from '@environment';
 import { Condition, QueryConfig } from '@models/Common';
+import { AlertService } from '@services/alert/alert.service';
 
 @Injectable()
 export class PaginationService {
@@ -28,13 +29,18 @@ export class PaginationService {
   dbPath: string;
   limit = 10;
 
-  constructor(private afs: AngularFirestore) {
+  constructor(private afs: AngularFirestore, private alert: AlertService) {
     const { db } = environment;
     const { version, name } = db;
     this.dbPath = `${version}/${name}`;
   }
 
   destroy() {
+    this.data = null;
+    this._data.next([]);
+    this._done.next(false);
+    this._loading.next(false);
+    this.colSubscriptions = [];
     this.unsubscribe();
   }
 
@@ -45,9 +51,6 @@ export class PaginationService {
   }
 
   init(path: string, opts?: QueryConfig) {
-    this.data = null;
-    this._data.next([]);
-    this._done.next(false);
     this.unsubscribe();
     path = `${this.dbPath}/${path}`;
     this.query = {
@@ -63,7 +66,7 @@ export class PaginationService {
         newRef = this.setWhere(newRef);
       }
       if (this.query.orderBy) {
-        newRef = newRef.orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc');
+        newRef = this.setOrderBy(newRef);
       }
       return newRef.limit(this.query.limit);
     });
@@ -77,6 +80,10 @@ export class PaginationService {
 
   }
 
+  setOrderBy(ref: Query) {
+    return ref.orderBy(this.query.orderBy.field, this.query.orderBy.direction);
+  }
+
   more() {
     const cursor = this.getCursor();
 
@@ -87,7 +94,7 @@ export class PaginationService {
         newRef = this.setWhere(newRef);
       }
       if (this.query.orderBy) {
-        newRef = newRef.orderBy(this.query.orderBy, this.query.reverse ? 'desc' : 'asc');
+        newRef = this.setOrderBy(newRef);
       }
       return newRef
               .limit(this.query.limit)
@@ -97,6 +104,12 @@ export class PaginationService {
   }
 
   setWhere(ref: Query) {
+    this.where.forEach(condition => {
+      const { field, type } = condition;
+      if (type === '!=' || type === '>=' || type === '<=' || type === '<' || type === '>') {
+        ref = ref.orderBy(field);
+      }
+    });
     this.where.forEach(condition => {
       const { field, type, value } = condition;
       ref = ref.where(field, type, value);
@@ -133,11 +146,11 @@ export class PaginationService {
         this._data.next(values);
         this._loading.next(false);
 
-        if (!values.length) {
+        if (!values.length || values.length === 0) {
           this._done.next(true);
         }
       })
-    ).subscribe(() => {}, (err) => console.log(err));
+    ).subscribe(() => {}, (err) => { console.log(err); this.alert.alert({ message: err.message }); });
     this.colSubscriptions.push(colSubscription);
     return colSubscription;
   }

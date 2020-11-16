@@ -41,6 +41,7 @@ import { AttributeFormComponent } from './attribute-form/attribute-form.componen
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { TaxFormComponent } from './tax-form/tax-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
+import { OrderFormComponent } from './order-form/order-form.component';
 
 
 
@@ -64,7 +65,8 @@ import { ShippingFormComponent } from './shipping-form/shipping-form.component';
     AttributeFormComponent,
     CustomerFormComponent,
     TaxFormComponent,
-    ShippingFormComponent
+    ShippingFormComponent,
+    OrderFormComponent
   ],
   imports: [
     CommonModule,

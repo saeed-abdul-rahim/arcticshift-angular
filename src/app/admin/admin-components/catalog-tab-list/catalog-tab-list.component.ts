@@ -15,6 +15,7 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
 import { inOut } from '@animations/inOut';
 import { CatalogType } from '@models/Metadata';
+import { ShopService } from '@services/shop/shop.service';
 
 @Component({
   selector: 'app-catalog-tab-list',
@@ -60,7 +61,7 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
   private collectionsSubscription: Subscription;
   private categoriesSubscription: Subscription;
 
-  constructor(private admin: AdminService, private iterableDiffers: IterableDiffers,
+  constructor(private admin: AdminService, private shop: ShopService, private iterableDiffers: IterableDiffers,
               private cdr: ChangeDetectorRef, private alert: AlertService) { }
 
   ngOnInit(): void {
@@ -127,7 +128,7 @@ export class CatalogTabListComponent implements OnInit, OnDestroy, DoCheck {
     }
     if ((!this.productsSubscription || this.productsSubscription.closed) && this.productIds && this.productIds.length > 0) {
       this.catalogLoading = true;
-      this.productsSubscription = this.admin.getProductbyIds(ids)
+      this.productsSubscription = this.shop.getProductbyIds(ids)
         .subscribe(products => {
           this.catalogLoading = false;
           this.products = products;

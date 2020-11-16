@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
-import * as firebase from 'firebase/app';
 
 import { AlertService } from '@services/alert/alert.service';
 import { AuthService } from '@services/auth/auth.service';
@@ -8,11 +7,15 @@ import { ShopService } from '@services/shop/shop.service';
 import { countryCallCodes } from '@utils/countryCallCodes';
 import { otpConfig } from '@settings/otpConfig';
 import { CartService } from '@services/cart/cart.service';
+import { ModalService } from '@services/modal/modal.service';
+import { inOutWidth } from '@animations/inOut';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.css']
+  styleUrls: ['./sign-in.component.css'],
+  animations: [inOutWidth]
 })
 export class SignInComponent implements OnInit, OnDestroy {
 
@@ -20,17 +23,29 @@ export class SignInComponent implements OnInit, OnDestroy {
   @Output() showModalChange = new EventEmitter<boolean>();
   @Output() signedIn = new EventEmitter<boolean>();
 
+  faChevronLeft = faChevronLeft;
   countryCallCodes = countryCallCodes;
   selectedCallCode: string;
   otp: string;
+  emailPhone: string;
+  mainButtonLabel = 'Sign In';
   loading = false;
   showOtp = false;
+  showPassword = false;
+  newPassword = false;
   newUser = false;
+  isPhone = false;
+  validInput = true;
+  validPassword = true;
   otpConfig = otpConfig;
 
-  locationSubscription: Subscription;
+  recaptchaVerifier: any;
 
-  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService, private cart: CartService) { }
+  private locationSubscription: Subscription;
+  private modalSubscription: Subscription;
+
+  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService,
+              private cart: CartService, private modal: ModalService) { }
 
   ngOnInit(): void {
     this.locationSubscription = this.shop.getCurrentLocation().subscribe(location => {
@@ -43,33 +58,88 @@ export class SignInComponent implements OnInit, OnDestroy {
         }
       }
     });
+    const { firebase } = this.auth;
+    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      size: 'invisible',
+      callback: () => {}
+    });
+    this.modalSubscription = this.modal.getShowSignInModal().subscribe(show => this.showModal = show);
   }
 
   ngOnDestroy(): void {
     if (this.locationSubscription && !this.locationSubscription.closed) {
       this.locationSubscription.unsubscribe();
     }
+    if (this.modalSubscription && !this.modalSubscription.closed) {
+      this.modalSubscription.unsubscribe();
+    }
     this.showOtp = false;
+    this.showPassword = false;
     this.newUser = false;
   }
 
-  async getUserByPhone(phone: string) {
+  initSignIn() {
+    if (this.isPhone) {
+      this.getUserByPhone();
+    } else if (this.validInput) {
+      this.fetchEmail();
+    }
+  }
+
+  async fetchEmail() {
     this.loading = true;
     try {
+      const signInMethods = await this.auth.fetchEmail(this.emailPhone);
+      if (signInMethods.length === 0 || !signInMethods.includes('password')) {
+        this.showPassword = true;
+        this.newPassword = true;
+        this.mainButtonLabel = 'Sign Up';
+      } else if (signInMethods.includes('password')) {
+        this.showPassword = true;
+        this.newPassword = false;
+      }
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.loading = false;
+  }
+
+  async getUserByPhone() {
+    this.loading = true;
+    try {
+      const { selectedCallCode, emailPhone } = this;
+      const phone = selectedCallCode + emailPhone;
       const user = await this.auth.getUserByPhone(phone);
-      const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'invisible',
-        callback: () => {}
-      });
       if (user) {
         this.newUser = false;
-        await this.auth.signInWithPhone(phone, recaptchaVerifier);
+        await this.auth.signInWithPhone(phone, this.recaptchaVerifier);
       }
       else {
         this.newUser = true;
-        await this.auth.linkUserToPhone(phone, recaptchaVerifier);
+        await this.auth.linkUserToPhone(phone, this.recaptchaVerifier);
       }
       this.showOtp = true;
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.loading = false;
+  }
+
+  async verifySignIn(password: string, confirmPassword?: string) {
+    this.loading = true;
+    try {
+      if (this.newPassword) {
+        if (!confirmPassword || confirmPassword !== password) {
+          return;
+        }
+        await this.auth.linkUserToEmail(this.emailPhone, password);
+        await this.auth.createEmailUser();
+      } else {
+        await this.auth.signIn(this.emailPhone, password);
+        await this.auth.getUser();
+      }
+      this.signedIn.emit(true);
+      this.closeModal();
     } catch (err) {
       this.handleError(err);
     }
@@ -103,6 +173,12 @@ export class SignInComponent implements OnInit, OnDestroy {
   closeModal() {
     this.showModal = false;
     this.showModalChange.emit(this.showModal);
+    this.modal.setShowSignInModal(false);
+  }
+
+  onModalChange($event: boolean) {
+    this.showModalChange.emit($event);
+    this.modal.setShowSignInModal($event);
   }
 
   onOtpChange($event: string) {
@@ -110,6 +186,43 @@ export class SignInComponent implements OnInit, OnDestroy {
     if (this.otp && this.otp.length === otpConfig.length) {
       this.verify();
     }
+  }
+
+  onInputChange($event: any) {
+    const { value } = $event.target;
+    this.emailPhone = value;
+    if (value.match(/^\d{10}$/)) {
+      this.validInput = true;
+      this.isPhone = true;
+      this.mainButtonLabel = 'Get OTP';
+      return;
+    } else {
+      this.isPhone = false;
+    }
+    if (!value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      this.validInput = false;
+      this.mainButtonLabel = 'Sign In';
+      return;
+    }
+    this.mainButtonLabel = 'Sign In';
+    this.validInput = true;
+  }
+
+  onInputPassChange($event: any) {
+    const { value } = $event.target;
+    this.validPassword = this.validatePassword(value);
+  }
+
+  validatePassword(password: string) {
+    if (password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)) {
+      return true;
+    }
+    return false;
+  }
+
+  goToMain() {
+    this.showOtp = false;
+    this.showPassword = false;
   }
 
   handleError(err: any) {

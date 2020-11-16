@@ -20702,6 +20702,10 @@ video {
   max-height: 0;
 }
 
+.carousel {
+  z-index: unset !important;
+}
+
 .carousel-open:checked + .carousel-item {
   position: static;
   opacity: 100;
@@ -20823,6 +20827,17 @@ video {
 
 .input-group-right:focus {
   outline: 0;
+}
+
+.danger-label {
+  font-weight: 300;
+  padding-top: 1.25rem;
+  text-align: center;
+  --text-opacity: 1;
+  color: #fc8181;
+  color: rgba(252, 129, 129, var(--text-opacity));
+  font-size: 1.25rem;
+  text-transform: uppercase;
 }
 
 .arc-label {
@@ -21523,7 +21538,7 @@ h5 {
 
 .ng-sidebar{
   z-index: 20 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .mat-form-field-wrapper {

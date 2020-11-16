@@ -43,14 +43,14 @@ export class ShopService {
   private currentLocation = new BehaviorSubject<GeoIp>(null);
   private currentExchangeRate = new BehaviorSubject<number>(null);
   generalSettings$ = this.generalSettings.asObservable();
+  categories$ = this.categories.asObservable();
+  collections$ = this.collections.asObservable();
   saleDiscounts$ = this.saleDiscounts.asObservable();
   currentLocation$ = this.currentLocation.asObservable();
   currentExchangeRate$ = this.currentExchangeRate.asObservable();
 
   products$: Observable<ProductInterface[]>;
   attributes$: Observable<AttributeInterface[]>;
-  collections$: Observable<CollectionInterface[]>;
-  categories$: Observable<CategoryInterface[]>;
   productTypes$: Observable<ProductTypeInterface[]>;
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
@@ -125,10 +125,19 @@ export class ShopService {
     }
   }
 
+  async updateCartVariants(orderId: string, data: OrderInterface) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.patch(`${apiOrder}/${orderId}/variant`, { data: { ...data, userId: user.uid } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async removeVariantFromCart(orderId: string, variantId: string) {
     const { req, apiOrder, user } = this;
     try {
-      return await req.patch(`${apiOrder}/${orderId}/variant`, { data: { userId: user.uid, variantId } });
+      return await req.patch(`${apiOrder}/${orderId}/variant/delete`, { data: { userId: user.uid, variantId } });
     } catch (err) {
       throw err;
     }
@@ -147,6 +156,8 @@ export class ShopService {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
     }
+    this.unsubscribeCategories();
+    this.unsubscribeCollections();
     this.unsubscribeSaleDiscounts();
   }
 
@@ -174,6 +185,14 @@ export class ShopService {
 
   getGeneralSettings() {
     return this.generalSettings$;
+  }
+
+  getCategories() {
+    return this.categories$;
+  }
+
+  getCollections() {
+    return this.collections$;
   }
 
   getCurrentLocation() {
@@ -294,6 +313,11 @@ export class ShopService {
     return this.dbS.getAttributeByIds(attributeIds);
   }
 
+  getProductbyIds(ids: string[]): Observable<ProductInterface[]> {
+    const { dbProductsRoute } = this.dbS;
+    return this.dbS.queryByIds(dbProductsRoute, ids);
+  }
+
   getVariantByIds(variantIds: string[]) {
     const { db, dbVariantsRoute } = this.dbS;
     const queries = variantIds.map(id => {
@@ -301,6 +325,34 @@ export class ShopService {
       return getDataFromDocument(variant) as Observable<VariantInterface>;
     });
     return combineLatest(queries);
+  }
+
+  getProductsByKeyword(keyword: string): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'keywords',
+      type: 'array-contains',
+      value: keyword
+    }], null, 10);
+    return getDataFromCollection(products);
+  }
+
+  getProductsByCollectionIds(ids: string[], limit?: number): Observable<ProductInterface[]> {
+    ids = ids.slice(0, 10);
+    const products = this.dbS.queryProducts([{
+      field: 'collectionId',
+      type: 'array-contains-any',
+      value: ids
+    }], null, limit);
+    return getDataFromCollection(products);
+  }
+
+  getProductsByCategoryId(id: string, limit?: number): Observable<ProductInterface[]> {
+    const products = this.dbS.queryProducts([{
+      field: 'categoryId',
+      type: '==',
+      value: id
+    }], null, limit);
+    return getDataFromCollection(products);
   }
 
   getCategoryByParentId(categoryId: string): Observable<CategoryInterface[]> {

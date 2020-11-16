@@ -1,50 +1,59 @@
 import { Injectable } from '@angular/core';
-import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
-import { ProductCondition, ProductInterface } from '@models/Product';
-import { ProductTypeInterface } from '@models/ProductType';
-import { DbService } from '@services/db/db.service';
-import { PaginationService } from '@services/pagination/pagination.service';
-import { patchArrObj, uniqueArr } from '@utils/arrUtils';
-import { getDataFromCollection } from '@utils/getFirestoreData';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { Subscription } from 'rxjs/internal/Subscription';
 
+import { AlertService } from '@services/alert/alert.service';
+import { DbService } from '@services/db/db.service';
+import { PaginationService } from '@services/pagination/pagination.service';
+import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
+import { ProductCondition, ProductInterface, ProductOrderBy } from '@models/Product';
+import { ProductTypeInterface } from '@models/ProductType';
+import { patchArrObj, uniqueArr } from '@utils/arrUtils';
+import { getDataFromCollection } from '@utils/getFirestoreData';
+
 @Injectable()
 export class ProductService {
 
-  private productsSubscription: Subscription;
+  private productListSubscription: Subscription;
   private productFilterSubscription: Subscription;
+  private productSortSubscription: Subscription;
   private attributesSubscription: Subscription;
 
   private productList = new BehaviorSubject<ProductInterface[]>([]);
   private attributeList = new BehaviorSubject<AttributeJoinInterface[]>([]);
   private productFilters = new BehaviorSubject<ProductCondition[]>([]);
-  private productListLoading = new BehaviorSubject<boolean>(false);
-  private productListError = new BehaviorSubject<string>('');
+  private productSort = new BehaviorSubject<ProductOrderBy>(null);
 
   productList$ = this.productList.asObservable();
-  productListError$ = this.productListError.asObservable();
   attributeList$ = this.attributeList.asObservable();
   productFilters$ = this.productFilters.asObservable();
-  productListLoading$ = this.productListLoading.asObservable();
+  productSort$ = this.productSort.asObservable();
 
-  constructor(private dbS: DbService, private page: PaginationService) { }
+  constructor(private dbS: DbService, private page: PaginationService, private alert: AlertService) { }
 
   destroy(): void {
-    this.unsubscribeProducts();
+    this.unsubscribeProductList();
+    this.unsubscribeProductFilters();
+    this.unsubscribeProductSort();
     this.unsubscribeAttributes();
   }
 
-  unsubscribeProducts() {
-    if (this.productsSubscription && !this.productsSubscription.closed) {
-      this.productsSubscription.unsubscribe();
+  unsubscribeProductList() {
+    if (this.productListSubscription && !this.productListSubscription.closed) {
+      this.productListSubscription.unsubscribe();
     }
   }
 
   unsubscribeProductFilters() {
     if (this.productFilterSubscription && !this.productFilterSubscription.closed) {
       this.productFilterSubscription.unsubscribe();
+    }
+  }
+
+  unsubscribeProductSort() {
+    if (this.productSortSubscription && !this.productSortSubscription.closed) {
+      this.productSortSubscription.unsubscribe();
     }
   }
 
@@ -61,9 +70,14 @@ export class ProductService {
 
   setProductAttributeFilter(attributeId: string, attributeValueId: string) {
     const oldValues = this.productFilters.value;
-    const filtered = oldValues.filter(data => data.field !== attributeId);
     const productFilter: ProductCondition = { field: attributeId, type: '==', value: attributeValueId, parentFields: ['attributes'] };
-    this.setProductFilters([...filtered, productFilter]);
+    this.setProductFilters([...oldValues, productFilter]);
+  }
+
+  removeProductAttributeFilter(attributeValueId: string) {
+    let values = this.productFilters.value;
+    values = values.filter(filter => filter.value !== attributeValueId);
+    this.setProductFilters(values);
   }
 
   getAttributesFromDb() {
@@ -79,30 +93,47 @@ export class ProductService {
     ).subscribe(attributes => this.attributeList.next(attributes));
   }
 
-  getProductsFromDb(filters: ProductCondition[] = []) {
+  getProductsFromDb(filters: ProductCondition[] = [], orderBy?: ProductOrderBy) {
+    const statusFilter = filters.find(filter => filter.field === 'status');
+    if (!statusFilter) {
+      filters.push({
+        field: 'status', type: '==', value: 'active'
+      });
+    }
     const { dbProductsRoute } = this.dbS;
-    this.unsubscribeProducts();
+    this.unsubscribeProductList();
     this.page.destroy();
-    this.resetProductListLoaders();
-    this.productListLoading.next(true);
     this.page.init(dbProductsRoute, {
       where: filters,
-      limit: 2
+      orderBy,
+      limit: 1
     });
-    this.productsSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
+    this.productListSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
       if (data && data.length > 0 && this.productList.value.length > 0) {
         let productList = this.productList.value;
         productList = patchArrObj(data, productList, 'id');
         this.productList.next(productList);
       } else if (data && data.length > 0) {
         this.productList.next(data);
+      } else if (data && data.length === 0) {
+        this.productList.next([]);
       }
-      this.productListLoading.next(false);
     },
     err => {
-      this.productListError.next(err);
-      console.log(err);
+      this.handleError(err);
     });
+  }
+
+  loadMoreProducts() {
+    this.page.more();
+  }
+
+  isProductsDone() {
+    return this.page.done;
+  }
+
+  isProductsLoading() {
+    return this.page.loading;
   }
 
   getProducts() {
@@ -127,48 +158,34 @@ export class ProductService {
     return this.attributeList$;
   }
 
-  setProductsLoading(productListLoading: boolean) {
-    this.productListLoading.next(productListLoading);
-  }
-
-  getProductsLoading() {
-    return this.productListLoading$;
-  }
-
-  setProductsError(productListError: string) {
-    this.productListError.next(productListError);
-  }
-
-  getProductsError() {
-    return this.productListError$;
-  }
-
   setProductFilters(productFilters: ProductCondition[]) {
+    const sort = this.productSort.value;
     this.productFilters.next(productFilters);
+    this.getProductsFromDb(productFilters, sort);
   }
 
   getProductFilters() {
     return this.productFilters$;
   }
 
+  setProductSort(sort: ProductOrderBy) {
+    const productFilters = this.productFilters.value;
+    this.productSort.next(sort);
+    this.getProductsFromDb(productFilters, sort);
+  }
+
+  getProductSort() {
+    return this.productSort$;
+  }
+
   resetProductFilters() {
     this.productFilters.next([]);
+    this.productSort.next(null);
+    this.getProductsFromDb();
   }
 
-  resetProductListLoaders() {
-    this.productListLoading.next(false);
-    this.productListError.next('');
-  }
-
-  addProductFilter(filter: ProductCondition) {
-    const { value } = this.productFilters;
-    this.productFilters.next([...value, filter]);
-  }
-
-  removeProductFilter(conditionValue: any) {
-    const { value } = this.productFilters;
-    const filteredValue = value.filter(v => v.value !== conditionValue);
-    this.productFilters.next(filteredValue);
+  handleError(err: any) {
+    this.alert.alert({ message: err.message });
   }
 
 }

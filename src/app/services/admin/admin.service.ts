@@ -20,6 +20,7 @@ import { Observable } from 'rxjs';
 import { ShippingInterface, ShippingRateInterface } from '@models/Shipping';
 import { DbService } from '@services/db/db.service';
 import { CatalogTypeApi } from '@models/Common';
+import { OrderInterface } from '@models/Order';
 
 @Injectable()
 export class AdminService {
@@ -546,6 +547,12 @@ export class AdminService {
     return getDataFromDocument(this.dbAnalytics.doc(path));
   }
 
+  getOrderById(id: string): Observable<OrderInterface> {
+    const { db, dbOrdersRoute } = this.dbS;
+    const order = db.collection(dbOrdersRoute).doc(id);
+    return getDataFromDocument(order);
+  }
+
   getProductsByShopId(shopId: string): Observable<ProductInterface[]> {
     const products = this.dbS.queryProducts([{ field: 'shopId', type: '==', value: shopId }]);
     return getDataFromCollection(products);
@@ -571,23 +578,9 @@ export class AdminService {
     return getDataFromCollection(collection);
   }
 
-  getProductbyIds(ids: string[]): Observable<ProductInterface[]> {
-    const { dbProductsRoute } = this.dbS;
-    return this.dbS.queryByIds(dbProductsRoute, ids);
-  }
-
   getProductsByCollectionId(id: string): Observable<ProductInterface[]> {
     const products = this.dbS.queryProducts([{
       field: 'collectionId',
-      type: 'array-contains',
-      value: id
-    }]);
-    return getDataFromCollection(products);
-  }
-
-  getProductsByCategoryId(id: string): Observable<ProductInterface[]> {
-    const products = this.dbS.queryProducts([{
-      field: 'categoryId',
       type: 'array-contains',
       value: id
     }]);

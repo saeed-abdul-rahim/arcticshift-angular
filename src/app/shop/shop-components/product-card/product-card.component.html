@@ -1,10 +1,14 @@
-<div class="w-full p-3 flex flex-col flex-grow" (mouseenter)="hover = true" (mouseleave)="hover = false"
-    ng-touch [timemove]="3" (touch)="toggleHover()">
+<div class="product-card w-full p-3 flex flex-col flex-grow hover:grow hover:shadow-lg" (mouseenter)="hover = true"
+    (mouseleave)="hover = false" ng-touch [timemove]="3" (touch)="toggleHover()">
     <div class="relative w-full flex flex-col">
         <div class="absolute bg-gray-100 h-48 w-48"></div>
-        <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; let first = first"
+        <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; trackBy: trackByFn; let first = first"
             [ngClass]="first ? 'relative' : 'absolute opacity-0'" src="{{img.url}}" alt="{{img.title}}"
             [class.opacity-100]="!first && hover" [class.opacity-0]="!first && !hover">
+        <div *ngIf="discount"
+            class="absolute rounded-lg right-0 bg-white py-1 px-2 mt-1 mr-1 {{accentText}} text-sm font-light">
+            -{{discount}}%
+        </div>
     </div>
     <div class="relative pt-3 w-full flex items-center justify-between">
         <p class="text-gray-600 font-light">{{title}}</p>
@@ -14,9 +18,10 @@
     <div class="relative flex flex-col w-full text-gray-700">
         <p class="relative pt-1 font-light">
             <span class="line-through text-gray-500">{{strikePrice | currency: settings.currency}}</span>
-            {{price | currency: settings.currency}}
+            <span [ngClass]="discount || (strikePrice && strikePrice > 0) ? accentText + ' font-normal' : ''">{{price | currency: settings.currency}}</span>
         </p>
-        <p class="absolute bg-white pt-1 font-hairline cursor-pointer hover:text-blue-500" *ngIf="hover" [@slideInOutAnimation]>
+        <p class="absolute bg-white pt-1 font-hairline cursor-pointer hover:{{accentText}} w-1/2"
+            *ngIf="hover" [@slideInOutAnimation]>
             Show more
         </p>
     </div>

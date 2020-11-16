@@ -3,8 +3,8 @@
         <div class="font-light text-2xl mb-3">
             Shopping Cart
         </div>
-        <div class="divide-y divide-gray-200">
-            <div class="flex justify-between py-5" *ngFor="let variant of variants">
+        <form class="divide-y divide-gray-200" [formGroup]="variantForm">
+            <div class="flex justify-between py-5" *ngFor="let variant of variants; trackBy: trackByFn">
                 <div class="flex">
                     <img class="object-contain" src="{{ getImage(variant.images) }}" alt="{{ variant.productName }}"
                         width="{{imageSize}}" height="{{imageSize}}">
@@ -12,8 +12,9 @@
                         <div class="mb-auto md:my-auto text-base md:text-xl">
                             {{ variant.productName }} - {{ variant.name }}
                         </div>
-                        <app-counter-input [label]="'Quantity'" [value]="variant.quantity">
+                        <app-counter-input *ngIf="variant.available" [formControl]="variantForm.controls[variant.id]" [label]="'Quantity'" [value]="variant.quantity" [valueMin]="1">
                         </app-counter-input>
+                        <div *ngIf="!variant.available" class="danger-label">Out of stock</div>
                     </div>
                 </div>
                 <div class="relative">
@@ -27,9 +28,9 @@
             </div>
             <div class="flex pt-5 text-gray-600">
                 <app-button class="w-full" [secondary]="true" [label]="'Update Cart'" [color]="'white'"
-                    [fullWidth]="true"></app-button>
+                    [fullWidth]="true" [loading]="updateLoading" [success]="updateSuccess" (click)="updateCart()"></app-button>
             </div>
-        </div>
+        </form>
     </div>
     <div class="w-full md:w-4/12">
         <div class="font-light text-2xl">
@@ -52,7 +53,7 @@
             </div>
         </div>
         <app-cart-total></app-cart-total>
-        <app-button color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
+        <app-button *ngIf="available" color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
         </app-button>
     </div>
 </div>
