@@ -1,4 +1,4 @@
-<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between" *ngIf="variants.length > 0">
+<!-- <div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between" *ngIf="variants.length > 0">
     <div class="w-full md:w-7/12 mb-5">
         <div class="font-light text-2xl mb-3">
             Wishlist
@@ -36,6 +36,6 @@
 <div *ngIf="variantsLoading || draftLoading"
     class="w-full h-full bg-white opacity-50 z-20 flex items-center justify-center">
     <app-spinner class="-mt-96" [size]="10"></app-spinner>
-</div>
+</div> -->
 
 <app-empty-page *ngIf="variants.length === 0" [label]="'wishlist'"></app-empty-page>

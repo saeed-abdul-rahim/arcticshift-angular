@@ -19,6 +19,8 @@ import { countryAlphaList } from '@utils/countryAlphaList';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { isProductAvailable } from '@utils/isProductAvailable';
+import { AuthService } from '@services/auth/auth.service';
+import { UserInterface } from '@models/User';
 
 
 
@@ -51,6 +53,7 @@ export class WishlistComponent implements OnInit, OnDestroy {
 
   settings: GeneralSettings;
   draft: OrderInterface;
+  user: UserInterface;
   variants: VariantExtended[] = [];
   saleDiscounts: SaleDiscountInterface[] = [];
   variantForm: FormGroup;
@@ -61,38 +64,9 @@ export class WishlistComponent implements OnInit, OnDestroy {
   private saleDiscountSubscription: Subscription;
 
   constructor(private cart: CartService, private shop: ShopService, private router: Router,
-              private alert: AlertService, private formBuilder: FormBuilder) { }
+              private auth: AuthService, private alert: AlertService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.cart.getProductsFromDraft().subscribe(data => {
-      if (data) {
-        const { draft, variants } = data;
-        this.draft = draft;
-        this.variants = variants.map(variant => {
-          const available = isProductAvailable(variant);
-          return { ...variant, available };
-        });
-        const allAvailable = this.variants.map(variant => variant.available);
-        if (allAvailable.includes(false)) {
-          this.available = false;
-        } else {
-          this.available = true;
-        }
-        if (this.variantForm) {
-          this.variantForm.reset();
-        }
-        let variantFormControls = variants.map(variant => {
-          return { [variant.id]: [variant.quantity] };
-        });
-        variantFormControls = Object.assign({}, ...variantFormControls);
-        this.variantForm = this.formBuilder.group({
-          ...variantFormControls
-        });
-      } else {
-        this.variants = [];
-      }
-    });
-    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
   }
 
   ngOnDestroy(): void {
@@ -114,6 +88,11 @@ export class WishlistComponent implements OnInit, OnDestroy {
     this.saleDiscountSubscription = this.shop.getSaleDiscounts().subscribe(saleDiscounts => this.saleDiscounts = saleDiscounts);
   }
 
+getwishlist(){
+  this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
+  
+}
+
 
   async removeVariant(id: string) {
     const { orderId } = this.draft;
@@ -124,10 +103,6 @@ export class WishlistComponent implements OnInit, OnDestroy {
       this.handleError(err);
     }
     this.totalLoading = false;
-  }
-
-  trackByFn(index: number, item: VariantInterface) {
-    return item.id;
   }
 
   getImage(images: Content[]) {
