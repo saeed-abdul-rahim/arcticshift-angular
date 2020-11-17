@@ -111,12 +111,12 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (!variant || !quantity) {
       return;
     }
-    const { warehouseQuantity, variantId, shopId } = variant;
+    const { warehouseQuantity, variantId, shopId, trackInventory } = variant;
     let maxQuantity = 0;
     maxQuantity = Object.keys(warehouseQuantity)
       .map(key => warehouseQuantity[key])
       .reduce((prev, curr) => prev > curr ? prev : curr);
-    if (maxQuantity < 1) {
+    if (maxQuantity < 1 && trackInventory) {
       this.handleError('Out of stock');
     }
     this.cartLoading = true;

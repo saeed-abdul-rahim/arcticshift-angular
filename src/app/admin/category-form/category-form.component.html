@@ -80,49 +80,51 @@
 
 
 <ng-template #catalogTable>
-  <app-spinner class="data-empty" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
-  <div *ngIf="!catalogLoading">
-    <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
-      available</div>
-    <div class="overflow-x-auto scrollbar" *ngIf="catalogData && catalogData.value && catalogData.value.length > 0">
-      <table mat-table [dataSource]="catalog">
+  <div class="overflow-x-scroll">
+    <app-spinner class="data-empty" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
+    <div *ngIf="!catalogLoading">
+      <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
+        available</div>
+      <div class="overflow-x-auto scrollbar" *ngIf="catalogData && catalogData.value && catalogData.value.length > 0">
+        <table mat-table [dataSource]="catalog">
 
-        <ng-container matColumnDef="image" *ngIf="type === 'product'">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let row" class="w-32 content-center">
-            <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3" />
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="image" *ngIf="type === 'product'">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row" class="w-32 content-center">
+              <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3" />
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>{{ type }} Name</th>
-          <td mat-cell *matCellDef="let row" class="padding-0">
-            <div class="flex flex-wrap relative align-middle" *ngIf="row">
-              <div class="relative w-full px-5 py-3">{{row.name}}</div>
-            </div>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>{{ type }} Name</th>
+            <td mat-cell *matCellDef="let row" class="padding-0">
+              <div class="flex flex-wrap relative align-middle" *ngIf="row">
+                <div class="relative w-full px-5 py-3">{{row.name}}</div>
+              </div>
+            </td>
+          </ng-container>
 
-        <ng-container *ngIf="type === 'category'" matColumnDef="subCategory">
-          <th mat-header-cell *matHeaderCellDef>Subcategories</th>
-          <td mat-cell *matCellDef="let row" class="padding-0">
-            <div class="px-5 py-3"> {{ row.subCategoryId.length }} </div>
-          </td>
-        </ng-container>
+          <ng-container *ngIf="type === 'category'" matColumnDef="subCategory">
+            <th mat-header-cell *matHeaderCellDef>Subcategories</th>
+            <td mat-cell *matCellDef="let row" class="padding-0">
+              <div class="px-5 py-3"> {{ row.subCategoryId.length }} </div>
+            </td>
+          </ng-container>
 
-        <ng-container *ngIf="type === 'category'" matColumnDef="product">
-          <th mat-header-cell *matHeaderCellDef>Products</th>
-          <td mat-cell *matCellDef="let row" class="padding-0">
-            <div class="flex flex-wrap relative align-middle" *ngIf="row">
-              <div class="relative w-full px-5 py-3">{{row.productId.length}}</div>
-            </div>
-          </td>
-        </ng-container>
+          <ng-container *ngIf="type === 'category'" matColumnDef="product">
+            <th mat-header-cell *matHeaderCellDef>Products</th>
+            <td mat-cell *matCellDef="let row" class="padding-0">
+              <div class="flex flex-wrap relative align-middle" *ngIf="row">
+                <div class="relative w-full px-5 py-3">{{row.productId.length}}</div>
+              </div>
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0" (click)="navigateById(row.id)"></tr>
+          <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0" (click)="navigateById(row.id)"></tr>
 
-      </table>
+        </table>
+      </div>
     </div>
   </div>
 </ng-template>

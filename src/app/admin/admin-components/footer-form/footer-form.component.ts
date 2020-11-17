@@ -14,6 +14,7 @@ export class FooterFormComponent implements OnInit {
   @Input() loadingDelete: boolean;
   @Input() successDelete: boolean;
   @Output() deleteCallback = new EventEmitter<any>();
+  @Output() callback = new EventEmitter<any>();
 
   constructor() { }
 
@@ -22,6 +23,10 @@ export class FooterFormComponent implements OnInit {
 
   deleteFn() {
     this.deleteCallback.emit();
+  }
+
+  fn() {
+    this.callback.emit();
   }
 
 }

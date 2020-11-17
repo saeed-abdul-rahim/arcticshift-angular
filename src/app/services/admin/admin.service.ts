@@ -34,6 +34,7 @@ export class AdminService {
   private apiProductType: string;
   private apiAttribute: string;
   private apiWarehouse: string;
+  private apiOrder: string;
   private apiShipping: string;
   private apiShippingRate: string;
   private apiTax: string;
@@ -57,6 +58,7 @@ export class AdminService {
       voucher,
       tax,
       warehouse,
+      order,
       shipping,
       rate
     } = api;
@@ -74,6 +76,7 @@ export class AdminService {
     this.apiVoucher = url + voucher;
     this.apiTax = url + tax;
     this.apiWarehouse = url + warehouse;
+    this.apiOrder = url + order;
     this.apiShipping = url + shipping;
     this.apiShippingRate = this.apiShipping + rate;
 
@@ -521,6 +524,7 @@ export class AdminService {
       throw err;
     }
   }
+
   async updateProductType(data: ProductTypeInterface) {
     const { apiProductType } = this;
     try {
@@ -534,6 +538,24 @@ export class AdminService {
     const { apiProductType } = this;
     try {
       return await this.req.delete(`${apiProductType}/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async fullfillOrder(id: string, data: OrderInterface) {
+    const { apiOrder } = this;
+    try {
+      return await this.req.patch(`${apiOrder}/${id}/fullfill`, {data});
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async cancelOrder(id: string) {
+    const { apiOrder } = this;
+    try {
+      return await this.req.delete(`${apiOrder}/${id}/cancel`);
     } catch (err) {
       throw err;
     }

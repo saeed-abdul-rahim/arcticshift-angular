@@ -16,6 +16,11 @@ export type VariantQuantity = {
     quantity: number
 };
 
+export type Fullfill = VariantQuantity & {
+    warehouseId: string
+    trackingId?: string
+};
+
 export interface OrderInterface extends CommonInterface {
     shopId?: string;
     userId?: string;
@@ -36,7 +41,7 @@ export interface OrderInterface extends CommonInterface {
     giftCardId?: string;
     shippingId?: string;
     variants?: VariantQuantity[];
-    fullfilled?: VariantQuantity[];
+    fullfilled?: Fullfill[];
     subTotal?: number;
     saleDiscount?: number;
     voucherDiscount?: number;

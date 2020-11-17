@@ -255,7 +255,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   razorpayResponseHandler(response: any) {
-    console.log(response);
+    this.router.navigateByUrl('/');
   }
 
   handleError(err: any) {
