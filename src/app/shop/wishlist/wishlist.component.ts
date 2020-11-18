@@ -1,24 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs/internal/Subscription';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
-import { faTicketAlt } from '@fortawesome/free-solid-svg-icons/faTicketAlt';
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons/faMapMarkerAlt';
-
-import { CART } from '@constants/routes';
-import { IMAGE_XS } from '@constants/imageSize';
-import { GeneralSettings } from '@models/GeneralSettings';
-import { Content } from '@models/Common';
-import { OrderInterface } from '@models/Order';
-import { VariantExtended } from '@models/Variant';
-import { ShopService } from '@services/shop/shop.service';
-import { AlertService } from '@services/alert/alert.service';
-import { countryAlphaList } from '@utils/countryAlphaList';
-import { FormGroup } from '@angular/forms';
+import { ProductInterface } from '@models/Product';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
-import { AuthService } from '@services/auth/auth.service';
 import { UserInterface } from '@models/User';
+import { AuthService } from '@services/auth/auth.service';
+import { Subscription } from 'rxjs';
+import { shopProductRoute } from '@constants/routes';
 
 
 
@@ -30,94 +17,45 @@ import { UserInterface } from '@models/User';
 })
 export class WishlistComponent implements OnInit, OnDestroy {
 
+  wishlist: UserInterface;
+  showSearch = false;
 
-  faMapMarkerAlt = faMapMarkerAlt;
-  faTicketAlt = faTicketAlt;
-  faChevronDown = faChevronDown;
-  faTimes = faTimes;
-  countryAlphaList = countryAlphaList;
-
-  cartRoute = `/${CART}`;
-  imageSize = IMAGE_XS;
-  showCoupon = false;
-  variantsLoading = false;
-  voucherLoading = false;
-  voucherSuccess = false;
-  draftLoading = false;
-  totalLoading = false;
-  updateLoading = false;
-  updateSuccess = false;
-  available = false;
-
-  settings: GeneralSettings;
-  draft: OrderInterface;
   user: UserInterface;
-  variants: VariantExtended[] = [];
-  saleDiscounts: SaleDiscountInterface[] = [];
-  variantForm: FormGroup;
+  wishlistSubscription: Subscription;
+  products: ProductInterface & SaleDiscountInterface[] = [];
 
-  private draftSubscription: Subscription;
-  private variantsSubscription: Subscription;
-  private settingsSubscription: Subscription;
-  private saleDiscountSubscription: Subscription;
 
-  constructor(private shop: ShopService, private router: Router,
-              private auth: AuthService, private alert: AlertService) { }
+  constructor(private auth: AuthService, private router: Router) { }
+
 
   ngOnInit(): void {
+   this.getWishlist();
   }
 
   ngOnDestroy(): void {
-    if (this.settingsSubscription && !this.settingsSubscription.closed) {
-      this.settingsSubscription.unsubscribe();
+    if (this.wishlistSubscription && !this.wishlistSubscription.closed) {
+      this.wishlistSubscription.unsubscribe();
     }
-    if (this.draftSubscription && !this.draftSubscription.closed) {
-      this.draftSubscription.unsubscribe();
-    }
-    if (this.variantsSubscription && !this.variantsSubscription.closed) {
-      this.variantsSubscription.unsubscribe();
-    }
-    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
-      this.saleDiscountSubscription.unsubscribe();
+  }
+  getWishlist() {
+    this.wishlistSubscription = this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
+    const { wishlist } = this.user;
+    if (wishlist.length > 0){
+        return console.log(wishlist);
     }
   }
 
-  getSaleDiscounts() {
-    this.saleDiscountSubscription = this.shop.getSaleDiscounts().subscribe(saleDiscounts => this.saleDiscounts = saleDiscounts);
+  closeSearch() {
+    this.showSearch = false;
   }
 
-  getWishlist(){
-    this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
+  navigateToVariant(title: string, id: string) {
+    const routeTitle = encodeURIComponent(title.split(' ').join('-'));
+    this.router.navigateByUrl(`${shopProductRoute}/${routeTitle}/${id}`);
+    this.closeSearch();
   }
 
-
-  async removeVariant(id: string) {
-    const { orderId } = this.draft;
-    this.totalLoading = true;
-    try {
-      await this.shop.removeVariantFromCart(orderId, id);
-    } catch (err) {
-      this.handleError(err);
-    }
-    this.totalLoading = false;
+  trackByFn(index: number, item: ProductInterface) {
+    return item.id;
   }
-
-  getImage(images: Content[]) {
-    if (!images || images.length === 0) { return; }
-    const image = images[0];
-    const { thumbnails } = image;
-    const thumbnail = thumbnails.find(thumb => thumb.dimension === this.imageSize);
-    return thumbnail.url;
-  }
-
-
-  navigateToCart() {
-    this.router.navigateByUrl(this.cartRoute);
-  }
-
-  handleError(err: any) {
-    this.alert.alert({ message: err });
-  }
-
 }
-
