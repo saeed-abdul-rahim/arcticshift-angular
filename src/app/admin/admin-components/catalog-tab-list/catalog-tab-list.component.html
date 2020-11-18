@@ -33,30 +33,32 @@
 <!-- TABLE TEMPLATES -->
 
 <ng-template #catalogTable>
-    <app-spinner class="data-empty" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
-    <div *ngIf="!catalogLoading">
-        <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
-            available</div>
-        <div class="overflow-x-auto scrollbar" *ngIf="catalogData && catalogData.value && catalogData.value.length > 0">
-            <table mat-table [dataSource]="catalog">
+    <div class="overflow-x-scroll">
+        <app-spinner class="data-empty" *ngIf="catalogLoading" [size]="'5'"></app-spinner>
+        <div *ngIf="!catalogLoading">
+            <div *ngIf="catalogData && (!catalogData.value || catalogData.value.length === 0)" class="data-empty">No data
+                available</div>
+            <div class="overflow-x-auto scrollbar" *ngIf="catalogData && catalogData.value && catalogData.value.length > 0">
+                <table mat-table [dataSource]="catalog">
 
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>{{ type }} Name</th>
-                    <td mat-cell *matCellDef="let row" class="padding-0">
-                        <div class="flex flex-wrap relative align-middle" *ngIf="row">
-                            <div class="relative w-full px-5 py-3">{{row.name}}</div>
-                            <app-spinner class="absolute right-0 mx-4 py-3" *ngIf="removeLoading && catalogDeleteId === row.id" [size]="'5'" [@inOutAnimation]></app-spinner>
-                            <div class="absolute right-0 mx-2 py-3" *ngIf="!removeLoading || catalogDeleteId !== row.id" (click)="deleteId(row.id)" [@inOutAnimation]>
-                                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>{{ type }} Name</th>
+                        <td mat-cell *matCellDef="let row" class="padding-0">
+                            <div class="flex flex-wrap relative align-middle" *ngIf="row">
+                                <div class="relative w-full px-5 py-3">{{row.name}}</div>
+                                <app-spinner class="absolute right-0 mx-4 py-3" *ngIf="removeLoading && catalogDeleteId === row.id" [size]="'5'" [@inOutAnimation]></app-spinner>
+                                <div class="absolute right-0 mx-2 py-3" *ngIf="!removeLoading || catalogDeleteId !== row.id" (click)="deleteId(row.id)" [@inOutAnimation]>
+                                    <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                </ng-container>
+                        </td>
+                    </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0"></tr>
+                    <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0"></tr>
 
-            </table>
+                </table>
+            </div>
         </div>
     </div>
 </ng-template>

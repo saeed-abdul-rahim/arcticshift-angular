@@ -1,12 +1,19 @@
-
 <!-- BODY -->
 <div class="flex flex-col h-screen justify-between">
     <div class="relative pt-12 mb-auto h-10">
         <div class="px-4 md:px-10 mx-auto w-full">
             <div class="flex flex-wrap mt-4 mb-12" *ngIf="order">
                 <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-                    <app-card *ngIf="edit" [heading]="order.orderStatus.toUpperCase()" [actions]="productActionTemplate" [body]="productListTemplate"></app-card>
-                    <app-card *ngIf="edit" [heading]="order.paymentStatus.toUpperCase()" [body]="chargeTemplate"></app-card>
+                    <app-card *ngIf="edit && unFullfilledProducts.length > 0" [heading]="'Unfullfilled'"
+                        [actions]="unfullfilledActionTemplate" [body]="unfullfilledListTemplate"></app-card>
+                    <div *ngFor="let fullfilledWarehouse of fullfilledProducts">
+                        <ng-template #fullfilledCard>
+                            <ng-container *ngTemplateOutlet="fullfilledListTemplate; context: { fullfilledWarehouse: fullfilledWarehouse }"></ng-container>
+                        </ng-template>
+                        <app-card *ngIf="edit && fullfilledProducts.length > 0" [heading]="'Fullfilled'" [body]="fullfilledCard"></app-card>
+                    </div>
+                    <app-card *ngIf="edit" [heading]="order.paymentStatus.toUpperCase()" [body]="chargeTemplate">
+                    </app-card>
                 </div>
                 <div class="w-full xl:w-4/12 px-4">
                     <app-card [heading]="'Customer'" [body]="customerTemplate"></app-card>
@@ -65,7 +72,8 @@
             </div>
             <div class="flex relative w-full py-1 font-semibold">
                 <div class="w-6/12">Outstanding Balance</div>
-                <div class="w-6/12 text-right">{{order.total - order.capturedAmount | currency: settings.currency }}</div>
+                <div class="w-6/12 text-right">{{order.total - order.capturedAmount | currency: settings.currency }}
+                </div>
             </div>
         </div>
     </div>
@@ -109,48 +117,60 @@
 
 <!-- BUTTON TEMPLATES -->
 
-<ng-template #productActionTemplate>
-    <label class="arc-link-button" type="button">
+<ng-template #unfullfilledActionTemplate>
+    <label class="arc-link-button" type="button" *ngIf="unFullfilledProducts.length > 0">
         <a routerLink="{{fullfillRoute}}">Fullfill</a>
     </label>
 </ng-template>
 
 <!-- TABLE TEMPLATES -->
 
-<ng-template #productListTemplate>
-      <div *ngIf="products && products.length === 0" class="data-empty">No data available</div>
-      <table *ngIf="products && products.length > 0" mat-table [dataSource]="productsSource">
-  
-        <ng-container matColumnDef="product">
-          <th mat-header-cell *matHeaderCellDef>Product</th>
-          <td mat-cell *matCellDef="let row" class="max-w-xs truncate">
-                <p>{{row.baseProduct.name}}</p>
-                <p class="text-xs text-gray-600">{{row.name}}</p>
-            </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="sku">
-          <th mat-header-cell *matHeaderCellDef>SKU</th>
-          <td mat-cell *matCellDef="let row">{{row.sku}}</td>
-        </ng-container>
+<ng-template #unfullfilledListTemplate>
+    <ng-container *ngTemplateOutlet="productListTable; context:{ productsSource: unFullfilledProducts }"></ng-container>
+</ng-template>
 
-        <ng-container matColumnDef="quantity">
-            <th mat-header-cell *matHeaderCellDef>Quantity</th>
-            <td mat-cell *matCellDef="let row">{{row.orderQuantity}}</td>
-          </ng-container>
-  
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Price</th>
-          <td mat-cell *matCellDef="let row">{{row.price}}</td>
-        </ng-container>
+<ng-template #fullfilledListTemplate let-fullfilledWarehouse="fullfilledWarehouse">
+    <ng-container *ngTemplateOutlet="productListTable; context:{ productsSource: fullfilledWarehouse }"></ng-container>
+    <div class="p-5">
+        Fullfilled from: {{ warehouses && getWarehouseName(fullfilledWarehouse[0].warehouseId) }}
+    </div>
+</ng-template>
 
-        <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef>Total</th>
-            <td mat-cell *matCellDef="let row">{{row.price * row.orderQuantity}}</td>
-          </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  
-      </table>
-  </ng-template>
+<ng-template #productListTable let-productsSource="productsSource">
+    <div class="overflow-x-scroll">
+        <table mat-table [dataSource]="productsSource">
+
+            <ng-container matColumnDef="product">
+                <th mat-header-cell *matHeaderCellDef>Product</th>
+                <td mat-cell *matCellDef="let row" class="max-w-xs truncate">
+                    <p>{{row.baseProduct.name}}</p>
+                    <p class="text-xs text-gray-600">{{row.name}}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="sku">
+                <th mat-header-cell *matHeaderCellDef>SKU</th>
+                <td mat-cell *matCellDef="let row">{{row.sku}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                <td mat-cell *matCellDef="let row">{{row.orderQuantity}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>Price</th>
+                <td mat-cell *matCellDef="let row">{{row.price}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef>Total</th>
+                <td mat-cell *matCellDef="let row">{{row.price * row.orderQuantity}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </div>
+</ng-template>

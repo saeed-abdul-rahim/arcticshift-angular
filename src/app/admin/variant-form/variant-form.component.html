@@ -119,25 +119,27 @@
 <!-- TABLE TEMPLATES -->
 
 <ng-template #variantListTemplate>
-  <app-spinner class="data-empty" *ngIf="variantsLoading" [size]="'5'"></app-spinner>
-  <div *ngIf="!variantsLoading">
-    <div *ngIf="variants && variants.length === 0" class="data-empty">No data available</div>
-    <table *ngIf="variants && variants.length > 0" mat-table [dataSource]="variantsSource">
+  <div class="overflow-x-scroll">
+    <app-spinner class="data-empty" *ngIf="variantsLoading" [size]="'5'"></app-spinner>
+    <div *ngIf="!variantsLoading">
+      <div *ngIf="variants && variants.length === 0" class="data-empty">No data available</div>
+      <table *ngIf="variants && variants.length > 0" mat-table [dataSource]="variantsSource">
 
-      <ng-container matColumnDef="image">
-        <td mat-cell *matCellDef="let row" class="w-32 content-center">
-          <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3"/>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="image">
+          <td mat-cell *matCellDef="let row" class="w-32 content-center">
+            <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3"/>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="name">
-        <td mat-cell *matCellDef="let row">
-          {{row.name}}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="name">
+          <td mat-cell *matCellDef="let row">
+            {{row.name}}
+          </td>
+        </ng-container>
 
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="navigateToVariant(row.id)"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="navigateToVariant(row.id)"></tr>
 
-    </table>
+      </table>
+    </div>
   </div>
 </ng-template>

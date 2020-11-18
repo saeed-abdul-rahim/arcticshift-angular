@@ -107,7 +107,7 @@
 </form>
 
 <ng-template #shippingTemplate>
-  <div class="w-full">
+  <div class="w-full overflow-x-scroll">
     <div *ngIf="shippings && shippings.length === 0" class="data-empty">No data available</div>
     <div *ngIf="shippings && shippings.length > 0" class="relative overflow-x-auto scrollbar">
       <table mat-table [dataSource]="shippingSource">

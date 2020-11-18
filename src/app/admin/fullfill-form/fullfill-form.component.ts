@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn 
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { OrderInterface, ProductData, VariantQuantity } from '@models/Order';
+import { Fullfill, OrderInterface, ProductData, VariantQuantity } from '@models/Order';
 import { AlertService } from '@services/alert/alert.service';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
@@ -17,6 +17,9 @@ import { WarehouseInterface } from '@models/Warehouse';
   styleUrls: ['./fullfill-form.component.css']
 })
 export class FullfillFormComponent implements OnInit, OnDestroy {
+
+  loading = false;
+  success = false;
 
   fullfillForm: FormGroup;
   order: OrderInterface;
@@ -61,6 +64,34 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  async fullfill() {
+    if (this.fullfillForm.invalid) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const { controls } = this.fullfillForm;
+      const fullfilled = Object.keys(controls).map(variantId => {
+        const fullfill = {};
+        const warehouseForm = controls[variantId] as FormGroup;
+        Object.keys(warehouseForm.controls).map(warehouseId => {
+          Object.assign(fullfill, {
+            variantId,
+            warehouseId,
+            quantity: warehouseForm.controls[warehouseId].value ? Number(warehouseForm.controls[warehouseId].value) : 0
+          });
+        });
+        return fullfill as Fullfill;
+      });
+      await this.admin.fullfillOrder(this.order.id, { fullfilled });
+      this.success = true;
+      setInterval(() => this.success = false, 2000);
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.loading = false;
+  }
+
   // ORDERED FUNCTIONS -> Order -> Variant -> Warehouse ---------------------------------------------
 
   getOrderById(orderId: string) {
@@ -70,7 +101,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
         const { data, variants } = order;
         const { productsData } = data;
         this.getVariants(variants);
-        this.products = productsData;
+        this.products = productsData.filter(product => !this.isFullfilledVariant(product.variantId));
       }
     }, err => this.handleError(err));
   }
@@ -101,7 +132,8 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
         if (!isBothArrEqual(warehouseIds, oldWarehouseIds)) {
           this.setDisplayedColumns();
           warehouses.forEach(warehouse => this.displayedColumns.push(warehouse.id));
-          this.setForm();
+          this.createForm();
+          this.updateForm();
           this.productsSource = new MatTableDataSource(this.products);
         }
       }
@@ -110,16 +142,34 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
 
   // --------------------------------------------------------------------------------------------------------
 
-  setForm() {
+  createForm() {
     const variantFormKey: any = {};
     this.variants.forEach(variant => {
+      const { variantId } = variant;
+      if (this.isFullfilledVariant(variantId)) { return; }
       const formWarehouseKey: any = {};
       this.warehouses.forEach(warehouse => Object.assign(formWarehouseKey, {
-        [warehouse.id]: [0, [this.validateQuantity(warehouse.id, variant.id)]]
+        [warehouse.id]: [0, [this.validateQuantity(warehouse.id, variantId)]]
       }));
-      Object.assign(variantFormKey, { [variant.id]: this.formBuilder.group(formWarehouseKey) });
+      Object.assign(variantFormKey, { [variantId]: this.formBuilder.group(formWarehouseKey) });
     });
     this.fullfillForm = this.formBuilder.group(variantFormKey);
+  }
+
+  updateForm() {
+    const { fullfilled } = this.order;
+    fullfilled.forEach(fullfill => {
+      try {
+        const { variantId, warehouseId, quantity } = fullfill;
+        if (this.isFullfilledVariant(variantId)) { return; }
+        const variantForm = this.fullfillForm.controls[variantId] as FormGroup;
+        if (quantity && quantity > 0) {
+          variantForm.controls[warehouseId].patchValue(quantity);
+        }
+      } catch (err) {
+        this.handleError(err);
+      }
+    });
   }
 
   getWarehouseQuantity(variantId: string, warehouseId: string) {
@@ -127,13 +177,11 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
     return variant.warehouseQuantity[warehouseId];
   }
 
-  getFullfulledQuantity(variantId: string) {
-    const variant = this.order.fullfilled.find(p => p.variantId === variantId);
-    if (variant) {
-      return variant.quantity;
-    } else {
-      return 0;
-    }
+  getFullfilledQuantity(variantId: string) {
+    return this.order.fullfilled
+      .filter(p => p.variantId === variantId)
+      .map(p => p.quantity)
+      .reduce((acc, curr) => acc + curr, 0);
   }
 
   validateQuantity(warehouseId: string, variantId: string): ValidatorFn {
@@ -146,17 +194,19 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
       if (quantity > variant.warehouseQuantity[warehouseId]) {
         return { incorrect: true };
       }
-      const { fullfilled, variants } = this.order;
+      const { variants } = this.order;
       const orderedVariant = variants.find(v => v.variantId === v.variantId);
-      const fullfilledVariant = fullfilled.find(v => v.variantId === v.variantId);
       if (quantity > orderedVariant.quantity) {
-        return { incorrect: true };
-      }
-      if (fullfilledVariant && quantity > fullfilledVariant.quantity) {
         return { incorrect: true };
       }
       return null;
     };
+  }
+
+  isFullfilledVariant(variantId: string) {
+    const orderVariantQty = this.order.variants.find(v => v.quantity);
+    if (!orderVariantQty) { return false; }
+    return this.getFullfilledQuantity(variantId) === orderVariantQty.quantity;
   }
 
   isFormControlValid(variantId: string, warehouseId: string) {
@@ -174,7 +224,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
   }
 
   handleError(err: any) {
-    this.alert.alert({ message: err.message });
+    this.alert.alert({ message: err.message || err });
   }
 
 }
