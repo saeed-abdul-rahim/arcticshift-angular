@@ -49,7 +49,7 @@
                 <ng-container matColumnDef="quantity">
                     <th mat-header-cell *matHeaderCellDef>Quantity to Fullfill</th>
                     <td mat-cell class="text-center" *matCellDef="let row">
-                        {{getFullfilledQuantity(row.variantId)}}/{{row.orderQuantity}}</td>
+                        {{getCurrentVariantQty(row.variantId)}}/{{row.orderQuantity - getFullfilledQuantity(row.variantId)}}</td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

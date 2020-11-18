@@ -20,6 +20,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
 
   loading = false;
   success = false;
+  orderRoute: string;
 
   fullfillForm: FormGroup;
   order: OrderInterface;
@@ -40,6 +41,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const routeSplit = this.router.url.split('/');
     routeSplit.pop();
+    this.orderRoute = routeSplit.join('/');
     const orderId = routeSplit.pop();
     this.fullfillForm = this.formBuilder.group({});
     this.getOrderById(orderId);
@@ -71,21 +73,22 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     try {
       const { controls } = this.fullfillForm;
-      const fullfilled = Object.keys(controls).map(variantId => {
-        const fullfill = {};
+      const fullfillVariantLevel = Object.keys(controls).map(variantId => {
         const warehouseForm = controls[variantId] as FormGroup;
-        Object.keys(warehouseForm.controls).map(warehouseId => {
-          Object.assign(fullfill, {
+        const fullfillWarehouseLevel = Object.keys(warehouseForm.controls).map(warehouseId => {
+          return {
             variantId,
             warehouseId,
             quantity: warehouseForm.controls[warehouseId].value ? Number(warehouseForm.controls[warehouseId].value) : 0
-          });
+          } as Fullfill;
         });
-        return fullfill as Fullfill;
+        return fullfillWarehouseLevel;
       });
+      const fullfilled = [].concat(...fullfillVariantLevel);
       await this.admin.fullfillOrder(this.order.id, { fullfilled });
       this.success = true;
       setInterval(() => this.success = false, 2000);
+      this.router.navigateByUrl(this.orderRoute);
     } catch (err) {
       this.handleError(err);
     }
@@ -133,7 +136,6 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
           this.setDisplayedColumns();
           warehouses.forEach(warehouse => this.displayedColumns.push(warehouse.id));
           this.createForm();
-          this.updateForm();
           this.productsSource = new MatTableDataSource(this.products);
         }
       }
@@ -156,22 +158,6 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
     this.fullfillForm = this.formBuilder.group(variantFormKey);
   }
 
-  updateForm() {
-    const { fullfilled } = this.order;
-    fullfilled.forEach(fullfill => {
-      try {
-        const { variantId, warehouseId, quantity } = fullfill;
-        if (this.isFullfilledVariant(variantId)) { return; }
-        const variantForm = this.fullfillForm.controls[variantId] as FormGroup;
-        if (quantity && quantity > 0) {
-          variantForm.controls[warehouseId].patchValue(quantity);
-        }
-      } catch (err) {
-        this.handleError(err);
-      }
-    });
-  }
-
   getWarehouseQuantity(variantId: string, warehouseId: string) {
     const variant = this.variants.find(v => v.id === variantId);
     return variant.warehouseQuantity[warehouseId];
@@ -182,6 +168,22 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
       .filter(p => p.variantId === variantId)
       .map(p => p.quantity)
       .reduce((acc, curr) => acc + curr, 0);
+  }
+
+  getCurrentVariantQty(variantId: string) {
+    const warehouseForm = this.fullfillForm.controls[variantId] as FormGroup;
+    if (warehouseForm) {
+      const { controls } = warehouseForm;
+      return Object.keys(controls).map(warehouseId => {
+        if (controls[warehouseId].value) {
+          return Number(controls[warehouseId].value);
+        } else {
+          return 0;
+        }
+      }).reduce((sum, item) => sum + item, 0);
+    } else {
+      return 0;
+    }
   }
 
   validateQuantity(warehouseId: string, variantId: string): ValidatorFn {
@@ -197,6 +199,9 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
       const { variants } = this.order;
       const orderedVariant = variants.find(v => v.variantId === v.variantId);
       if (quantity > orderedVariant.quantity) {
+        return { incorrect: true };
+      }
+      if (this.getCurrentVariantQty(variantId) > orderedVariant.quantity - this.getFullfilledQuantity(variantId)) {
         return { incorrect: true };
       }
       return null;
