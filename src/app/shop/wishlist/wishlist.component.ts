@@ -27,9 +27,9 @@ export class WishlistComponent implements OnInit, OnDestroy {
 
   saleDiscounts: SaleDiscountInterface[];
   user: UserInterface;
+  productsSubscription: Subscription;
   wishlistSubscription: Subscription;
   products: ProductInterface & SaleDiscountInterface[] = [];
-
 
   constructor(private auth: AuthService, private router: Router, private shop: ShopService) { }
 
@@ -42,6 +42,9 @@ export class WishlistComponent implements OnInit, OnDestroy {
     if (this.wishlistSubscription && !this.wishlistSubscription.closed) {
       this.wishlistSubscription.unsubscribe();
     }
+    if (this.productsSubscription && !this.productsSubscription.closed) {
+      this.productsSubscription.unsubscribe();
+    }
   }
   getWishlist() {
     this.wishlistSubscription = this.auth.getCurrentUserDocument().subscribe(user => {
@@ -49,18 +52,11 @@ export class WishlistComponent implements OnInit, OnDestroy {
       if (this.user) {
         const { wishlist } = this.user;
         console.log(wishlist);
-        this.shop.getProductbyIds(wishlist).subscribe(products => {
-          this.products = products.filter(p => p);
-          console.log(this.products);
-        },
-          error => console.log(error)
-        );
-        if (wishlist.length > 0) {
-          return console.log(wishlist);
-        }
+        this.productsSubscription = this.shop.getProductbyIds(wishlist).subscribe(products => {
+         this.setProducts(products);
+        });
       }
-    }
-    );
+    });
   }
 
   setProducts(products?: ProductInterface[]) {
