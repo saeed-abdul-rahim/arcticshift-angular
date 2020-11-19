@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductInterface } from '@models/Product';
-import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { UserInterface } from '@models/User';
 import { AuthService } from '@services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { shopProductRoute } from '@constants/routes';
+import { ShopService } from '@services/shop/shop.service';
 
 
 
@@ -17,15 +17,14 @@ import { shopProductRoute } from '@constants/routes';
 })
 export class WishlistComponent implements OnInit, OnDestroy {
 
-  wishlist: UserInterface;
   showSearch = false;
 
   user: UserInterface;
   wishlistSubscription: Subscription;
-  products: ProductInterface & SaleDiscountInterface[] = [];
+  products: ProductInterface[] = [];
 
 
-  constructor(private auth: AuthService, private router: Router) { }
+  constructor(private auth: AuthService, private router: Router, private shop: ShopService) { }
 
 
   ngOnInit(): void {
@@ -39,9 +38,10 @@ export class WishlistComponent implements OnInit, OnDestroy {
   }
   getWishlist() {
     this.wishlistSubscription = this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
+    if (this.user){
     const { wishlist } = this.user;
-    if (wishlist.length > 0){
-        return console.log(wishlist);
+    this.shop.getProductbyIds(wishlist).subscribe(product => this.products = product);
+
     }
   }
 

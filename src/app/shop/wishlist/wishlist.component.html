@@ -1,6 +1,6 @@
 <app-product-card class="sm:w-6/12 md:w-3/12 cursor-pointer" *ngFor="let product of products;trackBy: trackByFn"
         [id]="product.id" [title]="product.name" [images]="product.images" [price]="product.price"
-        (click)="navigateToVariant(product.name, product.id)" [discountType]="product.valueType"
-        [discountValue]="product.value"></app-product-card>
+        (click)="navigateToVariant(product.name, product.id)" [discountType]=""
+        [discountValue]=""></app-product-card>
 
-<!-- <app-empty-page *ngIf="wishlist.length === 0" [label]="'wishlist'"></app-empty-page> -->
+        <!-- <app-empty-page *ngIf="variants.length === 0" [label]="'wishlist'"></app-empty-page> -->
