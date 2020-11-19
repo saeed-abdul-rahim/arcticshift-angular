@@ -21,7 +21,7 @@ import { setSaleDiscountForProduct } from '@utils/productUtils';
 export class ProductListComponent implements OnInit, OnDestroy {
 
   @Input() id: string | string[];
-  @Input() type: CatalogType | 'wishlist' = 'product';
+  @Input() type: CatalogType = 'product';
   @Input() limit = 8;
   @Input() filterProducts: string[] = []; // Product Ids
   @Output() allProducts = new EventEmitter<ProductInterface & SaleDiscountInterface[]>();
