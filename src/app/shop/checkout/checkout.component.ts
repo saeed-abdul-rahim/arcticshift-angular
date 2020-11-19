@@ -16,7 +16,7 @@ import { IMAGE_SS } from '@constants/imageSize';
 import { countryList, CountryListType, CountryStateType } from '@utils/countryList';
 import { AlertService } from '@services/alert/alert.service';
 import { environment } from '@environment';
-import { isProductAvailable } from '@utils/isProductAvailable';
+import { isProductAvailable } from '@utils/productUtils';
 
 @Component({
   selector: 'app-checkout',
