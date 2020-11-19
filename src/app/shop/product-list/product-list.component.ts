@@ -6,11 +6,12 @@ import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { IMAGE_L } from '@constants/imageSize';
 import { shopProductRoute } from '@constants/routes';
-import { Content, ValueType } from '@models/Common';
+import { ValueType } from '@models/Common';
 import { ProductInterface } from '@models/Product';
 import { CatalogType } from '@models/Metadata';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
-import { getSaleDiscountForProduct } from '@utils/saleDiscount';
+import { setThumbnails } from '@utils/media';
+import { setSaleDiscountForProduct } from '@utils/productUtils';
 
 @Component({
   selector: 'app-product-list',
@@ -20,7 +21,7 @@ import { getSaleDiscountForProduct } from '@utils/saleDiscount';
 export class ProductListComponent implements OnInit, OnDestroy {
 
   @Input() id: string | string[];
-  @Input() type: CatalogType = 'product';
+  @Input() type: CatalogType | 'wishlist' = 'product';
   @Input() limit = 8;
   @Input() filterProducts: string[] = []; // Product Ids
   @Output() allProducts = new EventEmitter<ProductInterface & SaleDiscountInterface[]>();
@@ -114,16 +115,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
           return;
         }
         const { id, images, price, name } = product;
-        const thumbnails = this.setThumbnails(images, name);
+        const thumbnails = setThumbnails(images, name, IMAGE_L);
         let discountValue: number;
         let discountType: ValueType;
-        if (this.saleDiscounts && this.saleDiscounts.length > 0) {
-          const saleDiscount = getSaleDiscountForProduct(this.saleDiscounts, product);
-          if (saleDiscount) {
-            const { value, valueType } = saleDiscount;
-            discountValue = value;
-            discountType = valueType;
-          }
+        if (this.saleDiscounts) {
+          const productDiscount = setSaleDiscountForProduct(this.saleDiscounts, product);
+          discountType = productDiscount.discountType;
+          discountValue = productDiscount.discountValue;
         }
         return {
           id, price, name,
@@ -134,22 +132,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
       }).filter(e => e);
     }
     this.allProducts.emit(this.products);
-  }
-
-  setThumbnails(images: Content[], name: string) {
-    let allThumbnails = [];
-    if (images && images.length > 0) {
-      const filteredImages = images.slice(0, 2);
-      allThumbnails = filteredImages.map(image => {
-        const { thumbnails } = image;
-        const thumbnail = thumbnails.find(thumb => thumb.dimension === IMAGE_L);
-        return {
-          title: name,
-          url: thumbnail.url
-        };
-      });
-    }
-    return allThumbnails;
   }
 
   trackByFn(index: number, item: ProductInterface) {

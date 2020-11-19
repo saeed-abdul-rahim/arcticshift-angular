@@ -21,6 +21,22 @@ export function getUploadPreviewImages(images?: Content[]) {
     });
 }
 
+export function setThumbnails(images: Content[], name: string, imageSize: number) {
+    let allThumbnails = [];
+    if (images && images.length > 0) {
+        const filteredImages = images.slice(0, 2);
+        allThumbnails = filteredImages.map(image => {
+            const { thumbnails } = image;
+            const thumbnail = thumbnails.find(thumb => thumb.dimension === imageSize);
+            return {
+                title: name,
+                url: thumbnail.url
+            };
+        });
+    }
+    return allThumbnails;
+}
+
 export function checkImage(file?: File) {
     if (!file) {
         return null;

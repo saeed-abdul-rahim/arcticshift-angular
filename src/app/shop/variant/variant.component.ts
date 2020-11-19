@@ -14,7 +14,7 @@ import { AlertService } from '@services/alert/alert.service';
 import { getIds } from '@utils/arrUtils';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { getProductDiscount, getSaleDiscountForProduct } from '@utils/saleDiscount';
-import { isProductAvailable } from '@utils/isProductAvailable';
+import { isProductAvailable } from '@utils/productUtils';
 
 @Component({
   selector: 'app-variant',
