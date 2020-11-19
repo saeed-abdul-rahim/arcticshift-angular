@@ -24,7 +24,7 @@ export function setSaleDiscountForProduct(saleDiscounts: SaleDiscountInterface[]
         let discountValue: number;
         let discountType: ValueType;
         if (saleDiscounts.length > 0) {
-          const saleDiscount = getSaleDiscountForProduct(this.saleDiscounts, product);
+          const saleDiscount = getSaleDiscountForProduct(saleDiscounts, product);
           if (saleDiscount) {
             const { value, valueType } = saleDiscount;
             discountValue = value;
