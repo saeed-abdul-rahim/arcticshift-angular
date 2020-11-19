@@ -16,6 +16,7 @@ import { AlertService } from '@services/alert/alert.service';
 import { AddCatalogEvent } from '@models/Event';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { inOut } from '@animations/inOut';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-collection-form',
@@ -149,7 +150,10 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
       }
 
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       console.log(err);
@@ -164,7 +168,10 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
       const { ids } = $event;
       await this.admin.addProductToCollection(collectionId, ids);
       this.modalSuccess = true;
-      setInterval(() => this.modalSuccess = false, 2000);
+      setTimeout(() => {
+        this.modalSuccess = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.modalLoading = false;
       this.showModal = false;
     } catch (err) {
@@ -191,7 +198,10 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
       const { collectionId } = this.collection;
       await this.admin.deleteCollection(collectionId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(collectionRoute);
     } catch (err) {
       this.handleError(err);

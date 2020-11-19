@@ -20,16 +20,21 @@
         </div>
 
         <div class="relative -my-2 flex" [class.block]="showSearch" [class.hidden]="!showSearch"
-            [ngClass]="isMobile ? 'w-full' : 'flex-1'" (clickOutside)="closeSearch()" [exclude]="'#searchButton'" [excludeBeforeClick]="true">
+            [ngClass]="isMobile ? 'w-full' : 'flex-1'" (clickOutside)="closeSearch()" [exclude]="'#searchButton'"
+            [excludeBeforeClick]="true">
             <input #search class="arc-input placeholder-gray-400 w-full" type="text"
                 (keyup)="searchProducts(search.value)" />
             <span class="input-right-label">
                 <fa-icon [icon]="faSearch"></fa-icon>
             </span>
-            <div class="absolute bg-white flex flex-col arc-transition slider divide-y shadow rounded-b" style="margin-top: 3.25rem;"
-                *ngIf="products && products.length > 0" [ngClass]="isMobile ? '-ml-6 w-screen' : 'w-full'">
-                <div class="p-3 font-light text-gray-700 flex align-middle" *ngFor="let product of products" (click)="navigateToVariant(product.name, product.id)">
-                    <img class="px-3" src="{{getSmallestThumbnail(product.images)}}" alt="{{product.name}}" width="48" height="48">
+            <div class="absolute bg-white flex flex-col arc-transition slider divide-y shadow rounded-b"
+                style="margin-top: 3.25rem;" *ngIf="products && products.length > 0"
+                [ngClass]="isMobile ? '-ml-6 w-screen' : 'w-full'">
+                <div class="p-3 font-light text-gray-700 flex align-middle"
+                    *ngFor="let product of products; trackBy: trackByFn"
+                    (click)="navigateToVariant(product.name, product.id)">
+                    <img class="px-3" src="{{getSmallestThumbnail(product.images)}}" alt="{{product.name}}" width="48"
+                        height="48">
                     {{product.name}}
                 </div>
             </div>
@@ -37,13 +42,13 @@
 
         <div class="inset-y-0 right-0 flex items-center text-gray-800" id="nav-content">
 
-            <a #searchButton id="searchButton" class="px-3 inline-block no-underline hover:text-black cursor-pointer" (click)="openSearch($event)"
-                *ngIf="!showSearch">
+            <a #searchButton id="searchButton" class="px-3 inline-block no-underline hover:text-black cursor-pointer"
+                (click)="openSearch($event)" *ngIf="!showSearch">
                 <fa-icon [icon]="faSearch"></fa-icon>
             </a>
 
-            <a class="px-3 inline-block no-underline hover:text-black cursor-pointer"
-            routerLink="{{wishlistRoute}}" *ngIf="(!showSearch && isMobile) || !isMobile">
+            <a class="px-3 inline-block no-underline hover:text-black cursor-pointer" routerLink="{{wishlistRoute}}"
+                *ngIf="(!showSearch && isMobile) || !isMobile">
                 <fa-icon [icon]="faHeart"></fa-icon>
                 <span *ngIf="user && user.wishlist.length > 0"
                     class="absolute inset-y-0 right-0 w-4 h-4 rounded-full bg-gray-800 text-white text-xs text-center">

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
@@ -13,6 +13,7 @@ import { ProductInterface } from '@models/Product';
 import { getSmallestThumbnail } from '@utils/media';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth/auth.service';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-navbar',
@@ -47,7 +48,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private productsSubscription: Subscription;
 
   constructor(private cart: CartService, private auth: AuthService, private shop: ShopService, private nav: NavbarService,
-              private router: Router) { }
+              private router: Router, private ref: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
@@ -78,8 +79,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   searchProducts(input: string) {
     this.unsubscribeProducts();
-    console.log(input);
-    this.productsSubscription = this.shop.getProductsByKeyword(input).subscribe(products => this.products = products);
+    this.productsSubscription = this.shop.getProductsByKeyword(input.toLowerCase()).subscribe(products => this.products = products);
   }
 
   toggleMenu() {
@@ -96,6 +96,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.showSearch = true;
     setTimeout(() => {
       this.search.nativeElement.focus();
+      this.ref.detectChanges();
     }, 0);
   }
 
@@ -105,6 +106,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     } else {
       this.isMobile = false;
     }
+  }
+
+  trackByFn(index: number, item: ProductInterface) {
+    return item.id;
   }
 
   navigateToVariant(title: string, id: string) {

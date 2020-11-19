@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -12,6 +12,7 @@ import { ShopService } from '@services/shop/shop.service';
 import { dateToHrMin, mergeDateTime } from '@utils/datetime';
 import { CatalogTypeApi } from '@models/Common';
 import { ShopInterface } from '@models/Shop';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-voucher-form',
@@ -39,7 +40,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   voucherSubscription: Subscription;
   shopSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private admin: AdminService,
+  constructor(private formbuilder: FormBuilder, private admin: AdminService, private cdr: ChangeDetectorRef,
               private router: Router, private shop: ShopService, private alert: AlertService) {
     this.shopSubscription = this.admin.getCurrentShop().subscribe(sh => this.shopData = sh);
     const voucherId = this.router.url.split('/').pop();
@@ -180,7 +181,10 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       }
 
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       this.handleError(err);
@@ -194,7 +198,10 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       const { voucherId } = this.voucher;
       await this.admin.deleteVoucher(voucherId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.voucherRoute);
     } catch (err) {
       this.handleError(err);
@@ -217,7 +224,10 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       await this.admin.addCatalogToVoucher(this.voucher.id, data);
       this.showModal = false;
       this.modalSuccess = true;
-      setInterval(() => this.modalSuccess = false, 2000);
+      setTimeout(() => {
+        this.modalSuccess = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.handleError(err);
     }

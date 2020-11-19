@@ -60,6 +60,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   private draftSubscription: Subscription;
   private variantsSubscription: Subscription;
   private settingsSubscription: Subscription;
+  private userSubscription: Subscription;
 
   constructor(private formBuilder: FormBuilder, private cart: CartService, private shop: ShopService,
               private auth: AuthService, private router: Router, private alert: AlertService) { }
@@ -74,7 +75,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.shippingForm = this.formBuilder.group(this.addressFormGroup);
     this.clearShippingAddressValidators();
     this.getProducts();
-    this.auth.getCurrentUserStream().subscribe(user => {
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => {
       if (user) {
         if (this.user && user.uid !== this.user.uid) {
           this.router.navigateByUrl(homeRoute);
@@ -100,6 +101,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
     if (this.variantsSubscription && !this.variantsSubscription.closed) {
       this.variantsSubscription.unsubscribe();
+    }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
     }
   }
 
@@ -150,7 +154,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   async onSubmit() {}
 
   getProducts() {
-    this.cart.getProductsFromDraft().subscribe(data => {
+    this.draftSubscription = this.cart.getProductsFromDraft().subscribe(data => {
       if (data) {
         const { draft, variants } = data;
         this.draft = draft;

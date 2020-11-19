@@ -35,6 +35,7 @@ export class AuthService {
   firebase = firebase;
 
   private userSubscription: Subscription;
+  private userDocSubscription: Subscription;
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private http: HttpClient) {
     const { api, db } = environment;
@@ -51,6 +52,9 @@ export class AuthService {
   }
 
   unsubscribeUser() {
+    if (this.userDocSubscription && !this.userDocSubscription.closed) {
+      this.userDocSubscription.unsubscribe();
+    }
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
     }
@@ -81,7 +85,7 @@ export class AuthService {
   }
 
   getUserDocument() {
-    this.getCurrentUserStream().subscribe(user => {
+    this.userSubscription = this.getCurrentUserStream().subscribe(user => {
       if (user) {
         const { uid } = user;
         if (this.userDoc.value && this.userDoc.value.uid === uid) {
@@ -89,7 +93,7 @@ export class AuthService {
         }
         this.unsubscribeUser();
         const userPath = this.dbUsers.doc<UserInterface>(uid);
-        this.userSubscription = getDataFromDocument(userPath).subscribe(userDoc => this.userDoc.next(userDoc));
+        this.userDocSubscription = getDataFromDocument(userPath).subscribe(userDoc => this.userDoc.next(userDoc));
       }
     });
   }

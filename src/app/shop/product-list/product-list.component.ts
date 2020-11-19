@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -6,12 +6,9 @@ import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { IMAGE_L } from '@constants/imageSize';
 import { shopProductRoute } from '@constants/routes';
-import { ValueType } from '@models/Common';
 import { ProductInterface } from '@models/Product';
-import { CatalogType } from '@models/Metadata';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
-import { setThumbnails } from '@utils/media';
-import { setSaleDiscountForProduct } from '@utils/productUtils';
+import { setProducts } from '@utils/productUtils';
 
 @Component({
   selector: 'app-product-list',
@@ -20,43 +17,28 @@ import { setSaleDiscountForProduct } from '@utils/productUtils';
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
-  @Input() id: string | string[];
-  @Input() type: CatalogType = 'product';
-  @Input() limit = 8;
-  @Input() filterProducts: string[] = []; // Product Ids
-  @Output() allProducts = new EventEmitter<ProductInterface & SaleDiscountInterface[]>();
-
   saleDiscounts: SaleDiscountInterface[];
   products: ProductInterface & SaleDiscountInterface[] = [];
   loading = false;
   done = false;
   error = '';
 
-  productListSubscription: Subscription;
-  productsLoadingSubscription: Subscription;
-  productsErrorSubscription: Subscription;
-  productsDoneSubscription: Subscription;
-  saleDiscountSubscription: Subscription;
+  private productListSubscription: Subscription;
+  private productsLoadingSubscription: Subscription;
+  private productsErrorSubscription: Subscription;
+  private productsDoneSubscription: Subscription;
+  private saleDiscountSubscription: Subscription;
 
   constructor(private productService: ProductService, private shop: ShopService, private router: Router) { }
 
   ngOnInit(): void {
     this.getSaleDiscounts();
-    if (this.type === 'product') {
-      this.getProductList();
-      this.getProductsLoading();
-      this.getProductsDone();
-    } else if (this.type === 'collection' && this.id && this.id.length > 0) {
-      this.getProductsByCollectionId();
-    } else if (this.type === 'category' && this.id && this.id.length > 0) {
-      this.getProductsByCategoryId();
-    }
+    this.getProductList();
+    this.getProductsLoading();
+    this.getProductsDone();
   }
 
   ngOnDestroy(): void {
-    if (this.productListSubscription && this.productListSubscription.closed) {
-      this.productListSubscription.unsubscribe();
-    }
     if (this.productsLoadingSubscription && this.productsLoadingSubscription.closed) {
       this.productsLoadingSubscription.unsubscribe();
     }
@@ -71,24 +53,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
     }
   }
 
+  unsubscribeProductList() {
+    if (this.productListSubscription && this.productListSubscription.closed) {
+      this.productListSubscription.unsubscribe();
+    }
+  }
+
   getSaleDiscounts() {
     this.saleDiscountSubscription = this.shop.getSaleDiscounts().subscribe(saleDiscounts => this.saleDiscounts = saleDiscounts);
   }
 
-  getProductsByCollectionId() {
-    const { id, limit } = this;
-    if (typeof id === 'string') { return; }
-    this.productListSubscription = this.shop.getProductsByCollectionIds(id, limit).subscribe(products => this.setProducts(products));
-  }
-
-  getProductsByCategoryId() {
-    const { id, limit } = this;
-    if (Array.isArray(id)) { return; }
-    this.productListSubscription = this.shop.getProductsByCategoryId(id, limit).subscribe(products => this.setProducts(products));
-  }
-
   getProductList() {
-    this.productListSubscription = this.productService.getProductList().subscribe(products => this.setProducts(products));
+    this.unsubscribeProductList();
+    this.productListSubscription = this.productService.getProductList()
+      .subscribe(products => this.products = setProducts(products, IMAGE_L, this.saleDiscounts));
   }
 
   moreProducts() {
@@ -102,36 +80,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   getProductsLoading() {
-    this.productService.isProductsLoading().subscribe(loading => this.loading = loading);
-  }
-
-  setProducts(products?: ProductInterface[]) {
-    if (!products || products.length === 0) {
-      this.products = [];
-    } else if (products.length > 0) {
-      this.products = products.map(product => {
-        if (!product) { return; }
-        if (this.filterProducts.includes(product.id)) {
-          return;
-        }
-        const { id, images, price, name } = product;
-        const thumbnails = setThumbnails(images, name, IMAGE_L);
-        let discountValue: number;
-        let discountType: ValueType;
-        if (this.saleDiscounts) {
-          const productDiscount = setSaleDiscountForProduct(this.saleDiscounts, product);
-          discountType = productDiscount.discountType;
-          discountValue = productDiscount.discountValue;
-        }
-        return {
-          id, price, name,
-          images: thumbnails,
-          value: discountValue,
-          valueType: discountType
-        };
-      }).filter(e => e);
-    }
-    this.allProducts.emit(this.products);
+    this.productsLoadingSubscription = this.productService.isProductsLoading().subscribe(loading => this.loading = loading);
   }
 
   trackByFn(index: number, item: ProductInterface) {

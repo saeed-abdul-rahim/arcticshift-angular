@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
@@ -19,6 +19,7 @@ import { countryAlphaList } from '@utils/countryAlphaList';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { isProductAvailable } from '@utils/productUtils';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-cart',
@@ -57,10 +58,10 @@ export class CartComponent implements OnInit, OnDestroy {
   private saleDiscountSubscription: Subscription;
 
   constructor(private cart: CartService, private shop: ShopService, private router: Router,
-              private alert: AlertService, private formBuilder: FormBuilder) { }
+              private alert: AlertService, private formBuilder: FormBuilder, private ref: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.cart.getProductsFromDraft().subscribe(data => {
+    this.draftSubscription = this.cart.getProductsFromDraft().subscribe(data => {
       if (data) {
         const { draft, variants } = data;
         this.draft = draft;
@@ -116,7 +117,10 @@ export class CartComponent implements OnInit, OnDestroy {
     try {
       await this.shop.addVoucher(orderId, code);
       this.voucherSuccess = true;
-      setInterval(() => this.voucherSuccess = false, 2000);
+      setTimeout(() => {
+        this.voucherSuccess = false;
+        this.ref.detectChanges();
+      }, 2000);
     } catch (err) {
       this.handleError(err);
     }
@@ -148,7 +152,10 @@ export class CartComponent implements OnInit, OnDestroy {
       try {
         await this.shop.updateCartVariants(orderId, { variants });
         this.updateSuccess = true;
-        setInterval(() => this.updateSuccess = false, 2000);
+        setTimeout(() => {
+          this.updateSuccess = false;
+          this.ref.detectChanges();
+        }, 2000);
       } catch (err) {
         this.handleError(err);
       }

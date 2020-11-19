@@ -19,6 +19,7 @@ import { editorConfig } from '@settings/editorConfig';
 import { checkImage, getSmallestThumbnail } from '@utils/media';
 import { isBothArrEqual } from '@utils/arrUtils';
 import { inOut } from '@animations/inOut';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-category-form',
@@ -198,7 +199,10 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       }
 
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       this.handleError(err);
@@ -213,7 +217,10 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       const { categoryId } = this.category;
       await this.admin.deleteCategory(categoryId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(categoryRoute);
     } catch (err) {
       this.handleError(err);

@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 import { inOut } from '@animations/inOut';
 import { Alert } from '@services/alert/Alert';
 import { AlertService } from '@services/alert/alert.service';
-import { Subscription } from 'rxjs/internal/Subscription';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-alert',
@@ -15,12 +16,15 @@ export class AlertComponent implements OnInit, OnDestroy {
   alert: Alert;
   alertSubscription: Subscription;
 
-  constructor(private alertService: AlertService) { }
+  constructor(private alertService: AlertService, private ref: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.alertSubscription = this.alertService.onAlert().subscribe(alt => {
       this.alert = alt;
-      setInterval(() => this.removeAlert(), 3000);
+      setTimeout(() => {
+        this.removeAlert();
+        this.ref.detectChanges();
+      }, 3000);
     });
   }
 

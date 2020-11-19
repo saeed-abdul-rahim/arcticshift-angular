@@ -25,12 +25,15 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   faEllipsisV = faEllipsisV;
   edit = false;
   trackingLoading = false;
+  refundLoading = false;
   totalQuantity = 0;
   selectedWarehouseId: string;
   loadingWarehouseId = '';
   showTrackingModal = false;
+  showRefundModal = false;
   editTrackingModal = false;
   trackingCode = '';
+  refundAmount: number;
 
   fullfillRoute = FULLFILL;
 
@@ -48,6 +51,7 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   private orderSubscription: Subscription;
   private warehouseSubscription: Subscription;
   private settingsSubscription: Subscription;
+  balanceAmount: number;
 
   constructor(private admin: AdminService, private shop: ShopService, private router: Router, private alert: AlertService) { }
 
@@ -103,6 +107,10 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleRefundModal() {
+    this.showRefundModal = true;
+  }
+
   getTrackingId(warehouseId: string) {
     const { fullfilled } = this.order;
     return fullfilled.find(w => w.warehouseId === warehouseId)?.trackingId;
@@ -133,11 +141,23 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     this.trackingLoading = false;
   }
 
+  async refund() {
+    this.refundLoading = true;
+    try {
+      await this.admin.refund(this.order.id, this.refundAmount);
+      this.showRefundModal = false;
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.refundLoading = false;
+  }
+
   private getOrderById(orderId: string) {
     this.orderSubscription = this.admin.getOrderById(orderId).subscribe(order => {
       this.order = order;
       if (order) {
         this.getTotalQuantity();
+        this.calculateBalance();
         const { data } = order;
         const { productsData } = data;
         this.getUnFullfilledProducts([...productsData]);
@@ -183,6 +203,14 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     } catch (err) {
       this.handleError(err);
     }
+  }
+
+  private calculateBalance() {
+    const { total, capturedAmount, payment } = this.order;
+    const balance = total - capturedAmount;
+    const refundData = payment.filter(p => p.type === 'refund');
+    const refund = refundData.map(p => p.amount).reduce((acc, curr) => acc + curr, 0);
+    this.balanceAmount = balance - refund;
   }
 
   private getVariantFullfilledQuantity(variantId: string, warehouseId?: string) {

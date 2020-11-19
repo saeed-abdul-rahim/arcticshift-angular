@@ -16,11 +16,12 @@ import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
 import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
-import { Observable } from 'rxjs';
 import { ShippingInterface, ShippingRateInterface } from '@models/Shipping';
 import { DbService } from '@services/db/db.service';
 import { CatalogTypeApi } from '@models/Common';
 import { OrderInterface } from '@models/Order';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable()
 export class AdminService {
@@ -43,6 +44,7 @@ export class AdminService {
   private dbAnalytics: AngularFirestoreCollection;
 
   private user: User;
+  private userSubscription: Subscription;
 
   constructor(private req: RequestService, private dbS: DbService, private authService: AuthService) {
     const { api, db } = environment;
@@ -82,6 +84,12 @@ export class AdminService {
 
     this.dbAnalytics = this.dbS.db.collection(analytics);
     this.dbShop = this.dbS.db.collection(shops).doc(shopId);
+  }
+
+  destroy() {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   async createProduct(data: ProductInterface) {
@@ -579,6 +587,15 @@ export class AdminService {
     }
   }
 
+  async refund(orderId: string, amount: number) {
+    const { apiOrder } = this;
+    try {
+      return await this.req.patch(`${apiOrder}/${orderId}/refund`, { data: { amount } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   getCurrentShop() {
     return getDataFromDocument(this.dbShop);
   }
@@ -666,6 +683,6 @@ export class AdminService {
   }
 
   private getCurrentUser() {
-    this.authService.getCurrentUserStream().subscribe(user => this.user = user);
+    this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => this.user = user);
   }
 }

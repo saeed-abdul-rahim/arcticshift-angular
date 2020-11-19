@@ -14,6 +14,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AlertService } from '@services/alert/alert.service';
 import { ShopInterface } from '@models/Shop';
+import { setTimeout } from '@utils/setTimeout';
 
 type ListType = 'product' | 'variant';
 
@@ -154,7 +155,10 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
         }
       }
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.handleError(err);
     }
@@ -167,7 +171,10 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
       const { productTypeId } = this.productType;
       await this.admin.deleteProductType(productTypeId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(productTypeRoute);
     } catch (err) {
       this.handleError(err);

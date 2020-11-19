@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AdminService } from '@services/admin/admin.service';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-customer-form',
@@ -16,7 +17,7 @@ export class CustomerFormComponent implements OnInit {
 
   addCustomerForm: FormGroup;
 
-  constructor(private formbuilder: FormBuilder, private adminService: AdminService) { }
+  constructor(private formbuilder: FormBuilder, private adminService: AdminService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.addCustomerForm = this.formbuilder.group({});
@@ -47,7 +48,10 @@ export class CustomerFormComponent implements OnInit {
       }
 
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       console.log(err);

@@ -1,6 +1,6 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IMAGE_SM, IMAGE_XL } from '@constants/imageSize';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IMAGE_L, IMAGE_SM, IMAGE_XL } from '@constants/imageSize';
 import { AttributeJoinInterface } from '@models/Attribute';
 import { Content, ObjNumber, ObjString } from '@models/Common';
 import { ProductInterface } from '@models/Product';
@@ -14,7 +14,9 @@ import { AlertService } from '@services/alert/alert.service';
 import { getIds } from '@utils/arrUtils';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { getProductDiscount, getSaleDiscountForProduct } from '@utils/saleDiscount';
-import { isProductAvailable } from '@utils/productUtils';
+import { isProductAvailable, setProducts } from '@utils/productUtils';
+import { setTimeout } from '@utils/setTimeout';
+import { shopProductRoute } from '@constants/routes';
 
 @Component({
   selector: 'app-variant',
@@ -33,6 +35,9 @@ export class VariantComponent implements OnInit, OnDestroy {
   cartLoading = false;
   cartSuccess = false;
   available = false;
+  variantInDraft = false;
+
+  limit = 8;
 
   quantity = 1;
   price: number;
@@ -50,32 +55,38 @@ export class VariantComponent implements OnInit, OnDestroy {
   product: ProductInterface;
   variants: VariantInterface[] = [];
   variant: VariantInterface;
-  attributes: AttributeJoinInterface[];
+  attributes: AttributeJoinInterface[] = [];
   saleDiscounts: SaleDiscountInterface[] = [];
-  filterList: string[] = [];
+  filteredAttributes: AttributeJoinInterface[] = [];
+  availableAttributes: string[] = [];
 
-  draftSubscription: Subscription;
-  productSubscription: Subscription;
-  variantSubscription: Subscription;
-  productTypeSubscription: Subscription;
-  attributeSubscription: Subscription;
-  saleDiscountSubscription: Subscription;
+  categoryProducts: ProductInterface & SaleDiscountInterface[];
+  collectionProducts: ProductInterface & SaleDiscountInterface[];
+  filteredProductIds: string[] = [];
 
-  constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService,
-              private cart: CartService, private alert: AlertService) {
-    const params = this.route.snapshot.paramMap;
-    const title = params.get('title');
-    const id = params.get('id');
-    this.seo.updateTitle(title);
-    this.seo.updateOgUrl(this.route.snapshot.url.join('/'));
-    this.getProduct(id);
+  private draftSubscription: Subscription;
+  private productSubscription: Subscription;
+  private categorySubscription: Subscription;
+  private collectionSubscription: Subscription;
+  private variantSubscription: Subscription;
+  private productTypeSubscription: Subscription;
+  private attributeSubscription: Subscription;
+  private saleDiscountSubscription: Subscription;
+  private settingsSubscription: Subscription;
+  private routeSubscription: Subscription;
+
+  constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService, private router: Router,
+              private cart: CartService, private alert: AlertService, private ref: ChangeDetectorRef) {
+    this.routeSubscription = this.route.params.subscribe(par => {
+      this.initialize();
+    });
   }
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
     this.getSaleDiscounts();
     this.getDraft();
-    this.shop.getGeneralSettings().subscribe(generalSettings => {
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(generalSettings => {
       if (generalSettings) {
         const { currency, accentColor } = generalSettings;
         this.currency = currency;
@@ -85,8 +96,36 @@ export class VariantComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.draftSubscription && !this.draftSubscription.closed) {
+      this.draftSubscription.unsubscribe();
+    }
+    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
+      this.saleDiscountSubscription.unsubscribe();
+    }
+    if (this.routeSubscription && !this.routeSubscription.closed) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
+    }
+  }
+
+  initialize() {
+    this.unsubscribeProducts();
+    const params = this.route.snapshot.paramMap;
+    const title = params.get('title');
+    const id = params.get('id');
+    this.seo.updateTitle(title);
+    this.seo.updateOgUrl(this.route.snapshot.url.join('/'));
+    this.getProduct(id);
+  }
+
+  unsubscribeProducts() {
     if (this.productSubscription && !this.productSubscription.closed) {
       this.productSubscription.unsubscribe();
+    }
+    if (this.productTypeSubscription && !this.productTypeSubscription.closed) {
+      this.productTypeSubscription.unsubscribe();
     }
     if (this.variantSubscription && !this.variantSubscription.closed) {
       this.variantSubscription.unsubscribe();
@@ -94,11 +133,11 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (this.attributeSubscription && !this.attributeSubscription.closed) {
       this.attributeSubscription.unsubscribe();
     }
-    if (this.draftSubscription && !this.draftSubscription.closed) {
-      this.draftSubscription.unsubscribe();
+    if (this.categorySubscription && !this.categorySubscription.closed) {
+      this.categorySubscription.unsubscribe();
     }
-    if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
-      this.saleDiscountSubscription.unsubscribe();
+    if (this.collectionSubscription && !this.collectionSubscription.closed) {
+      this.collectionSubscription.unsubscribe();
     }
   }
 
@@ -129,7 +168,11 @@ export class VariantComponent implements OnInit, OnDestroy {
         }]
       });
       this.cartSuccess = true;
-      setInterval(() => this.cartSuccess = false, 2000);
+      setTimeout(() => {
+        this.cartSuccess = false;
+        this.ref.detectChanges();
+      }, 2000);
+      this.hasVariantInDraft();
     } catch (err) {
       this.handleError(err);
     }
@@ -150,6 +193,7 @@ export class VariantComponent implements OnInit, OnDestroy {
           this.draftVariantQuantity = draftVariantQuantity;
           this.quantity = this.draftVariantQuantity[this.variant.id];
         }
+        this.hasVariantInDraft();
       }
     });
   }
@@ -159,7 +203,7 @@ export class VariantComponent implements OnInit, OnDestroy {
     this.productSubscription = this.shop.getProductById(id).subscribe(product => {
       this.productLoading = false;
       if (product) {
-        const { productId, productTypeId, description, name, images } = product;
+        const { productId, productTypeId, description, name, images, collectionId, categoryId } = product;
         this.product = product;
         this.getProductType(productTypeId);
         if (images && images.length > 0) {
@@ -169,6 +213,8 @@ export class VariantComponent implements OnInit, OnDestroy {
         this.seo.updateTitle(name);
         this.seo.updateDescription(description);
         this.getVariantsByProduct(productId);
+        this.getProductsByCollectionId(collectionId);
+        this.getProductsByCategoryId(categoryId);
       }
     }, error => this.handleError(error.message));
   }
@@ -186,6 +232,15 @@ export class VariantComponent implements OnInit, OnDestroy {
       this.variantLoading = false;
       if (variants) {
         this.variants = variants;
+        this.isAttributeAvailable();
+        const variantAttributeValueIds = variants.map(variant => {
+          if (variant.attributes) {
+            return Object.keys(variant.attributes).map(attributeId => variant.attributes[attributeId]);
+          } else {
+            return undefined;
+          }
+        }).filter(e => e);
+        this.availableAttributes = [].concat(...variantAttributeValueIds);
         if (!this.variant || this.variant.id === variants[0].id) {
           this.setVariant(variants[0]);
         }
@@ -234,6 +289,7 @@ export class VariantComponent implements OnInit, OnDestroy {
     this.attributeSubscription = this.shop.getAttributeAndValuesByIds(attributeIds).subscribe(attributes => {
       this.attributesLoading = false;
       this.attributes = attributes;
+      this.isAttributeAvailable();
       const attributeOptions = attributes
         .map(attribute => attribute.id)
         .reduce((m, v) => {
@@ -247,9 +303,39 @@ export class VariantComponent implements OnInit, OnDestroy {
     }, error => this.handleError(error.message));
   }
 
+  isAttributeAvailable() {
+    this.filteredAttributes = this.attributes.map(attribute => {
+      const { attributeValues } = attribute;
+      attribute.attributeValues = attributeValues.map(value => {
+        if (!this.availableAttributes.includes(value.id)) {
+          return undefined;
+        }
+        return value;
+      }).filter(e => e);
+      return attribute;
+    });
+  }
+
   changeAttribute(attributeId: string, valueId: string) {
     const variant = this.variants.find(v => v.attributes?.[attributeId] === valueId);
     this.setVariant(variant);
+  }
+
+  getProductsByCollectionId(id: string[]) {
+    const { limit } = this;
+    this.collectionSubscription = this.shop.getProductsByCollectionIds(id, limit).subscribe(products => {
+      const filteredProducts = products.filter(p => p.productId !== this.product.id);
+      this.collectionProducts = setProducts(filteredProducts, IMAGE_L, this.saleDiscounts);
+      this.productsInCollection(this.collectionProducts);
+    });
+  }
+
+  getProductsByCategoryId(id: string) {
+    const { limit } = this;
+    this.categorySubscription = this.shop.getProductsByCategoryId(id, limit).subscribe(products => {
+      const filteredProducts = products.filter(p => !this.filteredProductIds.includes(p.id));
+      this.categoryProducts = setProducts(filteredProducts, IMAGE_L, this.saleDiscounts);
+    });
   }
 
   setCarouselImages(images: Content[]) {
@@ -277,14 +363,25 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (variant && draftVariantQuantity) {
       const variantIds = Object.keys(draftVariantQuantity).map(key => key);
       if (draftVariantQuantity[variant.id] && variantIds.includes(variant.id)) {
-        return true;
+        this.variantInDraft = true;
       }
     }
-    return false;
+    this.variantInDraft = false;
   }
 
-  productsInCollection(productsInCollection: ProductInterface[]) {
-    this.filterList = [this.product.id, ...getIds(productsInCollection)];
+  productsInCollection(productsInCollection: ProductInterface & SaleDiscountInterface[]) {
+    this.filteredProductIds = [this.product.id, ...getIds(productsInCollection)];
+  }
+
+  navigateToVariant(title: string, id: string) {
+    const routeTitle = encodeURIComponent(title.split(' ').join('-'));
+    this.router.navigateByUrl(`${shopProductRoute}/${routeTitle}/${id}`);
+    const scrollElem = document.querySelector('#productView');
+    scrollElem.scrollIntoView();
+  }
+
+  trackByFn(index: number, item: ProductInterface) {
+    return item.id;
   }
 
   handleError(err: any) {

@@ -22,6 +22,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { getFormGroupArrayValues } from '@utils/formUtils';
 import { AlertService } from '@services/alert/alert.service';
 import { checkImage, getUploadPreviewImages } from '@utils/media';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-product-form',
@@ -214,7 +215,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.productTypeDanger = false;
       this.priceDanger = false;
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       this.handleError(err);
@@ -228,7 +232,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       const { productId } = this.product;
       await this.admin.deleteProduct(productId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.productRoute);
     } catch (err) {
       this.handleError(err);

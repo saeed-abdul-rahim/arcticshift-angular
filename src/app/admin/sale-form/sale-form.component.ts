@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ADD, saleDiscountRoute } from '@constants/routes';
@@ -11,6 +11,7 @@ import { AlertService } from '@services/alert/alert.service';
 
 import { ShopService } from '@services/shop/shop.service';
 import { dateToHrMin, mergeDateTime } from '@utils/datetime';
+import { setTimeout } from '@utils/setTimeout';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
@@ -39,7 +40,7 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   saleSubscription: Subscription;
   shopSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private admin: AdminService,
+  constructor(private formbuilder: FormBuilder, private admin: AdminService, private cdr: ChangeDetectorRef,
               private router: Router, private shop: ShopService, private alert: AlertService) {
     this.shopSubscription = this.admin.getCurrentShop().subscribe(sh => this.shopData = sh);
     const saleId = this.router.url.split('/').pop();
@@ -130,7 +131,10 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       }
 
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       console.log(err);
@@ -144,7 +148,10 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       const { saleDiscountId } = this.saleDiscount;
       await this.admin.deleteSale(saleDiscountId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.saleRoute);
     } catch (err) {
       console.log(err);
@@ -167,7 +174,10 @@ export class SaleFormComponent implements OnInit, OnDestroy {
       await this.admin.addCatalogToSaleDiscount(this.saleDiscount.id, data);
       this.showModal = false;
       this.modalSuccess = true;
-      setInterval(() => this.modalSuccess = false, 2000);
+      setTimeout(() => {
+        this.modalSuccess = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.handleError(err);
     }

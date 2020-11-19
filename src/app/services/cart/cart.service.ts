@@ -21,6 +21,7 @@ export class CartService {
   private draftProducts = new BehaviorSubject<{ draft: OrderInterface, variants: VariantInterface[] }>(null);
   private draftSubscription: Subscription;
   private draftProductsSubscription: Subscription;
+  private userSubscription: Subscription;
 
   draft$ = this.draft.asObservable();
   draftLoading$ = this.draftLoading.asObservable();
@@ -34,6 +35,9 @@ export class CartService {
   destroy() {
     this.unsubscribeDrafts();
     this.unsubscribeDraftProducts();
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   unsubscribeDrafts() {
@@ -112,7 +116,7 @@ export class CartService {
   }
 
   private getCurrentUser() {
-    this.auth.getCurrentUserStream().subscribe(user => {
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => {
       if (user) {
         this.user = user;
         this.getDraftOrdersDb();

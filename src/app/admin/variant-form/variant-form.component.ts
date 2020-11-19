@@ -15,6 +15,7 @@ import { getFormGroupArrayValues } from '@utils/formUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
 import { AlertService } from '@services/alert/alert.service';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-variant-form',
@@ -99,6 +100,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   }
 
   initialize() {
+    this.ngOnDestroy();
     const { url } = this.router;
     const urlSplit = url.split('/');
     const productId = urlSplit[urlSplit.indexOf(VARIANT) - 1];
@@ -235,7 +237,10 @@ export class VariantFormComponent implements OnInit, OnDestroy {
         }
       }
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       this.handleError(err);
@@ -249,7 +254,10 @@ export class VariantFormComponent implements OnInit, OnDestroy {
       const { variantId } = this.variant;
       await this.admin.deleteVariant(variantId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.variantRoute);
     } catch (err) {
       this.handleError(err);

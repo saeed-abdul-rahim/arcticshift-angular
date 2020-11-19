@@ -1,5 +1,8 @@
 <div class="container flex flex-wrap justify-center text-gray-700">
-    <div class="flex flex-wrap justify-center w-screen md:w-7/12">
+    <div class="absolute h-full w-full bg-white opacity-75 z-10 flex justify-center" *ngIf="productLoading">
+        <app-spinner class="mt-56" [size]="5"></app-spinner>
+    </div>
+    <div class="flex flex-wrap justify-center w-screen md:w-7/12" id="productView">
         <lib-ngx-image-zoom [thumbImage]="selectedThumbnail" [fullImage]="selectedImage" [enableLens]="true"
             [circularLens]="true"></lib-ngx-image-zoom>
         <carousel class="pt-3" style="width: {{ innerWidth > 767 ? '75%' : '100%' }};" *ngIf="carouselImages.length > 0"
@@ -29,7 +32,7 @@
         <div class="pt-4">
             <div class="items-center" *ngIf="attributes">
                 <div class="relative flex flex-wrap w-full py-2 max-w-full flex-grow flex-1"
-                    *ngFor="let attribute of attributes; let i=index">
+                    *ngFor="let attribute of filteredAttributes; let i=index">
                     <div class="w-full md:w-4/12 m-auto font-light">{{ attribute.name }}</div>
                     <div class="w-full md:w-8/12">
                         <ng-select [searchable]="false" [clearable]="false"
@@ -46,9 +49,9 @@
         </div>
         <div class="pt-4">
             <app-button *ngIf="available" (click)="addToCart()" [loading]="cartLoading"
-                [success]="cartSuccess || hasVariantInDraft()"
+                [success]="cartSuccess || variantInDraft"
                 [fullWidth]="true" [color]="'gray'" [dark]="true"
-                [label]="hasVariantInDraft() ? 'Update Bag' : 'Add to Bag'">
+                [label]="variantInDraft ? 'Update Bag' : 'Add to Bag'">
             </app-button>
         </div>
     </div>
@@ -56,9 +59,17 @@
         <div class="text-3xl font-light py-3 px-2">
             Related Products
         </div>
-        <div>
-            <app-product-list [id]="product.collectionId" [type]="'collection'" [filterProducts]="[product.id]" (allProducts)="productsInCollection($event)"></app-product-list>
-            <app-product-list [id]="product.categoryId" [type]="'category'" [filterProducts]="filterList"></app-product-list>
+        <div class="container mx-auto flex items-center flex-wrap pt-4 pb-12 arc-transition" *ngIf="collectionProducts && collectionProducts.length > 0">
+            <app-product-card class="sm:w-6/12 md:w-3/12 cursor-pointer" *ngFor="let product of collectionProducts; trackBy: trackByFn"
+                [id]="product.id" [title]="product.name" [images]="product.images" [price]="product.price"
+                (click)="navigateToVariant(product.name, product.id)" [discountType]="product.valueType"
+                [discountValue]="product.value"></app-product-card>
+        </div>
+        <div class="container mx-auto flex items-center flex-wrap pt-4 pb-12 arc-transition" *ngIf="categoryProducts && categoryProducts.length > 0">
+            <app-product-card class="sm:w-6/12 md:w-3/12 cursor-pointer" *ngFor="let product of categoryProducts; trackBy: trackByFn"
+                [id]="product.id" [title]="product.name" [images]="product.images" [price]="product.price"
+                (click)="navigateToVariant(product.name, product.id)" [discountType]="product.valueType"
+                [discountValue]="product.value"></app-product-card>
         </div>
     </div>
 </div>

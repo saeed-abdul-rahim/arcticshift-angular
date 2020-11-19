@@ -34,6 +34,8 @@ export class ShopService {
   private collectionsSubscription: Subscription;
   private saleDiscountSubscription: Subscription;
   private generalSettingsSubscription: Subscription;
+  private currentSettingsSubscription: Subscription;
+  private userSubscription: Subscription;
 
   private saleDiscounts = new BehaviorSubject<SaleDiscountInterface[]>(null);
   private categories = new BehaviorSubject<CategoryInterface[]>(null);
@@ -154,6 +156,12 @@ export class ShopService {
   destroy(): void {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();
+    }
+    if (this.currentSettingsSubscription && !this.currentSettingsSubscription.closed) {
+      this.currentSettingsSubscription.unsubscribe();
+    }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
     }
     this.unsubscribeCategories();
     this.unsubscribeCollections();
@@ -427,7 +435,7 @@ export class ShopService {
   }
 
   private getCurrentUser() {
-    this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
   }
 
   private async getLocation() {
@@ -441,7 +449,7 @@ export class ShopService {
   }
 
   private async getExchangeRate(currency: string) {
-    this.generalSettings.subscribe(async settings => {
+    this.currentSettingsSubscription = this.generalSettings.subscribe(async settings => {
       if (settings) {
         const baseCurrency = settings.currency;
         if (baseCurrency && baseCurrency !== currency) {

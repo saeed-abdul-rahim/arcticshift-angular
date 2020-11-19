@@ -8,6 +8,7 @@ import { AttributeInterface, AttributeValueInterface } from '@models/Attribute';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-attribute',
@@ -105,7 +106,10 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
         }
       }
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       console.log(err);
@@ -139,7 +143,10 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       }
       this.attributeModalSuccess = true;
       this.showModal = false;
-      setTimeout(() => this.attributeModalSuccess = false, 2000);
+      setTimeout(() => {
+        this.attributeModalSuccess = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.attributeModalSuccess = false;
       console.log(err);
@@ -154,7 +161,10 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       const { attributeId } = this.attribute;
       await this.adminService.deleteAttribute(attributeId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.attributeRoute);
     } catch (err) {
       console.log(err);
@@ -169,7 +179,10 @@ export class AttributeFormComponent implements OnInit, OnDestroy {
       await this.adminService.deleteAttributeValue(attributeId, this.selectedAttributeValueId);
       this.attributeModalSuccess = true;
       this.showDeleteModal = false;
-      setTimeout(() => this.attributeModalSuccess = false, 2000);
+      setTimeout(() => {
+        this.attributeModalSuccess = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       console.log(err);
     }

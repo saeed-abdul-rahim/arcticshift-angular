@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { ShopService } from '@services/shop/shop.service';
 import { VariantInterface } from '@models/Variant';
 import { isBothArrEqual, uniqueArr } from '@utils/arrUtils';
 import { WarehouseInterface } from '@models/Warehouse';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-fullfill-form',
@@ -35,7 +36,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
   variantSubscription: Subscription;
   warehouseSubscription: Subscription;
 
-  constructor(private admin: AdminService, private shop: ShopService,
+  constructor(private admin: AdminService, private shop: ShopService, private cdr: ChangeDetectorRef,
               private router: Router, private alert: AlertService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -87,7 +88,10 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
       const fullfilled = [].concat(...fullfillVariantLevel);
       await this.admin.fullfillOrder(this.order.id, { fullfilled });
       this.success = true;
-      setInterval(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.orderRoute);
     } catch (err) {
       this.handleError(err);

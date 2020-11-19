@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ADMIN, TAX } from '@constants/routes';
@@ -7,6 +7,7 @@ import { TaxInterface, taxTypes } from '@models/Tax';
 import { AdminService } from '@services/admin/admin.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-tax-form',
@@ -34,7 +35,7 @@ export class TaxFormComponent implements OnInit, OnDestroy {
 
   taxSubscription: Subscription;
 
-  constructor(private formbuilder: FormBuilder, private router: Router,
+  constructor(private formbuilder: FormBuilder, private router: Router, private cdr: ChangeDetectorRef,
               private adminService: AdminService, private shopService: ShopService) {
     const taxId = this.router.url.split('/').pop();
     if (taxId !== 'add') {
@@ -111,7 +112,10 @@ export class TaxFormComponent implements OnInit, OnDestroy {
         }
       }
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch (err) {
       this.success = false;
       console.log(err);
@@ -125,7 +129,10 @@ export class TaxFormComponent implements OnInit, OnDestroy {
       const { taxId } = this.tax;
       await this.adminService.deleteTax(taxId);
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setTimeout(() => {
+        this.success = false;
+        this.cdr.detectChanges();
+      }, 2000);
       this.router.navigateByUrl(this.taxRoute);
     } catch (err) {
       console.log(err);

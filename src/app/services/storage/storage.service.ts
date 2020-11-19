@@ -5,6 +5,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { ContentType } from '@models/Common';
 import { Metadata } from '@models/Metadata';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Injectable()
 export class StorageService {
@@ -17,8 +18,16 @@ export class StorageService {
   downloadURL$: Observable<any>;
   fileName: string;
 
+  private userSubscription: Subscription;
+
   constructor(private afStorage: AngularFireStorage, private auth: AuthService) {
-    this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+  }
+
+  destroy() {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   upload(file: File, fileType: ContentType, customMetadata: Metadata) {

@@ -87,6 +87,8 @@ export type AuthType = {
 export interface CommonInterface extends TimestampInterface {
     id?: string;
     status?: Status;
+    // NOT FROM DB
+    disabled?: boolean;
 }
 
 export class Timestamp implements TimestampInterface {

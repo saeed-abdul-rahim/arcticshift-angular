@@ -242,10 +242,9 @@ export class ListPageComponent implements OnInit, OnDestroy {
       this.heading = 'Orders';
       this.label = '';
       this.getData(orders, {
-        orderNo: 'Order No.',
+        orderId: 'Order Id',
         customerName: 'Customer Name',
         orderStatus: 'Order Status',
-        orderId: 'No. of Orders',
         total: 'Total'
       }, [{ field: 'orderStatus', type: '!=', value: 'draft'}]);
       this.getPageLength(orders, this.dataLengthKey);
@@ -258,8 +257,8 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         email: 'Email',
         phone: 'Phone',
-        orderId: 'No. of Orders'
-      });
+        totalOrders: 'No. of Orders'
+      }, [{ field: 'totalOrders', type: '>', value: 0 }]);
       this.getPageLength(users, this.dataLengthKey);
 
     } else if (urlSplit.includes(STAFF)) {
@@ -292,6 +291,8 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.displayedColumns = [];
     this.dataKeys = [];
+    this.page.destroy();
+    this.unsubscribeData();
     this.page.init(path, {
       orderBy: { field: 'createdAt', direction: 'desc' },
       where: [...where],

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 
 import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
 import { inOut } from '@animations/inOut';
+import { setTimeout } from '@utils/setTimeout';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,8 @@ export class LoginComponent implements OnInit {
 
   currentDate = new Date();
 
-  constructor(private formbuilder: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private formbuilder: FormBuilder, private auth: AuthService,
+              private router: Router, private cdr: ChangeDetectorRef) {
     this.isShopUser().then(user => {
       if (user) {
         this.toDashboard();
@@ -68,7 +70,10 @@ export class LoginComponent implements OnInit {
       const isShopUser = await this.isShopUser();
       if (isShopUser) {
         this.success = true;
-        setTimeout(() => this.success = false, 2000);
+        setTimeout(() => {
+          this.success = false;
+          this.cdr.detectChanges();
+        }, 2000);
         this.toDashboard();
       } else {
         this.emailDanger = true;
