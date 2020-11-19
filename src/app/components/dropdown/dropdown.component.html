@@ -3,6 +3,6 @@
         <ng-container [ngTemplateOutlet]="buttonTemplate"></ng-container>
     </div>
     <div class="arc-dropdown-panel arc-dropdown-panel-items" [ngClass]="rightAligned ? 'right-0' : ''" *ngIf="open">
-        <ng-container [ngTemplateOutlet]="bodyTemplate"></ng-container>
+        <ng-container *ngTemplateOutlet="bodyTemplate.template || bodyTemplate; context: bodyTemplate.context"></ng-container>
     </div>
 </div>

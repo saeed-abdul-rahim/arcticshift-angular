@@ -18,7 +18,7 @@ import { AlertService } from '@services/alert/alert.service';
 import { countryAlphaList } from '@utils/countryAlphaList';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
-import { isProductAvailable } from '@utils/isProductAvailable';
+import { isProductAvailable } from '@utils/productUtils';
 
 @Component({
   selector: 'app-cart',

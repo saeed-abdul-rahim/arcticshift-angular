@@ -7,10 +7,18 @@
                     <app-card *ngIf="edit && unFullfilledProducts.length > 0" [heading]="'Unfullfilled'"
                         [actions]="unfullfilledActionTemplate" [body]="unfullfilledListTemplate"></app-card>
                     <div *ngFor="let fullfilledWarehouse of fullfilledProducts">
-                        <ng-template #fullfilledCard>
-                            <ng-container *ngTemplateOutlet="fullfilledListTemplate; context: { fullfilledWarehouse: fullfilledWarehouse }"></ng-container>
+                        <ng-template #fullfilledCardBody>
+                            <ng-container
+                                *ngTemplateOutlet="fullfilledListTemplate; context: { fullfilledWarehouse: fullfilledWarehouse }">
+                            </ng-container>
                         </ng-template>
-                        <app-card *ngIf="edit && fullfilledProducts.length > 0" [heading]="'Fullfilled'" [body]="fullfilledCard"></app-card>
+                        <ng-template #fullfilledCardHead>
+                            <ng-container
+                                *ngTemplateOutlet="fullfilledActionTemplate; context: { fullfilledWarehouse: fullfilledWarehouse }">
+                            </ng-container>
+                        </ng-template>
+                        <app-card *ngIf="edit && fullfilledProducts.length > 0" [heading]="'Fullfilled'"
+                            [body]="fullfilledCardBody" [actions]="fullfilledCardHead"></app-card>
                     </div>
                     <app-card *ngIf="edit" [heading]="order.paymentStatus.toUpperCase()" [body]="chargeTemplate">
                     </app-card>
@@ -123,6 +131,37 @@
     </label>
 </ng-template>
 
+<ng-template #fullfilledActionTemplate let-fullfilledWarehouse="fullfilledWarehouse">
+    <div class="relative flex justify-end" *ngIf="loadingWarehouseId === fullfilledWarehouse[0].warehouseId">
+        <app-spinner [size]="3"></app-spinner>
+    </div>
+    <app-dropdown *ngIf="loadingWarehouseId !== fullfilledWarehouse[0].warehouseId" class="flex justify-end"
+        [rightAligned]="true" [buttonTemplate]="fullfilledDropdownButton"
+        [bodyTemplate]="{ template: fullfilledDropdownBody, context: { warehouseId: fullfilledWarehouse[0].warehouseId } }">
+    </app-dropdown>
+</ng-template>
+
+<ng-template #fullfilledDropdownButton>
+    <fa-icon [icon]="faEllipsisV" class="arc-link-button"></fa-icon>
+</ng-template>
+
+<ng-template #fullfilledDropdownBody let-warehouseId="warehouseId">
+    <a class="arc-dropdown-item" (click)="cancelFullfillment(warehouseId)">
+        Cancel fullfillment
+    </a>
+</ng-template>
+
+<!-- MODAL TEMPLATES -->
+
+<app-modal [(showModal)]="showTrackingModal" [loading]="trackingLoading"
+    [heading]="editTrackingModal ? 'Edit' + ' Tracking' : 'Add' + ' Tracking'" [size]="'small'"
+    [bodyTemplate]="trackingTemplate" (modalCallback)="addTrackingCode()"></app-modal>
+
+<ng-template #trackingTemplate>
+    <input #trackingInput type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Code"
+        [(ngModel)]="trackingCode" (keyup)="trackingCode = trackingInput.value" />
+</ng-template>
+
 <!-- TABLE TEMPLATES -->
 
 <ng-template #unfullfilledListTemplate>
@@ -130,9 +169,27 @@
 </ng-template>
 
 <ng-template #fullfilledListTemplate let-fullfilledWarehouse="fullfilledWarehouse">
-    <ng-container *ngTemplateOutlet="productListTable; context:{ productsSource: fullfilledWarehouse }"></ng-container>
-    <div class="p-5">
-        Fullfilled from: {{ warehouses && getWarehouseName(fullfilledWarehouse[0].warehouseId) }}
+    <div class="relative">
+        <div class="absolute w-full h-full bg-white opacity-75 flex justify-center items-center"
+            *ngIf="loadingWarehouseId === fullfilledWarehouse[0].warehouseId">
+            <app-spinner [size]="5"></app-spinner>
+        </div>
+        <ng-container *ngTemplateOutlet="productListTable; context:{ productsSource: fullfilledWarehouse }">
+        </ng-container>
+        <div class="py-3 px-5">
+            Fullfilled from: {{ warehouses && getWarehouseName(fullfilledWarehouse[0].warehouseId) }}
+        </div>
+        <div class="flex border-t border-gray-400 justify-between py-2 px-5">
+            <label>
+                <span *ngIf="getTrackingId(fullfilledWarehouse[0].warehouseId)">
+                    Tracking ID: {{ getTrackingId(fullfilledWarehouse[0].warehouseId) }}
+                </span>
+            </label>
+            <label class="arc-link-button" (click)="toggleTrackingModal(fullfilledWarehouse[0].warehouseId)">
+                <span *ngIf="getTrackingId(fullfilledWarehouse[0].warehouseId)">Edit</span>
+                <span *ngIf="!getTrackingId(fullfilledWarehouse[0].warehouseId)">Add Tracking Code</span>
+            </label>
+        </div>
     </div>
 </ng-template>
 

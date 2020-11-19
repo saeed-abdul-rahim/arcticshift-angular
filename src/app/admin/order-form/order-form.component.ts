@@ -3,6 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import cloneDeep from 'lodash/cloneDeep';
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
+
 import { ADD, FULLFILL } from '@constants/routes';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { OrderInterface, ProductData } from '@models/Order';
@@ -20,8 +22,15 @@ import { WarehouseInterface } from '@models/Warehouse';
 })
 export class OrderFormComponent implements OnInit, OnDestroy {
 
+  faEllipsisV = faEllipsisV;
   edit = false;
+  trackingLoading = false;
   totalQuantity = 0;
+  selectedWarehouseId: string;
+  loadingWarehouseId = '';
+  showTrackingModal = false;
+  editTrackingModal = false;
+  trackingCode = '';
 
   fullfillRoute = FULLFILL;
 
@@ -78,6 +87,50 @@ export class OrderFormComponent implements OnInit, OnDestroy {
 
   getWarehouseName(warehouseId: string) {
     return this.warehouses.find(w => w.warehouseId === warehouseId)?.name;
+  }
+
+  toggleTrackingModal(warehouseId: string) {
+    if (warehouseId) {
+      this.showTrackingModal = true;
+      const trackingId = this.getTrackingId(warehouseId);
+      this.selectedWarehouseId = warehouseId;
+      if (trackingId) {
+        this.editTrackingModal = true;
+        this.trackingCode = trackingId;
+      } else {
+        this.editTrackingModal = false;
+      }
+    }
+  }
+
+  getTrackingId(warehouseId: string) {
+    const { fullfilled } = this.order;
+    return fullfilled.find(w => w.warehouseId === warehouseId)?.trackingId;
+  }
+
+  async cancelFullfillment(warehouseId: string) {
+    this.loadingWarehouseId = warehouseId;
+    try {
+      await this.admin.cancelFullfillment(this.order.id, warehouseId);
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.loadingWarehouseId = '';
+  }
+
+  async addTrackingCode() {
+    this.trackingLoading = true;
+    try {
+      await this.admin.addOrderTracking(this.order.id, {
+        warehouseId: this.selectedWarehouseId,
+        trackingCode: this.trackingCode
+      });
+      this.showTrackingModal = false;
+      this.trackingCode = '';
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.trackingLoading = false;
   }
 
   private getOrderById(orderId: string) {

@@ -214,7 +214,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         await this.admin.createShippingRate(setData);
       }
       this.success = true;
-      setTimeout(() => this.success = false, 2000);
+      setInterval(() => this.success = false, 2000);
       this.showRateModal = false;
       this.resetRateForm();
     } catch (err) {
@@ -246,7 +246,9 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         shippingId: this.shipping.shippingId
       });
       this.showCountryModal = false;
-    } catch (err) { }
+    } catch (err) {
+      this.handleError(err);
+    }
     this.loading = false;
   }
 
@@ -257,7 +259,9 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
         countries: this.selectedCountries.filter(country => country !== alpha3),
         shippingId: this.shipping.shippingId
       });
-    } catch (err) {}
+    } catch (err) {
+      this.handleError(err);
+    }
     this.loading = false;
   }
 

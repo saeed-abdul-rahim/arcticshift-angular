@@ -10,7 +10,7 @@ export class DropdownComponent implements OnInit {
   open = false;
   @Input() rightAligned: boolean;
   @Input() buttonTemplate: TemplateRef<any>;
-  @Input() bodyTemplate: TemplateRef<any>;
+  @Input() bodyTemplate: any;
 
   constructor() { }
 

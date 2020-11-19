@@ -178,11 +178,11 @@
 <!-- TABLES TEMPLATES -->
 
 <ng-template #countriesModalTemplate>
-  <div class="overflow-x-scroll">
+  <div class="overflow-y-scroll">
     <app-spinner class="flex justify-center pt-10" [size]="'5'" *ngIf="loading"></app-spinner>
     <div class="w-full" *ngIf="!loading">
       <div *ngIf="countryAlphaList && countryAlphaList.length === 0" class="data-empty">No data available</div>
-      <div *ngIf="countryAlphaList && countryAlphaList.length > 0" class="relative">
+      <div *ngIf="countryAlphaList && countryAlphaList.length > 0" class="relative max-h-64 overflow-y-scroll">
         <input class="arc-input sticky-input w-full" (keyup)="applyCountryListFilter($event)" placeholder="Search" #input>
         <table mat-table [dataSource]="countriesSource">
 
@@ -254,7 +254,7 @@
 </ng-template>
 
 <ng-template #weightRateTemplate>
-  <div class="w-full overflow-x-scroll">
+  <div class="w-full">
     <div *ngIf="weightBased && weightBased.length === 0" class="data-empty">No data available</div>
     <div *ngIf="weightBased && weightBased.length > 0" class="relative overflow-x-auto scrollbar">
       <table mat-table [dataSource]="weightBasedRateSource">
@@ -300,10 +300,10 @@
 <!-- FORM TEMPLATES -->
 
 <ng-template #rateTemplate>
-  <form class="w-full" [formGroup]="rateForm">
-    <div class="divide-y divide-gray-400">
+  <form class="w-full overflow-y-scroll" [formGroup]="rateForm">
+    <div class="divide-y divide-gray-400 overflow-y-scroll max-h-64 scrollbar">
       <div class="flex flex-wrap items-center">
-        <div class="relative w-full px-1 py-3 max-w-full flex-grow flex-1">
+        <div class="relative w-full px-1 pb-3 max-w-full flex-grow flex-1">
           <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Rate Name"
             [ngClass]="rateFormControls.name.touched && rateFormControls.name.invalid ? 'border-red' : ''"
             formControlName="name" />
@@ -316,7 +316,7 @@
         <div class="flex flex-wrap">
           <div class="relative w-full px-4 pt-3 max-w-full flex-grow flex-1 arc-transition"
             [ngClass]="noValueLimit ? 'pb-3' : ''">
-            <label class="inline-flex w-full">
+            <label class="inline-flex items-center w-full">
               <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" formControlName="noValueLimit"
                 (click)="noValueLimitCheckbox($event)">
               <span class="ml-2 text-gray-700">No Value Limits</span>
@@ -339,12 +339,12 @@
         </div>
       </div>
       <div>
-        <div class="font-semibold py-3">
+        <div class="font-semibold pt-3">
           Rate
         </div>
         <div class="flex flex-wrap">
           <div class="relative w-full px-4 pt-3 max-w-full flex-grow flex-1">
-            <label class="inline-flex w-full">
+            <label class="inline-flex items-center w-full">
               <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" formControlName="freeShipping"
                 (click)="freeShippingCheckbox($event)">
               <span class="ml-2 text-gray-700">Free Shipping</span>

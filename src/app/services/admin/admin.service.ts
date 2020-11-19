@@ -552,6 +552,24 @@ export class AdminService {
     }
   }
 
+  async addOrderTracking(orderId: string, data: { warehouseId: string, trackingCode: string }) {
+    const { apiOrder } = this;
+    try {
+      return await this.req.patch(`${apiOrder}/${orderId}/tracking`, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async cancelFullfillment(orderId: string, warehouseId: string) {
+    const { apiOrder } = this;
+    try {
+      return await this.req.patch(`${apiOrder}/${orderId}/fullfill/cancel`, { data: { warehouseId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async cancelOrder(id: string) {
     const { apiOrder } = this;
     try {
