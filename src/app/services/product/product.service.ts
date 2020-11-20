@@ -9,7 +9,7 @@ import { PaginationService } from '@services/pagination/pagination.service';
 import { AttributeInterface, AttributeJoinInterface } from '@models/Attribute';
 import { ProductCondition, ProductInterface, ProductOrderBy } from '@models/Product';
 import { ProductTypeInterface } from '@models/ProductType';
-import { patchArrObj, uniqueArr } from '@utils/arrUtils';
+import { uniqueArr } from '@utils/arrUtils';
 import { getDataFromCollection } from '@utils/getFirestoreData';
 
 @Injectable()
@@ -102,22 +102,13 @@ export class ProductService {
     }
     const { dbProductsRoute } = this.dbS;
     this.unsubscribeProductList();
-    this.page.destroy();
     this.page.init(dbProductsRoute, {
       where: filters,
       orderBy,
       limit: 1
     });
     this.productListSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
-      if (data && data.length > 0 && this.productList.value.length > 0) {
-        let productList = this.productList.value;
-        productList = patchArrObj(data, productList, 'id');
-        this.productList.next(productList);
-      } else if (data && data.length > 0) {
-        this.productList.next(data);
-      } else if (data && data.length === 0) {
-        this.productList.next([]);
-      }
+      this.productList.next(data);
     },
     err => {
       this.handleError(err);

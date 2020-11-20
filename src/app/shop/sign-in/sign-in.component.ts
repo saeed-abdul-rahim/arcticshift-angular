@@ -6,7 +6,6 @@ import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
 import { countryCallCodes } from '@utils/countryCallCodes';
 import { otpConfig } from '@settings/otpConfig';
-import { CartService } from '@services/cart/cart.service';
 import { ModalService } from '@services/modal/modal.service';
 import { inOutWidth } from '@animations/inOut';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
@@ -45,7 +44,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   private modalSubscription: Subscription;
 
   constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService,
-              private cart: CartService, private modal: ModalService) { }
+              private modal: ModalService) { }
 
   ngOnInit(): void {
     this.locationSubscription = this.shop.getCurrentLocation().subscribe(location => {
@@ -159,7 +158,6 @@ export class SignInComponent implements OnInit, OnDestroy {
         await this.auth.createPhoneUser();
       }
       await this.auth.getUser();
-      this.cart.getDraftOrdersDb();
       this.signedIn.emit(true);
       this.closeModal();
     } catch (err) {

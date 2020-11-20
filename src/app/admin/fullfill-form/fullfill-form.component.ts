@@ -164,7 +164,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
 
   getWarehouseQuantity(variantId: string, warehouseId: string) {
     const variant = this.variants.find(v => v.id === variantId);
-    return variant.warehouseQuantity[warehouseId];
+    return variant.warehouseQuantity[warehouseId] || 0;
   }
 
   getFullfilledQuantity(variantId: string) {
@@ -203,6 +203,9 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
       const { variants } = this.order;
       const orderedVariant = variants.find(v => v.variantId === v.variantId);
       if (quantity > orderedVariant.quantity) {
+        return { incorrect: true };
+      }
+      if (this.getWarehouseQuantity(variantId, warehouseId) === 0 && quantity > 0) {
         return { incorrect: true };
       }
       if (this.getCurrentVariantQty(variantId) > orderedVariant.quantity - this.getFullfilledQuantity(variantId)) {

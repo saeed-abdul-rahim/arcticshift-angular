@@ -16718,3 +16718,12 @@ export type CountryStateType = {
     code: string
     name: string
 };
+
+export function getCountryName(alpha: string, type: 'alpha3' | 'alpha2' = 'alpha3') {
+    const country = countryList.find(c => c[type] === alpha);
+    if (country) {
+        return country.name;
+    } else {
+        return '';
+    }
+}

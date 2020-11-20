@@ -1,11 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -45,8 +42,6 @@ import { OrderFormComponent } from './order-form/order-form.component';
 import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
 
 
-
-
 @NgModule({
   declarations: [
     AdminComponent,
@@ -78,16 +73,12 @@ import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
     MatPaginatorModule,
     ComponentsModule,
     AdminComponentsModule,
-    NgSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FontAwesomeModule,
     AngularEditorModule,
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
   ],
   providers: [
     AdminGuard,

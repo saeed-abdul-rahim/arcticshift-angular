@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Observable } from 'rxjs/internal/Observable';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { tap } from 'rxjs/internal/operators/tap';
 import { scan } from 'rxjs/internal/operators/scan';
 import { environment } from '@environment';
 import { Condition, QueryConfig } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
+import { take } from 'rxjs/operators';
 
 @Injectable()
 export class PaginationService {
@@ -21,7 +21,6 @@ export class PaginationService {
 
   private query: QueryConfig;
 
-  colSubscriptions: Subscription[] = [];
   data: Observable<any>;
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
@@ -35,23 +34,11 @@ export class PaginationService {
     this.dbPath = `${version}/${name}`;
   }
 
-  destroy() {
+  init(path: string, opts?: QueryConfig) {
     this.data = null;
     this._data.next([]);
     this._done.next(false);
     this._loading.next(false);
-    this.colSubscriptions = [];
-    this.unsubscribe();
-  }
-
-  unsubscribe() {
-    this.colSubscriptions.forEach(subs => {
-      if (subs && !subs.closed) { subs.unsubscribe(); }
-    });
-  }
-
-  init(path: string, opts?: QueryConfig) {
-    this.unsubscribe();
     path = `${this.dbPath}/${path}`;
     this.query = {
       path,
@@ -131,7 +118,7 @@ export class PaginationService {
 
     this._loading.next(true);
 
-    const colSubscription = col.snapshotChanges()
+    return col.snapshotChanges()
     .pipe(
       tap(arr => {
         let values = arr.map(snap => {
@@ -149,10 +136,9 @@ export class PaginationService {
         if (!values.length || values.length === 0) {
           this._done.next(true);
         }
-      })
+      }),
+      take(1)
     ).subscribe(() => {}, (err) => { console.log(err); this.alert.alert({ message: err.message }); });
-    this.colSubscriptions.push(colSubscription);
-    return colSubscription;
   }
 
 }

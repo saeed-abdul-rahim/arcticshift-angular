@@ -15,7 +15,7 @@ import { AttributeInterface, AttributeValueInterface } from '@models/Attribute';
 import { ProductTypeInterface } from '@models/ProductType';
 import { TaxInterface } from '@models/Tax';
 import { AuthService } from '@services/auth/auth.service';
-import { User } from '@models/User';
+import { User, UserInterface } from '@models/User';
 import { ShippingInterface, ShippingRateInterface } from '@models/Shipping';
 import { DbService } from '@services/db/db.service';
 import { CatalogTypeApi } from '@models/Common';
@@ -604,10 +604,25 @@ export class AdminService {
     return getDataFromDocument(this.dbAnalytics.doc(path));
   }
 
+  getUserById(id: string): Observable<UserInterface> {
+    const { db, dbUsersRoute } = this.dbS;
+    const customer = db.collection(dbUsersRoute).doc(id);
+    return getDataFromDocument(customer);
+  }
+
   getOrderById(id: string): Observable<OrderInterface> {
     const { db, dbOrdersRoute } = this.dbS;
     const order = db.collection(dbOrdersRoute).doc(id);
     return getDataFromDocument(order);
+  }
+
+  getOrdersByUserId(userId: string, limit?: number): Observable<OrderInterface[]> {
+    const orders = this.dbS.queryOrders(
+      [{ field: 'userId', type: '==', value: userId }],
+      { field: 'createdAt', direction: 'desc' },
+      limit
+    );
+    return getDataFromCollection(orders);
   }
 
   getProductsByShopId(shopId: string): Observable<ProductInterface[]> {

@@ -70,7 +70,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.razorpayKey = razorPay.key;
     this.billingForm = this.formBuilder.group({
       ...this.addressFormGroup,
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      notes: ['']
     });
     this.shippingForm = this.formBuilder.group(this.addressFormGroup);
     this.clearShippingAddressValidators();
@@ -222,7 +223,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         prefill: {
           contact: user.phone
         },
-        handler: this.razorpayResponseHandler
+        handler: () => this.router.navigateByUrl('/')
       };
       const razorpay = new window.Razorpay(options);
       razorpay.open();
@@ -256,10 +257,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } catch (err) {
       throw err;
     }
-  }
-
-  razorpayResponseHandler(response: any) {
-    this.router.navigateByUrl('/');
   }
 
   handleError(err: any) {

@@ -65,6 +65,8 @@ export type OrderOrderBy = OrderBy & {
 
 export type OrderFields = keyof OrderInterface;
 
+export type OrderDraft = 'order' | 'draft';
+
 export type ProductData = VariantInterface & {
     orderQuantity: number
     baseProduct: ProductInterface

@@ -1,97 +1,101 @@
-<form class="flex flex-col h-screen justify-between" [formGroup]="addCustomerForm" (ngSubmit)="onSubmit()">
+<form class="flex flex-col h-screen justify-between" [formGroup]="customerForm" (ngSubmit)="onSubmit()">
 
 
-    <ng-template #customer>
-        <div class="flex flex-wrap items-center">
-          <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-              <div class="flex">
-            <div class="flex-1 w-full mb-3 px-4">
-              <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="First Name"
-                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="firstname" />
-            </div>
-            <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Last Name"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="lastname" />
-              </div>
-              </div>
-              <div class="w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="E-mail Address"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="email" />
-              </div>
+  <ng-template #customerTemplate>
+    <div class="flex flex-wrap items-center">
+      <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+        <div class="flex">
+          <div class="flex-1 w-full mb-3 px-4">
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="First Name"
+              formControlName="firstName" />
+          </div>
+          <div class="flex-1 w-full mb-3 px-4">
+            <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Last Name"
+              formControlName="lastName" />
           </div>
         </div>
-      </ng-template>
-
-      <ng-template #address>
-        <div class="flex flex-wrap items-center">
-          <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
-              <div class=flex> 
-            <div class="flex-1 w-full mb-3 px-4">
-              <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="First Name"
-                [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-            </div>
-            <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Last Name"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-            </div>
-            <div class=flex> 
-              <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Company"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-              <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Phone"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-           </div>
-              <div class="w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Address Line 1"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-              <div class="w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Address Line 2"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-              <div class="flex"> 
-              <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="City"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-              <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="ZIP / Postal Code"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-            </div>
-            <div class="flex">
-              <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-              <div class="flex-1 w-full mb-3 px-4">
-                <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Country Area"
-                  [ngClass]="nameDanger ? 'border-red' : ''" formControlName="name" />
-              </div>
-            </div>
-          </div>
+        <div class="w-full mb-3 px-4">
+          <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="E-mail Address"
+            formControlName="email" />
         </div>
-      </ng-template>
-
-      <div class="relative md:pt-32 pt-12">
-        <div class="px-4 md:px-10 mx-auto w-full">
-          <div class="flex flex-wrap mt-4">
-            <div class="w-full xl:w-8/12 xl:mb-0 px-4">
-              <app-card [heading]="'Customer Overview'" [body]="customer"></app-card>
-              <app-card [heading]="'Primary Address'" [body]="address"></app-card>
-              
-            </div>
-            <div class="w-full xl:w-4/12 px-4">
-    
-            </div>
+        <div class="w-full mb-3 px-4">
+          <div class="flex flex-wrap items-stretch relative arc-transition shadow rounded w-96">
+            <ng-select class="input-group-left w-1/4" [items]="countryCallCodes" bindValue="callCode"
+              formControlName="phoneCode" bindLabel="callCode" [clearable]="false" placeholder="+00"></ng-select>
+            <input class="input-group-right w-3/4" type="text" placeholder="9999999999" formControlName="phone"
+              [class.border-red-500]="customerFormControls.phone.touched && customerFormControls.phone.invalid"
+              [class.border]="customerFormControls.phone.touched && customerFormControls.phone.invalid" />
           </div>
         </div>
       </div>
+    </div>
+  </ng-template>
 
-      <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
+  <div class="relative pt-12">
+    <div class="px-4 md:px-10 mx-auto w-full">
+      <div class="flex flex-wrap mt-4">
+        <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+          <app-card [heading]="'Customer Overview'" [body]="customerTemplate"></app-card>
+          <app-card [heading]="'Recent Orders'" [body]="orderDataTemplate"></app-card>
+        </div>
+        <div class="w-full xl:w-4/12 px-4">
+          <app-card [heading]="'Address'" [body]="addressTemplate"></app-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer-form [loading]="loading" [success]="success"></app-footer-form>
 
 </form>
+
+<ng-template #addressTemplate>
+  <div class="divide-y">
+      <div class="px-4 py-3 text-gray-800 flex flex-col" *ngIf="customer && customer.shippingAddress">
+          <p>{{ customer.shippingAddress?.line1 }}</p>
+          <p>{{ customer.shippingAddress?.line2 }}</p>
+          <p>{{ customer.shippingAddress?.city }}</p>
+          <p>{{ customer.shippingAddress?.zip }}</p>
+          <p>{{ customer.shippingAddress?.area }}</p>
+          <p>{{ getCountryName(customer.shippingAddress.country || '') }}</p>
+      </div>
+  </div>
+</ng-template>
+
+<!-- TABLE TEMPLATES -->
+<ng-template #orderDataTemplate>
+  <div class="overflow-x-scroll">
+    <app-spinner class="data-empty" *ngIf="ordersLoading" [size]="'5'"></app-spinner>
+    <div *ngIf="!ordersLoading">
+      <div *ngIf="orders && orders.length === 0" class="data-empty">No data available</div>
+      <div *ngIf="orders && orders.length > 0" class="overflow-x-auto scrollbar">
+        <table mat-table [dataSource]="ordersSource">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> Order ID </th>
+            <td mat-cell *matCellDef="let row"> {{ row.orderId }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let row"> {{ row.createdAt | timeago }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let row"> {{ row.orderStatus }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef> Total </th>
+            <td mat-cell *matCellDef="let row"> {{ row.total | currency: settings.currency }} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="outline-none" (click)="navigateToOrder(row.id)"></tr>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-template>

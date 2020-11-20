@@ -116,6 +116,6 @@ export type Condition = {
 };
 
 export type OrderBy = {
-    field: string
+    field: string | firebase.firestore.FieldPath
     direction: 'asc' | 'desc'
 };

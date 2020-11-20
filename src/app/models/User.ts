@@ -26,8 +26,11 @@ export interface UserInterface extends AuthType, CommonInterface {
     id?: string;
     uid?: string;
     name?: string;
+    firstName?: string;
+    lastName?: string;
     email?: string;
     phone?: string;
+    phoneCode?: string;
     dob?: string;
     gender?: Gender;
     photoUrl?: string;
@@ -39,7 +42,7 @@ export interface UserInterface extends AuthType, CommonInterface {
     users?: string[];
     paymentMethods?: PaymentMethod[];
     voucherId?: string[];
-    orderId?: string[];
+    totalOrders?: number;
     billingAddress?: Address;
     shippingAddress?: Address;
     addressId?: string[];

@@ -44,6 +44,7 @@ export const environment = {
     saleDiscounts: 'saleDiscounts',
     giftCards: 'giftCards',
     orders: 'orders',
+    drafts: 'drafts',
     taxes: 'taxes',
     adverts: 'adverts',
     analytics: 'analytics',

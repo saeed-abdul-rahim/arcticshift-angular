@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { TimeagoModule } from 'ngx-timeago';
+import { ClickOutsideModule } from 'ng-click-outside';
 
 import { SpinnerComponent } from './spinner/spinner.component';
 import { ButtonComponent } from './button/button.component';
@@ -28,6 +32,12 @@ import { AlertComponent } from './alert/alert.component';
     FontAwesomeModule
   ],
   exports: [
+    FormsModule,
+    ReactiveFormsModule,
+    ClickOutsideModule,
+    NgSelectModule,
+    TimeagoModule,
+    FontAwesomeModule,
     SpinnerComponent,
     ButtonComponent,
     ProgressBarComponent,

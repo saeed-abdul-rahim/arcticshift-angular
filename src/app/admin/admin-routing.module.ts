@@ -41,6 +41,7 @@ import { ProductTypeFormComponent } from './product-type-form/product-type-form.
 import { TaxFormComponent } from './tax-form/tax-form.component';
 import { OrderFormComponent } from './order-form/order-form.component';
 import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
+import { CustomerFormComponent } from './customer-form/customer-form.component';
 
 
 const routes: Routes = [
@@ -99,7 +100,7 @@ const routes: Routes = [
         path: CUSTOMER,
         children: [
           { path: '', component: ListPageComponent },
-          { path: ':id' }
+          { path: ':id', component: CustomerFormComponent },
         ]
       },
       {

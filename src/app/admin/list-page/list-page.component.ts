@@ -26,7 +26,6 @@ import {
   VOUCHER,
   WAREHOUSE
 } from '@constants/routes';
-import { patchArrObj } from '@utils/arrUtils';
 
 
 @Component({
@@ -77,7 +76,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribeData();
     this.unsubscribeUser();
-    this.page.destroy();
   }
 
   unsubscribeData() {
@@ -246,7 +244,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         customerName: 'Customer Name',
         orderStatus: 'Order Status',
         total: 'Total'
-      }, [{ field: 'orderStatus', type: '!=', value: 'draft'}]);
+      });
       this.getPageLength(orders, this.dataLengthKey);
 
     } else if (urlSplit.includes(CUSTOMER)) {
@@ -291,7 +289,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.displayedColumns = [];
     this.dataKeys = [];
-    this.page.destroy();
     this.unsubscribeData();
     this.page.init(path, {
       orderBy: { field: 'createdAt', direction: 'desc' },
@@ -304,13 +301,8 @@ export class ListPageComponent implements OnInit, OnDestroy {
     });
     this.dataSubscription = this.page.data.subscribe(data => {
       this.data = data;
-      if (data && data.length > 0 && this.displayData.length > 0) {
-        this.displayData = patchArrObj(data, this.displayData, 'id');
-        this.fillTable(this.displayData);
-      } else if (data && data.length > 0) {
-        this.displayData = data;
-        this.fillTable(this.displayData);
-      }
+      this.displayData = data;
+      this.fillTable(this.displayData);
       this.loading = false;
     });
   }

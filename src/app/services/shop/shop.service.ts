@@ -401,9 +401,8 @@ export class ShopService {
   }
 
   getDraftOrderByUserId(userId: string) {
-    const orders = this.dbS.queryOrders([
+    const orders = this.dbS.queryDrafts([
       { field: 'userId', type: '==', value: userId},
-      { field: 'orderStatus', type: '==', value: 'draft' }
     ], null, 1);
     return getDataFromCollection(orders) as Observable<OrderInterface[]>;
   }

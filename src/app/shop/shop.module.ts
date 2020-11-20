@@ -1,13 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { SidebarModule } from 'ng-sidebar';
-import { ClickOutsideModule } from 'ng-click-outside';
 
 import { ComponentsModule } from '@components/components.module';
 
@@ -58,17 +54,12 @@ import { ModalService } from '@services/modal/modal.service';
   ],
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     ShopRoutingModule,
     ComponentsModule,
     ShopComponentsModule,
-    FontAwesomeModule,
     NgOtpInputModule,
     IvyCarouselModule,
     NgxImageZoomModule,
-    NgSelectModule,
-    ClickOutsideModule,
     SidebarModule.forRoot()
   ],
   providers: [

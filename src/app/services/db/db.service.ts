@@ -52,6 +52,7 @@ export class DbService {
   dbShippingRoute: string;
   dbShippingRatesRoute: string;
   dbOrdersRoute: string;
+  dbDraftsRoute: string;
 
   dbAttributeValuesRoutePath: string;
 
@@ -77,6 +78,7 @@ export class DbService {
       shippings,
       shippingRates,
       orders,
+      drafts,
       settings,
       general
     } = db;
@@ -100,6 +102,7 @@ export class DbService {
     this.dbShippingRoute = shippings;
     this.dbShippingRatesRoute = shippingRates;
     this.dbOrdersRoute = orders;
+    this.dbDraftsRoute = drafts;
     this.dbInventoriesRoute = inventories;
 
     this.dbAttributeValuesRoutePath = `${this.dbPath}/${attributeValues}`;
@@ -195,6 +198,11 @@ export class DbService {
     return this.query(db, dbShippingRatesRoute, conditions, orderBy, limit);
   }
 
+  queryDrafts(conditions?: OrderCondition[], orderBy?: OrderOrderBy, limit?: number) {
+    const { db, dbDraftsRoute } = this;
+    return this.query(db, dbDraftsRoute, conditions, orderBy, limit);
+  }
+
   queryOrders(conditions?: OrderCondition[], orderBy?: OrderOrderBy, limit?: number) {
     const { db, dbOrdersRoute } = this;
     return this.query(db, dbOrdersRoute, conditions, orderBy, limit);
@@ -220,6 +228,12 @@ export class DbService {
   setCondition(dbRef: AngularFirestoreDocument, collectionName: string, conditions: Condition[], orderBy?: OrderBy, limit?: number) {
     return dbRef.collection(collectionName, ref => {
         let newRef: Query = ref;
+        conditions.forEach(condition => {
+          const { field, type } = condition;
+          if (type === '!=' || type === '>=' || type === '<=' || type === '<' || type === '>' && (orderBy && orderBy.field !== field)) {
+            newRef = newRef.orderBy(field);
+          }
+        });
         conditions.forEach(condition => {
             const { field, type, value, parentFields } = condition;
             if (parentFields && parentFields.length > 0) {

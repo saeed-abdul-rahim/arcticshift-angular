@@ -105,7 +105,7 @@
             <p>{{ order.shippingAddress.city }}</p>
             <p>{{ order.shippingAddress.zip }}</p>
             <p>{{ order.shippingAddress.area }}</p>
-            <p>{{ getCountry(order.shippingAddress.country) }}</p>
+            <p>{{ getCountryName(order.shippingAddress.country) }}</p>
         </div>
         <div class="px-4 py-3 text-gray-800 flex flex-col">
             <span class="uppercase font-semibold mb-2">Billing Address</span>
@@ -115,7 +115,7 @@
             <p>{{ order.billingAddress.city }}</p>
             <p>{{ order.billingAddress.zip }}</p>
             <p>{{ order.billingAddress.area }}</p>
-            <p>{{ getCountry(order.billingAddress.country) }}</p>
+            <p>{{ getCountryName(order.billingAddress.country) }}</p>
         </div>
     </div>
 </ng-template>

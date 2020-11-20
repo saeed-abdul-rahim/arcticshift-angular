@@ -11,9 +11,9 @@ import { OrderInterface, ProductData } from '@models/Order';
 import { AdminService } from '@services/admin/admin.service';
 import { AlertService } from '@services/alert/alert.service';
 import { ShopService } from '@services/shop/shop.service';
-import { countryAlphaList } from '@utils/countryAlphaList';
 import { isBothArrEqual, uniqueArr } from '@utils/arrUtils';
 import { WarehouseInterface } from '@models/Warehouse';
+import { getCountryName } from '@utils/countryList';
 
 @Component({
   selector: 'app-order-form',
@@ -44,6 +44,7 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   fullfilledProducts: ProductData[][] | any[][] = [];
   warehouses: WarehouseInterface[] = [];
   settings: GeneralSettings;
+  getCountryName = getCountryName;
 
   displayedColumns = ['product', 'sku', 'quantity', 'price', 'total'];
 
@@ -77,15 +78,6 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   private unsubscribeWarehouse() {
     if (this.warehouseSubscription && !this.warehouseSubscription.closed) {
       this.warehouseSubscription.unsubscribe();
-    }
-  }
-
-  getCountry(alpha3: string) {
-    const country = countryAlphaList.find(c => c.alpha3 === alpha3);
-    if (country) {
-      return country.name;
-    } else {
-      return '';
     }
   }
 
@@ -179,7 +171,7 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   private getFullfilledProducts(productsData: ProductData[]) {
     const fullfilledProducts = cloneDeep(productsData);
     const { fullfilled } = this.order;
-    const warehouseIds = uniqueArr(fullfilled.map(w => w.warehouseId));
+    const warehouseIds = uniqueArr(fullfilled.filter(w => w.quantity > 0).map(w => w.warehouseId));
     this.getWarehouseByIds(warehouseIds);
     this.fullfilledProducts = warehouseIds.map(warehouseId => {
       return fullfilledProducts.map(product => {
