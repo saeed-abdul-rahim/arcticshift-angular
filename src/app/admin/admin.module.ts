@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 import { AdminService } from '@services/admin/admin.service';
 import { MediaService } from '@services/media/media.service';
@@ -40,6 +41,7 @@ import { TaxFormComponent } from './tax-form/tax-form.component';
 import { ShippingFormComponent } from './shipping-form/shipping-form.component';
 import { OrderFormComponent } from './order-form/order-form.component';
 import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
+import { SettingsFormComponent } from './settings-form/settings-form.component';
 
 
 @NgModule({
@@ -63,7 +65,8 @@ import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
     TaxFormComponent,
     ShippingFormComponent,
     OrderFormComponent,
-    FullfillFormComponent
+    FullfillFormComponent,
+    SettingsFormComponent
   ],
   imports: [
     CommonModule,
@@ -79,6 +82,7 @@ import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
     MatInputModule,
     MatNativeDateModule,
     NgxMaterialTimepickerModule,
+    ImageCropperModule
   ],
   providers: [
     AdminGuard,

@@ -22,6 +22,7 @@ import { CatalogTypeApi } from '@models/Common';
 import { OrderInterface } from '@models/Order';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Observable } from 'rxjs/internal/Observable';
+import { GeneralSettings } from '@models/GeneralSettings';
 
 @Injectable()
 export class AdminService {
@@ -39,6 +40,7 @@ export class AdminService {
   private apiShipping: string;
   private apiShippingRate: string;
   private apiTax: string;
+  private apiSettings: string;
 
   private dbShop: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
@@ -59,10 +61,11 @@ export class AdminService {
       variant,
       voucher,
       tax,
+      settings,
       warehouse,
       order,
       shipping,
-      rate
+      rate,
     } = api;
     const { analytics, shops } = db;
     this.getCurrentUser();
@@ -77,6 +80,7 @@ export class AdminService {
     this.apiVariant = url + variant;
     this.apiVoucher = url + voucher;
     this.apiTax = url + tax;
+    this.apiSettings = url + settings;
     this.apiWarehouse = url + warehouse;
     this.apiOrder = url + order;
     this.apiShipping = url + shipping;
@@ -591,6 +595,15 @@ export class AdminService {
     const { apiOrder } = this;
     try {
       return await this.req.patch(`${apiOrder}/${orderId}/refund`, { data: { amount } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateSettings(data: GeneralSettings) {
+    const { apiSettings } = this;
+    try {
+      return await this.req.patch(`${apiSettings}/general`, { data });
     } catch (err) {
       throw err;
     }

@@ -31,7 +31,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   shippingAddressCheck = false;
   isAnonymous = true;
-  payButtonLabel = 'Sign In & Pay';
 
   invalidBillingForm = false;
   invalidShippingForm = false;
@@ -45,15 +44,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     zip: ['', Validators.required],
     country: [null, Validators.required]
   };
+  miscForm: FormGroup;
 
   user: User;
   settings: GeneralSettings;
   draft: OrderInterface;
   variants: VariantExtended[];
   imageSize = IMAGE_SS;
+  loading = false;
   draftLoading = false;
   variantsLoading = false;
-  showSignInModal = false;
   available = false;
 
   private razorpayKey: string;
@@ -68,10 +68,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const { razorPay } = environment;
     this.razorpayKey = razorPay.key;
+    this.miscForm = this.formBuilder.group({ notes: [''] });
     this.billingForm = this.formBuilder.group({
       ...this.addressFormGroup,
       name: ['', Validators.required],
-      notes: ['']
     });
     this.shippingForm = this.formBuilder.group(this.addressFormGroup);
     this.clearShippingAddressValidators();
@@ -82,13 +82,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(homeRoute);
         }
         this.user = user;
-        const { isAnonymous } = user;
-        this.isAnonymous = isAnonymous;
-        if (isAnonymous) {
-          this.payButtonLabel = 'Sign In & Pay';
-        } else {
-          this.payButtonLabel = 'Pay';
-        }
       }
     });
   }
@@ -183,10 +176,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   async pay() {
-    if (this.isAnonymous) {
-      this.showSignInModal = true;
-      return;
-    }
+    this.loading = true;
     if (this.billingForm.invalid) {
       this.invalidBillingForm = true;
       return;
@@ -196,9 +186,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
     try {
-      const { user, draft, billingFormControls } = this;
+      const { user, draft, billingFormControls, miscForm } = this;
       const { orderId } = draft;
-      const { phone } = user;
+      const { phone, email } = user;
       const { name } = billingFormControls;
       const billingAddress = this.getAddress(this.billingForm);
       billingAddress.name = name.value;
@@ -210,8 +200,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       const data: OrderInterface = {
         orderId,
         phone,
+        email,
         billingAddress,
-        shippingAddress
+        shippingAddress,
+        notes: miscForm.controls.notes.value
       };
       const gatewayOrderDetails = await this.shop.finalizeCart(data);
       const { amount, currency, id } = gatewayOrderDetails;
@@ -221,7 +213,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         currency,
         order_id: id,
         prefill: {
-          contact: user.phone
+          contact: phone,
+          email
         },
         handler: () => this.router.navigateByUrl('/')
       };
@@ -230,12 +223,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } catch (err) {
       this.handleError(err);
     }
-  }
-
-  afterSignIn(isSignedIn: boolean) {
-    if (isSignedIn) {
-      this.pay();
-    }
+    this.loading = false;
   }
 
   getAddress(address: FormGroup): Address {

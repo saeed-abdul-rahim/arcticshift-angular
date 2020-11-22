@@ -25,7 +25,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { User } from '@models/User';
 import { GeoIp } from '@models/GeoIp';
 import { ExchangeRate } from '@models/ExchangeRate';
-import { currencyList } from '@utils/currencyList';
+import { countryCurrencyMap } from '@utils/currencyList';
 
 @Injectable()
 export class ShopService {
@@ -74,7 +74,7 @@ export class ShopService {
     try {
       const location = await this.getLocation();
       const countryCode = location.country_code;
-      const currencyCode = currencyList[countryCode];
+      const currencyCode = countryCurrencyMap[countryCode];
       await this.getExchangeRate(currencyCode);
     } catch (err) {
       throw err;

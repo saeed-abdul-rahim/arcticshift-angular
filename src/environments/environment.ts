@@ -22,7 +22,8 @@ export const environment = {
     shipping: '/shipping',
     rate: '/rate',
     order: '/order',
-    tax: '/tax'
+    tax: '/tax',
+    settings: '/settings'
   },
   db: {
     version: 'v1',

@@ -17,6 +17,7 @@ import {
   PRODUCTATTRIBUTE,
   PRODUCTTYPE,
   SALE,
+  SETTINGS,
   SHIPPING,
   STAFF,
   TAX,
@@ -42,6 +43,7 @@ import { TaxFormComponent } from './tax-form/tax-form.component';
 import { OrderFormComponent } from './order-form/order-form.component';
 import { FullfillFormComponent } from './fullfill-form/fullfill-form.component';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
+import { SettingsFormComponent } from './settings-form/settings-form.component';
 
 
 const routes: Routes = [
@@ -180,7 +182,8 @@ const routes: Routes = [
           { path: ADD },
           { path: ':id' }
         ]
-      }
+      },
+      { path: SETTINGS, component: SettingsFormComponent },
     ]
   }
 ];

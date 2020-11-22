@@ -19,6 +19,7 @@ import { faShippingFast } from '@fortawesome/free-solid-svg-icons/faShippingFast
 import { faWarehouse } from '@fortawesome/free-solid-svg-icons/faWarehouse';
 import { faDollarSign } from '@fortawesome/free-solid-svg-icons/faDollarSign';
 import { faIdBadge } from '@fortawesome/free-solid-svg-icons/faIdBadge';
+import { faCogs } from '@fortawesome/free-solid-svg-icons/faCogs';
 
 import {
   CATALOG,
@@ -32,6 +33,7 @@ import {
   PRODUCTATTRIBUTE,
   PRODUCTTYPE,
   SALE,
+  SETTINGS,
   SHIPPING,
   STAFF,
   TAX,
@@ -62,6 +64,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   faWarehouse = faWarehouse;
   faDollarSign = faDollarSign;
   faIdBadge = faIdBadge;
+  faCogs = faCogs;
 
   dashboardRoute = DASHBOARD;
   orderRoute = ORDER;
@@ -77,6 +80,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   warehouseRoute = WAREHOUSE;
   taxRoute = TAX;
   staffRoute = STAFF;
+  settingsRoute = SETTINGS;
 
   currentUrl: Url;
   currentPath: string;

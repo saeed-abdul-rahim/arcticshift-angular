@@ -1,0 +1,63 @@
+<form class="flex flex-col h-screen justify-between" [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+
+    <ng-template #generalTemplate>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                <div class="w-full mb-3">
+                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Shop Name" formControlName="name" />
+                </div>
+                <div class="w-full mb-3">
+                    <ng-select formControlName="weightUnit" [items]="weights" bindValue="id" bindLabel="label" placeholder="Weight Unit"></ng-select>
+                </div>
+                <div class="w-full mb-3">
+                    <ng-select formControlName="currency" [items]="currencies" placeholder="Currency"></ng-select>
+                </div>
+                <div class="w-full mb-3">
+                    <ng-select formControlName="paymentGateway" [items]="payments" bindValue="id" bindLabel="label" placeholder="Payment Gateway"></ng-select>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #logoTemplate>
+
+    </ng-template>
+
+    <ng-template #logoLongTemplate>
+
+    </ng-template>
+
+    <ng-template #socialTemplate>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
+                <div class="w-full mb-3">
+                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Facebook Link" formControlName="facebook" />
+                </div>
+                <div class="w-full mb-3">
+                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Instagram Link" formControlName="instagram" />
+                </div>
+                <div class="w-full mb-3">
+                    <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Twitter Link" formControlName="twitter" />
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- BODY -->
+
+    <div class="relative pt-12 mb-auto h-10">
+        <div class="px-4 md:px-10 mx-auto w-full">
+            <div class="flex flex-wrap mt-4 mb-12">
+                <div class="w-full xl:w-8/12 xl:mb-0 px-4">
+                    <app-card [heading]="'General Information'" [body]="generalTemplate"></app-card>
+                    <app-card [heading]="'Logo (1:1)'" [body]="logoTemplate"></app-card>
+                    <app-card [heading]="'Logo with label (21:2)'" [body]="logoLongTemplate"></app-card>
+                </div>
+                <div class="w-full xl:w-4/12 px-4">
+                    <app-card [heading]="'Socials'" [body]="socialTemplate"></app-card>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

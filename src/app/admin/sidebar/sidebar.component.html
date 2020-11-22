@@ -155,6 +155,18 @@
             Staff
           </a>
         </li> -->
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate(taxRoute)" [ngClass]="currentPath === taxRoute ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faDollarSign"></fa-icon>
+            Tax
+          </a>
+        </li>
+        <li class="inline-flex">
+          <a class="link-semibold" (click)="navigate(settingsRoute)" [ngClass]="currentPath === settingsRoute ? 'text-blue-500 hover:text-blue-600' : 'text-gray-800 hover:text-gray-600'">
+            <fa-icon class="opacity-75 mr-2 text-sm" [icon]="faCogs"></fa-icon>
+            Settings
+          </a>
+        </li>
       </ul>
     </div>
   </div>

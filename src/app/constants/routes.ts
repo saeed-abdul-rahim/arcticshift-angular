@@ -23,6 +23,7 @@ type ADD = 'add';
 type CHECKOUT = 'checkout';
 type CART = 'cart';
 type WISHLIST = 'wishlist';
+type SETTINGS = 'settings';
 
 export const ADMIN: ADMIN = 'admin';
 export const LOGIN: LOGIN = 'login';
@@ -49,6 +50,7 @@ export const ADD: ADD = 'add';
 export const CHECKOUT: CHECKOUT = 'checkout';
 export const CART: CART = 'cart';
 export const WISHLIST: WISHLIST = 'wishlist';
+export const SETTINGS: SETTINGS = 'settings';
 
 export const homeRoute = '/';
 export const adminRoute = `${homeRoute}${ADMIN}`;

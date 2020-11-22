@@ -69,7 +69,10 @@
         <div class="font-light mt-5">
             Order Notes (optional)
         </div>
-        <textarea class="arc-input mt-3 w-full" placeholder="Notes about your order" formControlName="notes"></textarea>
+        <form [formGroup]="miscForm">
+            <textarea class="arc-input mt-3 w-full" placeholder="Notes about your order"
+                formControlName="notes"></textarea>
+        </form>
     </div>
     <div class="w-full md:w-4/12">
         <div class="font-light text-2xl">
@@ -98,8 +101,8 @@
             </div>
         </div>
         <app-cart-total [disableAddress]="true"></app-cart-total>
-        <app-button *ngIf="available" color="gray" [label]="payButtonLabel" [dark]="true" [fullWidth]="true" (click)="pay()"></app-button>
+        <app-button *ngIf="available" [loading]="loading" color="gray" [label]="'Pay'" [dark]="true"
+            [fullWidth]="true" (click)="pay()"></app-button>
     </div>
 </div>
-<app-sign-in [(showModal)]="showSignInModal" (signedIn)="afterSignIn($event)"></app-sign-in>
 <app-empty-page *ngIf="!variants || variants.length === 0" [label]="'cart'"></app-empty-page>

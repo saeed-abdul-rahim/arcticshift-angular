@@ -1,4 +1,4 @@
-export const currencyList = {
+export const countryCurrencyMap = {
     BD: 'BDT',
     BE: 'EUR',
     BF: 'XOF',
@@ -235,7 +235,6 @@ export const currencyList = {
     AM: 'AMD',
     AL: 'ALL',
     AO: 'AOA',
-    AQ: '',
     AS: 'USD',
     AR: 'ARS',
     AU: 'AUD',
