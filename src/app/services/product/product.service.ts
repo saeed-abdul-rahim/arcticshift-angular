@@ -105,10 +105,12 @@ export class ProductService {
     this.page.init(dbProductsRoute, {
       where: filters,
       orderBy,
-      limit: 1
+      limit: 20
     });
     this.productListSubscription = this.page.data.subscribe((data: ProductInterface[]) => {
-      this.productList.next(data);
+      const ids = data.map(o => o.id);
+      const filtered = data.filter(({id}, index) => !ids.includes(id, index + 1)); // TEMPORARY FIX -> GETTING DUPLICATE DATA
+      this.productList.next(filtered);
     },
     err => {
       this.handleError(err);

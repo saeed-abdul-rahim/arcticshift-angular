@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AttributeJoinInterface } from '@models/Attribute';
 import { ProductCondition, ProductOrderBy } from '@models/Product';
 import { ProductService } from '@services/product/product.service';
@@ -58,7 +59,7 @@ export class FilterProductComponent implements OnInit, OnDestroy {
   private productFiltersSubscription: Subscription;
   private productSortSubscription: Subscription;
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService, private router: Router) { }
 
   ngOnInit(): void {
     this.attributeSubscription = this.productService.getAttributeList().subscribe(attributes => this.attributes = attributes);
@@ -127,6 +128,7 @@ export class FilterProductComponent implements OnInit, OnDestroy {
 
   clearFilters() {
     this.productService.resetProductFilters();
+    this.router.navigateByUrl('');
   }
 
 }

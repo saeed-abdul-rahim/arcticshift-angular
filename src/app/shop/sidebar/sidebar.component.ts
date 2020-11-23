@@ -1,4 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CATEGORY, COLLECTION } from '@constants/routes';
 import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
 import { ProductCondition } from '@models/Product';
@@ -38,7 +40,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
 
   constructor(private shop: ShopService, private auth: AuthService, private nav: NavbarService,
-              private modal: ModalService, private productService: ProductService) { }
+              private modal: ModalService, private productService: ProductService, private router: Router) { }
 
   ngOnInit(): void {
     this.getCategories();
@@ -135,28 +137,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   filterProductsByCategory(id: string) {
-    const nxtFilters = this.productFilters.filter(p => p.field !== 'collectionId');
-    const categoryFilterIdx = nxtFilters.findIndex(p => p.field === 'categoryId');
-    const categoryFilter: ProductCondition = { field: 'categoryId', type: 'array-contains', value: id };
-    if (categoryFilterIdx > -1) {
-      nxtFilters[categoryFilterIdx] = categoryFilter;
-    } else {
-      nxtFilters.push(categoryFilter);
-    }
-    this.productService.setProductFilters(nxtFilters);
+    const name = this.categories.find(c => c.id === id)?.name;
+    this.router.navigateByUrl(`${COLLECTION}/${name}/${id}`);
     this.closeSidnav();
   }
 
   filterProductsByCollection(id: string) {
-    const nxtFilters = this.productFilters.filter(p => p.field !== 'categoryId');
-    const collectionFilterIdx = nxtFilters.findIndex(p => p.field === 'collectionId');
-    const collectionFilter: ProductCondition = { field: 'collectionId', type: 'array-contains', value: id };
-    if (collectionFilterIdx > -1) {
-      nxtFilters[collectionFilterIdx] = collectionFilter;
-    } else {
-      nxtFilters.push(collectionFilter);
-    }
-    this.productService.setProductFilters(nxtFilters);
+    const name = this.collections.find(c => c.id === id)?.name;
+    this.router.navigateByUrl(`${CATEGORY}/${name}/${id}`);
     this.closeSidnav();
   }
 

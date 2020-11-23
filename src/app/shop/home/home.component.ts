@@ -1,16 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons/faCheckCircle';
 
 import { IMAGE_L } from '@constants/imageSize';
 import { shopProductRoute } from '@constants/routes';
-import { ProductInterface } from '@models/Product';
+import { ProductCondition, ProductInterface } from '@models/Product';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
-import { setProducts } from '@utils/productUtils';
+import { filterProductsByCategoryCollection, setProducts } from '@utils/productUtils';
 import { filter } from 'rxjs/internal/operators/filter';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { SeoService } from '@services/seo/seo.service';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   faCheckCircle = faCheckCircle;
 
+  productFilters: ProductCondition[] = [];
   saleDiscounts: SaleDiscountInterface[];
   products: ProductInterface & SaleDiscountInterface[] = [];
   loading = false;
@@ -28,6 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   error = '';
   orderCompleted = false;
 
+  private productFilterSubscription: Subscription;
   private productListSubscription: Subscription;
   private productsLoadingSubscription: Subscription;
   private productsErrorSubscription: Subscription;
@@ -35,13 +38,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   private saleDiscountSubscription: Subscription;
   private routeSubscription: Subscription;
 
-  constructor(private productService: ProductService, private shop: ShopService, private router: Router) {
+  constructor(private productService: ProductService, private shop: ShopService, private seo: SeoService,
+              private router: Router, private route: ActivatedRoute) {
     this.routeSubscription = this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
         const navigation  = this.router.getCurrentNavigation();
         this.orderCompleted = navigation.extras.state ? navigation.extras.state.orderCompleted : false;
     });
+    this.getProductFilters();
+    this.routeSubscription = this.route.params.subscribe(par => this.ngOnInit());
   }
 
   ngOnInit(): void {
@@ -49,6 +55,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getProductList();
     this.getProductsLoading();
     this.getProductsDone();
+    const params = this.route.snapshot.paramMap;
+    const title = params.get('title');
+    const id = params.get('id');
+    if (title && id) {
+      this.seo.updateTitle(title);
+      this.seo.updateOgUrl(this.route.snapshot.url.join('/'));
+      const type = this.router.url.split('/')[1] as 'category' | 'collection';
+      const nxtFilters = filterProductsByCategoryCollection(id, this.productFilters, type);
+      this.productService.setProductFilters(nxtFilters);
+    }
   }
 
   ngOnDestroy(): void {
@@ -67,12 +83,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.routeSubscription && !this.routeSubscription.closed) {
       this.routeSubscription.unsubscribe();
     }
+    if (this.productFilterSubscription && !this.productFilterSubscription.closed) {
+      this.productFilterSubscription.unsubscribe();
+    }
+    this.unsubscribeProductList();
   }
 
   unsubscribeProductList() {
     if (this.productListSubscription && this.productListSubscription.closed) {
       this.productListSubscription.unsubscribe();
     }
+  }
+
+  getProductFilters() {
+    this.productFilterSubscription = this.productService.getProductFilters().subscribe(filters => this.productFilters = filters);
   }
 
   getSaleDiscounts() {

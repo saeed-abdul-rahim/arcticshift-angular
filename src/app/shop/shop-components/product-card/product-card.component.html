@@ -13,6 +13,7 @@
     <div class="relative pt-3 w-full flex items-center justify-between">
         <p class="text-gray-600 font-light">{{title}}</p>
         <fa-icon *ngIf="!heartLoading" [icon]="heart ? faHeartS : faHeartR" (click)="heartClick($event)" size="1x"
+            [ngClass]="heart ? 'text-red-500' : 'text-gray-500'"
             class="h-6 w-6 text-gray-500 hover:text-black cursor-pointer"></fa-icon>
         <app-spinner class="h-6 w-6" *ngIf="heartLoading" [size]="5"></app-spinner>
     </div>

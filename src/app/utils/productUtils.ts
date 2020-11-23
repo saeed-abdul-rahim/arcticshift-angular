@@ -1,5 +1,5 @@
 import { ValueType } from '@models/Common';
-import { ProductInterface } from '@models/Product';
+import { ProductCondition, ProductInterface } from '@models/Product';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { VariantInterface } from '@models/Variant';
 import { setThumbnails } from './media';
@@ -57,4 +57,25 @@ export function setProducts(products: ProductInterface[], imageSize: number, sal
             valueType: discountType
         };
     }).filter(e => e);
+}
+
+export function filterProductsByCategoryCollection(id: string, productFilters: ProductCondition[], type: 'category' | 'collection') {
+    let setField = '';
+    let unSetField = '';
+    if (type === 'category') {
+        unSetField = 'collectionId';
+        setField = 'categoryId';
+    } else if (type === 'collection') {
+        unSetField = 'categoryId';
+        setField = 'collectionId';
+    }
+    const nxtFilters = productFilters.filter(p => p.field !== unSetField);
+    const categoryFilterIdx = nxtFilters.findIndex(p => p.field === setField);
+    const categoryFilter: ProductCondition = { field: setField, type: 'array-contains', value: id };
+    if (categoryFilterIdx > -1) {
+      nxtFilters[categoryFilterIdx] = categoryFilter;
+    } else {
+      nxtFilters.push(categoryFilter);
+    }
+    return nxtFilters;
 }

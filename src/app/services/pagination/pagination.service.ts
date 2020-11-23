@@ -21,7 +21,7 @@ export class PaginationService {
 
   private query: QueryConfig;
 
-  data: Observable<any>;
+  data: Observable<any> = this._data.asObservable();
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
   where: Condition[];

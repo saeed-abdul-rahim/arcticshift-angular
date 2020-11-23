@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { IMAGE_L } from '@constants/imageSize';
+import { COLLECTION } from '@constants/routes';
 import { CollectionInterface } from '@models/Collection';
-import { Content } from '@models/Common';
+import { Content, ContentStorage } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -27,7 +29,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   carouselImages: any[] = [];
   carouselImageSize = IMAGE_L;
 
-  constructor(private shop: ShopService, private alert: AlertService) { }
+  constructor(private shop: ShopService, private alert: AlertService, private router: Router) { }
 
   ngOnInit(): void {
     this.getCollections();
@@ -47,7 +49,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
           const { collectionId, name, images } = collection;
           if (images.length > 0) {
             const thumbnail = this.setCarouselImages(images, name);
-            return {collectionId, ...thumbnail};
+            return { collectionId, name, ...thumbnail };
           }
         });
         this.carouselImages = thumbnails;
@@ -62,7 +64,16 @@ export class CarouselComponent implements OnInit, OnDestroy {
     return { ...thumbnail, image };
   }
 
+  trackByFn(index: number, item: ContentStorage) {
+    return item.url;
+  }
+
   handleError(err: any) {
     this.alert.alert(err);
   }
+
+  navigateToCollection(id: string, name: string) {
+    this.router.navigateByUrl(`${COLLECTION}/${name}/${id}`);
+  }
+
 }
