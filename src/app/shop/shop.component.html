@@ -4,10 +4,11 @@
     </ng-sidebar>
     <div ng-sidebar-content style="position: relative;">
         <app-navbar class="mt-0 fixed w-full z-20 top-0 shadow"></app-navbar>
-        <div class="container mx-auto bg-white pt-20 h-screen">
+        <div class="container mx-auto bg-white pt-20 min-h-screen">
             <router-outlet></router-outlet>
         </div>
         <app-sign-in></app-sign-in>
         <app-alert></app-alert>
+        <app-footer></app-footer>
     </div>
 </ng-sidebar-container>

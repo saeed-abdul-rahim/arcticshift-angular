@@ -91,9 +91,9 @@ export class ShopService {
   }
 
   async removeFromWishlist(productId: string) {
-    const { req, apiWishlist } = this;
+    const { req, apiUser, user } = this;
     try {
-      return await req.delete(`${apiWishlist}/${productId}`);
+      return await req.delete(`${apiUser}/${user.uid}/wishlist/${productId}`);
     } catch (err) {
       throw err;
     }

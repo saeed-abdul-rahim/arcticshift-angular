@@ -55,21 +55,11 @@
             </app-button>
         </div>
     </div>
-    <div class="w-screen py-3 mt-12 border-t border-gray-300" *ngIf="product">
+    <div class="w-screen py-3 mt-12 border-t border-gray-300" *ngIf="product && (collectionProducts || categoryProducts)">
         <div class="text-3xl font-light py-3 px-2">
             Related Products
         </div>
-        <div class="container mx-auto flex items-center flex-wrap pt-4 pb-12 arc-transition" *ngIf="collectionProducts && collectionProducts.length > 0">
-            <app-product-card class="sm:w-6/12 md:w-3/12 cursor-pointer" *ngFor="let product of collectionProducts; trackBy: trackByFn"
-                [id]="product.id" [title]="product.name" [images]="product.images" [price]="product.price"
-                (click)="navigateToVariant(product.name, product.id)" [discountType]="product.valueType"
-                [discountValue]="product.value"></app-product-card>
-        </div>
-        <div class="container mx-auto flex items-center flex-wrap pt-4 pb-12 arc-transition" *ngIf="categoryProducts && categoryProducts.length > 0">
-            <app-product-card class="sm:w-6/12 md:w-3/12 cursor-pointer" *ngFor="let product of categoryProducts; trackBy: trackByFn"
-                [id]="product.id" [title]="product.name" [images]="product.images" [price]="product.price"
-                (click)="navigateToVariant(product.name, product.id)" [discountType]="product.valueType"
-                [discountValue]="product.value"></app-product-card>
-        </div>
+        <app-product-list [products]="collectionProducts" [showEmptyLabel]="false"></app-product-list>
+        <app-product-list [products]="categoryProducts" [showEmptyLabel]="false"></app-product-list>
     </div>
 </div>

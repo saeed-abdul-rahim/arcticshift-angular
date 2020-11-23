@@ -7,12 +7,14 @@ import { ComponentsModule } from '@components/components.module';
 import { ProductCardComponent } from './product-card/product-card.component';
 import { EmptyPageComponent } from './empty-page/empty-page.component';
 import { RouterModule } from '@angular/router';
+import { ProductListComponent } from './product-list/product-list.component';
 
 
 
 @NgModule({
   declarations: [
     ProductCardComponent,
+    ProductListComponent,
     EmptyPageComponent,
   ],
   imports: [
@@ -24,6 +26,7 @@ import { RouterModule } from '@angular/router';
   ],
   exports: [
     ProductCardComponent,
+    ProductListComponent,
     EmptyPageComponent
   ]
 })

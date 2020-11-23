@@ -8,6 +8,9 @@ import { ShopService } from '@services/shop/shop.service';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { ValueType } from '@models/Common';
 import { getDiscountPrice, percentDecrease } from '@utils/calculation';
+import { UserInterface } from '@models/User';
+import { AuthService } from '@services/auth/auth.service';
+import { AlertService } from '@services/alert/alert.service';
 
 type Image = {
   url: string;
@@ -25,7 +28,6 @@ export class ProductCardComponent implements OnInit, OnDestroy {
   @Input() id: string;
   @Input() url: string;
   @Input() images: Image[] = [];
-  @Input() heart = false;
   @Input() title: string;
   @Input() strikePrice: number;
   @Input() price: number;
@@ -34,18 +36,32 @@ export class ProductCardComponent implements OnInit, OnDestroy {
 
   @Output() heartCallback = new EventEmitter<string>();
 
+  heart = false;
+  heartLoading = false;
   discount: number;
   hover = false;
   faHeartR = faHeartR;
   faHeartS = faHeartS;
   accentText: string;
 
+  user: UserInterface;
   settings: GeneralSettings;
-  settingsSubscription: Subscription;
+  private userSubscription: Subscription;
+  private settingsSubscription: Subscription;
 
-  constructor(private shop: ShopService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService) { }
 
   ngOnInit(): void {
+    this.userSubscription = this.auth.getCurrentUserDocument().subscribe(user => {
+      if (user) {
+        this.user = user;
+        if (user.wishlist.includes(this.id)) {
+          this.heart = true;
+        } else {
+          this.heart = false;
+        }
+      }
+    });
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => {
       this.settings = settings;
       this.accentText = `text-${settings.accentColor}-500`;
@@ -57,6 +73,9 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     if (this.settingsSubscription && !this.settingsSubscription.closed) {
       this.settingsSubscription.unsubscribe();
     }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   toggleHover() {
@@ -65,11 +84,19 @@ export class ProductCardComponent implements OnInit, OnDestroy {
 
   async heartClick($event: Event) {
     $event.stopPropagation();
+    this.heartLoading = true;
     this.heartCallback.emit(this.id);
-    try{
-      await this.shop.addToWishlist(this.id);
+    try {
+      if (this.heart) {
+        await this.shop.removeFromWishlist(this.id);
+      } else {
+        await this.shop.addToWishlist(this.id);
+      }
     }
-    catch (err){}
+    catch (err){
+      this.handleError(err);
+    }
+    this.heartLoading = false;
   }
 
   trackByFn(index: number, item: Image) {
@@ -92,6 +119,10 @@ export class ProductCardComponent implements OnInit, OnDestroy {
         this.price = getDiscountPrice(this.price, this.discountValue);
         break;
     }
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err });
   }
 
 }

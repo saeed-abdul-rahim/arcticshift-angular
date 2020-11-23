@@ -40,6 +40,8 @@ import {
   VOUCHER,
   WAREHOUSE
 } from '@constants/routes';
+import { GeneralSettings } from '@models/GeneralSettings';
+import { ShopService } from '@services/shop/shop.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -91,7 +93,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   showDiscount = false;
   showConfiguration = false;
 
-  constructor(private adminNavService: AdminNavService, private router: Router) {
+  settings: GeneralSettings;
+  settingsSubscription: Subscription;
+
+  constructor(private adminNavService: AdminNavService, private router: Router, private shop: ShopService) {
     this.urlSubscription = this.adminNavService.getCurrentUrl().subscribe(url => {
       this.currentUrl = url;
       this.setCurrentPath();
@@ -104,6 +109,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.showConfiguration = true;
       }
     });
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
   }
 
   ngOnInit(): void {
@@ -112,6 +118,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.urlSubscription && !this.urlSubscription.closed) {
       this.urlSubscription.unsubscribe();
+    }
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
     }
   }
 

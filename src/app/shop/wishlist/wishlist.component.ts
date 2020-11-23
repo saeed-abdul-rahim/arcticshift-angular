@@ -1,24 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
-import { faTicketAlt } from '@fortawesome/free-solid-svg-icons/faTicketAlt';
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons/faMapMarkerAlt';
 
-import { CART } from '@constants/routes';
-import { IMAGE_XS } from '@constants/imageSize';
 import { GeneralSettings } from '@models/GeneralSettings';
-import { Content } from '@models/Common';
-import { OrderInterface } from '@models/Order';
-import { VariantExtended } from '@models/Variant';
 import { ShopService } from '@services/shop/shop.service';
 import { AlertService } from '@services/alert/alert.service';
-import { countryAlphaList } from '@utils/countryAlphaList';
-import { FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { AuthService } from '@services/auth/auth.service';
 import { UserInterface } from '@models/User';
+import { isBothArrEqual } from '@utils/arrUtils';
+import { ProductInterface } from '@models/Product';
+import { setProducts } from '@utils/productUtils';
+import { IMAGE_L } from '@constants/imageSize';
+import { Router } from '@angular/router';
 
 
 
@@ -30,52 +24,50 @@ import { UserInterface } from '@models/User';
 })
 export class WishlistComponent implements OnInit, OnDestroy {
 
-
-  faMapMarkerAlt = faMapMarkerAlt;
-  faTicketAlt = faTicketAlt;
-  faChevronDown = faChevronDown;
   faTimes = faTimes;
-  countryAlphaList = countryAlphaList;
 
-  cartRoute = `/${CART}`;
-  imageSize = IMAGE_XS;
-  showCoupon = false;
-  variantsLoading = false;
-  voucherLoading = false;
-  voucherSuccess = false;
-  draftLoading = false;
-  totalLoading = false;
-  updateLoading = false;
-  updateSuccess = false;
-  available = false;
-
+  loading = false;
   settings: GeneralSettings;
-  draft: OrderInterface;
   user: UserInterface;
-  variants: VariantExtended[] = [];
   saleDiscounts: SaleDiscountInterface[] = [];
-  variantForm: FormGroup;
+  products: ProductInterface & SaleDiscountInterface[] = [];
+  wishlist: string[] = [];
 
-  private draftSubscription: Subscription;
-  private variantsSubscription: Subscription;
+  private userSubscription: Subscription;
   private settingsSubscription: Subscription;
+  private productsSubscription: Subscription;
   private saleDiscountSubscription: Subscription;
 
-  constructor(private shop: ShopService, private router: Router,
-              private auth: AuthService, private alert: AlertService) { }
+  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService, private router: Router) { }
 
   ngOnInit(): void {
+    this.getSaleDiscounts();
+    this.userSubscription = this.auth.getCurrentUserDocument().subscribe(user => {
+      if (user) {
+        this.user = user;
+        const { wishlist } = user;
+        if (!isBothArrEqual(wishlist, this.wishlist)) {
+          this.loading = true;
+          this.productsSubscription = this.shop.getProductbyIds(wishlist).subscribe(products => {
+            this.products = setProducts(products, IMAGE_L, this.saleDiscounts);
+          });
+        } else {
+          this.products = [];
+          this.router.navigateByUrl('/');
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
     if (this.settingsSubscription && !this.settingsSubscription.closed) {
       this.settingsSubscription.unsubscribe();
     }
-    if (this.draftSubscription && !this.draftSubscription.closed) {
-      this.draftSubscription.unsubscribe();
-    }
-    if (this.variantsSubscription && !this.variantsSubscription.closed) {
-      this.variantsSubscription.unsubscribe();
+    if (this.productsSubscription && !this.productsSubscription.closed) {
+      this.productsSubscription.unsubscribe();
     }
     if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
       this.saleDiscountSubscription.unsubscribe();
@@ -88,31 +80,6 @@ export class WishlistComponent implements OnInit, OnDestroy {
 
   getWishlist(){
     this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
-  }
-
-
-  async removeVariant(id: string) {
-    const { orderId } = this.draft;
-    this.totalLoading = true;
-    try {
-      await this.shop.removeVariantFromCart(orderId, id);
-    } catch (err) {
-      this.handleError(err);
-    }
-    this.totalLoading = false;
-  }
-
-  getImage(images: Content[]) {
-    if (!images || images.length === 0) { return; }
-    const image = images[0];
-    const { thumbnails } = image;
-    const thumbnail = thumbnails.find(thumb => thumb.dimension === this.imageSize);
-    return thumbnail.url;
-  }
-
-
-  navigateToCart() {
-    this.router.navigateByUrl(this.cartRoute);
   }
 
   handleError(err: any) {

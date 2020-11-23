@@ -216,7 +216,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           contact: phone,
           email
         },
-        handler: () => this.router.navigateByUrl('/')
+        handler: () => this.router.navigateByUrl('', { state: { orderCompleted: true } })
       };
       const razorpay = new window.Razorpay(options);
       razorpay.open();

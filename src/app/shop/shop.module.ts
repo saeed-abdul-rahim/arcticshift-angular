@@ -12,7 +12,6 @@ import { ShopComponent } from './shop.component';
 import { HomeComponent } from './home/home.component';
 import { ShopComponentsModule } from './shop-components/shop-components.module';
 import { NavbarComponent } from './navbar/navbar.component';
-import { ProductListComponent } from './product-list/product-list.component';
 import { FilterProductComponent } from './filter-product/filter-product.component';
 import { ProductService } from '@services/product/product.service';
 import { VariantComponent } from './variant/variant.component';
@@ -37,7 +36,6 @@ import { ModalService } from '@services/modal/modal.service';
     ShopComponent,
     HomeComponent,
     NavbarComponent,
-    ProductListComponent,
     FilterProductComponent,
     VariantComponent,
     CartComponent,

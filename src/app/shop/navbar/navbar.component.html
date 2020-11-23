@@ -47,7 +47,7 @@
                 <fa-icon [icon]="faSearch"></fa-icon>
             </a>
 
-            <a class="px-3 inline-block no-underline hover:text-black cursor-pointer" routerLink="{{wishlistRoute}}"
+            <a class="px-3 inline-block no-underline hover:text-black cursor-pointer relative" routerLink="{{wishlistRoute}}"
                 *ngIf="(!showSearch && isMobile) || !isMobile">
                 <fa-icon [icon]="faHeart"></fa-icon>
                 <span *ngIf="user && user.wishlist.length > 0"

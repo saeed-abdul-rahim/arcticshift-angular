@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
 
@@ -6,6 +6,8 @@ import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
 import { inOut } from '@animations/inOut';
 import { setTimeout } from '@utils/setTimeout';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { GeneralSettings } from '@models/GeneralSettings';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +15,7 @@ import { setTimeout } from '@utils/setTimeout';
   styleUrls: ['./login.component.css'],
   animations: [inOut]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   faCheckCircle = faCheckCircle;
 
@@ -25,6 +27,9 @@ export class LoginComponent implements OnInit {
   signInForm: FormGroup;
 
   currentDate = new Date();
+
+  settings: GeneralSettings;
+  settingsSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private auth: AuthService,
               private router: Router, private cdr: ChangeDetectorRef) {
@@ -40,6 +45,12 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
+    }
   }
 
   get signInFormControls() { return this.signInForm.controls; }

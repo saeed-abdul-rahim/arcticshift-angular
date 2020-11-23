@@ -1,23 +1,18 @@
-
 <footer class="flex justify-between py-5 bg-gray-800 text-gray-500 p-4 ">
 
     <ul class="flex flex-col sm:flex-row px-3 ">
-   <li><a href="#" class="px-3 hover:text-yellow-100">About Us</a></li>
-   <li><a href="#" class="px-3 hover:text-yellow-100">Blog</a></li>
-   <li><a href="#" class="px-3 hover:text-yellow-100">FAQs</a></li>
-   <li><a href="#" class="px-3 hover:text-yellow-100">Order Tracking</a></li>
-   <li><a href="#" class="px-3 hover:text-yellow-100">Contact</a></li>
-   <li><a href="#" class="px-3 hover:text-yellow-100">© By ArcticMade</a></li>
+        <li><a href="#" class="px-3 hover:text-gray-300">Contact</a></li>
+        <li><a href="#" class="px-3 capitalize hover:text-gray-300" *ngIf="settings">© {{ settings.name }} {{ year }}</a></li>
     </ul>
 
     <div class="space-x-2">
-        <i class="px-2 hover:text-yellow-100">
+        <i class="px-2 hover:text-gray-300" *ngIf="settings && settings.instagram">
             <fa-icon [icon]="faInstagram"></fa-icon>
         </i>
-        <i class="px-2 hover:text-yellow-100">
+        <i class="px-2 hover:text-gray-300" *ngIf="settings && settings.facebook">
             <fa-icon [icon]="faFacebook"></fa-icon>
         </i>
-        <i class="px-2 hover:text-yellow-100">
+        <i class="px-2 hover:text-gray-300" *ngIf="settings && settings.twitter">
             <fa-icon [icon]="faTwitter"></fa-icon>
         </i>
     </div>

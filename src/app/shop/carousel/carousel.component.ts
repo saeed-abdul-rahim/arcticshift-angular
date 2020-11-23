@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IMAGE_XL } from '@constants/imageSize';
+import { IMAGE_L } from '@constants/imageSize';
 import { CollectionInterface } from '@models/Collection';
 import { Content } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
@@ -25,7 +25,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   selectedImage = '';
   selectedThumbnail = '';
   carouselImages: any[] = [];
-  carouselImageSize = IMAGE_XL;
+  carouselImageSize = IMAGE_L;
 
   constructor(private shop: ShopService, private alert: AlertService) { }
 
@@ -47,12 +47,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
           const { collectionId, name, images } = collection;
           if (images.length > 0) {
             const thumbnail = this.setCarouselImages(images, name);
-            console.log(thumbnail);
             return {collectionId, ...thumbnail};
           }
         });
         this.carouselImages = thumbnails;
-        console.log(this.carouselImages);
       }
     }, error => this.handleError(error.message));
   }

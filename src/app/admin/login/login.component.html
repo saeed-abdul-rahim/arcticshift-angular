@@ -1,17 +1,8 @@
-<nav
-  class="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg"
->
-  <div
-    class="container px-4 mx-auto flex flex-wrap items-center justify-between"
-  >
-    <div
-      class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start"
-    >
-      <a
-        class="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase text-white"
-        href=""
-        >Arcticshift</a
-      >
+<nav class="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
+  <div class="container px-4 mx-auto flex flex-wrap items-center justify-between">
+    <div class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
+      <a class="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase text-white"
+        href=""> {{ settings && settings.name }} </a>
     </div>
   </div>
 </nav>
@@ -20,43 +11,23 @@
   <div class="container mx-auto px-4 h-full">
     <div class="flex content-center items-center justify-center h-full">
       <div class="w-full lg:w-4/12 px-4">
-        <div
-          class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0"
-        >
+        <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0">
           <div class="rounded-t mb-0 px-6 py-6">
-            
+
           </div>
           <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
             <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
               <div class="relative w-full mb-3">
-                <label
-                  class="arc-label"
-                  for="grid-password"
-                  >Email</label
-                ><input
-                  type="email"
-                  class="arc-input placeholder-gray-400 w-full"
-                  placeholder="Email"
+                <label class="arc-label" for="grid-password">Email</label><input type="email"
+                  class="arc-input placeholder-gray-400 w-full" placeholder="Email"
                   [ngClass]="emailDanger || emailControl.touched && emailControl.invalid ? 'border-red' : ''"
-                  formControlName="email"
-                  [ngModel]="emailControl.value"
-                  (ngModelChange)="emailDanger=false"
-                />
+                  formControlName="email" [ngModel]="emailControl.value" (ngModelChange)="emailDanger=false" />
               </div>
               <div class="relative w-full mb-3">
-                <label
-                  class="arc-label"
-                  for="grid-password"
-                  >Password</label
-                ><input
-                  type="password"
-                  class="arc-input placeholder-gray-400 w-full"
-                  placeholder="Password"
+                <label class="arc-label" for="grid-password">Password</label><input type="password"
+                  class="arc-input placeholder-gray-400 w-full" placeholder="Password"
                   [ngClass]="passwordDanger || passwordControl.touched && passwordControl.invalid ? 'border-red' : ''"
-                  formControlName="password"
-                  [ngModel]="passwordControl.value"
-                  (ngModelChange)="passwordDanger=false"
-                />
+                  formControlName="password" [ngModel]="passwordControl.value" (ngModelChange)="passwordDanger=false" />
               </div>
               <!-- <div>
                 <label class="inline-flex items-center cursor-pointer"
@@ -71,29 +42,18 @@
                 >
               </div> -->
               <div class="text-center mt-6">
-                <app-button
-                  [fullWidth]="true"
-                  [loading]="loading"
-                  [success]="success"
-                  [color]="'gray'"
-                  [dark]="true"
-                  [label]="'Sign In'"
-                  [submit]="true"
-                ></app-button>
+                <app-button [fullWidth]="true" [loading]="loading" [success]="success" [color]="'gray'" [dark]="true"
+                  [label]="'Sign In'" [submit]="true"></app-button>
               </div>
             </form>
           </div>
         </div>
         <div class="flex flex-wrap mt-6">
           <div class="w-1/2">
-            <a href="#pablo" class="text-gray-300"
-              ><small>Forgot password?</small></a
-            >
+            <a href="#pablo" class="text-gray-300"><small>Forgot password?</small></a>
           </div>
           <div class="w-1/2 text-right">
-            <a href="#pablo" class="text-gray-300"
-              ><small>Create new account</small></a
-            >
+            <a href="#pablo" class="text-gray-300"><small>Create new account</small></a>
           </div>
         </div>
       </div>
@@ -105,29 +65,17 @@
 <footer class="absolute w-full bottom-0 bg-gray-900 pb-6">
   <div class="container mx-auto px-4">
     <hr class="mb-6 border-b-1 border-gray-700" />
-    <div
-      class="flex flex-wrap items-center md:justify-between justify-center"
-    >
+    <div class="flex flex-wrap items-center md:justify-between justify-center">
       <div class="w-full md:w-4/12 px-4">
         <div class="flex flex-wrap text-sm text-white font-semibold py-1 justify-center">
           Copyright © {{currentDate | date: 'yyyy'}} &nbsp;
-          <a
-            href=""
-            class="hover:text-gray-400"
-            >Arcticshift</a
-          >
+          <a href="" class="hover:text-gray-400">{{ settings && settings.name }}</a>
         </div>
       </div>
       <div class="w-full md:w-8/12 px-4">
-        <ul
-          class="flex flex-wrap list-none md:justify-end justify-center"
-        >
+        <ul class="flex flex-wrap list-none md:justify-end justify-center">
           <li>
-            <a
-              href=""
-              class="text-white hover:text-gray-400 text-sm font-semibold block py-1 px-3"
-              >Go to Shop</a
-            >
+            <a href="" class="text-white hover:text-gray-400 text-sm font-semibold block py-1 px-3">Go to Shop</a>
           </li>
         </ul>
       </div>
