@@ -45,7 +45,7 @@
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Discount value"
             formControlName="value" />
           <span class="input-right-label">
-            {{ voucherFormControls.discountType.value !== 'percent' ?  shopData && shopData.currency : '%' }} </span>
+            {{ voucherFormControls.discountType.value !== 'percent' ?  settings && settings.currency : '%' }} </span>
         </div>
         <div class="w-full py-3 text-gray-900" *ngIf="edit">
           Voucher Specific Information

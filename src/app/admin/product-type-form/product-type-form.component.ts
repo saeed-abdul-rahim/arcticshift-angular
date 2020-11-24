@@ -13,8 +13,8 @@ import { AdminService } from '@services/admin/admin.service';
 import { AuthService } from '@services/auth/auth.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AlertService } from '@services/alert/alert.service';
-import { ShopInterface } from '@models/Shop';
 import { setTimeout } from '@utils/setTimeout';
+import { GeneralSettings } from '@models/GeneralSettings';
 
 type ListType = 'product' | 'variant';
 
@@ -57,18 +57,18 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
   variantAttributes: AttributeInterface[];
   attributes: AttributeInterface[];
   filteredAttributes: AttributeInterface[];
-  shopData: ShopInterface;
+  settings: GeneralSettings;
 
   userSubscription: Subscription;
   productTypeSubscription: Subscription;
   productAttributeSubscription: Subscription;
   variantAttributeSubscription: Subscription;
   attributeSubscription: Subscription;
-  shopSubscription: Subscription;
+  settingsSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private admin: AdminService, private authService: AuthService,
               private router: Router, private shop: ShopService, private cdr: ChangeDetectorRef, private alert: AlertService) {
-    this.shopSubscription = this.admin.getCurrentShop().subscribe(shopData => this.shopData = shopData);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
     this.userSubscription = this.authService.getCurrentUserStream().subscribe(user => {
       if (user) {
         const { shopId } = user;
@@ -102,8 +102,8 @@ export class ProductTypeFormComponent implements OnInit, OnDestroy {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
     }
-    if (this.shopSubscription && !this.shopSubscription.closed) {
-      this.shopSubscription.unsubscribe();
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
     }
     this.unsubscribeProductAttributes();
     this.unsubscribeVariantAttributes();

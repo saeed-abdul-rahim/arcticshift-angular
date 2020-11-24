@@ -229,12 +229,6 @@ export class DbService {
     return dbRef.collection(collectionName, ref => {
         let newRef: Query = ref;
         conditions.forEach(condition => {
-          const { field, type } = condition;
-          if (type === '!=' || type === '>=' || type === '<=' || type === '<' || type === '>' && (orderBy && orderBy.field !== field)) {
-            newRef = newRef.orderBy(field);
-          }
-        });
-        conditions.forEach(condition => {
             const { field, type, value, parentFields } = condition;
             if (parentFields && parentFields.length > 0) {
                 const whereField = `${parentFields.join('.')}.${field}`;

@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { ADD, shippingRoute } from '@constants/routes';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { RateType, ShippingInterface, ShippingRateInterface } from '@models/Shipping';
-import { ShopInterface } from '@models/Shop';
 import { WarehouseInterface } from '@models/Warehouse';
 import { AdminService } from '@services/admin/admin.service';
 import { AlertService } from '@services/alert/alert.service';
@@ -14,6 +13,7 @@ import { CountryAlphaList, countryAlphaList } from '@utils/countryAlphaList';
 import { toTitle } from '@utils/strUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { setTimeout } from '@utils/setTimeout';
+import { GeneralSettings } from '@models/GeneralSettings';
 
 @Component({
   selector: 'app-shipping-form',
@@ -58,7 +58,7 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   weightBasedRateSource: MatTableDataSource<ShippingRateInterface>;
   countryAlphaList = countryAlphaList;
 
-  shopData: ShopInterface;
+  settings: GeneralSettings;
   shipping: ShippingInterface;
   shippingRate: ShippingRateInterface;
   shippingRates: ShippingRateInterface[] = [];
@@ -71,13 +71,13 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
   shippingSubscription: Subscription;
   shippingRateSubscription: Subscription;
   warehouseSubscription: Subscription;
-  shopSubscription: Subscription;
+  settingsSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private router: Router, private cdr: ChangeDetectorRef,
               private admin: AdminService, private shop: ShopService, private alert: AlertService) {
     const shippingId = this.router.url.split('/').pop();
     this.countriesSource = new MatTableDataSource(countryAlphaList);
-    this.shopSubscription = this.admin.getCurrentShop().subscribe(shopData => this.shopData = shopData);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
     this.warehouseSubscription = this.admin.getWarehousesByShopId()
       .subscribe(warehouses => this.warehouses = warehouses);
     if (shippingId !== ADD) {
@@ -132,8 +132,8 @@ export class ShippingFormComponent implements OnInit, OnDestroy {
     if (this.warehouseSubscription && !this.warehouseSubscription.closed) {
       this.warehouseSubscription.unsubscribe();
     }
-    if (this.shopSubscription && !this.shopSubscription.closed) {
-      this.shopSubscription.unsubscribe();
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
     }
   }
 

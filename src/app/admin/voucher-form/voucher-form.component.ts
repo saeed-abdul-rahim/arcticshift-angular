@@ -11,8 +11,8 @@ import { AlertService } from '@services/alert/alert.service';
 import { ShopService } from '@services/shop/shop.service';
 import { dateToHrMin, mergeDateTime } from '@utils/datetime';
 import { CatalogTypeApi } from '@models/Common';
-import { ShopInterface } from '@models/Shop';
 import { setTimeout } from '@utils/setTimeout';
+import { GeneralSettings } from '@models/GeneralSettings';
 
 @Component({
   selector: 'app-voucher-form',
@@ -32,17 +32,17 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   edit = false;
   showMeEndDate = false;
 
-  shopData: ShopInterface;
+  settings: GeneralSettings;
   voucherRoute = voucherRoute;
   voucher: VoucherInterface;
   voucherForm: FormGroup;
 
   voucherSubscription: Subscription;
-  shopSubscription: Subscription;
+  settingsSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private admin: AdminService, private cdr: ChangeDetectorRef,
               private router: Router, private shop: ShopService, private alert: AlertService) {
-    this.shopSubscription = this.admin.getCurrentShop().subscribe(sh => this.shopData = sh);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
     const voucherId = this.router.url.split('/').pop();
     if (voucherId !== ADD) {
       this.edit = true;
@@ -80,8 +80,8 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
     if (this.voucherSubscription && !this.voucherSubscription.closed) {
       this.voucherSubscription.unsubscribe();
     }
-    if (this.shopSubscription && !this.shopSubscription.closed) {
-      this.shopSubscription.unsubscribe();
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
     }
   }
 

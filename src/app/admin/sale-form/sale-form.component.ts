@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { ADD, saleDiscountRoute } from '@constants/routes';
 import { CatalogTypeApi } from '@models/Common';
 import { AddCatalogEvent, RemoveCatalogEvent } from '@models/Event';
+import { GeneralSettings } from '@models/GeneralSettings';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
-import { ShopInterface } from '@models/Shop';
 import { AdminService } from '@services/admin/admin.service';
 import { AlertService } from '@services/alert/alert.service';
 
@@ -32,17 +32,18 @@ export class SaleFormComponent implements OnInit, OnDestroy {
   showModal = false;
   tabDeleteLoading = false;
 
-  shopData: ShopInterface;
+  settings: GeneralSettings;
   saleRoute = saleDiscountRoute;
   saleDiscount: SaleDiscountInterface;
   saleForm: FormGroup;
 
   saleSubscription: Subscription;
   shopSubscription: Subscription;
+  settingsSubscription: Subscription;
 
   constructor(private formbuilder: FormBuilder, private admin: AdminService, private cdr: ChangeDetectorRef,
               private router: Router, private shop: ShopService, private alert: AlertService) {
-    this.shopSubscription = this.admin.getCurrentShop().subscribe(sh => this.shopData = sh);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
     const saleId = this.router.url.split('/').pop();
     if (saleId !== ADD) {
       this.edit = true;
@@ -76,8 +77,8 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     if (this.saleSubscription && !this.saleSubscription.closed) {
       this.saleSubscription.unsubscribe();
     }
-    if (this.shopSubscription && !this.shopSubscription.closed) {
-      this.shopSubscription.unsubscribe();
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
     }
   }
 

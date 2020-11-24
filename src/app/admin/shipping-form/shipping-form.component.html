@@ -223,10 +223,10 @@
         <ng-container matColumnDef="range">
           <th mat-header-cell *matHeaderCellDef>Value Range</th>
           <td mat-cell *matCellDef="let row" (click)="editRate('price', row.name)">
-            <div *ngIf="row.noValueLimit">No Limit</div>
-            <div *ngIf="!row.noValueLimit">
-              from {{row.minValue | currency: shopData.currency}}
-              {{ row.maxValue && row.maxValue > 0 ? 'to ' + (row.maxValue | currency: shopData.currency) : ''}}
+            <div *ngIf="!row.noValueLimit">No Limit</div>
+            <div *ngIf="row.noValueLimit">
+              {{ row.minValue && row.minValue >= 0 ? 'from ' + (row.minValue | currency: settings.currency) : ''}}
+              {{ row.maxValue && row.maxValue > 0 ? 'to ' + (row.maxValue | currency: settings.currency) : ''}}
             </div>
           </td>
         </ng-container>
@@ -236,7 +236,7 @@
           <td mat-cell *matCellDef="let row" class="padding-0">
             <div class="flex flex-wrap relative align-middle">
               <div class="relative w-full pl-0 pr-5 py-3" (click)="editRate('price', row.name)">
-                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shopData.currency)}}&nbsp;
+                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: settings.currency)}}&nbsp;
               </div>
               <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('price', row.name, row.id)">
                 <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
@@ -267,10 +267,10 @@
         <ng-container matColumnDef="range">
           <th mat-header-cell *matHeaderCellDef>Value Range</th>
           <td mat-cell *matCellDef="let row" (click)="editRate('weight', row.name)">
-            <div *ngIf="row.noValueLimit">No Limit</div>
-            <div *ngIf="!row.noValueLimit">
-              from {{row.minValue}} {{shopData.weightUnit}}
-              {{ row.maxValue && row.maxValue > 0 ? 'to ' + row.maxValue + ' ' + shopData.weightUnit : ''}}
+            <div *ngIf="!row.noValueLimit">No Limit</div>
+            <div *ngIf="row.noValueLimit">
+              {{row.minValue && row.minValue >= 0 ? 'from ' + row.minValue + ' ' + settings.weightUnit : ''}}
+              {{ row.maxValue && row.maxValue > 0 ? 'to ' + row.maxValue + ' ' + settings.weightUnit : ''}}
             </div>
           </td>
         </ng-container>
@@ -280,7 +280,7 @@
           <td mat-cell *matCellDef="let row" class="padding-0">
             <div class="flex flex-wrap relative align-middle">
               <div class="relative w-full pl-0 pr-5 py-3" (click)="editRate('weight', row.name)">
-                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: shopData.currency)}}&nbsp;
+                {{row.freeShipping ? 'Free Shipping' : (row.price | currency: settings.currency)}}&nbsp;
               </div>
               <div class="absolute right-0 mx-2 py-3" (click)="deleteModal('weight', row.name, row.id)">
                 <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
@@ -357,7 +357,7 @@
               <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Rate Price"
                 formControlName="price">
               <span class="input-right-label">
-                {{shopData.currency}}
+                {{settings.currency}}
               </span>
             </div>
           </div>

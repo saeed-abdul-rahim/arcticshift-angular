@@ -36,7 +36,7 @@
     "angular-ontouch": "^1.0.5",
     "angular-responsive-carousel": "^1.5.11",
     "browser-image-compression": "^1.0.12",
-    "firebase": "^7.21.1",
+    "firebase": "^7.19.1",
     "lodash": "^4.17.20",
     "module-alias": "^2.2.2",
     "ng-click-outside": "^7.0.1",

@@ -33,7 +33,7 @@
         <div class="w-full mb-3 relative">
           <input type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Discount value"
             [ngClass]="saleFormControls.value.touched && saleFormControls.value.invalid ? 'border-red' : ''" formControlName="value" />
-          <span class="input-right-label"> {{ saleFormControls.discountType.value !== 'percent' ?  shopData && shopData.currency : '%' }} </span>
+          <span class="input-right-label"> {{ saleFormControls.discountType.value !== 'percent' ?  settings && settings.currency : '%' }} </span>
         </div>
       </div>
     </div>
