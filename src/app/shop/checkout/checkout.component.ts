@@ -7,7 +7,7 @@ import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { RazorpayOptions } from '@models/RazorpayOptions';
 import { OrderInterface } from '@models/Order';
-import { VariantExtended } from '@models/Variant';
+import { VariantExtended, VariantInterface } from '@models/Variant';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { Content } from '@models/Common';
 import { Address, User } from '@models/User';
@@ -17,6 +17,7 @@ import { countryList, CountryListType, CountryStateType } from '@utils/countryLi
 import { AlertService } from '@services/alert/alert.service';
 import { environment } from '@environment';
 import { isProductAvailable } from '@utils/productUtils';
+import { ShippingRateInterface } from '@models/Shipping';
 
 @Component({
   selector: 'app-checkout',
@@ -50,11 +51,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   settings: GeneralSettings;
   draft: OrderInterface;
   variants: VariantExtended[];
+  shippingRates: ShippingRateInterface[] = [];
   imageSize = IMAGE_SS;
   loading = false;
   draftLoading = false;
   variantsLoading = false;
   available = false;
+  countryAlpha: string;
 
   private razorpayKey: string;
   private draftSubscription: Subscription;
@@ -99,6 +102,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
     }
+    this.cart.unsetShipping();
   }
 
   get shippingFormControls() {
@@ -137,15 +141,27 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   setBillingState(country: CountryListType) {
     this.billingFormControls.state.patchValue(null);
+    if (!country) {
+      this.billingStates = [];
+      this.countryAlpha = '';
+      return;
+    }
     this.billingStates = country.states;
+    if (!this.shippingAddressCheck) {
+      this.countryAlpha = country.alpha3;
+    }
   }
 
   setShippingState(country: CountryListType) {
     this.shippingFormControls.state.patchValue(null);
+    if (!country) {
+      this.billingStates = [];
+      this.countryAlpha = '';
+      return;
+    }
     this.shippingStates = country.states;
+    this.countryAlpha = country.alpha3;
   }
-
-  async onSubmit() {}
 
   getProducts() {
     this.draftSubscription = this.cart.getProductsFromDraft().subscribe(data => {
@@ -176,7 +192,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   async pay() {
-    this.loading = true;
+    if (!this.available) { return; }
     if (this.billingForm.invalid) {
       this.invalidBillingForm = true;
       return;
@@ -185,6 +201,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.invalidShippingForm = true;
       return;
     }
+    this.loading = true;
     try {
       const { user, draft, billingFormControls, miscForm } = this;
       const { orderId } = draft;
@@ -245,6 +262,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } catch (err) {
       throw err;
     }
+  }
+
+  trackByFn(index: number, item: VariantInterface) {
+    return item.id;
   }
 
   handleError(err: any) {

@@ -1,2 +1,4 @@
-<app-product-list *ngIf="products.length > 0" [loading]="loading" [products]="products"></app-product-list>
-<app-empty-page *ngIf="products.length === 0 && !loading" [label]="'wishlist'"></app-empty-page>
+<div class="pb-20">
+    <app-product-list *ngIf="products.length > 0" [loading]="loading" [products]="products"></app-product-list>
+    <app-empty-page *ngIf="products.length === 0 && !loading" [label]="'wishlist'"></app-empty-page>
+</div>

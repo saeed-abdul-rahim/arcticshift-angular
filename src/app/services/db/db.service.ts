@@ -20,7 +20,7 @@ import { CollectionCondition, CollectionOrderBy } from '@models/Collection';
 import { Condition, OrderBy } from '@models/Common';
 import { ProductCondition, ProductOrderBy } from '@models/Product';
 import { ProductTypeCondition, ProductTypeOrderBy } from '@models/ProductType';
-import { ShippingCondition, ShippingOrderBy, ShippingRateCondition, ShippingRateOrderBy } from '@models/Shipping';
+import { ShippingCondition, ShippingJoinInterface, ShippingOrderBy, ShippingRateCondition, ShippingRateOrderBy } from '@models/Shipping';
 import { TaxCondition, TaxOrderBy } from '@models/Tax';
 import { VariantCondition, VariantOrderBy } from '@models/Variant';
 import { WarehouseCondition, WarehouseOrderBy } from '@models/Warehouse';
@@ -55,6 +55,7 @@ export class DbService {
   dbDraftsRoute: string;
 
   dbAttributeValuesRoutePath: string;
+  dbShippingRateRoutePath: string;
 
   constructor(private angularFire: AngularFirestore) {
     this.afs = this.angularFire;
@@ -106,6 +107,7 @@ export class DbService {
     this.dbInventoriesRoute = inventories;
 
     this.dbAttributeValuesRoutePath = `${this.dbPath}/${attributeValues}`;
+    this.dbShippingRateRoutePath = `${this.dbPath}/${shippingRates}`;
   }
 
   getAttributeByIds(attributeIds: string[]): Observable<AttributeJoinInterface[]> {
@@ -131,6 +133,13 @@ export class DbService {
     return getDataFromCollection(dbRef).pipe(
       leftJoin(this.afs, 'attributeId', dbAttributeValuesRoutePath)
     ) as Observable<AttributeJoinInterface[]>;
+  }
+
+  joinShippingRate(dbRef: any) {
+    const { dbShippingRateRoutePath } = this;
+    return getDataFromCollection(dbRef).pipe(
+      leftJoin(this.afs, 'shippingId', dbShippingRateRoutePath)
+    ) as Observable<ShippingJoinInterface[]>;
   }
 
   queryUsers(conditions?: UserCondition[], orderBy?: UserOrderBy, limit?: number) {

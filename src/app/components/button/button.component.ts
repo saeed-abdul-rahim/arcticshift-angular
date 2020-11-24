@@ -19,6 +19,7 @@ export class ButtonComponent implements OnInit {
   @Input() dark: boolean;
   @Input() submit = false;
   @Input() large = false;
+  @Input() disabled = false;
 
   faCheck = faCheck;
 

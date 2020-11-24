@@ -87,7 +87,7 @@ export class CartService {
       this.unsubscribeDraftProducts();
       this.draftProductsSubscription = this.getDraft().pipe(
         switchMap(draft => {
-          if (!draft) { return of(null); }
+          if (!draft || draft.variants.length === 0) { return of(null); }
           const { variants } = draft;
           const variantIds = draft.variants.map(variant => variant.variantId);
           return this.shop.getVariantByIds(variantIds).pipe(
@@ -115,6 +115,18 @@ export class CartService {
     return this.draftProducts$;
   }
 
+  async unsetShipping() {
+    if (this.draft.value && this.draft.value.shippingRateId) {
+      try {
+        console.log(this.draft.value);
+        const { orderId } = this.draft.value;
+        await this.shop.updateCartShipping(orderId, { shippingRateId: '' });
+      } catch (err) {
+        this.handleError(err);
+      }
+    }
+  }
+
   private getCurrentUser() {
     this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => {
       if (user) {
@@ -133,7 +145,7 @@ export class CartService {
   }
 
   private handleError(err: any) {
-    this.alert.alert({ message: err.message });
+    this.alert.alert({ message: err.message || err });
   }
 
 }

@@ -15,7 +15,6 @@ import { VariantExtended, VariantInterface } from '@models/Variant';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AlertService } from '@services/alert/alert.service';
-import { countryAlphaList } from '@utils/countryAlphaList';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { isProductAvailable } from '@utils/productUtils';
@@ -32,7 +31,6 @@ export class CartComponent implements OnInit, OnDestroy {
   faTicketAlt = faTicketAlt;
   faChevronDown = faChevronDown;
   faTimes = faTimes;
-  countryAlphaList = countryAlphaList;
 
   checkoutRoute = `/${CHECKOUT}`;
   imageSize = IMAGE_XS;

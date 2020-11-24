@@ -1,4 +1,4 @@
-<div class="flex flex-wrap px-3 md:px-10 md:mt-24 md:justify-between" *ngIf="variants.length > 0">
+<div class="flex flex-wrap px-3 md:px-10 md:justify-between pb-20" *ngIf="variants.length > 0">
     <div class="w-full md:w-7/12 mb-5">
         <div class="font-light text-2xl mb-3">
             Shopping Cart
@@ -32,7 +32,7 @@
             </div>
         </form>
     </div>
-    <div class="w-full md:w-4/12">
+    <div class="w-full md:w-4/12 mb-5 md:mb-0">
         <div class="font-light text-2xl">
             Cart Totals
         </div>
@@ -52,7 +52,7 @@
                 </app-button>
             </div>
         </div>
-        <app-cart-total></app-cart-total>
+        <app-cart-total [disableAddress]="false"></app-cart-total>
         <app-button *ngIf="available" color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
         </app-button>
     </div>

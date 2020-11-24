@@ -4,9 +4,11 @@
     <div
         class="relative w-11/12 my-3 mx-auto {{ size === 'large' ? 'max-w-6xl' : size === 'medium' ? 'max-w-3xl' : 'max-w-sm' }}">
         <!--content-->
-        <div #modalDiv class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+        <div #modalDiv
+            class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <!--header-->
-            <div class="flex items-start justify-between p-3 border-b border-solid border-gray-300 rounded-t" *ngIf="showHeader">
+            <div class="flex items-start justify-between p-3 border-b border-solid border-gray-300 rounded-t"
+                *ngIf="showHeader">
                 <h2 class="text-xl font-semibold text-gray-800 capitalize">
                     {{heading}}
                 </h2>
@@ -21,12 +23,14 @@
             </div>
             <!--body-->
             <div class="relative p-6 flex-auto">
-                <p class="text-gray-600 text-lg leading-relaxed max-h-64 relative" *ngIf="enableScroll ? 'overflow-y-auto overflow-x-hidden scrollbar' : 'overflow-visible'">
+                <div class="text-gray-600 text-lg leading-relaxed max-h-64 relative {{enableScroll}}"
+                    [ngClass]="enableScroll ? 'overflow-y-auto overflow-x-hidden scrollbar' : 'overflow-visible'">
                     <ng-container [ngTemplateOutlet]="bodyTemplate"></ng-container>
-                </p>
+                </div>
             </div>
             <!--footer-->
-            <div class="flex items-center justify-end p-3 border-t border-solid border-gray-300 rounded-b" *ngIf="showFooter">
+            <div class="flex items-center justify-end p-3 border-t border-solid border-gray-300 rounded-b"
+                *ngIf="showFooter">
                 <app-button [loading]="loading" [success]="success" [color]="buttonColor" [label]="buttonLabel"
                     [submit]="submit" (click)="modalFn()">
                 </app-button>

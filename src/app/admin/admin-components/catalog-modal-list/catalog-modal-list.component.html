@@ -2,7 +2,7 @@
 [size]="'medium'" [bodyTemplate]="allCatalogTable" (modalCallback)="modalCallback()" [submit]="false"></app-modal>
 
 <ng-template #allCatalogTable>
-    <div class="overflow-x-scroll">
+    <div class="overflow-scroll">
         <app-spinner class="data-empty" *ngIf="allCatalogLoading" [size]="'5'"></app-spinner>
         <div class="w-full" *ngIf="!allCatalogLoading">
             <div *ngIf="filteredCatalog.length === 0" class="data-empty">No data available</div>

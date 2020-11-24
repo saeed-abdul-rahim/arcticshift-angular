@@ -26,6 +26,10 @@ export interface ShippingRateInterface extends CommonInterface {
     freeShipping?: boolean;
 }
 
+export interface ShippingJoinInterface extends ShippingInterface {
+    shippingRates?: ShippingRateInterface[];
+}
+
 export type ShippingCondition = Condition & {
     field: ShippingFields
 };

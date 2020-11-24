@@ -126,6 +126,15 @@ export class ShopService {
     }
   }
 
+  async updateCartShipping(orderId: string, data: OrderInterface) {
+    const { req, apiOrder, user } = this;
+    try {
+      return await req.patch(`${apiOrder}/${orderId}/shipping`, { data: { ...data, userId: user.uid } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async updateCartVariants(orderId: string, data: OrderInterface) {
     const { req, apiOrder, user } = this;
     try {
@@ -391,6 +400,13 @@ export class ShopService {
       { field: 'shippingId', type: '==', value: shippingId }
     ]);
     return getDataFromCollection(shippingRate) as Observable<ShippingRateInterface[]>;
+  }
+
+  getShippingByCountry(country: string) {
+    const shippingQuery = this.dbS.queryShipping([
+      { field: 'countries', type: 'array-contains', value: country }
+    ]);
+    return this.dbS.joinShippingRate(shippingQuery);
   }
 
   getAttributesByProductTypeId(productTypeId: string): Observable<AttributeJoinInterface[]> {

@@ -11,19 +11,30 @@
                 {{ draft.subTotal | currency: settings.currency }}
             </div>
         </div>
-        <div class="border-b border-gray-300 p-5" *ngIf="draft && draft.shippingAddress && !disableAddress">
+        <div class="border-b border-gray-300 p-5" *ngIf="freeShipping">
+            <div class="text-center font-semibold text-green-600">FREE SHIPPING</div>
+        </div>
+        <div class="border-b border-gray-300 p-5"
+            *ngIf="((draft && draft.shippingAddress && !disableAddress) || shippingRates.length > 1) && !freeShipping">
             Shipping
-            <div class="flex my-auto py-5">
-                <input type="radio" name="shippingType" class="my-auto" />
-                <div class="ml-2 flex flex-1 justify-between">
-                    <label for="">Label</label>
-                    <label for="">Label2</label>
+            <div class="flex flex-col my-auto pt-3">
+                <div class="flex" *ngFor="let shippingRate of shippingRates; trackBy: trackByFn">
+                    <input #shippingRateRadio type="radio" name="shippingRate" class="my-auto"
+                        value="{{shippingRate.id}}" (change)="setShippingRate(shippingRateRadio.value)" />
+                    <div class="ml-2 flex flex-1 justify-between">
+                        <label for=""> {{shippingRate.name}} </label>
+                        <label for=""> {{shippingRate.price | currency: settings.currency }} </label>
+                    </div>
                 </div>
             </div>
-            <div class="mb-3">
+            <div class="my-3" *ngIf="draft && draft.shippingAddress && !disableAddress">
                 Shipping to
+                <span class="font-normal">
+                    {{ draft.shippingAddress.line1 }}, {{ draft.shippingAddress.area }}, {{ getCountryName(draft.shippingAddress.country, 'alpha3') }}
+                </span>
             </div>
-            <div class="mb-5 flex cursor-pointer" (click)="toggleAddress()">
+            <div class="mb-5 flex cursor-pointer" (click)="toggleAddress()"
+                *ngIf="draft && draft.shippingAddress && !disableAddress">
                 <fa-icon class="mr-2" [icon]="faMapMarkerAlt"></fa-icon>
                 Change Address
                 <fa-icon class="ml-2" [icon]="faChevronDown" size="xs"></fa-icon>

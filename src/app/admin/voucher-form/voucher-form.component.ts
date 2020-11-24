@@ -58,7 +58,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.voucherForm = this.formbuilder.group({
       code: ['', Validators.required],
-      value: ['', Validators.required],
+      value: [0],
       discountType: [''],
       minimumQuantity: [''],
       orderValue: [null],
@@ -146,6 +146,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       endDateCheck
     } = this.voucherFormControls;
     if (this.voucherForm.invalid) {
+      console.log(this.voucherForm.controls);
       return;
     }
     try {
