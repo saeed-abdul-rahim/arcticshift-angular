@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -10,6 +10,9 @@ import { map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { VariantInterface } from '@models/Variant';
 import { AlertService } from '@services/alert/alert.service';
+import { RazorpayOptions } from '@models/RazorpayOptions';
+import { environment } from '@environment';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class CartService {
@@ -19,6 +22,10 @@ export class CartService {
   private draft = new BehaviorSubject<OrderInterface>(null);
   private draftProductsLoading = new BehaviorSubject<boolean>(false);
   private draftProducts = new BehaviorSubject<{ draft: OrderInterface, variants: VariantInterface[] }>(null);
+  private shippingRateIds = new BehaviorSubject<string[]>([]);
+  private isDeliverable = new BehaviorSubject<boolean>(false);
+  private cod = new BehaviorSubject<boolean>(false);
+
   private draftSubscription: Subscription;
   private draftProductsSubscription: Subscription;
   private userSubscription: Subscription;
@@ -27,8 +34,12 @@ export class CartService {
   draftLoading$ = this.draftLoading.asObservable();
   draftProducts$ = this.draftProducts.asObservable();
   draftProductsLoading$ = this.draftProductsLoading.asObservable();
+  shippingRateIds$ = this.shippingRateIds.asObservable();
+  isDeliverable$ = this.isDeliverable.asObservable();
+  cod$ = this.cod.asObservable();
 
-  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService) {
+  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService,
+              private router: Router, private ngZone: NgZone) {
     this.getCurrentUser();
   }
 
@@ -56,12 +67,40 @@ export class CartService {
     return this.draft$;
   }
 
+  getDraftProducts() {
+    return this.draftProducts$;
+  }
+
   getDraftLoading() {
     return this.draftLoading$;
   }
 
   getProductsLoading() {
     return this.draftProductsLoading$;
+  }
+
+  setShippingRateIds(ids: string[]) {
+    this.shippingRateIds.next(ids);
+  }
+
+  getShippingRateIds() {
+    return this.shippingRateIds$;
+  }
+
+  setIsDeliverable(isDeliverable: boolean) {
+    this.isDeliverable.next(isDeliverable);
+  }
+
+  getIsDeliverable() {
+    return this.isDeliverable$;
+  }
+
+  setCod(cod: boolean) {
+    this.cod.next(cod);
+  }
+
+  getCod() {
+    return this.cod$;
   }
 
   getDraftOrdersDb() {
@@ -118,12 +157,45 @@ export class CartService {
   async unsetShipping() {
     if (this.draft.value && this.draft.value.shippingRateId) {
       try {
-        console.log(this.draft.value);
         const { orderId } = this.draft.value;
         await this.shop.updateCartShipping(orderId, { shippingRateId: '' });
-      } catch (err) {
-        this.handleError(err);
+      } catch (err) {}
+    }
+  }
+
+  async pay(data: OrderInterface, email?: string, phone?: string) {
+    try {
+      if (!this.isDeliverable.value) {
+        throw new Error('Not deliverable');
       }
+      const shippingRateIds = this.shippingRateIds.value;
+      const draft = this.draft.value;
+      if (shippingRateIds.length > 0 && !draft.shippingRateId) {
+        throw new Error('Select Shipping');
+      }
+      const cod = this.cod.value;
+      if (cod) {
+        await this.shop.finalizeCart({ ...data, cod });
+        this.router.navigateByUrl('', { state: { orderCompleted: true } });
+      } else {
+        const gatewayOrderDetails = await this.shop.finalizeCart(data);
+        const { amount, currency, id } = gatewayOrderDetails;
+        const options: RazorpayOptions = {
+          key: environment.razorPay.key,
+          amount,
+          currency,
+          order_id: id,
+          prefill: {
+            contact: phone,
+            email
+          },
+          handler: () => this.ngZone.run(() => this.router.navigateByUrl('', { state: { orderCompleted: true } }))
+        };
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      }
+    } catch (err) {
+      throw err;
     }
   }
 

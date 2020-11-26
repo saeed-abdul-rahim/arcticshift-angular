@@ -600,6 +600,15 @@ export class AdminService {
     }
   }
 
+  async captureAmount(orderId: string, capturedAmount: number) {
+    const { apiOrder } = this;
+    try {
+      return await this.req.patch(`${apiOrder}/${orderId}/capture`, { data: { capturedAmount } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async updateSettings(data: GeneralSettings) {
     const { apiSettings } = this;
     try {

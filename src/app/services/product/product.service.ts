@@ -64,12 +64,18 @@ export class ProductService {
   }
 
   setProductCatColFilter(id: string, type: 'categoryId' | 'collectionId') {
-    const productFilter: ProductCondition = { field: type, type: 'array-contains', value: id };
+    let productFilter: ProductCondition;
+    if (type === 'categoryId') {
+      productFilter = { field: type, type: '==', value: id };
+    } else if (type === 'collectionId') {
+      productFilter = { field: type, type: 'array-contains', value: id };
+    }
     this.setProductFilters([productFilter]);
   }
 
   setProductAttributeFilter(attributeId: string, attributeValueId: string) {
-    const oldValues = this.productFilters.value;
+    let oldValues = this.productFilters.value;
+    oldValues = oldValues.filter(val => val.field !== attributeId);
     const productFilter: ProductCondition = { field: attributeId, type: '==', value: attributeValueId, parentFields: ['attributes'] };
     this.setProductFilters([...oldValues, productFilter]);
   }

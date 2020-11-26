@@ -47,7 +47,6 @@ export class DbService {
   dbAttributesRoute: string;
   dbAttributeValuesRoute: string;
   dbTaxesRoute: string;
-  dbInventoriesRoute: string;
   dbWarehouseRoute: string;
   dbShippingRoute: string;
   dbShippingRatesRoute: string;
@@ -74,7 +73,6 @@ export class DbService {
       attributes,
       attributeValues,
       taxes,
-      inventories,
       warehouses,
       shippings,
       shippingRates,
@@ -104,7 +102,6 @@ export class DbService {
     this.dbShippingRatesRoute = shippingRates;
     this.dbOrdersRoute = orders;
     this.dbDraftsRoute = drafts;
-    this.dbInventoriesRoute = inventories;
 
     this.dbAttributeValuesRoutePath = `${this.dbPath}/${attributeValues}`;
     this.dbShippingRateRoutePath = `${this.dbPath}/${shippingRates}`;

@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { AuthService } from '@services/auth/auth.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
-import { RazorpayOptions } from '@models/RazorpayOptions';
 import { OrderInterface } from '@models/Order';
 import { VariantExtended, VariantInterface } from '@models/Variant';
 import { GeneralSettings } from '@models/GeneralSettings';
@@ -15,9 +14,9 @@ import { homeRoute } from '@constants/routes';
 import { IMAGE_SS } from '@constants/imageSize';
 import { countryList, CountryListType, CountryStateType } from '@utils/countryList';
 import { AlertService } from '@services/alert/alert.service';
-import { environment } from '@environment';
 import { isProductAvailable } from '@utils/productUtils';
 import { ShippingRateInterface } from '@models/Shipping';
+import { countryCallCodes } from '@utils/countryCallCodes';
 
 @Component({
   selector: 'app-checkout',
@@ -27,11 +26,14 @@ import { ShippingRateInterface } from '@models/Shipping';
 export class CheckoutComponent implements OnInit, OnDestroy {
 
   countryList = countryList;
+  countryCallCodes = countryCallCodes;
   billingStates: CountryStateType[] = [];
   shippingStates: CountryStateType[] = [];
 
   shippingAddressCheck = false;
   isAnonymous = true;
+  checkZipCode = false;
+  zipCode = '';
 
   invalidBillingForm = false;
   invalidShippingForm = false;
@@ -59,7 +61,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   available = false;
   countryAlpha: string;
 
-  private razorpayKey: string;
   private draftSubscription: Subscription;
   private variantsSubscription: Subscription;
   private settingsSubscription: Subscription;
@@ -69,12 +70,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               private auth: AuthService, private router: Router, private alert: AlertService) { }
 
   ngOnInit(): void {
-    const { razorPay } = environment;
-    this.razorpayKey = razorPay.key;
-    this.miscForm = this.formBuilder.group({ notes: [''] });
+    this.miscForm = this.formBuilder.group({
+      notes: ['']
+    });
     this.billingForm = this.formBuilder.group({
       ...this.addressFormGroup,
-      name: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required],
+      phone: ['', Validators.required],
+      phoneCode: [null, Validators.required]
     });
     this.shippingForm = this.formBuilder.group(this.addressFormGroup);
     this.clearShippingAddressValidators();
@@ -102,7 +107,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
     }
-    this.cart.unsetShipping();
   }
 
   get shippingFormControls() {
@@ -111,6 +115,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   get billingFormControls() {
     return this.billingForm.controls;
+  }
+
+  get miscFormControls() {
+    return this.miscForm.controls;
   }
 
   setShippingAddressValidators() {
@@ -203,40 +211,30 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      const { user, draft, billingFormControls, miscForm } = this;
+      const { draft, billingFormControls, miscForm } = this;
       const { orderId } = draft;
-      const { phone, email } = user;
-      const { name } = billingFormControls;
+      const { firstName, lastName, email, phone, phoneCode } = billingFormControls;
+      const name = firstName.value + ' ' + lastName.value;
       const billingAddress = this.getAddress(this.billingForm);
-      billingAddress.name = name.value;
+      billingAddress.name = name;
+      billingAddress.firstName = firstName.value;
+      billingAddress.lastName = lastName.value;
       let shippingAddress: Address = null;
       if (this.shippingAddressCheck) {
         shippingAddress = this.getAddress(this.shippingForm);
-        shippingAddress.name = name.value;
+        shippingAddress.name = name;
+        shippingAddress.firstName = firstName.value;
+        shippingAddress.lastName = lastName.value;
       }
       const data: OrderInterface = {
         orderId,
-        phone,
-        email,
+        phone: phoneCode.value + phone.value,
+        email: email.value,
         billingAddress,
         shippingAddress,
         notes: miscForm.controls.notes.value
       };
-      const gatewayOrderDetails = await this.shop.finalizeCart(data);
-      const { amount, currency, id } = gatewayOrderDetails;
-      const options: RazorpayOptions = {
-        key: this.razorpayKey,
-        amount,
-        currency,
-        order_id: id,
-        prefill: {
-          contact: phone,
-          email
-        },
-        handler: () => this.router.navigateByUrl('', { state: { orderCompleted: true } })
-      };
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      await this.cart.pay(data, email.value, phoneCode.value + phone.value);
     } catch (err) {
       this.handleError(err);
     }
@@ -262,6 +260,20 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } catch (err) {
       throw err;
     }
+  }
+
+  billingZipCodeChange($event: any) {
+    const zip = $event.target.value;
+    if (!this.shippingAddressCheck) {
+      this.zipCode = zip;
+      this.checkZipCode = true;
+    }
+  }
+
+  shippingZipCodeChange($event: any) {
+    const zip = $event.target.value;
+    this.zipCode = zip;
+    this.checkZipCode = true;
   }
 
   trackByFn(index: number, item: VariantInterface) {

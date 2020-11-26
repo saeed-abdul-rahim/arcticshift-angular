@@ -26,6 +26,10 @@ export const leftJoin = (
           collectionData = data as any[];
 
           const reads$ = [];
+          if (collectionData.length === 0) {
+            reads$.push(of([]));
+          }
+
           for (const doc of collectionData) {
             // Push doc read to Array
 

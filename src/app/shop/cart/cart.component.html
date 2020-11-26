@@ -12,7 +12,8 @@
                         <div class="mb-auto md:my-auto text-base md:text-xl">
                             {{ variant.productName }} - {{ variant.name }}
                         </div>
-                        <app-counter-input *ngIf="variant.available" [formControl]="variantForm.controls[variant.id]" [label]="'Quantity'" [value]="variant.quantity" [valueMin]="1">
+                        <app-counter-input *ngIf="variant.available" [formControl]="variantForm.controls[variant.id]"
+                            [label]="'Quantity'" [value]="variant.quantity" [valueMin]="1">
                         </app-counter-input>
                         <div *ngIf="!variant.available" class="danger-label">Out of stock</div>
                     </div>
@@ -26,9 +27,12 @@
                     </div>
                 </div>
             </div>
-            <div class="flex pt-5 text-gray-600">
+            <div class="flex pt-5 text-gray-600 space-x-1">
+                <app-button class="w-full" [secondary]="true" [label]="'Continue Shopping'" [color]="'white'"
+                    [fullWidth]="true" (click)="navigateHome()"></app-button>
                 <app-button class="w-full" [secondary]="true" [label]="'Update Cart'" [color]="'white'"
-                    [fullWidth]="true" [loading]="updateLoading" [success]="updateSuccess" (click)="updateCart()"></app-button>
+                    [fullWidth]="true" [loading]="updateLoading" [success]="updateSuccess" (click)="updateCart()">
+                </app-button>
             </div>
         </form>
     </div>
@@ -53,12 +57,18 @@
             </div>
         </div>
         <app-cart-total [disableAddress]="false"></app-cart-total>
-        <app-button *ngIf="available" color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true" (click)="navigateToCheckout()">
-        </app-button>
+        <div *ngIf="available">
+            <app-button *ngIf="!draft.shippingAddress || !draft.billingAddress" color="gray" [label]="'Checkout'" [dark]="true" [fullWidth]="true"
+                (click)="navigateToCheckout()">
+            </app-button>
+            <app-button *ngIf="draft.shippingAddress" color="teal" [label]="'Buy'" [fullWidth]="true"
+                (click)="pay()" [loading]="loading">
+            </app-button>
+        </div>
     </div>
 </div>
-<div *ngIf="variantsLoading || draftLoading"
+<div *ngIf="variantsLoading || draftLoading || loading"
     class="w-full h-full bg-white opacity-50 z-20 flex items-center justify-center">
-    <app-spinner class="-mt-96" [size]="10"></app-spinner>
+    <app-spinner [size]="5"></app-spinner>
 </div>
-<app-empty-page *ngIf="variants.length === 0" [label]="'cart'"></app-empty-page>
+<app-empty-page *ngIf="variants.length === 0 && !loading" [label]="'cart'"></app-empty-page>

@@ -35,6 +35,7 @@ export class CartComponent implements OnInit, OnDestroy {
   checkoutRoute = `/${CHECKOUT}`;
   imageSize = IMAGE_XS;
   showCoupon = false;
+  loading = false;
   variantsLoading = false;
   voucherLoading = false;
   voucherSuccess = false;
@@ -161,6 +162,19 @@ export class CartComponent implements OnInit, OnDestroy {
     }
   }
 
+  async pay() {
+    this.loading = true;
+    try {
+      const { email, phone, orderId, shippingAddress, billingAddress } = this.draft;
+      await this.cart.pay({
+        orderId, shippingAddress, billingAddress
+      }, email, phone);
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.loading = false;
+  }
+
   trackByFn(index: number, item: VariantInterface) {
     return item.id;
   }
@@ -179,6 +193,10 @@ export class CartComponent implements OnInit, OnDestroy {
 
   navigateToCheckout() {
     this.router.navigateByUrl(this.checkoutRoute);
+  }
+
+  navigateHome() {
+    this.router.navigateByUrl('');
   }
 
   handleError(err: any) {

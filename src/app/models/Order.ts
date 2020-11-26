@@ -49,6 +49,7 @@ export interface OrderInterface extends CommonInterface {
     shippingCharge?: number;
     total?: number;
     capturedAmount?: number;
+    cod?: boolean;
     payment?: Payment[];
     notes?: string;
     data?: OrderData;

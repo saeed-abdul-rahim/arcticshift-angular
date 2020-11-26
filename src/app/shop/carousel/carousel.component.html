@@ -1,7 +1,9 @@
 <div class="flex flex-wrap justify-center w-full mb-3">
     <carousel style="width: {{ innerWidth > 767 ? '75%' : '100%' }}" *ngIf="carouselImages.length > 0"
-        [height]="innerWidth > 767 ? 300 : 200" [cellWidth]="innerWidth" [arrows]="false" [arrowsOutside]="true">
-        <div class="carousel-cell" *ngFor="let img  of carouselImages; trackBy: trackByFn" (click)="navigateToCollection(img.collectionId, img.name)">
+        [height]="innerWidth > 767 ? 300 : 200" [arrows]="false" [arrowsOutside]="true" [cellsToShow]="1"
+        [overflowCellsLimit]="1" [autoplay]="true" [loop]="true">
+        <div class="carousel-cell" *ngFor="let img  of carouselImages; trackBy: trackByFn"
+            (click)="navigateToCollection(img.collectionId, img.name)">
             <img src="{{img.url}}" alt="{{img.name}}" />
         </div>
     </carousel>

@@ -123,7 +123,7 @@ export class CustomerFormComponent implements OnInit, OnDestroy {
   }
 
   private getOrdersByUserId(id: string) {
-    this.ordersSubscription = this.admin.getOrdersByUserId(id).subscribe(orders => {
+    this.ordersSubscription = this.admin.getOrdersByUserId(id, 5).subscribe(orders => {
       this.orders = orders;
       this.ordersSource.data = orders;
     });

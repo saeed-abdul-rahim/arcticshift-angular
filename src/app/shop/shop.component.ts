@@ -30,6 +30,7 @@ export class ShopComponent implements OnInit, OnDestroy {
     this.product.getProducts();
     this.product.getAttributesFromDb();
     this.login();
+    window.addEventListener('scroll', this.scrollEvent, true);
   }
 
   ngOnDestroy(): void {
@@ -38,6 +39,7 @@ export class ShopComponent implements OnInit, OnDestroy {
     if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
       this.sidebarOpenedSubscription.unsubscribe();
     }
+    window.removeEventListener('scroll', this.scrollEvent, true);
   }
 
   async login() {
@@ -46,6 +48,16 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   getSidebarOpened() {
     this.sidebarOpenedSubscription = this.nav.getSidebarOpened().subscribe(open => this.sidebarOpened = open);
+  }
+
+  scrollEvent = (event: any): void => {
+    const n = event.srcElement.scrollTop + event.srcElement.offsetHeight;
+    const max = event.srcElement.scrollHeight;
+    if (n === max) {
+      this.nav.setAtScrollBottom(true);
+    } else {
+      this.nav.setAtScrollBottom(false);
+    }
   }
 
 }

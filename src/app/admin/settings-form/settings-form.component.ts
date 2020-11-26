@@ -45,11 +45,13 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
       weightUnit: [null, Validators.required],
       currency: [null, Validators.required],
       paymentGateway: [null, Validators.required],
+      cod: [false],
       accentColor: [''],
       facebook: [''],
       instagram: [''],
       twitter: ['']
     });
+    this.getSettings();
   }
 
   ngOnDestroy(): void {
@@ -68,14 +70,19 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
   }
 
   setForm() {
-    const { name, weightUnit, currency, paymentGateway, accentColor, facebook, instagram, twitter } = this.settings;
-    this.settingsForm.patchValue({ name, weightUnit, currency, paymentGateway, accentColor, facebook, instagram, twitter });
+    const { name, weightUnit, currency, paymentGateway, accentColor, facebook, instagram, twitter, cod } = this.settings;
+    this.settingsForm.patchValue({
+      name,
+      weightUnit: weightUnit || null,
+      currency: currency || null,
+      paymentGateway: paymentGateway || null,
+      accentColor, facebook, instagram, twitter, cod });
   }
 
   async onSubmit() {
     this.loading = true;
     try {
-      const { name, weightUnit, currency, paymentGateway, accentColor, facebook, instagram, twitter } = this.settingsForm.controls;
+      const { name, weightUnit, currency, paymentGateway, accentColor, facebook, instagram, twitter, cod } = this.settingsForm.controls;
       await this.admin.updateSettings({
         name: name.value,
         weightUnit: weightUnit.value,
@@ -84,7 +91,8 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
         accentColor: accentColor.value,
         facebook: facebook.value,
         instagram: instagram.value,
-        twitter: twitter.value
+        twitter: twitter.value,
+        cod: cod.value,
       });
       this.success = true;
       setTimeout(() => {

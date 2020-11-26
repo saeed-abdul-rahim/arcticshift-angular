@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 import { environment } from '@environment';
 import { AuthService } from '@services/auth/auth.service';
 import { PaginationService } from '@services/pagination/pagination.service';
-import { Condition } from '@models/Common';
+import { Condition, OrderBy } from '@models/Common';
 import { AdminService } from '@services/admin/admin.service';
 
 import {
@@ -53,10 +52,9 @@ export class ListPageComponent implements OnInit, OnDestroy {
   dataKeys: string[];
   dataSource: MatTableDataSource<any>;
   pageNo: number;
-  pageSize = 30;
+  pageSize = 25;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private router: Router, private authService: AuthService, private admin: AdminService,
               private cdr: ChangeDetectorRef, private page: PaginationService) { }
@@ -80,7 +78,13 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
   unsubscribeData() {
     if (this.dataSubscription && !this.dataSubscription.closed) { this.dataSubscription.unsubscribe(); }
-    if (this.analyticsSubscription && !this.analyticsSubscription.closed) { this.analyticsSubscription.unsubscribe(); }
+    this.unsubscribePageLength();
+  }
+
+  unsubscribePageLength() {
+    if (this.analyticsSubscription && !this.analyticsSubscription.closed) {
+      this.analyticsSubscription.unsubscribe();
+    }
   }
 
   unsubscribeUser() {
@@ -133,7 +137,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         price: 'Price'
       });
-      this.getPageLength(products, this.dataLengthKey);
 
     } else if (urlSplit.includes(COLLECTION)) {
 
@@ -144,7 +147,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         productId: 'No. of products',
         status: 'Status'
       });
-      this.getPageLength(collections, this.dataLengthKey);
 
     } else if (urlSplit.includes(CATEGORY)) {
 
@@ -159,7 +161,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         type: '==',
         value: ''
       }]);
-      this.getPageLength(categories, this.dataLengthKey);
 
     } else if (urlSplit.includes(PRODUCTTYPE)) {
 
@@ -168,7 +169,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
       this.getData(productTypes, {
         name: 'Name'
       });
-      this.getPageLength(productTypes, this.dataLengthKey);
 
     } else if (urlSplit.includes(PRODUCTATTRIBUTE)) {
 
@@ -178,7 +178,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         status: 'Status'
       });
-      this.getPageLength(attributes, this.dataLengthKey);
 
     } else if (urlSplit.includes(SALE)) {
 
@@ -190,7 +189,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         value: 'Value',
         status: 'Status'
       });
-      this.getPageLength(saleDiscounts, this.dataLengthKey);
 
     } else if (urlSplit.includes(VOUCHER)) {
 
@@ -201,7 +199,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         value: 'Value',
         status: 'Status'
       });
-      this.getPageLength(vouchers, this.dataLengthKey);
 
     } else if (urlSplit.includes(SHIPPING)) {
 
@@ -211,7 +208,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         countries: 'Countries',
       });
-      this.getPageLength(shippings, this.dataLengthKey);
 
     } else if (urlSplit.includes(WAREHOUSE)) {
 
@@ -221,7 +217,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         name: 'Name',
         shippingId: 'Shipping Zones',
       });
-      this.getPageLength(warehouses, this.dataLengthKey);
 
     } else if (urlSplit.includes(TAX)) {
 
@@ -233,7 +228,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         value: 'Value',
         valueType: 'Value Type'
       });
-      this.getPageLength(taxes, this.dataLengthKey);
 
     } else if (urlSplit.includes(ORDER)) {
 
@@ -245,7 +239,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
         orderStatus: 'Order Status',
         total: 'Total'
       });
-      this.getPageLength(orders, this.dataLengthKey);
 
     } else if (urlSplit.includes(CUSTOMER)) {
 
@@ -256,8 +249,9 @@ export class ListPageComponent implements OnInit, OnDestroy {
         email: 'Email',
         phone: 'Phone',
         totalOrders: 'No. of Orders'
-      }, [{ field: 'totalOrders', type: '>', value: 0 }]);
-      this.getPageLength(users, this.dataLengthKey);
+      },
+      [{ field: 'totalOrders', type: '>', value: 0 }],
+      { field: 'totalOrders', direction: 'desc' });
 
     } else if (urlSplit.includes(STAFF)) {
 
@@ -271,13 +265,13 @@ export class ListPageComponent implements OnInit, OnDestroy {
         type: 'array-contains',
         value: this.shopId
       }]);
-      this.getPageLength(users, this.dataLengthKey);
 
     }
 
   }
 
   getPageLength(path: string, key: string) {
+    this.unsubscribePageLength();
     this.analyticsSubscription = this.admin.getCollectionAnalytics(path).subscribe(data => {
       if (data && data[key]) {
         this.resultLength = data[key];
@@ -285,14 +279,15 @@ export class ListPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  getData(path: string, displayCols: any, where: Condition[] = []) {
+  getData(path: string, displayCols: any, where: Condition[] = [], orderBy?: OrderBy) {
     this.loading = true;
     this.displayedColumns = [];
     this.dataKeys = [];
     this.unsubscribeData();
+    this.getPageLength(path, this.dataLengthKey);
     this.page.init(path, {
-      orderBy: { field: 'createdAt', direction: 'desc' },
-      where: [...where],
+      orderBy: orderBy ? orderBy : { field: 'createdAt', direction: 'desc' },
+      where,
       limit: this.pageSize
     });
     Object.entries(displayCols).forEach(([k, v]) => {
@@ -310,9 +305,8 @@ export class ListPageComponent implements OnInit, OnDestroy {
   fillTable(data: any[]) {
     try {
       this.dataSource = new MatTableDataSource(data);
-      this.cdr.detectChanges();
       this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.cdr.detectChanges();
     } catch (err) { }
   }
 

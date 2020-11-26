@@ -1,18 +1,17 @@
 <footer class="flex justify-between py-5 bg-gray-800 text-gray-500 p-4 ">
 
-    <ul class="flex flex-col sm:flex-row px-3 ">
-        <li><a href="#" class="px-3 hover:text-gray-300">Contact</a></li>
-        <li><a href="#" class="px-3 capitalize hover:text-gray-300" *ngIf="settings">© {{ settings.name }} {{ year }}</a></li>
+    <ul class="flex flex-col sm:flex-row px-3">
+        <li><a class="px-3 capitalize hover:text-gray-300" *ngIf="settings">{{ settings.name }} {{ year }}</a></li>
     </ul>
 
     <div class="space-x-2">
-        <i class="px-2 hover:text-gray-300" *ngIf="settings && settings.instagram">
+        <i class="px-2 hover:text-gray-300 cursor-pointer" *ngIf="settings && settings.instagram">
             <fa-icon [icon]="faInstagram"></fa-icon>
         </i>
-        <i class="px-2 hover:text-gray-300" *ngIf="settings && settings.facebook">
+        <i class="px-2 hover:text-gray-300 cursor-pointer" *ngIf="settings && settings.facebook">
             <fa-icon [icon]="faFacebook"></fa-icon>
         </i>
-        <i class="px-2 hover:text-gray-300" *ngIf="settings && settings.twitter">
+        <i class="px-2 hover:text-gray-300 cursor-pointer" *ngIf="settings && settings.twitter">
             <fa-icon [icon]="faTwitter"></fa-icon>
         </i>
     </div>

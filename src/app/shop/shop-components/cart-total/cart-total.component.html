@@ -14,13 +14,16 @@
         <div class="border-b border-gray-300 p-5" *ngIf="freeShipping">
             <div class="text-center font-semibold text-green-600">FREE SHIPPING</div>
         </div>
+        <div class="border-b border-gray-300 p-5 text-red-600 font-normal text-center" *ngIf="!isDeliverable">
+            Order cannot be delivered to your location.
+        </div>
         <div class="border-b border-gray-300 p-5"
-            *ngIf="((draft && draft.shippingAddress && !disableAddress) || shippingRates.length > 1) && !freeShipping">
+            *ngIf="((draft && draft.shippingAddress && !disableAddress) || shippingRates.length > 1) && !freeShipping && isDeliverable">
             Shipping
-            <div class="flex flex-col my-auto pt-3">
+            <div class="flex flex-col my-auto pt-3" *ngIf="shippingRates && shippingRates.length > 1">
                 <div class="flex" *ngFor="let shippingRate of shippingRates; trackBy: trackByFn">
                     <input #shippingRateRadio type="radio" name="shippingRate" class="my-auto"
-                        value="{{shippingRate.id}}" (change)="setShippingRate(shippingRateRadio.value)" />
+                        value="{{shippingRate.id}}" [checked]="selectedShippingRateId === shippingRate.id" (change)="setShippingRate(shippingRateRadio.value)" />
                     <div class="ml-2 flex flex-1 justify-between">
                         <label for=""> {{shippingRate.name}} </label>
                         <label for=""> {{shippingRate.price | currency: settings.currency }} </label>
@@ -28,28 +31,24 @@
                 </div>
             </div>
             <div class="my-3" *ngIf="draft && draft.shippingAddress && !disableAddress">
-                Shipping to
+                <fa-icon class="mr-2" [icon]="faMapMarkerAlt"></fa-icon> Shipping to
                 <span class="font-normal">
-                    {{ draft.shippingAddress.line1 }}, {{ draft.shippingAddress.area }}, {{ getCountryName(draft.shippingAddress.country, 'alpha3') }}
+                    {{ draft.shippingAddress.line1 }}, {{ draft.shippingAddress.area }}
                 </span>
             </div>
-            <div class="mb-5 flex cursor-pointer" (click)="toggleAddress()"
+            <div class="flex cursor-pointer font-normal" (click)="navigateToCheckout()"
                 *ngIf="draft && draft.shippingAddress && !disableAddress">
-                <fa-icon class="mr-2" [icon]="faMapMarkerAlt"></fa-icon>
                 Change Address
-                <fa-icon class="ml-2" [icon]="faChevronDown" size="xs"></fa-icon>
             </div>
-            <div class="slider" [class.closed]="!showAddress">
-                <div class="p-1 flex flex-col">
-                    <input type="text" class="mb-2 arc-input placeholder-gray-400" placeholder="Address line" />
-                    <input type="text" class="mb-2 arc-input placeholder-gray-400" placeholder="Town / City" />
-                    <ng-select class="mb-2" placeholder="State / County"></ng-select>
-                    <ng-select class="mb-2" placeholder="Country" [items]="countryList" bindValue="alpha3"
-                        bindLabel="name"></ng-select>
-                    <input type="text" class="mb-3 arc-input placeholder-gray-400" placeholder="Postcode / ZIP" />
-                    <app-button color="gray" [label]="'Update'" [dark]="true" [fullWidth]="true"></app-button>
-                </div>
-            </div>
+        </div>
+        <div class="border-b border-gray-300 p-5" *ngIf="settings && settings.cod">
+            <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="form-checkbox text-gray-800 ml-1 w-5 h-5"
+                    style="transition: all 0.15s ease 0s;" [(ngModel)]="cod" (change)="toggleCod()" />
+                <span class="ml-2">
+                    Cash on Delivery
+                </span>
+            </label>
         </div>
         <div class="border-b border-gray-300 p-5"
             *ngIf="draft && (draft.saleDiscount > 0 || draft.voucherDiscount > 0 || draft.taxCharge > 0 || draft.shippingCharge > 0)">

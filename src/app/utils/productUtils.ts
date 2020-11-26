@@ -64,7 +64,7 @@ export function filterProductsByCategoryCollection(id: string, productFilters: P
     let unSetField = '';
     if (type === 'category') {
         unSetField = 'collectionId';
-        setField = 'categoryId';
+        setField = 'allCategoryId';
     } else if (type === 'collection') {
         unSetField = 'categoryId';
         setField = 'collectionId';

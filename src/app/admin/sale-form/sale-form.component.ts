@@ -108,8 +108,8 @@ export class SaleFormComponent implements OnInit, OnDestroy {
     }
     try {
       this.loading = true;
-      const setData = {
-        code: name.value,
+      const setData: SaleDiscountInterface = {
+        name: name.value,
         value: value.value,
         valueType: discountType.value,
         startDate: mergeDateTime(startDate.value, startTime.value),

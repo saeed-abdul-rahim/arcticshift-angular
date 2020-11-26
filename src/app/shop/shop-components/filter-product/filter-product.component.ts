@@ -29,13 +29,6 @@ export class FilterProductComponent implements OnInit, OnDestroy {
       }
     },
     {
-      name: 'Popularity',
-      sortBy: {
-        field: 'clicks',
-        direction: 'desc'
-      }
-    },
-    {
       name: 'Price: Low to High',
       sortBy: {
         field: 'price',

@@ -2,7 +2,7 @@
     class="arc-button{{secondary ? '-secondary' : ''}} relative text-center {{ setBgColor() }} {{fullWidth ? 'w-full' : ''}} {{ large ? 'h-12' : '' }}"
     [attr.type]="submit ? 'submit' : 'button'" [attr.disabled]="success || loading ? true : null"
     [class.disabled]="success || loading || disabled">
-    <div class="text-transparent">{{label}}</div>
+    <div class="text-transparent truncate">{{label}}</div>
     <div class="absolute" *ngIf="!loading && !success">{{label}}</div>
     <app-spinner class="absolute" *ngIf="loading" [color]="'currentColor'" [size]="'5'" [@inOutAnimation]></app-spinner>
     <fa-icon class="absolute" *ngIf="success" [icon]="faCheck" size="lg" [@inOutAnimation]></fa-icon>

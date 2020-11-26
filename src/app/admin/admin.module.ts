@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -17,7 +15,6 @@ import { StorageService } from '@services/storage/storage.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AdminNavService } from '@services/admin-nav/admin-nav.service';
 import { AdminGuard } from '@guards/admin/admin.guard';
-import { ComponentsModule } from '@components/components.module';
 
 import { AdminComponentsModule } from './admin-components/admin-components.module';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -71,10 +68,7 @@ import { SettingsFormComponent } from './settings-form/settings-form.component';
   imports: [
     CommonModule,
     AdminRoutingModule,
-    MatSortModule,
-    MatTableModule,
     MatPaginatorModule,
-    ComponentsModule,
     AdminComponentsModule,
     AngularEditorModule,
     MatFormFieldModule,

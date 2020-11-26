@@ -10,6 +10,7 @@ import { ModalService } from '@services/modal/modal.service';
 import { NavbarService } from '@services/navbar/navbar.service';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
+import { joinByHyphen } from '@utils/strUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 type JoinedCategories = CategoryInterface & {
@@ -138,13 +139,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   filterProductsByCategory(id: string) {
     const name = this.categories.find(c => c.id === id)?.name;
-    this.router.navigateByUrl(`${COLLECTION}/${name}/${id}`);
+    const linkName = encodeURI(joinByHyphen(name));
+    this.router.navigateByUrl(`${CATEGORY}/${linkName}/${id}`);
     this.closeSidnav();
   }
 
   filterProductsByCollection(id: string) {
     const name = this.collections.find(c => c.id === id)?.name;
-    this.router.navigateByUrl(`${CATEGORY}/${name}/${id}`);
+    const linkName = encodeURI(joinByHyphen(name));
+    this.router.navigateByUrl(`${COLLECTION}/${linkName}/${id}`);
     this.closeSidnav();
   }
 

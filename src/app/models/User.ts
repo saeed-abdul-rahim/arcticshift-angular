@@ -51,6 +51,8 @@ export interface UserInterface extends AuthType, CommonInterface {
 
 export type Address = {
     name?: string
+    firstName?: string
+    lastName?: string
     company?: string
     phone?: string
     email?: string

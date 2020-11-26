@@ -31,10 +31,12 @@ import { CatalogModalListComponent } from './catalog-modal-list/catalog-modal-li
   imports: [
     CommonModule,
     ComponentsModule,
-    MatTableModule,
-    FontAwesomeModule
+    MatTableModule
   ],
   exports: [
+    ComponentsModule,
+    MatTableModule,
+    FontAwesomeModule,
     TileComponent,
     CardComponent,
     FooterFormComponent,

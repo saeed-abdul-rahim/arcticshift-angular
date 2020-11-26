@@ -7,7 +7,6 @@ import { scan } from 'rxjs/internal/operators/scan';
 import { environment } from '@environment';
 import { Condition, QueryConfig } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
-import { take } from 'rxjs/operators';
 
 @Injectable()
 export class PaginationService {
@@ -92,8 +91,13 @@ export class PaginationService {
 
   setWhere(ref: Query) {
     this.where.forEach(condition => {
-      const { field, type, value } = condition;
+      const { field, type, value, parentFields } = condition;
+      if (parentFields && parentFields.length > 0) {
+        const whereField = `${parentFields.join('.')}.${field}`;
+        ref = ref.where(whereField, type, value);
+    } else {
       ref = ref.where(field, type, value);
+    }
     });
     return ref;
   }
@@ -112,26 +116,23 @@ export class PaginationService {
 
     this._loading.next(true);
 
-    return col.snapshotChanges()
+    return col.get()
     .pipe(
-      tap(arr => {
-        let values = arr.map(snap => {
-          const data = snap.payload.doc.data();
-          const doc = snap.payload.doc;
-          const id = snap.payload.doc.id;
-          return { ...data, id, doc };
+      tap(querySnap => {
+        let values = querySnap.docs.map(snap => {
+          const data = snap.data();
+          const id = snap.id;
+          return { ...data, id, doc: snap };
         });
 
         values = this.query.prepend ? values.reverse() : values;
-
         this._data.next(values);
         this._loading.next(false);
 
         if (!values.length || values.length === 0) {
           this._done.next(true);
         }
-      }),
-      take(1)
+      })
     ).subscribe(() => {}, (err) => { console.log(err); this.alert.alert({ message: err.message }); });
   }
 

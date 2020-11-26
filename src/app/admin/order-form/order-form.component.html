@@ -53,7 +53,7 @@
                 <div class="w-4/12">Shipping</div>
                 <div class="w-5/12">
                     <span *ngIf="order.shippingCharge === 0">does not apply</span>
-                    <span *ngIf="order.shippingCharge > 0">order.data.shippingRateData.name</span>
+                    <span *ngIf="order.shippingCharge > 0">{{order.data.shippingRateData.name}}</span>
                 </div>
                 <div class="w-3/12 text-right">{{order.shippingCharge | currency: settings.currency }}</div>
             </div>
@@ -85,7 +85,11 @@
             </div>
         </div>
         <div class="flex border-t border-gray-300 justify-end py-2 px-5">
-            <div class="arc-link-button" (click)="toggleRefundModal()">Refund</div>
+            <div class="arc-link-button -mr-3" (click)="toggleRefundModal()" *ngIf="!order.cod">Refund</div>
+            <div class="arc-link-button -mr-3" (click)="toggleCaptureModal()" *ngIf="order.cod">
+                <span *ngIf="order.capturedAmount > 0">Edit captured amount</span>
+                <span *ngIf="order.capturedAmount === 0">Capture amount</span>
+            </div>
         </div>
     </div>
 </ng-template>
@@ -156,13 +160,18 @@
 
 <!-- MODAL TEMPLATES -->
 
-<app-modal [(showModal)]="showTrackingModal" [loading]="trackingLoading"
+<app-modal [(showModal)]="showTrackingModal" [loading]="modalLoading"
     [heading]="editTrackingModal ? 'Edit' + ' Tracking' : 'Add' + ' Tracking'" [size]="'small'"
     [bodyTemplate]="trackingTemplate" (modalCallback)="addTrackingCode()"></app-modal>
 
-<app-modal [(showModal)]="showRefundModal" [loading]="refundLoading"
+<app-modal [(showModal)]="showRefundModal" [loading]="modalLoading"
     [heading]="'Refund'" [size]="'small'"
     [bodyTemplate]="refundTemplate" (modalCallback)="refund()"></app-modal>
+
+
+<app-modal [(showModal)]="showCaptureModal" [loading]="modalLoading"
+    [heading]="'Capture Amount'" [size]="'small'"
+    [bodyTemplate]="captureTemplate" (modalCallback)="capture()"></app-modal>
 
 <ng-template #trackingTemplate>
     <input #trackingInput type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Code"
@@ -172,6 +181,11 @@
 <ng-template #refundTemplate>
     <input #refundInput type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Amount"
         [(ngModel)]="refundAmount" (keyup)="refundAmount = refundInput.value" />
+</ng-template>
+
+<ng-template #captureTemplate>
+    <input #captureInput type="number" class="arc-input placeholder-gray-400 w-full" placeholder="Amount"
+        [(ngModel)]="captureAmount" (keyup)="captureAmount = captureInput.value" />
 </ng-template>
 
 <!-- TABLE TEMPLATES -->

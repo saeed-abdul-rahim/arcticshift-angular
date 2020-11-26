@@ -5,6 +5,7 @@ export interface GeneralSettings extends CommonInterface {
     currency?: string;
     weightUnit?: string;
     paymentGateway?: PaymentGateway;
+    cod?: boolean;
     logo?: Content | null;
     logoLong?: Content | null;
     name?: string;

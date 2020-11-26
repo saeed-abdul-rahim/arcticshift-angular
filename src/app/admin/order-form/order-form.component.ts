@@ -24,16 +24,17 @@ export class OrderFormComponent implements OnInit, OnDestroy {
 
   faEllipsisV = faEllipsisV;
   edit = false;
-  trackingLoading = false;
-  refundLoading = false;
+  modalLoading = false;
   totalQuantity = 0;
   selectedWarehouseId: string;
   loadingWarehouseId = '';
   showTrackingModal = false;
   showRefundModal = false;
+  showCaptureModal = false;
   editTrackingModal = false;
   trackingCode = '';
   refundAmount: number;
+  captureAmount: number;
 
   fullfillRoute = FULLFILL;
 
@@ -103,6 +104,10 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     this.showRefundModal = true;
   }
 
+  toggleCaptureModal() {
+    this.showCaptureModal = true;
+  }
+
   getTrackingId(warehouseId: string) {
     const { fullfilled } = this.order;
     return fullfilled.find(w => w.warehouseId === warehouseId)?.trackingId;
@@ -119,7 +124,7 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   }
 
   async addTrackingCode() {
-    this.trackingLoading = true;
+    this.modalLoading = true;
     try {
       await this.admin.addOrderTracking(this.order.id, {
         warehouseId: this.selectedWarehouseId,
@@ -130,18 +135,29 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     } catch (err) {
       this.handleError(err);
     }
-    this.trackingLoading = false;
+    this.modalLoading = false;
   }
 
   async refund() {
-    this.refundLoading = true;
+    this.modalLoading = true;
     try {
       await this.admin.refund(this.order.id, this.refundAmount);
       this.showRefundModal = false;
     } catch (err) {
       this.handleError(err);
     }
-    this.refundLoading = false;
+    this.modalLoading = false;
+  }
+
+  async capture() {
+    this.modalLoading = true;
+    try {
+      await this.admin.captureAmount(this.order.id, this.captureAmount);
+      this.showCaptureModal = false;
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.modalLoading = false;
   }
 
   private getOrderById(orderId: string) {
@@ -164,8 +180,12 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     this.unFullfilledProducts = unFullfilledProducts.map(product => {
       const { variantId } = product;
       product.orderQuantity -= this.getVariantFullfilledQuantity(variantId);
-      return product;
-    });
+      if (product.orderQuantity === 0) {
+        return;
+      } else {
+        return product;
+      }
+    }).filter(e => e);
   }
 
   private getFullfilledProducts(productsData: ProductData[]) {
@@ -217,7 +237,7 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   }
 
   private handleError(err: any) {
-    this.alert.alert({ message: err.message });
+    this.alert.alert({ message: err.message || err });
   }
 
 }

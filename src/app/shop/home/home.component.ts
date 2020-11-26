@@ -12,6 +12,7 @@ import { filterProductsByCategoryCollection, setProducts } from '@utils/productU
 import { filter } from 'rxjs/internal/operators/filter';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { SeoService } from '@services/seo/seo.service';
+import { NavbarService } from '@services/navbar/navbar.service';
 
 @Component({
   selector: 'app-home',
@@ -37,9 +38,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   private productsDoneSubscription: Subscription;
   private saleDiscountSubscription: Subscription;
   private routeSubscription: Subscription;
+  private scrollSubscription: Subscription;
 
   constructor(private productService: ProductService, private shop: ShopService, private seo: SeoService,
-              private router: Router, private route: ActivatedRoute) {
+              private router: Router, private route: ActivatedRoute, private nav: NavbarService) {
     this.routeSubscription = this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
@@ -48,6 +50,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.getProductFilters();
     this.routeSubscription = this.route.params.subscribe(par => this.ngOnInit());
+    this.scrollSubscription = this.nav.getAtScrollBottom().subscribe(bottom => {
+      if (bottom) {
+        this.moreProducts();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -64,6 +71,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       const type = this.router.url.split('/')[1] as 'category' | 'collection';
       const nxtFilters = filterProductsByCategoryCollection(id, this.productFilters, type);
       this.productService.setProductFilters(nxtFilters);
+    } else {
+      this.productService.resetProductFilters();
     }
   }
 
@@ -85,6 +94,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     if (this.productFilterSubscription && !this.productFilterSubscription.closed) {
       this.productFilterSubscription.unsubscribe();
+    }
+    if (this.scrollSubscription && !this.scrollSubscription.closed) {
+      this.scrollSubscription.unsubscribe();
     }
     this.unsubscribeProductList();
   }

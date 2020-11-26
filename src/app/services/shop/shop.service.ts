@@ -11,7 +11,6 @@ import { AttributeInterface, AttributeJoinInterface, AttributeValueInterface } f
 import { VoucherInterface } from '@models/Voucher';
 import { TaxInterface, TaxObjectType } from '@models/Tax';
 import { VariantInterface } from '@models/Variant';
-import { InventoryInterface } from '@models/Inventory';
 import { DbService } from '@services/db/db.service';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
@@ -26,6 +25,7 @@ import { User } from '@models/User';
 import { GeoIp } from '@models/GeoIp';
 import { ExchangeRate } from '@models/ExchangeRate';
 import { countryCurrencyMap } from '@utils/currencyList';
+import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()
 export class ShopService {
@@ -304,12 +304,6 @@ export class ShopService {
     return getDataFromDocument(taxRef);
   }
 
-  getInventoryById(inventoryId: string): Observable<InventoryInterface> {
-    const { db, dbInventoriesRoute } = this.dbS;
-    const inventoryRef = db.collection(dbInventoriesRoute).doc(inventoryId);
-    return getDataFromDocument(inventoryRef);
-  }
-
   getAllAttributes(): Observable<AttributeJoinInterface[]> {
     const { db, dbAttributesRoute } = this.dbS;
     const attributesRef = db.collection(dbAttributesRoute);
@@ -345,6 +339,9 @@ export class ShopService {
   }
 
   getProductsByCollectionIds(ids: string[], limit?: number): Observable<ProductInterface[]> {
+    if (ids.length === 0) {
+      return of([]);
+    }
     ids = ids.slice(0, 10);
     const products = this.dbS.queryProducts([{
       field: 'collectionId',
@@ -418,7 +415,7 @@ export class ShopService {
 
   getDraftOrderByUserId(userId: string) {
     const orders = this.dbS.queryDrafts([
-      { field: 'userId', type: '==', value: userId},
+      { field: 'userId', type: '==', value: userId },
     ], null, 1);
     return getDataFromCollection(orders) as Observable<OrderInterface[]>;
   }

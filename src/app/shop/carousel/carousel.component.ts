@@ -6,6 +6,7 @@ import { CollectionInterface } from '@models/Collection';
 import { Content, ContentStorage } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
 import { ShopService } from '@services/shop/shop.service';
+import { joinByHyphen } from '@utils/strUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
@@ -73,7 +74,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   navigateToCollection(id: string, name: string) {
-    this.router.navigateByUrl(`${COLLECTION}/${name}/${id}`);
+    const linkName = encodeURI(joinByHyphen(name));
+    this.router.navigateByUrl(`${COLLECTION}/${linkName}/${id}`);
   }
 
 }
