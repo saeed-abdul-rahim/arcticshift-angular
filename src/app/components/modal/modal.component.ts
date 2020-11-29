@@ -17,6 +17,7 @@ export class ModalComponent implements OnInit {
   @Input() showHeader = true;
   @Input() showFooter = true;
   @Input() enableScroll = true;
+  @Input() restrictHeight = true;
 
   @Input() loading: boolean;
   @Input() success: boolean;

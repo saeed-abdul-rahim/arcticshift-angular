@@ -35,10 +35,11 @@
 
                 <ng-container *ngFor="let warehouse of warehouses; trackBy: trackByFn" matColumnDef="{{warehouse.id}}">
                     <th mat-header-cell *matHeaderCellDef> {{warehouse.name}} </th>
-                    <td class="pl-0" *matCellDef="let row" formGroupName="{{row.variantId}}">
+                    <td mat-cell class="pl-0" *matCellDef="let row" formGroupName="{{row.variantId}}" style="padding-top:0.5rem; padding-bottom:0.5rem;">
                         <div class="relative w-48 min-width-full">
                             <input #inputQty type="number" class="arc-input w-full" placeholder="0"
-                                formControlName="{{warehouse.id}}" [ngClass]="isFormControlValid(row.variantId, warehouse.id) ? 'border border-red' : ''">
+                                formControlName="{{warehouse.id}}"
+                                [ngClass]="isFormControlValid(row.variantId, warehouse.id) ? 'border border-red' : ''">
                             <span class="input-right-label">
                                 /{{getWarehouseQuantity(row.variantId, warehouse.id)}}
                             </span>
@@ -49,7 +50,8 @@
                 <ng-container matColumnDef="quantity">
                     <th mat-header-cell *matHeaderCellDef>Quantity to Fullfill</th>
                     <td mat-cell class="text-center" *matCellDef="let row">
-                        {{getCurrentVariantQty(row.variantId)}}/{{row.orderQuantity - getFullfilledQuantity(row.variantId)}}</td>
+                        {{getCurrentVariantQty(row.variantId)}}/{{row.orderQuantity - getFullfilledQuantity(row.variantId)}}
+                    </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -58,4 +60,10 @@
             </table>
         </form>
     </div>
+    <form class="relative w-full px-4 py-3 max-w-full flex-grow flex-1" [formGroup]="miscForm">
+        <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="form-checkbox text-blue-500" formControlName="sendEmail" />
+            <span class="ml-2 text-sm text-gray-700">Send Email to customer</span>
+        </label>
+    </form>
 </ng-template>

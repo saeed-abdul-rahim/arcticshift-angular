@@ -138,7 +138,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   filterProductsByCategory(id: string) {
-    const name = this.categories.find(c => c.id === id)?.name;
+    const name = this.categoriesData.find(c => c.id === id)?.name;
     const linkName = encodeURI(joinByHyphen(name));
     this.router.navigateByUrl(`${CATEGORY}/${linkName}/${id}`);
     this.closeSidnav();

@@ -116,9 +116,9 @@
       <div class="flex flex-wrap mt-4 mb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="shippingZoneTemplate"></app-card>
-          <app-card [heading]="'Countries'" [body]="countriesTemplate" [actions]="assignCountriesTemplate"></app-card>
-          <app-card [heading]="'Zip Codes'" [body]="zipCodeTemplate"></app-card>
-          <app-card [heading]="'Radius'" [body]="radiusTemplate"></app-card>
+          <app-card *ngIf="shipping" [heading]="'Countries'" [body]="countriesTemplate" [actions]="assignCountriesTemplate"></app-card>
+          <app-card *ngIf="shipping" [heading]="'Zip Codes'" [body]="zipCodeTemplate"></app-card>
+          <app-card *ngIf="shipping" [heading]="'Radius'" [body]="radiusTemplate"></app-card>
           <app-card *ngIf="shipping" [heading]="'Price Based Rate'" [body]="priceRateTemplate"
             [actions]="createPriceRateTemplate"></app-card>
           <app-card *ngIf="shipping" [heading]="'Weight Based Rate'" [body]="weightRateTemplate"

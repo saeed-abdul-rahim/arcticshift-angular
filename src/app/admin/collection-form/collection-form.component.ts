@@ -10,7 +10,7 @@ import { StorageService } from '@services/storage/storage.service';
 import { editorConfig } from '@settings/editorConfig';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ProductInterface } from '@models/Product';
-import { checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
 import { MatTableDataSource } from '@angular/material/table';
 import { AlertService } from '@services/alert/alert.service';
 import { AddCatalogEvent } from '@models/Event';
@@ -228,19 +228,20 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
       this.storageService.getUploadProgress().subscribe(progress =>
         this.uploadProgress = progress,
         () => { },
-        () => this.uploadProgress = 0);
+        async () => {
+          this.uploadProgress = 0;
+          const base64Image = await blobToBase64(this.file) as string;
+          this.thumbnails.push({
+            path: '', url: base64Image
+          });
+        });
     } else {
       this.removeFile();
     }
   }
 
-  onFileDropped($event: Event) {
-    this.file = $event[0];
-    this.processFile();
-  }
-
-  onFileClicked(fileInput: Event) {
-    this.file = (fileInput.target as HTMLInputElement).files[0];
+  onFileDropped($event: File) {
+    this.file = $event;
     this.processFile();
   }
 

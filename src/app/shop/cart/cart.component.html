@@ -23,7 +23,7 @@
                         (click)="removeVariant(variant.id)">
                     </fa-icon>
                     <div class="absolute bottom-0 right-0 font-light">
-                        {{variant.price | currency: settings.currency }}
+                        {{variant.price | currency: settings && settings.currency }}
                     </div>
                 </div>
             </div>

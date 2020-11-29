@@ -1,6 +1,6 @@
 export type CatalogType = 'category' | 'collection' | 'product' | 'variant';
 
 export type Metadata = {
-    type: CatalogType
+    type: CatalogType | 'settings'
     id: string
 };

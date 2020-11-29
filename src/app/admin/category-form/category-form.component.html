@@ -19,12 +19,6 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
-    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
-      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
-      (deleteImageCallback)="deleteCategoryImage($event)"></app-upload>
-  </ng-template>
-
   <!-- BODY -->
 
   <div class="relative pt-12">
@@ -32,7 +26,8 @@
       <div class="flex flex-wrap mt-4 mb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="Category"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
+          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+            (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteCategoryImage($event)"></app-upload>
           <app-tab *ngIf="category"
             [labels]="['Subcategories ' + '(' + category.subCategoryId.length + ')', 'Products ' + '(' + category.productId.length + ')']"
             [templates]="[categoryTab, productTab]" (openTabChange)="setCatalogData($event)">
@@ -48,13 +43,6 @@
 </form>
 
 <!-- BUTTON TEMPLATES -->
-
-<ng-template #imageUploadAction>
-  <label class="arc-link-button" type="button">
-    Upload Image
-    <input type='file' class="hidden" />
-  </label>
-</ng-template>
 
 <ng-template #assignProduct>
   <label class="arc-link-button capitalize" type="button">
@@ -121,7 +109,8 @@
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="catalogColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0" (click)="navigateById(row.id)"></tr>
+          <tr mat-row *matRowDef="let row; columns: catalogColumns;" class="height-0" (click)="navigateById(row.id)">
+          </tr>
 
         </table>
       </div>

@@ -20,12 +20,6 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
-    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
-      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
-      (deleteImageCallback)="deleteCollectionImage($event)"></app-upload>
-  </ng-template>
-
   <ng-template #visibility>
     <div class="divide-y">
       <div>
@@ -60,7 +54,8 @@
       <div class="flex flex-wrap mt-4">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="collectionTemplate"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
+          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [thumbnails]="thumbnails" [aspectRatio]="16 / 9"
+            (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteCollectionImage($event)"></app-upload>
           <app-card *ngIf="collection" [heading]="'Products in ' + collection.name" [actions]="productActionTemplate"
             [body]="productListTemplate"></app-card>
         </div>
@@ -82,13 +77,6 @@
   [existingIds]="existingIds" [type]="'product'" (addCatalog)="addProduct($event)"></app-catalog-modal-list>
 
 <!-- BUTTON TEMPLATES -->
-
-<ng-template #imageUploadAction>
-  <label class="arc-link-button" type="button">
-    Upload Image
-    <input type='file' class="hidden" (change)="onFileClicked($event)" />
-  </label>
-</ng-template>
 
 <ng-template #productActionTemplate>
   <label class="arc-link-button" type="button">
@@ -114,15 +102,17 @@
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Product Name</th>
           <td mat-cell *matCellDef="let row" class="padding-0">
-              <div class="flex flex-wrap relative align-middle" *ngIf="row">
-                  <div class="relative w-full px-5 py-3">{{row.name}}</div>
-                  <app-spinner class="absolute right-0 mx-4 py-3" *ngIf="removeLoading && productDeleteId === row.id" [size]="'5'" [@inOutAnimation]></app-spinner>
-                  <div class="absolute right-0 mx-2 py-3" *ngIf="!removeLoading || productDeleteId !== row.id" (click)="removeProduct(row.id)" [@inOutAnimation]>
-                      <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
-                  </div>
+            <div class="flex flex-wrap relative align-middle" *ngIf="row">
+              <div class="relative w-full px-5 py-3">{{row.name}}</div>
+              <app-spinner class="absolute right-0 mx-4 py-3" *ngIf="removeLoading && productDeleteId === row.id"
+                [size]="'5'" [@inOutAnimation]></app-spinner>
+              <div class="absolute right-0 mx-2 py-3" *ngIf="!removeLoading || productDeleteId !== row.id"
+                (click)="removeProduct(row.id)" [@inOutAnimation]>
+                <fa-icon [icon]="faTrash" class="arc-link-button-secondary"></fa-icon>
               </div>
+            </div>
           </td>
-      </ng-container>
+        </ng-container>
 
         <tr mat-row *matRowDef="let row; columns: productColumns;" (click)="navigateToProduct(row.id)"></tr>
 

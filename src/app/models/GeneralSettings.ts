@@ -6,8 +6,7 @@ export interface GeneralSettings extends CommonInterface {
     weightUnit?: string;
     paymentGateway?: PaymentGateway;
     cod?: boolean;
-    logo?: Content | null;
-    logoLong?: Content | null;
+    images?: Content[];
     name?: string;
     facebook?: string;
     instagram?: string;

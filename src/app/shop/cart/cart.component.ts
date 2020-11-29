@@ -19,6 +19,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { isProductAvailable } from '@utils/productUtils';
 import { setTimeout } from '@utils/setTimeout';
+import { UserInterface } from '@models/User';
+import { AuthService } from '@services/auth/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -45,18 +47,20 @@ export class CartComponent implements OnInit, OnDestroy {
   updateSuccess = false;
   available = false;
 
+  user: UserInterface;
   settings: GeneralSettings;
   draft: OrderInterface;
   variants: VariantExtended[] = [];
   saleDiscounts: SaleDiscountInterface[] = [];
   variantForm: FormGroup;
 
+  private userSubscription: Subscription;
   private draftSubscription: Subscription;
   private variantsSubscription: Subscription;
   private settingsSubscription: Subscription;
   private saleDiscountSubscription: Subscription;
 
-  constructor(private cart: CartService, private shop: ShopService, private router: Router,
+  constructor(private cart: CartService, private shop: ShopService, private router: Router, private auth: AuthService,
               private alert: AlertService, private formBuilder: FormBuilder, private ref: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -88,6 +92,7 @@ export class CartComponent implements OnInit, OnDestroy {
         this.variants = [];
       }
     });
+    this.userSubscription = this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
   }
 
@@ -103,6 +108,9 @@ export class CartComponent implements OnInit, OnDestroy {
     }
     if (this.saleDiscountSubscription && !this.saleDiscountSubscription.closed) {
       this.saleDiscountSubscription.unsubscribe();
+    }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
     }
   }
 
@@ -165,10 +173,11 @@ export class CartComponent implements OnInit, OnDestroy {
   async pay() {
     this.loading = true;
     try {
-      const { email, phone, orderId, shippingAddress, billingAddress } = this.draft;
+      const { email, phone, phoneCode } = this.user;
+      const { orderId, shippingAddress, billingAddress } = this.draft;
       await this.cart.pay({
         orderId, shippingAddress, billingAddress
-      }, email, phone);
+      }, email, `+${phoneCode}${phone}`);
     } catch (err) {
       this.handleError(err);
     }

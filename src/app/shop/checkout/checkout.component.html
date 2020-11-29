@@ -110,7 +110,7 @@
                 </div>
                 <div class="relative">
                     <div class="absolute right-0 font-light">
-                        {{variant.price | currency: settings.currency }}
+                        {{variant.price | currency: settings && settings.currency }}
                     </div>
                 </div>
             </div>

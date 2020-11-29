@@ -1,10 +1,11 @@
 export const environment = {
   production: true,
-  url: '',
+  url: 'https://articshift-7f9cd.web.app',
   localStorageKey: 'urPWO0zFGXSBeQAzaCOfIrMjXFDyLSMecf06iD2d7bc',
   api: {
     url: 'https://asia-east2-articshift-7f9cd.cloudfunctions.net/api/v1',
     user: '/user',
+    wishlist: '/wishlist',
     product: '/product',
     category: '/category',
     collection: '/collection',
@@ -14,7 +15,11 @@ export const environment = {
     productType: '/product-type',
     attribute: '/attribute',
     warehouse: '/warehouse',
-    tax: '/tax'
+    shipping: '/shipping',
+    rate: '/rate',
+    order: '/order',
+    tax: '/tax',
+    settings: '/settings'
   },
   db: {
     version: 'v1',
@@ -28,16 +33,20 @@ export const environment = {
     attributeValues: 'attributeValues',
     collections: 'collections',
     categories: 'categories',
-    shipping: 'shipping',
-    inventory: 'inventory',
-    warehouse: 'warehouse',
+    shippings: 'shipping',
+    shippingRates: 'shippingRates',
+    inventories: 'inventory',
+    warehouses: 'warehouse',
     vouchers: 'vouchers',
     saleDiscounts: 'saleDiscounts',
     giftCards: 'giftCards',
     orders: 'orders',
+    drafts: 'drafts',
     taxes: 'taxes',
     adverts: 'adverts',
-    analytics: 'analytics'
+    analytics: 'analytics',
+    settings: 'settings',
+    general: 'general'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',
@@ -48,5 +57,8 @@ export const environment = {
     messagingSenderId: '461509042504',
     appId: '1:461509042504:web:8d15de5711ded9f673d37d',
     measurementId: 'G-RK6Z478XFG'
+  },
+  razorPay: {
+    key: 'rzp_test_aFcsYY4hiiEcvL'
   }
 };

@@ -140,14 +140,12 @@ export class CartTotalComponent implements OnInit, OnChanges, OnDestroy {
     try {
       const shippingData = await this.getShippingByCountry(alpha3);
       if (shippingData && shippingData.shippingRates && shippingData.shippingRates.length === 1) {
-          console.log('hi', this.draft.id);
           await this.shop.updateCartShipping(this.draft.id, {
             shippingId: shippingData.shippingId,
             shippingRateId: shippingData.rates[0],
             shippingAddress, billingAddress
           });
       } else if (shippingAddress && billingAddress) {
-          console.log('hi2', this.draft.id);
           await this.shop.updateCartShipping(this.draft.id, { shippingAddress, billingAddress });
       }
     } catch (err) {
@@ -179,6 +177,7 @@ export class CartTotalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async setShippingRate(shippingRateId: string) {
+    if (!this.shipping) { return; }
     this.loading = true;
     try {
       await this.shop.updateCartShipping(this.draft.id, {

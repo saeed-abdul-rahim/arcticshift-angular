@@ -19,12 +19,6 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
-    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
-      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
-      (deleteImageCallback)="deleteProductImage($event)"></app-upload>
-  </ng-template>
-
   <ng-template #attributesTemplate>
     <div class="items-center mb-1" formArrayName="attributes">
       <div class="relative flex flex-wrap w-full px-4 py-2 max-w-full flex-grow flex-1"
@@ -103,11 +97,14 @@
       <div class="flex flex-wrap mt-4 pb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [actions]="imageUploadAction" [body]="imageUpload"></app-card>
+          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+            (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteProductImage($event)">
+          </app-upload>
           <app-card *ngIf="attributeForms.length > 0" [heading]="'Attributes'" [body]="attributesTemplate">
           </app-card>
           <app-card [heading]="'Pricing'" [body]="productPrice"></app-card>
-          <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variantActionTemplate" [body]="variantListTemplate"></app-card>
+          <app-card *ngIf="edit" [heading]="'Variants'" [actions]="variantActionTemplate" [body]="variantListTemplate">
+          </app-card>
         </div>
         <div class="w-full xl:w-4/12 px-4">
           <app-card [heading]="'Organize Product'" [body]="organizeProduct"></app-card>
@@ -127,13 +124,6 @@
 <ng-template #variantActionTemplate>
   <label class="arc-link-button" type="button">
     <a (click)="navigateToVariant()">Create Variant</a>
-  </label>
-</ng-template>
-
-<ng-template #imageUploadAction>
-  <label class="arc-link-button" type="button">
-    Upload Image
-    <input type='file' class="hidden" (change)="onFileClicked($event)" />
   </label>
 </ng-template>
 

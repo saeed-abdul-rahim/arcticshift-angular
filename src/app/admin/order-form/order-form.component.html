@@ -96,30 +96,30 @@
 
 <ng-template #customerTemplate>
     <div class="divide-y">
-        <div class="px-4 py-3 text-gray-800">
-            <span>{{order.customerName || order?.firstName + ' ' + order?.lastName}}</span>
+        <div class="px-4 py-3 text-gray-800 flex flex-col">
+            <span>{{order?.firstName + ' ' + order?.lastName}}</span>
             <span *ngIf="order.phone"> {{order.phone}} </span>
             <span *ngIf="order.email"> {{order.email}} </span>
         </div>
         <div class="px-4 py-3 text-gray-800 flex flex-col">
             <span class="uppercase font-semibold mb-2">Shipping Address</span>
             <p>{{ order?.firstName + ' ' + order?.lastName }}</p>
-            <p>{{ order.shippingAddress.line1 }}</p>
-            <p>{{ order.shippingAddress.line2 }}</p>
-            <p>{{ order.shippingAddress.city }}</p>
-            <p>{{ order.shippingAddress.zip }}</p>
-            <p>{{ order.shippingAddress.area }}</p>
-            <p>{{ getCountryName(order.shippingAddress.country) }}</p>
+            <p>{{ order.shippingAddress?.line1 }}</p>
+            <p>{{ order.shippingAddress?.line2 }}</p>
+            <p>{{ order.shippingAddress?.city }}</p>
+            <p>{{ order.shippingAddress?.zip }}</p>
+            <p>{{ order.shippingAddress?.area }}</p>
+            <p>{{ getCountryName(order.shippingAddress?.country) }}</p>
         </div>
         <div class="px-4 py-3 text-gray-800 flex flex-col">
             <span class="uppercase font-semibold mb-2">Billing Address</span>
             <p>{{ order?.firstName + ' ' + order?.lastName }}</p>
-            <p>{{ order.billingAddress.line1 }}</p>
-            <p>{{ order.billingAddress.line2 }}</p>
-            <p>{{ order.billingAddress.city }}</p>
-            <p>{{ order.billingAddress.zip }}</p>
-            <p>{{ order.billingAddress.area }}</p>
-            <p>{{ getCountryName(order.billingAddress.country) }}</p>
+            <p>{{ order.billingAddress?.line1 }}</p>
+            <p>{{ order.billingAddress?.line2 }}</p>
+            <p>{{ order.billingAddress?.city }}</p>
+            <p>{{ order.billingAddress?.zip }}</p>
+            <p>{{ order.billingAddress?.area }}</p>
+            <p>{{ getCountryName(order.billingAddress?.country) }}</p>
         </div>
     </div>
 </ng-template>

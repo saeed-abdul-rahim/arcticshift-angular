@@ -8,7 +8,7 @@
                 Subtotal
             </div>
             <div *ngIf="draft && settings">
-                {{ draft.subTotal | currency: settings.currency }}
+                {{ draft.subTotal | currency: settings && settings.currency }}
             </div>
         </div>
         <div class="border-b border-gray-300 p-5" *ngIf="freeShipping">
@@ -18,15 +18,15 @@
             Order cannot be delivered to your location.
         </div>
         <div class="border-b border-gray-300 p-5"
-            *ngIf="((draft && draft.shippingAddress && !disableAddress) || shippingRates.length > 1) && !freeShipping && isDeliverable">
+            *ngIf="((draft && draft.shippingAddress && !disableAddress) || shippingRates.length > 0) && !freeShipping && isDeliverable">
             Shipping
-            <div class="flex flex-col my-auto pt-3" *ngIf="shippingRates && shippingRates.length > 1">
+            <div class="flex flex-col my-auto pt-3" *ngIf="shippingRates && shippingRates.length > 0">
                 <div class="flex" *ngFor="let shippingRate of shippingRates; trackBy: trackByFn">
                     <input #shippingRateRadio type="radio" name="shippingRate" class="my-auto"
                         value="{{shippingRate.id}}" [checked]="selectedShippingRateId === shippingRate.id" (change)="setShippingRate(shippingRateRadio.value)" />
                     <div class="ml-2 flex flex-1 justify-between">
                         <label for=""> {{shippingRate.name}} </label>
-                        <label for=""> {{shippingRate.price | currency: settings.currency }} </label>
+                        <label for=""> {{shippingRate.price | currency: settings && settings.currency }} </label>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                 Change Address
             </div>
         </div>
-        <div class="border-b border-gray-300 p-5" *ngIf="settings && settings.cod">
+        <div class="border-b border-gray-300 p-5" *ngIf="settings && settings && settings.cod">
             <label class="inline-flex items-center cursor-pointer">
                 <input type="checkbox" class="form-checkbox text-gray-800 ml-1 w-5 h-5"
                     style="transition: all 0.15s ease 0s;" [(ngModel)]="cod" (change)="toggleCod()" />
@@ -57,7 +57,7 @@
                     Discount
                 </div>
                 <div *ngIf="settings">
-                    -{{ draft.saleDiscount | currency: settings.currency }}
+                    -{{ draft.saleDiscount | currency: settings && settings.currency }}
                 </div>
             </div>
             <div class="flex justify-between" *ngIf="draft.taxCharge > 0">
@@ -65,7 +65,7 @@
                     Taxes
                 </div>
                 <div *ngIf="settings">
-                    +{{ draft.taxCharge | currency: settings.currency }}
+                    +{{ draft.taxCharge | currency: settings && settings.currency }}
                 </div>
             </div>
             <div class="flex justify-between" *ngIf="draft.shippingCharge > 0">
@@ -73,7 +73,7 @@
                     Shipping
                 </div>
                 <div *ngIf="settings">
-                    +{{ draft.shippingCharge | currency: settings.currency }}
+                    +{{ draft.shippingCharge | currency: settings && settings.currency }}
                 </div>
             </div>
             <div class="flex justify-between" *ngIf="draft.voucherDiscount > 0">
@@ -81,7 +81,7 @@
                     Voucher
                 </div>
                 <div *ngIf="settings">
-                    -{{ draft.voucherDiscount | currency: settings.currency }}
+                    -{{ draft.voucherDiscount | currency: settings && settings.currency }}
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@
                 Total
             </div>
             <div *ngIf="draft && settings">
-                {{ draft.total | currency: settings.currency }}
+                {{ draft.total | currency: settings && settings.currency }}
             </div>
         </div>
     </div>

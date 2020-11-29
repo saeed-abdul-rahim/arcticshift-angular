@@ -16,7 +16,6 @@ import { CartComponent } from './cart/cart.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderStatusComponent } from './order-status/order-status.component';
-import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CartService } from '@services/cart/cart.service';
 import { FooterComponent } from './footer/footer.component';
@@ -37,7 +36,6 @@ import { ModalService } from '@services/modal/modal.service';
     WishlistComponent,
     CheckoutComponent,
     OrderStatusComponent,
-    OrdersComponent,
     ProfileComponent,
     SignInComponent,
     FooterComponent,

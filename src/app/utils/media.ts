@@ -47,3 +47,13 @@ export function checkImage(file?: File) {
     }
     return file.type.split('/')[0] as ContentType;
 }
+
+export const blobToBase64 = async (blob: Blob): Promise<string | ArrayBuffer> => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    return await new Promise(resolve => {
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+    });
+};

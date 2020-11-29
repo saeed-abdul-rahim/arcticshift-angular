@@ -23,7 +23,8 @@
             </div>
             <!--body-->
             <div class="relative p-6 flex-auto">
-                <div class="text-gray-600 text-lg leading-relaxed max-h-64 relative {{enableScroll}}"
+                <div class="text-gray-600 text-lg leading-relaxed relative {{enableScroll}}"
+                    [class.max-h-64]="restrictHeight"
                     [ngClass]="enableScroll ? 'overflow-y-auto overflow-x-hidden scrollbar' : 'overflow-visible'">
                     <ng-container [ngTemplateOutlet]="bodyTemplate"></ng-container>
                 </div>

@@ -13,7 +13,7 @@ import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
 import { getFormGroupArrayValues } from '@utils/formUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
 import { AlertService } from '@services/alert/alert.service';
 import { setTimeout } from '@utils/setTimeout';
 
@@ -276,13 +276,8 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFileDropped($event: Event) {
-    this.file = $event[0];
-    this.processFile();
-  }
-
-  onFileClicked(fileInput: Event) {
-    this.file = (fileInput.target as HTMLInputElement).files[0];
+  onFileDropped($event: File) {
+    this.file = $event;
     this.processFile();
   }
 
@@ -296,7 +291,13 @@ export class VariantFormComponent implements OnInit, OnDestroy {
       this.storage.getUploadProgress().subscribe(progress =>
         this.uploadProgress = progress,
         () => {},
-        () => this.uploadProgress = 0);
+        async () => {
+          this.uploadProgress = 0;
+          const base64Image = await blobToBase64(this.file) as string;
+          this.thumbnails.push({
+            path: '', url: base64Image
+          });
+        });
     } else {
       this.removeFile();
     }

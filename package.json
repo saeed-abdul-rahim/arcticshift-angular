@@ -1,6 +1,6 @@
 {
   "name": "arcticshift-angular",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve & ngtw watch",
@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "prestart": "ngtw build",
-    "bundle-report": "webpack-bundle-analyzer dist/arcticshift-angular/stats-es2015.json"
+    "build:stats": "ng build --stats-json",
+    "analyze": "webpack-bundle-analyzer dist/arcticshift-angular/stats-es2015.json"
   },
   "private": true,
   "dependencies": {

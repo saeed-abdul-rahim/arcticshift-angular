@@ -63,13 +63,9 @@ export class ProductService {
     }
   }
 
-  setProductCatColFilter(id: string, type: 'categoryId' | 'collectionId') {
+  setProductCatColFilter(id: string, type: 'allCategoryId' | 'collectionId') {
     let productFilter: ProductCondition;
-    if (type === 'categoryId') {
-      productFilter = { field: type, type: '==', value: id };
-    } else if (type === 'collectionId') {
-      productFilter = { field: type, type: 'array-contains', value: id };
-    }
+    productFilter = { field: type, type: 'array-contains', value: id };
     this.setProductFilters([productFilter]);
   }
 
@@ -105,6 +101,9 @@ export class ProductService {
       filters.push({
         field: 'status', type: '==', value: 'active'
       });
+    }
+    if (!orderBy) {
+      orderBy = { field: 'createdAt', direction: 'desc' };
     }
     const { dbProductsRoute } = this.dbS;
     this.unsubscribeProductList();

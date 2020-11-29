@@ -21,7 +21,7 @@ import { VariantInterface } from '@models/Variant';
 import { MatTableDataSource } from '@angular/material/table';
 import { getFormGroupArrayValues } from '@utils/formUtils';
 import { AlertService } from '@services/alert/alert.service';
-import { checkImage, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getUploadPreviewImages } from '@utils/media';
 import { setTimeout } from '@utils/setTimeout';
 
 @Component({
@@ -291,13 +291,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     return `${totalQuantity} available at ${totalWarehouses} location`;
   }
 
-  onFileDropped($event: Event) {
-    this.file = $event[0];
-    this.processFile();
-  }
-
-  onFileClicked(fileInput: Event) {
-    this.file = (fileInput.target as HTMLInputElement).files[0];
+  onFileDropped($event: File) {
+    this.file = $event;
     this.processFile();
   }
 
@@ -311,7 +306,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.storageService.getUploadProgress().subscribe(progress =>
         this.uploadProgress = progress,
         () => {},
-        () => this.uploadProgress = 0);
+        async () => {
+          this.uploadProgress = 0;
+          const base64Image = await blobToBase64(this.file) as string;
+          this.thumbnails.push({
+            path: '', url: base64Image
+          });
+        });
     } else {
       this.removeFile();
     }

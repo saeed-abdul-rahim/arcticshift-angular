@@ -66,7 +66,7 @@ export function filterProductsByCategoryCollection(id: string, productFilters: P
         unSetField = 'collectionId';
         setField = 'allCategoryId';
     } else if (type === 'collection') {
-        unSetField = 'categoryId';
+        unSetField = 'allCategoryId';
         setField = 'collectionId';
     }
     const nxtFilters = productFilters.filter(p => p.field !== unSetField);

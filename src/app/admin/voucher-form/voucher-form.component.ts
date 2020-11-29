@@ -63,7 +63,7 @@ export class VoucherFormComponent implements OnInit, OnDestroy {
       minimumQuantity: [''],
       orderValue: [null],
       orderType: [null],
-      oncePerOrder: [null],
+      oncePerOrder: [true],
       quantity: [null],
       limitCheck: [false],
       limit: [''],

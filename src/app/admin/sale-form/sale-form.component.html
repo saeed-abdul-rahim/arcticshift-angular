@@ -85,7 +85,7 @@
           <app-card [heading]="'General Information'" [body]="sale"></app-card>
           <app-card [heading]="'Discount Type'" [body]="discount"></app-card>
           <app-card [heading]="'Value'" [body]="value"></app-card>
-          <app-catalog-tab-list [productIds]="saleDiscount && saleDiscount.productId"
+          <app-catalog-tab-list *ngIf="edit" [productIds]="saleDiscount && saleDiscount.productId"
               [categoryIds]="saleDiscount && saleDiscount.categoryId" [collectionIds]="saleDiscount && saleDiscount.collectionId"
               (addCatalog)="addCatalog($event)" (removeCatalog)="removeCatalog($event)" [modalLoading]="modalLoading"
               [modalSuccess]="modalSuccess" [(showModal)]="showModal" [removeLoading]="tabDeleteLoading">

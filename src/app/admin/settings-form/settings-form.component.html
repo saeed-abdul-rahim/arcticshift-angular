@@ -6,6 +6,13 @@
                 <div class="w-full mb-3">
                     <input type="text" class="arc-input placeholder-gray-400 w-full" placeholder="Shop Name" formControlName="name" />
                 </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #paymentTemplate>
+        <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 py-3 max-w-full flex-grow flex-1">
                 <div class="w-full mb-3">
                     <ng-select formControlName="weightUnit" [items]="weights" bindValue="id" bindLabel="label" placeholder="Weight Unit"></ng-select>
                 </div>
@@ -20,17 +27,9 @@
                       <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-400" formControlName="cod"><span
                         class="ml-2 text-gray-700">Cash on Delivery</span>
                     </label>
-                  </div>
+                </div>
             </div>
         </div>
-    </ng-template>
-
-    <ng-template #logoTemplate>
-
-    </ng-template>
-
-    <ng-template #logoLongTemplate>
-
     </ng-template>
 
     <ng-template #socialTemplate>
@@ -53,13 +52,18 @@
 
     <div class="relative pt-12 mb-auto h-10">
         <div class="px-4 md:px-10 mx-auto w-full">
-            <div class="flex flex-wrap mt-4 mb-12">
+            <div class="flex flex-wrap mt-4 pb-12">
                 <div class="w-full xl:w-8/12 xl:mb-0 px-4">
                     <app-card [heading]="'General Information'" [body]="generalTemplate"></app-card>
-                    <app-card [heading]="'Logo (1:1)'" [body]="logoTemplate"></app-card>
-                    <app-card [heading]="'Logo with label (21:2)'" [body]="logoLongTemplate"></app-card>
+                    <app-upload [show]="settings" [title]="'Logo Square'" [uploadProgress]="uploadProgressLogo" [thumbnails]="thumbnailsLogo"
+                        (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteLogo($event)">
+                    </app-upload>
+                    <app-upload [show]="settings" [title]="'Logo Long'" [uploadProgress]="uploadProgressLogoLong" [thumbnails]="thumbnailsLogoLong"
+                        (imageCallback)="onFileDroppedLogoLong($event)" (deleteImageCallback)="deleteLogoLong($event)" [aspectRatio]="21 / 2">
+                    </app-upload>
                 </div>
                 <div class="w-full xl:w-4/12 px-4">
+                    <app-card [heading]="'Payment & Calculation'" [body]="paymentTemplate"></app-card>
                     <app-card [heading]="'Socials'" [body]="socialTemplate"></app-card>
                 </div>
             </div>

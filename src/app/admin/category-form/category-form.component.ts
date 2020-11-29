@@ -16,7 +16,7 @@ import { ProductInterface } from '@models/Product';
 import { CatalogType } from '@models/Metadata';
 import { ADD, CATEGORY, categoryRoute, productRoute } from '@constants/routes';
 import { editorConfig } from '@settings/editorConfig';
-import { checkImage, getSmallestThumbnail } from '@utils/media';
+import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
 import { isBothArrEqual } from '@utils/arrUtils';
 import { inOut } from '@animations/inOut';
 import { setTimeout } from '@utils/setTimeout';
@@ -104,6 +104,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       this.categorySubscription = this.shop.getCategoryById(categoryId).subscribe(category => {
         if (!category) { return; }
         this.category = category;
+        this.thumbnails = getUploadPreviewImages(category.images);
         if (!this.initData) {
           this.setCatalogData(0);
           this.initData = true;
@@ -307,13 +308,8 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFileDropped($event: Event) {
-    this.file = $event[0];
-    this.processFile();
-  }
-
-  onFileClicked(fileInput: Event) {
-    this.file = (fileInput.target as HTMLInputElement).files[0];
+  onFileDropped($event: File) {
+    this.file = $event;
     this.processFile();
   }
 
@@ -322,12 +318,18 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     if (this.fileType) {
       this.storage.upload(this.file, this.fileType, {
         id: this.category.categoryId,
-        type: 'product'
+        type: 'category'
       });
       this.storage.getUploadProgress().subscribe(progress =>
         this.uploadProgress = progress,
         () => { },
-        () => this.uploadProgress = 0);
+        async () => {
+          this.uploadProgress = 0;
+          const base64Image = await blobToBase64(this.file) as string;
+          this.thumbnails.push({
+            path: '', url: base64Image
+          });
+        });
     } else {
       this.removeFile();
     }

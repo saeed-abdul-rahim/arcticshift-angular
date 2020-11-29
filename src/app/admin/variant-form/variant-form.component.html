@@ -26,12 +26,6 @@
     </div>
   </ng-template>
 
-  <ng-template #imageUpload>
-    <app-upload [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
-      (fileClickedCallback)="onFileClicked($event)" (fileDroppedCallback)="onFileDropped($event)"
-      (deleteImageCallback)="deleteVariantImage($event)"></app-upload>
-  </ng-template>
-
   <ng-template #variantPrice>
     <div class="items-center">
       <div class="relative flex flex-wrap w-full px-4 py-3 max-w-full flex-grow flex-1">
@@ -88,7 +82,9 @@
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="nameTemplate"></app-card>
           <app-card [heading]="'Attributes'" [body]="attributesTemplate"></app-card>
-          <app-card *ngIf="edit" [heading]="'Images'" [body]="imageUpload" [actions]="imageUploadAction"></app-card>
+          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+            (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteVariantImage($event)">
+          </app-upload>
           <app-card [heading]="'Pricing'" [body]="variantPrice"></app-card>
           <app-card [heading]="'Inventory'" [body]="inventory"></app-card>
         </div>
@@ -102,13 +98,6 @@
 </form>
 
 <!-- BUTTON TEMPLATES -->
-
-<ng-template #imageUploadAction>
-  <label class="arc-link-button" type="button">
-    Upload Image
-    <input type='file' class="hidden" (change)="onFileClicked($event)" />
-  </label>
-</ng-template>
 
 <ng-template #variantActionTemplate>
   <label class="arc-link-button" type="button">
@@ -127,7 +116,7 @@
 
         <ng-container matColumnDef="image">
           <td mat-cell *matCellDef="let row" class="w-32 content-center">
-            <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3"/>
+            <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3" />
           </td>
         </ng-container>
 

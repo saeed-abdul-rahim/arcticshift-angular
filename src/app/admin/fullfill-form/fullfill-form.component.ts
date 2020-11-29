@@ -23,6 +23,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
   success = false;
   orderRoute: string;
 
+  miscForm: FormGroup;
   fullfillForm: FormGroup;
   order: OrderInterface;
   products: ProductData[] = [];
@@ -46,6 +47,9 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
     const orderId = routeSplit.pop();
     this.fullfillForm = this.formBuilder.group({});
     this.getOrderById(orderId);
+    this.miscForm = this.formBuilder.group({
+      sendEmail: [true]
+    });
   }
 
   ngOnDestroy(): void {
@@ -74,6 +78,8 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     try {
       const { controls } = this.fullfillForm;
+      const { controls: miscFormControls } = this.miscForm;
+      const { sendEmail } = miscFormControls;
       const fullfillVariantLevel = Object.keys(controls).map(variantId => {
         const warehouseForm = controls[variantId] as FormGroup;
         const fullfillWarehouseLevel = Object.keys(warehouseForm.controls).map(warehouseId => {
@@ -86,7 +92,7 @@ export class FullfillFormComponent implements OnInit, OnDestroy {
         return fullfillWarehouseLevel;
       });
       const fullfilled = [].concat(...fullfillVariantLevel);
-      await this.admin.fullfillOrder(this.order.id, { fullfilled });
+      await this.admin.fullfillOrder(this.order.id, { fullfilled }, sendEmail.value);
       this.success = true;
       setTimeout(() => {
         this.success = false;

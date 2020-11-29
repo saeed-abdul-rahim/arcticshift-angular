@@ -555,10 +555,10 @@ export class AdminService {
     }
   }
 
-  async fullfillOrder(id: string, data: OrderInterface) {
+  async fullfillOrder(id: string, data: OrderInterface, sendEmail: boolean) {
     const { apiOrder } = this;
     try {
-      return await this.req.patch(`${apiOrder}/${id}/fullfill`, {data});
+      return await this.req.patch(`${apiOrder}/${id}/fullfill`, { data, sendEmail });
     } catch (err) {
       throw err;
     }
