@@ -21,6 +21,7 @@ export class ShopComponent implements OnInit, OnDestroy {
               private nav: NavbarService, private cart: CartService) { }
 
   ngOnInit(): void {
+    this.login();
     this.getSidebarOpened();
     this.auth.getUserDocument();
     this.shop.getCurrentLocationDetails();
@@ -29,7 +30,6 @@ export class ShopComponent implements OnInit, OnDestroy {
     this.shop.setSaleDiscounts();
     this.product.getProducts();
     this.product.getAttributesFromDb();
-    this.login();
     window.addEventListener('scroll', this.scrollEvent, true);
   }
 

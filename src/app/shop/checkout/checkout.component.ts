@@ -234,7 +234,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         shippingAddress,
         notes: miscForm.controls.notes.value
       };
-      console.log(data);
       await this.cart.pay(data, email.value, phoneCode.value + phone.value);
     } catch (err) {
       this.handleError(err);

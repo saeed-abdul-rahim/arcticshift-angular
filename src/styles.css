@@ -1883,10 +1883,6 @@ video {
   max-height: 0;
 }
 
-.carousel {
-  z-index: unset !important;
-}
-
 .sidebar-heading {
   --text-opacity: 1;
   color: #718096;

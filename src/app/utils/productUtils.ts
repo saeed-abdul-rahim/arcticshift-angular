@@ -14,7 +14,7 @@ export function isProductAvailable(variant: VariantInterface) {
             availableQuantity = availableQuantity - (bookedQuantity || 0);
             return availableQuantity > 0 ? true : false;
         }
-        return false;
+        return true;
     } catch (err) {
         throw err;
     }

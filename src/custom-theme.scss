@@ -70,6 +70,31 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     transition: all 0.15s ease 0s;
 }
 
+
+.carousel {
+    z-index: unset !important;
+}
+
+.carousel-open:checked + .carousel-item {
+    position: static;
+    opacity: 100;
+}
+.carousel-item {
+    -webkit-transition: opacity 1s ease-out;
+    transition: opacity 1s ease-out;
+}
+.carousel-indicators {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 2%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+}
+
 .otp-input {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
