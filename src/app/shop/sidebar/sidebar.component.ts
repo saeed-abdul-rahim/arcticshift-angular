@@ -5,6 +5,7 @@ import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
 import { ProductCondition } from '@models/Product';
 import { User } from '@models/User';
+import { AlertService } from '@services/alert/alert.service';
 import { AuthService } from '@services/auth/auth.service';
 import { ModalService } from '@services/modal/modal.service';
 import { NavbarService } from '@services/navbar/navbar.service';
@@ -33,6 +34,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   categories: CategoryInterface[];
   productFilters: ProductCondition[];
   initCategories = false;
+  signLoading = false;
 
   private productFilterSubscription: Subscription;
   private categoriesData: CategoryInterface[];
@@ -40,7 +42,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private collectionsSubscription: Subscription;
   private userSubscription: Subscription;
 
-  constructor(private shop: ShopService, private auth: AuthService, private nav: NavbarService,
+  constructor(private shop: ShopService, private auth: AuthService, private nav: NavbarService, private alert: AlertService,
               private modal: ModalService, private productService: ProductService, private router: Router) { }
 
   ngOnInit(): void {
@@ -133,8 +135,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.nav.setSidebarOpened(false);
   }
 
-  signOut() {
-    this.auth.signOut();
+  async signOut() {
+    this.signLoading = true;
+    try {
+      await this.auth.signOut();
+      await this.auth.getUser();
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.signLoading = false;
   }
 
   filterProductsByCategory(id: string) {
@@ -149,6 +158,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const linkName = encodeURI(joinByHyphen(name));
     this.router.navigateByUrl(`${COLLECTION}/${linkName}/${id}`);
     this.closeSidnav();
+  }
+
+  handleError(err: any) {
+    this.alert.alert({ message: err.message || err });
   }
 
 }

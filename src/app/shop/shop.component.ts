@@ -43,7 +43,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   }
 
   async login() {
-    await this.auth.getUser();
+    await this.auth.isAuthenticated();
   }
 
   getSidebarOpened() {
