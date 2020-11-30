@@ -1,6 +1,6 @@
 {
   "name": "arcticshift-angular",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve & ngtw watch",
@@ -19,7 +19,7 @@
     "@angular/common": "~9.1.11",
     "@angular/compiler": "~9.1.11",
     "@angular/core": "~9.1.11",
-    "@angular/fire": "^6.0.2",
+    "@angular/fire": "^6.0.0",
     "@angular/forms": "~9.1.11",
     "@angular/material": "^9.1.3",
     "@angular/platform-browser": "~9.1.11",

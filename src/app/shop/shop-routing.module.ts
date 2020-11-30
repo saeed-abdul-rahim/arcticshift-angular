@@ -14,15 +14,15 @@ import { WishlistComponent } from './wishlist/wishlist.component';
 const routes: Routes = [
   { path: 'sign', component: SignInComponent },
   {
-    path: '', component: ShopComponent, canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+    path: '', component: ShopComponent,
     children: [
       { path: '', component: HomeComponent },
       { path: `${CATEGORY}/:title/:id`, component: HomeComponent },
       { path: `${COLLECTION}/:title/:id`, component: HomeComponent },
       { path: `${PRODUCT}/:title/:id`, component: VariantComponent },
-      { path: WISHLIST, component: WishlistComponent },
-      { path: CART, component: CartComponent },
-      { path: CHECKOUT, component: CheckoutComponent }
+      { path: WISHLIST, component: WishlistComponent, canActivate: [AuthGuard] },
+      { path: CART, component: CartComponent, canActivate: [AuthGuard] },
+      { path: CHECKOUT, component: CheckoutComponent, canActivate: [AuthGuard] }
     ]
   },
 ];
