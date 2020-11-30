@@ -92,7 +92,7 @@ export class CartComponent implements OnInit, OnDestroy {
         this.variants = [];
       }
     });
-    this.userSubscription = this.auth.getCurrentUserDocument().subscribe(user => {this.user = user; console.log(user);});
+    this.userSubscription = this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => this.settings = settings);
   }
 
