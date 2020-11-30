@@ -77,13 +77,13 @@ export class VariantComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute, private seo: SeoService, private shop: ShopService, private router: Router,
               private cart: CartService, private alert: AlertService, private ref: ChangeDetectorRef) {
+    this.innerWidth = window.innerWidth;
     this.routeSubscription = this.route.params.subscribe(par => {
       this.initialize();
     });
   }
 
   ngOnInit(): void {
-    this.innerWidth = window.innerWidth;
     this.getSaleDiscounts();
     this.getDraft();
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(generalSettings => {
@@ -111,6 +111,8 @@ export class VariantComponent implements OnInit, OnDestroy {
   }
 
   initialize() {
+    this.variant = null;
+    this.quantity = 1;
     this.unsubscribeProducts();
     const params = this.route.snapshot.paramMap;
     const title = params.get('title');
@@ -191,7 +193,9 @@ export class VariantComponent implements OnInit, OnDestroy {
         });
         if (Object.keys(draftVariantQuantity).length > 0 && this.variant) {
           this.draftVariantQuantity = draftVariantQuantity;
-          this.quantity = this.draftVariantQuantity[this.variant.id];
+          if (this.draftVariantQuantity[this.variant.id]) {
+            this.quantity = this.draftVariantQuantity[this.variant.id];
+          }
         }
         this.hasVariantInDraft();
       }
@@ -308,7 +312,8 @@ export class VariantComponent implements OnInit, OnDestroy {
       const { attributeValues } = attribute;
       attribute.attributeValues = attributeValues.map(value => {
         if (!this.availableAttributes.includes(value.id)) {
-          return undefined;
+          value.disabled = true;
+          return value;
         }
         return value;
       }).filter(e => e);

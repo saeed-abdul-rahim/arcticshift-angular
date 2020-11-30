@@ -1,5 +1,7 @@
 
 @import '~@angular/material/theming';
+@import '~@glidejs/glide/src/assets/sass/glide.core';
+@import '~@glidejs/glide/src/assets/sass/glide.theme';
 
 $config: mat-typography-config();
 
@@ -70,18 +72,20 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     transition: all 0.15s ease 0s;
 }
 
-
 .carousel {
     z-index: unset !important;
 }
 
+.carousel-cells {
+    width: unset !important;
+}
 .carousel-open:checked + .carousel-item {
-    position: static;
-    opacity: 100;
+    position: static  !important;
+    opacity: 100 !important;
 }
 .carousel-item {
-    -webkit-transition: opacity 1s ease-out;
-    transition: opacity 1s ease-out;
+    -webkit-transition: opacity 1s ease-out !important;
+    transition: opacity 1s ease-out !important;
 }
 .carousel-indicators {
     list-style: none;
@@ -176,38 +180,43 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     --text-opacity: 1 !important;
     color: #1a202c !important;
     color: rgba(26, 32, 44, var(--text-opacity)) !important;
-  }
+}
+
+.ng-option-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
   
-  .ng-select-multiple .ng-value {
+.ng-select-multiple .ng-value {
     margin-right: 0.5rem !important;
     --bg-opacity: 1 !important;
     background-color: #bee3f8 !important;
     background-color: rgba(190, 227, 248, var(--bg-opacity)) !important;
     border-radius: 0.375rem !important;
-  }
+}
   
-  .ng-select-multiple .ng-value-label, .ng-select-multiple .ng-value-icon {
+.ng-select-multiple .ng-value-label, .ng-select-multiple .ng-value-icon {
     padding: 0.25rem !important;
-  }
+}
   
-  .ng-placeholder {
+.ng-placeholder {
     --text-opacity: 1 !important;
     color: #cbd5e0 !important;
     color: rgba(203, 213, 224, var(--text-opacity)) !important;
-  }
+}
   
-  .angular-editor-toolbar {
+.angular-editor-toolbar {
     background-color: transparent !important;
     padding: 0 !important;
     border: none !important;
-  }
+}
   
-  .angular-editor-button {
+.angular-editor-button {
     background-color: transparent !important;
     border-radius: 0.2rem;
-  }
+}
   
-  .angular-editor-textarea {
+.angular-editor-textarea {
     border: none !important;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
@@ -223,14 +232,14 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     font-size: 0.875rem;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     transition: all 0.15s ease 0s;
-  }
+}
   
-  .angular-editor-textarea:focus {
+.angular-editor-textarea:focus {
     outline: 0;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-  }
+}
   
-  .ae-picker-options {
+.ae-picker-options {
     border-radius: 0.375rem;
     --bg-opacity: 1;
     background-color: #fff;
@@ -241,9 +250,9 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     z-index: 60;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
-  }
+}
   
-  .ae-font .ae-picker-label {
+.ae-font .ae-picker-label {
     display: inline-flex;
     justify-content: center;
     width: 100%;
@@ -269,51 +278,47 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     line-height: inherit !important;
     padding-top: 0.4rem !important;
     padding-bottom: 0.4rem !important;
-  }
+}
   
-  .ae-picker-label {
+.ae-picker-label {
     border-radius: 0.2rem;
-  }
+}
   
-  .ae-font .ae-picker-options .ae-picker-item {
+.ae-font .ae-picker-options .ae-picker-item {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
-  }
+}
   
-  .ae-font .ae-picker-options .ae-picker-item.focused,
-  .ae-font .ae-picker-options .ae-picker-item.selected,
-  .ae-font .ae-picker-options .ae-picker-item:hover,
-  .angular-editor-button:hover {
+.ae-font .ae-picker-options .ae-picker-item.focused,
+.ae-font .ae-picker-options .ae-picker-item.selected,
+.ae-font .ae-picker-options .ae-picker-item:hover,
+.angular-editor-button:hover {
     --bg-opacity: 1 !important;
     background-color: #f7fafc !important;
     background-color: rgba(247, 250, 252, var(--bg-opacity)) !important;
     --text-opacity: 1 !important;
     color: #1a202c !important;
     color: rgba(26, 32, 44, var(--text-opacity)) !important;
-  }
+}
   
-  .ngxImageZoomContainer {
+.ngxImageZoomContainer {
     width: auto !important;
     height: auto !important;
-  }
+}
   
-  .ngxImageZoomFullContainer.ngxImageZoomLensEnabled {
+.ngxImageZoomFullContainer.ngxImageZoomLensEnabled {
     --border-opacity: 1 !important;
     border-color: #4a5568 !important;
     border-color: rgba(74, 85, 104, var(--border-opacity)) !important;
     border-width: 2px !important;
-  }
+}
   
-  .carousel-cells {
-    width: unset !important;
-  }
-  
-  .ng-sidebar{
+.ng-sidebar{
     z-index: 20 !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
+}
   
-  .ngx-timepicker {
+.ngx-timepicker {
     border-bottom-width: 0 !important;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
@@ -331,12 +336,12 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
     transition: all 0.15s ease 0s;
     padding-left: 0 !important;
     padding-right: 0 !important;
-  }
+}
   
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
     .ngx-timepicker {
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
-  }
+}
   

@@ -33,8 +33,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
   constructor(private shop: ShopService, private alert: AlertService, private router: Router) { }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.getCollections();
   }
+
   ngOnDestroy(): void {
     if (this.collectionSubscription && !this.collectionSubscription.closed) {
       this.collectionSubscription.unsubscribe();

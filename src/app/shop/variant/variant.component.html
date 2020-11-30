@@ -5,12 +5,11 @@
     <div class="flex flex-wrap justify-center w-screen md:w-7/12" id="productView">
         <lib-ngx-image-zoom [thumbImage]="selectedThumbnail" [fullImage]="selectedImage" [enableLens]="true"
             [circularLens]="true"></lib-ngx-image-zoom>
-        <carousel class="pt-3" style="width: {{ innerWidth > 767 ? '75%' : '100%' }};" *ngIf="carouselImages.length > 0"
-            [height]="144" [cellWidth]="144" [arrows]="false" [arrowsOutside]="true">
-            <div class="carousel-cell" *ngFor="let img of carouselImages" (click)="setSelectedImage(img.image)">
+        <ngx-glide class="pt-3" style="width: {{ innerWidth > 767 ? '75%' : '100%' }};" [showArrows]="false" [perView]="3">
+            <div *ngFor="let img of carouselImages" (click)="setSelectedImage(img.image)">
                 <img src="{{img.url}}" alt="{{img.name}}" />
             </div>
-        </carousel>
+        </ngx-glide>
     </div>
     <div class="w-screen px-2 md:w-5/12">
         <div class="text-3xl font-light py-3">

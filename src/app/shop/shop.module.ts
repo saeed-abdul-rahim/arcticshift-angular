@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOtpInputModule } from 'ng-otp-input';
-import { IvyCarouselModule } from 'angular-responsive-carousel';
+import { NgxGlideModule } from 'ngx-glide';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { SidebarModule } from 'ng-sidebar';
 
@@ -47,7 +47,7 @@ import { ModalService } from '@services/modal/modal.service';
     ShopRoutingModule,
     ShopComponentsModule,
     NgOtpInputModule,
-    IvyCarouselModule,
+    NgxGlideModule,
     NgxImageZoomModule,
     SidebarModule.forRoot()
   ],
