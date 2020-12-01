@@ -10,7 +10,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { ImageCropperModule } from 'ngx-image-cropper';
 
 import { AdminService } from '@services/admin/admin.service';
-import { MediaService } from '@services/media/media.service';
 import { StorageService } from '@services/storage/storage.service';
 import { ShopService } from '@services/shop/shop.service';
 import { AdminNavService } from '@services/admin-nav/admin-nav.service';
@@ -80,7 +79,6 @@ import { SettingsFormComponent } from './settings-form/settings-form.component';
   ],
   providers: [
     AdminGuard,
-    MediaService,
     AdminService,
     ShopService,
     AdminNavService,

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AngularOntouchModule } from 'angular-ontouch';
 
 import { ComponentsModule } from '@components/components.module';
 import { ProductCardComponent } from './product-card/product-card.component';
@@ -23,8 +22,7 @@ import { FilterProductComponent } from './filter-product/filter-product.componen
   imports: [
     CommonModule,
     RouterModule,
-    ComponentsModule,
-    AngularOntouchModule
+    ComponentsModule
   ],
   exports: [
     ComponentsModule,

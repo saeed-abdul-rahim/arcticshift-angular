@@ -239,7 +239,6 @@ code {
 img,
 svg,
 video,
-canvas,
 object {
   display: block;
   vertical-align: middle;
