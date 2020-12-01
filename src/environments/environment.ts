@@ -9,7 +9,7 @@ export const environment = {
   api: {
     url: 'https://asia-east2-articshift-7f9cd.cloudfunctions.net/api/v1',
     user: '/user',
-    wishlist: '/wishlist',
+    _wishlist: '/wishlist',
     product: '/product',
     category: '/category',
     collection: '/collection',
@@ -20,7 +20,7 @@ export const environment = {
     attribute: '/attribute',
     warehouse: '/warehouse',
     shipping: '/shipping',
-    rate: '/rate',
+    _rate: '/rate',
     order: '/order',
     tax: '/tax',
     settings: '/settings'
@@ -48,9 +48,10 @@ export const environment = {
     drafts: 'drafts',
     taxes: 'taxes',
     adverts: 'adverts',
-    analytics: 'analytics',
     settings: 'settings',
-    general: 'general'
+    _general: 'general',
+    analytics: 'analytics',
+    _dayWise: 'dayWise'
   },
   firebase: {
     apiKey: 'AIzaSyB775r6Mde1AeRVgONzX-1bExSBeQAzapU',

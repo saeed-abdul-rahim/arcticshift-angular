@@ -3,7 +3,7 @@
     <div class="relative w-full flex flex-col">
         <div class="absolute bg-white h-64 w-64"></div>
         <img style="transition: all 0.35s ease 0s;" *ngFor="let img of images; trackBy: trackByFn; let first = first"
-            [ngClass]="first ? 'relative' : 'absolute opacity-0'" src="{{img.url}}" alt="{{img.title}}"
+            [ngClass]="first ? 'relative' : 'absolute opacity-0'" src="{{img.url}}" alt="{{img.title}}" crossorigin="anonymous"
             [class.opacity-100]="!first && hover" [class.opacity-0]="!first && !hover">
         <div *ngIf="discount"
             class="absolute rounded-lg right-0 bg-white py-1 px-2 mt-1 mr-1 {{accentText}} text-sm font-light">

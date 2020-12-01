@@ -25,5 +25,17 @@
         ]
       }
     }
-  ]
+  ],
+  "dataGroups": [
+    {
+        "name": "dynamicResources",
+        "urls": [
+            "**/uploads/**/*.png"
+        ],
+        "cacheConfig": {
+            "maxSize": 250,
+            "maxAge": "7d"
+        }
+    }
+]
 }

@@ -44,6 +44,7 @@ export class AdminService {
 
   private dbShop: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
+  private dbAnalyticsOrderDayWise: AngularFirestoreCollection;
 
   private user: User;
   private userSubscription: Subscription;
@@ -65,9 +66,9 @@ export class AdminService {
       warehouse,
       order,
       shipping,
-      rate,
+      _rate,
     } = api;
-    const { analytics, shops } = db;
+    const { analytics, orders, _dayWise, shops } = db;
     this.getCurrentUser();
     const { shopId } = this.user;
 
@@ -84,10 +85,11 @@ export class AdminService {
     this.apiWarehouse = url + warehouse;
     this.apiOrder = url + order;
     this.apiShipping = url + shipping;
-    this.apiShippingRate = this.apiShipping + rate;
+    this.apiShippingRate = this.apiShipping + _rate;
 
-    this.dbAnalytics = this.dbS.db.collection(analytics);
     this.dbShop = this.dbS.db.collection(shops).doc(shopId);
+    this.dbAnalytics = this.dbS.db.collection(analytics);
+    this.dbAnalyticsOrderDayWise = this.dbAnalytics.doc(orders).collection(_dayWise);
   }
 
   destroy() {
@@ -694,6 +696,11 @@ export class AdminService {
   getWarehousebyIds(ids: string[]): Observable<WarehouseInterface[]> {
     const { dbWarehouseRoute } = this.dbS;
     return this.dbS.queryByIds(dbWarehouseRoute, ids);
+  }
+
+  getAnalyticsOrderDayWise(ids: string[]) {
+    const { dbAnalyticsOrderDayWise } = this;
+    return this.dbS.queryByIds(dbAnalyticsOrderDayWise, ids);
   }
 
   getWarehouseById(warehouseId: string): Observable<WarehouseInterface> {

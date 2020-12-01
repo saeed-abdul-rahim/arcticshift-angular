@@ -56,16 +56,16 @@ export class ShopService {
   productAttributesJoin$: Observable<AttributeJoinInterface[]>;
 
   private apiUser: string;
-  private apiWishlist: string;
+  private apiWishlistPath: string;
   private apiOrder: string;
 
   private user: User;
 
   constructor(private dbS: DbService, private req: RequestService, private auth: AuthService) {
     const { api } = environment;
-    const { url, user, wishlist, order } = api;
+    const { url, user, _wishlist, order } = api;
     this.apiUser = url + user;
-    this.apiWishlist = this.apiUser + wishlist;
+    this.apiWishlistPath = _wishlist;
     this.apiOrder = url + order;
     this.getCurrentUser();
   }
@@ -82,18 +82,18 @@ export class ShopService {
   }
 
   async addToWishlist(productId: string) {
-    const { req, apiWishlist, user } = this;
+    const { req, apiUser, apiWishlistPath, user } = this;
     try {
-      return await req.put(apiWishlist, { data: { productId, userId: user.uid } });
+      return await req.put(`${apiUser}/${user.uid}/${apiWishlistPath}`, { data: { productId } });
     } catch (err) {
       throw err;
     }
   }
 
   async removeFromWishlist(productId: string) {
-    const { req, apiUser, user } = this;
+    const { req, apiUser, user, apiWishlistPath } = this;
     try {
-      return await req.delete(`${apiUser}/${user.uid}/wishlist/${productId}`);
+      return await req.delete(`${apiUser}/${user.uid}/${apiWishlistPath}/${productId}`);
     } catch (err) {
       throw err;
     }

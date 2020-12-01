@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, Query } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, Query } from '@angular/fire/firestore';
 import { Observable } from 'rxjs/internal/Observable';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { map } from 'rxjs/internal/operators/map';
@@ -79,11 +79,11 @@ export class DbService {
       orders,
       drafts,
       settings,
-      general
+      _general
     } = db;
 
     this.db = this.afs.collection(version).doc(name);
-    this.dbGeneralSettings = this.db.collection(settings).doc(general);
+    this.dbGeneralSettings = this.db.collection(settings).doc(_general);
     this.dbPath = `/${version}/${name}`;
 
     this.dbUsersRoute = users;
@@ -214,10 +214,15 @@ export class DbService {
     return this.query(db, dbOrdersRoute, conditions, orderBy, limit);
   }
 
-  queryByIds(collection: string, ids: string[]) {
+  queryByIds(collection: string | AngularFirestoreCollection, ids: string[]) {
     const { db } = this;
     const queries = ids.map(id => {
-      const data = db.collection(collection).doc(id);
+      let data: AngularFirestoreDocument;
+      if (typeof collection === 'string') {
+        data = db.collection(collection).doc(id);
+      } else {
+        data = collection.doc(id);
+      }
       return getDataFromDocument(data);
     });
     return combineLatest(queries);
