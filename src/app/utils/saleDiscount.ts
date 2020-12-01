@@ -1,7 +1,7 @@
 import { ProductInterface } from '@models/Product';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { uniqueArr } from './arrUtils';
-import { getDiscountPrice, percentDecrease } from './calculation';
+import { getDiscountPrice, percentIncrease } from './calculation';
 
 export function getSaleDiscountForProduct(saleDiscounts: SaleDiscountInterface[], product: ProductInterface) {
     try {
@@ -35,7 +35,7 @@ export function getProductDiscount(saleDiscount: SaleDiscountInterface, price: n
         let discount: number;
         switch (valueType) {
             case 'fixed':
-                discount = percentDecrease(price, value);
+                discount = percentIncrease(price, value);
                 price -= value;
                 break;
             case 'percent':

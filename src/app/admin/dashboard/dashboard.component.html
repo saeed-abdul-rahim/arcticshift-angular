@@ -1,13 +1,50 @@
 <div class="relative md:pt-32 pb-32 pt-12">
   <div class="px-4 md:px-10 mx-auto w-full">
-    <!-- Card stats -->
     <div class="flex flex-wrap w-full xl:w-8/12">
-      <app-tile class="w-full lg:w-6/12 px-4" [label]="'Orders'" [value]="'350,897'" [icon]="faFileAlt"
-        [subValueColor]="'green'" [subValue]="'3.48%'" [subLabel]="'Since yesterday'" [iconContainerColor]="'pink'">
+      <app-tile class="w-full lg:w-6/12 px-4" [label]="'Orders'" [value]="totalOrdersToday | number" [icon]="faFileAlt"
+        [subValueColor]="orderPercentIncrease === 0 ? 'blue' : orderPercentIncrease > 0 ? 'green' : 'orange'"
+        [subValue]="orderPercentIncrease + '%'" [subLabel]="'Since yesterday'" [iconContainerColor]="'pink'">
       </app-tile>
-      <app-tile class="w-full lg:w-6/12 px-4" [label]="'Sales'" [value]="'924'" [icon]="faChartLine"
-        [subValueColor]="'orange'" [subValue]="'1.10%'" [subLabel]="'Since yesterday'" [iconContainerColor]="'teal'">
+      <app-tile class="w-full lg:w-6/12 px-4" [label]="'Sales'" [value]="totalSalesToday | number" [icon]="faChartLine"
+        [subValueColor]="salePercentIncrease === 0 ? 'blue' : salePercentIncrease > 0 ? 'green' : 'orange'"
+        [subValue]="salePercentIncrease + '%'" [subLabel]="'Since yesterday'" [iconContainerColor]="'teal'">
       </app-tile>
+      <div class="w-full px-4 pt-5">
+        <app-card [heading]="'Top Products'" [body]="variantListTemplate"></app-card>
+      </div>
+    </div>
+    <div class="flex flex-wrap w-full xl:w-4/12">
     </div>
   </div>
 </div>
+
+<!-- TABLE TEMPLATES -->
+
+<ng-template #variantListTemplate>
+  <div class="overflow-x-scroll">
+    <app-spinner class="data-empty" *ngIf="topVariantsLoading" [size]="'5'"></app-spinner>
+    <div *ngIf="!topVariantsLoading">
+      <div *ngIf="topVariants && topVariants.length === 0" class="data-empty">No data available</div>
+      <table *ngIf="topVariants && topVariants.length > 0" mat-table [dataSource]="topVariantsSource">
+
+        <ng-container matColumnDef="image">
+          <td mat-cell *matCellDef="let row" class="w-32 content-center">
+            <img src="{{ getSmallestThumbnail(row.images) }}" width="48" height="48" class="m-3" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Product Name</th>
+          <td mat-cell *matCellDef="let row" class="padding-0">
+            <div class="flex flex-wrap relative align-middle" *ngIf="row">
+              <div class="relative w-full px-5 py-3">{{ row.productName + ' - ' + row.name }}</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: variantColumns;" (click)="navigateToVariant(row.id)"></tr>
+
+      </table>
+    </div>
+  </div>
+</ng-template>

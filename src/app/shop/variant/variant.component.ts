@@ -8,7 +8,7 @@ import { VariantInterface } from '@models/Variant';
 import { SeoService } from '@services/seo/seo.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
-import { percentDecrease } from '@utils/calculation';
+import { percentIncrease } from '@utils/calculation';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertService } from '@services/alert/alert.service';
 import { getIds } from '@utils/arrUtils';
@@ -259,7 +259,7 @@ export class VariantComponent implements OnInit, OnDestroy {
     if (strikePrice) {
       this.strikePrice = strikePrice.value;
       this.price = price;
-      this.discountPercentage = percentDecrease(price, this.strikePrice);
+      this.discountPercentage = percentIncrease(price, this.strikePrice);
     }
     if (this.saleDiscounts && this.saleDiscounts.length > 0) {
       const saleDiscount = getSaleDiscountForProduct(this.saleDiscounts, this.product);

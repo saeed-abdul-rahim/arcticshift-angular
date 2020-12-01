@@ -1,5 +1,5 @@
-export function percentDecrease(original: number, discount: number) {
-    return Number((100 * ((discount - original) / original)).toFixed(2));
+export function percentIncrease(original: number, newNumber: number) {
+    return Number((100 * ((newNumber - original) / original)).toFixed(2));
 }
 
 export function getDiscountValue(price: number, discount: number) {

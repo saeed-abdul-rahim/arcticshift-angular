@@ -23,6 +23,7 @@ import { OrderInterface } from '@models/Order';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Observable } from 'rxjs/internal/Observable';
 import { GeneralSettings } from '@models/GeneralSettings';
+import { SaleAnalyticsGroupInterface } from '@models/Analytics';
 
 @Injectable()
 export class AdminService {
@@ -698,7 +699,7 @@ export class AdminService {
     return this.dbS.queryByIds(dbWarehouseRoute, ids);
   }
 
-  getAnalyticsOrderDayWise(ids: string[]) {
+  getAnalyticsOrderDayWise(ids: string[]): Observable<SaleAnalyticsGroupInterface[]> {
     const { dbAnalyticsOrderDayWise } = this;
     return this.dbS.queryByIds(dbAnalyticsOrderDayWise, ids);
   }

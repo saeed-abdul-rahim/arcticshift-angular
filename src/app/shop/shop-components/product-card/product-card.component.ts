@@ -7,7 +7,7 @@ import { slideInOut } from '@animations/slideInOut';
 import { ShopService } from '@services/shop/shop.service';
 import { GeneralSettings } from '@models/GeneralSettings';
 import { ValueType } from '@models/Common';
-import { getDiscountPrice, percentDecrease } from '@utils/calculation';
+import { getDiscountPrice, percentIncrease } from '@utils/calculation';
 import { UserInterface } from '@models/User';
 import { AuthService } from '@services/auth/auth.service';
 import { AlertService } from '@services/alert/alert.service';
@@ -109,7 +109,7 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     }
     switch (this.discountType) {
       case 'fixed':
-        this.discount = percentDecrease(this.price, this.discountValue);
+        this.discount = percentIncrease(this.price, this.discountValue);
         this.strikePrice = this.price;
         this.price -= this.discountValue;
         break;
