@@ -14,6 +14,7 @@ import { getSmallestThumbnail } from '@utils/media';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth/auth.service';
 import { setTimeout } from '@utils/setTimeout';
+import { IMAGE_XXS } from '@constants/imageSize';
 
 @Component({
   selector: 'app-navbar',
@@ -29,6 +30,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   faHeart = faHeart;
   faSearch = faSearch;
 
+  title: string;
+  logoUrl: string;
   innerWidth: number;
   isMobile = false;
   showMenu = false;
@@ -42,6 +45,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   @ViewChild('search') private search: ElementRef;
 
+  private settingsSubscription: Subscription;
   private draftSubscription: Subscription;
   private wishlistSubscription: Subscription;
   private sidebarOpenedSubscription: Subscription;
@@ -56,9 +60,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.draftSubscription = this.cart.getDraft().subscribe(draft => this.draft = draft);
     this.wishlistSubscription = this.auth.getCurrentUserDocument().subscribe(user => this.user = user);
     this.sidebarOpenedSubscription = this.nav.getSidebarOpened().subscribe(sidebarOpened => this.sidebarOpened = sidebarOpened);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => {
+      if (settings) {
+        this.title = settings.name;
+        const image = settings.images.find(img => img.id === 'longLogo');
+        if (image) {
+          this.logoUrl = image.thumbnails.find(thumb => thumb.dimension === IMAGE_XXS)?.url || '';
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
+    }
     if (this.draftSubscription && !this.draftSubscription.closed) {
       this.draftSubscription.unsubscribe();
     }

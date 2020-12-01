@@ -1,3 +1,4 @@
+export const IMAGE_XXS: 48 = 48;
 export const IMAGE_SS: 72 = 72;
 export const IMAGE_XS: 96 = 96;
 export const IMAGE_S: 128 = 128;

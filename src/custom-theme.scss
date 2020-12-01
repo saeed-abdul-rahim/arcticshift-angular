@@ -52,6 +52,19 @@ $arcticshift-angular-theme: mat-light-theme($arcticshift-angular-primary, $arcti
 
 .mat-header-cell {
     padding: 1rem;
+    --bg-opacity: 1;
+    background-color: #f7fafc;
+    background-color: rgba(247, 250, 252, var(--bg-opacity));
+}
+
+.mat-row {
+    cursor: pointer;
+}
+
+.mat-row:hover {
+    --bg-opacity: 1;
+    background-color: #f7fafc;
+    background-color: rgba(247, 250, 252, var(--bg-opacity));
 }
 
 .mat-form-field-appearance-fill .mat-form-field-flex {

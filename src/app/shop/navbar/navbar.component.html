@@ -15,7 +15,8 @@
         <div class="flex flex-1 items-center md:justify-center" *ngIf="(!showSearch && isMobile) || !isMobile">
             <a class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl pl-6"
                 routerLink="/">
-                ARCTIC
+                <img style="height: 30px;" *ngIf="logoUrl" src="{{logoUrl}}" alt="{{title}}" crossorigin="anonymous">
+                <span *ngIf="!logoUrl">{{title}}</span>
             </a>
         </div>
 

@@ -1,7 +1,7 @@
 <div class="flex flex-wrap justify-center w-full mb-3" *ngIf="carouselImages.length > 0">
     <ngx-glide style="width: 100%;" [showArrows]="false" [perView]="1" [autoplay]="3000" [hoverpause]="true">
         <div class="flex justify-center" *ngFor="let img of carouselImages; trackBy: trackByFn" (click)="navigateToCollection(img.collectionId, img.name)">
-            <img src="{{img.url}}" alt="{{img.name}}" />
+            <img src="{{img.url}}" alt="{{img.name}}" crossorigin="anonymous" />
         </div>
     </ngx-glide>
 </div>

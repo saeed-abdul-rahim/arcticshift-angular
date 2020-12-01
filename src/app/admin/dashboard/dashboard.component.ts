@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalOrdersToday: number;
   salePercentIncrease: number;
   orderPercentIncrease: number;
-  topVariants: VariantInterface[];
+  topVariants: VariantInterface[] = [];
 
   variantColumns = ['image', 'name'];
   topVariantsSource: MatTableDataSource<VariantInterface>;
@@ -89,7 +89,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.orderPercentIncrease = percentIncrease(salesYesterday.length, this.totalOrdersToday);
 
         // TOP Variants
-        const variantIds = salesToday.map(s => s.variantId).reduce((prev, curr) => prev.concat(curr));
+        const variantIds = salesToday.map(s => s.variantId).reduce((prev, curr) => prev.concat(curr), []);
         const topVariantIds = this.getTopVariantIds(variantIds);
         if (!isBothArrEqual(topVariantIds, this.topVariantIds)) {
           this.getVariants(topVariantIds);
