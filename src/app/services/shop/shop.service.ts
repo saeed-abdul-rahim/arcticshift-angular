@@ -84,7 +84,7 @@ export class ShopService {
   async addToWishlist(productId: string) {
     const { req, apiUser, apiWishlistPath, user } = this;
     try {
-      return await req.put(`${apiUser}/${user.uid}/${apiWishlistPath}`, { data: { productId } });
+      return await req.put(`${apiUser}/${user.uid}${apiWishlistPath}`, { data: { productId } });
     } catch (err) {
       throw err;
     }
@@ -93,7 +93,7 @@ export class ShopService {
   async removeFromWishlist(productId: string) {
     const { req, apiUser, user, apiWishlistPath } = this;
     try {
-      return await req.delete(`${apiUser}/${user.uid}/${apiWishlistPath}/${productId}`);
+      return await req.delete(`${apiUser}/${user.uid}${apiWishlistPath}/${productId}`);
     } catch (err) {
       throw err;
     }
