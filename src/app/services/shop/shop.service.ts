@@ -447,7 +447,12 @@ export class ShopService {
   }
 
   private getCurrentUser() {
-    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => this.user = user);
+    this.userSubscription = this.auth.getCurrentUserStream().subscribe(user => {
+      if (!user) {
+        this.auth.isAuthenticated();
+      }
+      this.user = user;
+    });
   }
 
   private async getLocation() {
