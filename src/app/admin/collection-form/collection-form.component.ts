@@ -10,7 +10,7 @@ import { StorageService } from '@services/storage/storage.service';
 import { editorConfig } from '@settings/editorConfig';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ProductInterface } from '@models/Product';
-import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages, sortImagesFromThumbnails } from '@utils/media';
 import { MatTableDataSource } from '@angular/material/table';
 import { AlertService } from '@services/alert/alert.service';
 import { AddCatalogEvent } from '@models/Event';
@@ -133,7 +133,8 @@ export class CollectionFormComponent implements OnInit, OnDestroy {
         name: name.value,
         description: description.value,
         status: status.value,
-        featureOnHomePage: featureOnHomePage.value
+        featureOnHomePage: featureOnHomePage.value,
+        images: this.thumbnails.length > 0 ? sortImagesFromThumbnails(this.thumbnails, this.collection.images) : []
       };
       if (this.edit) {
         await this.admin.updateCollection({

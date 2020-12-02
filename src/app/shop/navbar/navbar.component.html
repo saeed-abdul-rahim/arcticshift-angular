@@ -13,9 +13,9 @@
         <input class="hidden" type="checkbox" id="menu-toggle" *ngIf="(!showSearch && isMobile) || !isMobile">
 
         <div class="flex flex-1 items-center md:justify-center" *ngIf="(!showSearch && isMobile) || !isMobile">
-            <a class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl pl-6"
+            <a class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl pl-4"
                 routerLink="/">
-                <img style="height: 30px;" *ngIf="logoUrl" src="{{logoUrl}}" alt="{{title}}" crossorigin="anonymous">
+                <img style="height: 24px;" *ngIf="logoUrl" src="{{logoUrl}}" alt="{{title}}" crossorigin="anonymous">
                 <span *ngIf="!logoUrl">{{title}}</span>
             </a>
         </div>
@@ -29,7 +29,7 @@
                 <fa-icon [icon]="faSearch"></fa-icon>
             </span>
             <div class="absolute bg-white flex flex-col arc-transition slider divide-y shadow rounded-b"
-                style="margin-top: 3.25rem;" *ngIf="products && products.length > 0"
+                style="margin-top: 3rem;" *ngIf="products && products.length > 0"
                 [ngClass]="isMobile ? '-ml-6 w-screen' : 'w-full'">
                 <div class="p-3 font-light text-gray-700 flex align-middle"
                     *ngFor="let product of products; trackBy: trackByFn"

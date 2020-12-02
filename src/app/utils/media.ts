@@ -1,5 +1,5 @@
 import { IMAGE_SM, IMAGE_SS } from '@constants/imageSize';
-import { Content, ContentType } from '@models/Common';
+import { Content, ContentStorage, ContentType } from '@models/Common';
 
 export function getSmallestThumbnail(images?: Content[]) {
     if (images && images.length > 0) {
@@ -36,6 +36,15 @@ export function setThumbnails(images: Content[], name: string, imageSize: number
     }
     return allThumbnails;
 }
+
+export function sortImagesFromThumbnails(thumbnails: ContentStorage[], images: Content[]) {
+    return thumbnails.map(thumbnail => {
+      if (!thumbnail.path) {
+        return;
+      }
+      return images.find(image => image.thumbnails.find(thumb => thumb.path === thumbnail.path));
+    }).filter(e => e);
+  }
 
 export function checkImage(file?: File) {
     if (!file) {

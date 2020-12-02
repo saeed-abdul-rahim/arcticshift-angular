@@ -16,7 +16,7 @@ import { ProductInterface } from '@models/Product';
 import { CatalogType } from '@models/Metadata';
 import { ADD, CATEGORY, categoryRoute, productRoute } from '@constants/routes';
 import { editorConfig } from '@settings/editorConfig';
-import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages, sortImagesFromThumbnails } from '@utils/media';
 import { isBothArrEqual } from '@utils/arrUtils';
 import { inOut } from '@animations/inOut';
 import { setTimeout } from '@utils/setTimeout';
@@ -184,7 +184,8 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
       const setData: CategoryInterface = {
         name: name.value,
         description: description.value,
-        parentCategoryId: this.parentCategoryId
+        parentCategoryId: this.parentCategoryId,
+        images: this.thumbnails.length > 0 ? sortImagesFromThumbnails(this.thumbnails, this.category.images) : []
       };
       if (this.edit) {
         await this.admin.updateCategory({

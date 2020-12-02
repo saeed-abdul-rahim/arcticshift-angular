@@ -32,6 +32,11 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
   thumbnailsLogoLong: ContentStorage[] = [];
   uploadProgressLogoLong = 0;
 
+  fileLogoMd: File;
+  fileTypeLogoMd: ContentType;
+  thumbnailsLogoMd: ContentStorage[] = [];
+  uploadProgressLogoMd = 0;
+
   settings: GeneralSettings;
   settingsForm: FormGroup;
   settingsSubscription: Subscription;
@@ -82,11 +87,15 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
         if (images && images.length > 0) {
           const logo = images.find(i => i.id === 'logo');
           const longLogo = images.find(i => i.id === 'longLogo');
+          const logoMd = images.find(i => i.id === 'logoMd');
           if (logo) {
             this.thumbnailsLogo = [logo.thumbnails.find(thumb => thumb.dimension === IMAGE_SM)];
           }
           if (longLogo) {
             this.thumbnailsLogoLong = [longLogo.thumbnails.find(thumb => thumb.dimension === IMAGE_SM)];
+          }
+          if (logoMd) {
+            this.thumbnailsLogoMd = [logoMd.thumbnails.find(thumb => thumb.dimension === IMAGE_SM)];
           }
         }
       }
@@ -132,10 +141,16 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
 
   async deleteLogo($event) {}
   async deleteLogoLong($event) {}
+  async deleteLogoMd($event) {}
 
   onFileDropped($event: File) {
     this.fileLogo = $event;
     this.processLogoFile();
+  }
+
+  onFileDroppedLogoMd($event: File) {
+    this.fileLogoMd = $event;
+    this.processLogoMdFile();
   }
 
   onFileDroppedLogoLong($event: File) {
@@ -172,6 +187,23 @@ export class SettingsFormComponent implements OnInit, OnDestroy {
         this.uploadProgressLogoLong = 0;
         const base64Image = await blobToBase64(this.fileLogoLong) as string;
         this.thumbnailsLogoLong.push({
+          path: '', url: base64Image
+        });
+    });
+  }
+
+  processLogoMdFile() {
+    this.storage.upload(this.fileLogoMd, 'image', {
+      id: 'logoMd',
+      type: 'settings'
+    });
+    this.storage.getUploadProgress().subscribe(progress =>
+      this.uploadProgressLogoMd = progress,
+      () => { },
+      async () => {
+        this.uploadProgressLogoMd = 0;
+        const base64Image = await blobToBase64(this.fileLogoMd) as string;
+        this.thumbnailsLogoMd.push({
           path: '', url: base64Image
         });
     });

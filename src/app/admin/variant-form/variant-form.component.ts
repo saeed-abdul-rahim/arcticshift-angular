@@ -13,7 +13,7 @@ import { ShopService } from '@services/shop/shop.service';
 import { StorageService } from '@services/storage/storage.service';
 import { getFormGroupArrayValues } from '@utils/formUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getSmallestThumbnail, getUploadPreviewImages, sortImagesFromThumbnails } from '@utils/media';
 import { AlertService } from '@services/alert/alert.service';
 import { setTimeout } from '@utils/setTimeout';
 
@@ -222,7 +222,8 @@ export class VariantFormComponent implements OnInit, OnDestroy {
         sku: sku.value,
         trackInventory: trackInventory.value,
         attributes,
-        warehouseQuantity
+        warehouseQuantity,
+        images: this.thumbnails.length > 0 ? sortImagesFromThumbnails(this.thumbnails, this.variant.images) : []
       };
       if (this.edit) {
         await this.admin.updateVariant({

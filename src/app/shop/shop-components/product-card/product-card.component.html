@@ -22,7 +22,7 @@
             <span class="line-through text-gray-500">{{strikePrice | currency: settings && settings.currency}}</span>
             <span [ngClass]="discount || (strikePrice && strikePrice > 0) ? accentText + ' font-normal' : ''">{{price | currency: settings && settings.currency}}</span>
         </p>
-        <p class="absolute bg-white pt-1 font-hairline cursor-pointer hover:{{accentText}} w-1/2"
+        <p class="absolute bg-white pt-1 font-hairline cursor-pointer hover:{{accentText}} w-3/4"
             *ngIf="hover" [@slideInOutAnimation]>
             Show more
         </p>

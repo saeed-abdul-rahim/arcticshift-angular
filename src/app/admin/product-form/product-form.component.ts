@@ -21,7 +21,7 @@ import { VariantInterface } from '@models/Variant';
 import { MatTableDataSource } from '@angular/material/table';
 import { getFormGroupArrayValues } from '@utils/formUtils';
 import { AlertService } from '@services/alert/alert.service';
-import { blobToBase64, checkImage, getUploadPreviewImages } from '@utils/media';
+import { blobToBase64, checkImage, getUploadPreviewImages, sortImagesFromThumbnails } from '@utils/media';
 import { setTimeout } from '@utils/setTimeout';
 
 @Component({
@@ -195,7 +195,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       productTypeId: productType.value,
       attributes,
       chargeTax: tax.value,
-      status: visibility.value
+      status: visibility.value,
+      images: this.thumbnails.length > 0 ? sortImagesFromThumbnails(this.thumbnails, this.product.images) : []
     };
     try {
       if (this.edit) {

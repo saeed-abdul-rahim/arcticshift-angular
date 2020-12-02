@@ -26,7 +26,7 @@
       <div class="flex flex-wrap mt-4 mb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="Category"></app-card>
-          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [(thumbnails)]="thumbnails"
             (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteCategoryImage($event)"></app-upload>
           <app-tab *ngIf="category"
             [labels]="['Subcategories ' + '(' + category.subCategoryId.length + ')', 'Products ' + '(' + category.productId.length + ')']"

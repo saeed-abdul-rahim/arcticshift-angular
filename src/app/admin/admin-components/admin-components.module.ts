@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTableModule } from '@angular/material/table';
 import { ImageCropperModule } from 'ngx-image-cropper';
 
@@ -32,6 +33,7 @@ import { AlertService } from '@services/alert/alert.service';
   imports: [
     CommonModule,
     ComponentsModule,
+    DragDropModule,
     MatTableModule,
     ImageCropperModule
   ],

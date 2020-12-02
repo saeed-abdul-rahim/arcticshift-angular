@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContentStorage } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
 
@@ -14,6 +15,8 @@ export class UploadComponent implements OnInit {
   @Input() aspectRatio = 1 / 1;
   @Input() uploadProgress = 0;
   @Input() thumbnails: ContentStorage[] = [];
+  @Input() deleteLoadingId: string;
+  @Output() thumbnailsChange = new EventEmitter<ContentStorage[]>();
   @Output() imageCallback = new EventEmitter<any>();
   @Output() deleteImageCallback = new EventEmitter<string>();
 
@@ -88,6 +91,15 @@ export class UploadComponent implements OnInit {
     const res: Response = await fetch(dataUrl);
     const blob: Blob = await res.blob();
     return new File([blob], fileName, { type: 'image/png' });
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.thumbnails, event.previousIndex, event.currentIndex);
+    this.thumbnailsChange.emit(this.thumbnails);
+  }
+
+  trackByFn(index: number, item: ContentStorage) {
+    return item.url;
   }
 
 }

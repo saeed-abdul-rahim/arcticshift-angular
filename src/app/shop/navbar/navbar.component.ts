@@ -63,7 +63,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.settingsSubscription = this.shop.getGeneralSettings().subscribe(settings => {
       if (settings) {
         this.title = settings.name;
-        const image = settings.images.find(img => img.id === 'longLogo');
+        const image = settings.images.find(img => img.id === 'logoMd');
         if (image) {
           this.logoUrl = image.thumbnails.find(thumb => thumb.dimension === IMAGE_XXS)?.url || '';
         }

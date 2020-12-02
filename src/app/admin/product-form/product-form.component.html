@@ -97,7 +97,7 @@
       <div class="flex flex-wrap mt-4 pb-12">
         <div class="w-full xl:w-8/12 xl:mb-0 px-4">
           <app-card [heading]="'General Information'" [body]="productNameDesc"></app-card>
-          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [thumbnails]="thumbnails"
+          <app-upload [show]="edit" [uploadProgress]="uploadProgress" [(thumbnails)]="thumbnails"
             (imageCallback)="onFileDropped($event)" (deleteImageCallback)="deleteProductImage($event)">
           </app-upload>
           <app-card *ngIf="attributeForms.length > 0" [heading]="'Attributes'" [body]="attributesTemplate">
