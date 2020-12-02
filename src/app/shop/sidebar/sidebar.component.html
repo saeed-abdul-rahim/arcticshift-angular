@@ -1,5 +1,5 @@
 <div class="h-full bg-white relative z-40 py-5 w-64 capitalize font-medium text-gray-900">
-    <div class="mt-12">
+    <div class="mt-10 bg-white">
         <div class="arc-transition divide-y">
             <div class="px-5 py-2 mx-2 rounded block mb-2 arc-transition relative"
                 [ngClass]="signLoading ? 'disabled' : 'cursor-pointer hover:bg-gray-200 hover:text-gray-700'"
@@ -40,6 +40,7 @@
                     <div class="absolute h-full w-full bg-white opacity-50" *ngIf="signLoading"></div>
                     Sign Out
                 </div>
+                <div class="py-3"></div>
             </div>
         </div>
     </div>
