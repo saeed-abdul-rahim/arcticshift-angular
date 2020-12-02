@@ -903,6 +903,10 @@ video {
   margin-bottom: 3rem;
 }
 
+.mt-24{
+  margin-top: 6rem;
+}
+
 .mt-56{
   margin-top: 14rem;
 }
@@ -2334,10 +2338,6 @@ h5 {
 
   .md\:mb-4{
     margin-bottom: 1rem;
-  }
-
-  .md\:mt-24{
-    margin-top: 6rem;
   }
 
   .md\:ml-64{

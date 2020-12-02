@@ -43,7 +43,10 @@ export class ShopComponent implements OnInit, OnDestroy {
   }
 
   async login() {
-    await this.auth.isAuthenticated();
+    const isAuthenticated = await this.auth.isAuthenticated();
+    if (!isAuthenticated) {
+      this.auth.getUser();
+    }
   }
 
   getSidebarOpened() {
