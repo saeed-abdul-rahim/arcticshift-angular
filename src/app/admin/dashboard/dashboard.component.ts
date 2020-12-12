@@ -67,9 +67,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getAnalytics(ids: string[]) {
-    this.analyticsSubscription = this.admin.getAnalyticsOrderDayWise(ids).subscribe(data => {
+    this.analyticsSubscription = this.admin.getAnalyticsOrderDayWise(ids).subscribe(saleData => {
+      const data = saleData.filter(e => e);
       if (data && data.length > 0) {
-        const sales = data.filter(e => e).map(s => s.sale).reduce((prev, curr) => prev.concat(curr));
+        const sales = data.map(s => s.sale).reduce((prev, curr) => prev.concat(curr));
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);

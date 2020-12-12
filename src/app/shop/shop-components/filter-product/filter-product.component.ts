@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AttributeJoinInterface } from '@models/Attribute';
 import { ProductCondition, ProductOrderBy } from '@models/Product';
 import { ProductService } from '@services/product/product.service';
+import { isColorAttribute } from '@utils/productUtils';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 type SortBy = {
@@ -17,6 +18,7 @@ type SortBy = {
 })
 export class FilterProductComponent implements OnInit, OnDestroy {
 
+  isColorAttribute = isColorAttribute;
   showFilter = false;
   showSort = false;
   sortByData: SortBy[] = [
@@ -69,18 +71,6 @@ export class FilterProductComponent implements OnInit, OnDestroy {
     }
     if (this.productSortSubscription && !this.productSortSubscription.closed) {
       this.productSortSubscription.unsubscribe();
-    }
-  }
-
-  isColorAttribute(attribute: AttributeJoinInterface): boolean {
-    const { attributeValues } = attribute;
-    if (attributeValues && attributeValues.length > 0) {
-      const values = attributeValues
-        .map(value => value.name)
-        .filter(value => value[0] === '#' && value.length === 7);
-      return values.length === attributeValues.length;
-    } else {
-      return false;
     }
   }
 

@@ -1,3 +1,4 @@
+import { AttributeJoinInterface } from '@models/Attribute';
 import { ValueType } from '@models/Common';
 import { ProductCondition, ProductInterface } from '@models/Product';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
@@ -19,6 +20,18 @@ export function isProductAvailable(variant: VariantInterface) {
         throw err;
     }
 }
+
+export function isColorAttribute(attribute: AttributeJoinInterface): boolean {
+    const { attributeValues } = attribute;
+    if (attributeValues && attributeValues.length > 0) {
+      const values = attributeValues
+        .map(value => value.name)
+        .filter(value => value[0] === '#' && value.length === 7);
+      return values.length === attributeValues.length;
+    } else {
+      return false;
+    }
+  }
 
 export function setSaleDiscountForProduct(saleDiscounts: SaleDiscountInterface[], product: ProductInterface) {
     try {

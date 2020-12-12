@@ -1,4 +1,4 @@
-import { CommonInterface, Tax, Condition, Content, ObjString, OrderBy } from './Common';
+import { CommonInterface, Condition, Content, ObjString, OrderBy } from './Common';
 
 export interface ProductInterface extends CommonInterface {
     shopId?: string;
@@ -16,7 +16,6 @@ export interface ProductInterface extends CommonInterface {
     prices?: Price[];
     price?: number;
     chargeTax?: boolean;
-    tax?: Tax | null;
     variantId?: string[];
     saleDiscountId?: string;
     voucherId?: string;

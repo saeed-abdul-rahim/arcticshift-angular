@@ -31,14 +31,21 @@
         <div class="pt-4">
             <div class="items-center" *ngIf="attributes">
                 <div class="relative flex flex-wrap w-full py-2 max-w-full flex-grow flex-1"
-                    *ngFor="let attribute of filteredAttributes; let i=index">
+                    *ngFor="let attribute of filteredAttributes">
                     <div class="w-full md:w-4/12 m-auto font-light">{{ attribute.name }}</div>
-                    <div class="w-full md:w-8/12">
+                    <div class="w-full md:w-8/12" *ngIf="!isColorAttribute(attribute)">
                         <ng-select [searchable]="false" [clearable]="false"
                             (change)="changeAttribute(attribute.id, selectedAttribute[attribute.id])"
                             *ngIf="attribute.attributeValues && attribute.attributeValues.length > 0"
                             [(ngModel)]="selectedAttribute[attribute.id]" [items]="attribute.attributeValues"
                             bindValue="id" bindLabel="name"></ng-select>
+                    </div>
+                    <div class="w-full md:w-8/12 flex flex-wrap items-center" *ngIf="isColorAttribute(attribute)">
+                        <span *ngFor="let colorAttribute of attribute.attributeValues" class="rounded-full w-4 h-4 px-2 mx-1"
+                            [ngClass]="colorAttribute.disabled ? 'disabled' : 'cursor-pointer'"
+                            (click)="changeAttribute(attribute.id, colorAttribute.id)"
+                            style="background-color: {{colorAttribute.name}};">
+                        </span>
                     </div>
                 </div>
                 <app-counter-input *ngIf="available" [label]="'Quantity'" [(value)]="quantity" [valueMin]="1">

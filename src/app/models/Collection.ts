@@ -8,7 +8,6 @@ export interface CollectionInterface extends CommonInterface {
     images?: Content[];
     productId?: string[];
     featureOnHomePage?: boolean;
-    hidden?: boolean;
     saleDiscountId?: string;
     voucherId?: string;
 }

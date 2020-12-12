@@ -54,12 +54,6 @@ export type Content = {
     thumbnails: ContentStorage[];
 };
 
-export type Tax = {
-    name: string
-    value: number
-    type: ValueType
-};
-
 export type ObjString = {
     [key: string]: string;
 };

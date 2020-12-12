@@ -1,5 +1,5 @@
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map } from 'rxjs/internal/operators';
+import { Observable } from 'rxjs/internal/Observable';
 
 export function getDataFromCollection(dbRef: any): Observable<any[]> {
     return dbRef.snapshotChanges().pipe(

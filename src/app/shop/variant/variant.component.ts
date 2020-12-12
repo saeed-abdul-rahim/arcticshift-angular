@@ -14,7 +14,7 @@ import { AlertService } from '@services/alert/alert.service';
 import { getIds } from '@utils/arrUtils';
 import { SaleDiscountInterface } from '@models/SaleDiscount';
 import { getProductDiscount, getSaleDiscountForProduct } from '@utils/saleDiscount';
-import { isProductAvailable, setProducts } from '@utils/productUtils';
+import { isColorAttribute, isProductAvailable, setProducts } from '@utils/productUtils';
 import { setTimeout } from '@utils/setTimeout';
 import { shopProductRoute } from '@constants/routes';
 
@@ -36,6 +36,7 @@ export class VariantComponent implements OnInit, OnDestroy {
   cartSuccess = false;
   available = false;
   variantInDraft = false;
+  isColorAttribute = isColorAttribute;
 
   limit = 8;
 
@@ -323,7 +324,10 @@ export class VariantComponent implements OnInit, OnDestroy {
 
   changeAttribute(attributeId: string, valueId: string) {
     const variant = this.variants.find(v => v.attributes?.[attributeId] === valueId);
-    this.setVariant(variant);
+    console.log(variant);
+    if (variant) {
+      this.setVariant(variant);
+    }
   }
 
   getProductsByCollectionId(id: string[]) {
