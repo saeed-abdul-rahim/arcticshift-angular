@@ -1176,6 +1176,10 @@ video {
   padding-left: 0.25rem;
 }
 
+.pt-2{
+  padding-top: 0.5rem;
+}
+
 .pb-2{
   padding-bottom: 0.5rem;
 }
@@ -1218,10 +1222,6 @@ video {
 
 .pt-10{
   padding-top: 2.5rem;
-}
-
-.pb-10{
-  padding-bottom: 2.5rem;
 }
 
 .pt-12{
@@ -1586,6 +1586,10 @@ video {
 
 .w-8{
   width: 2rem;
+}
+
+.w-10{
+  width: 2.5rem;
 }
 
 .w-12{
@@ -2419,6 +2423,10 @@ h5 {
 
   .md\:w-96{
     width: 24rem;
+  }
+
+  .md\:w-1\/2{
+    width: 50%;
   }
 
   .md\:w-1\/4{

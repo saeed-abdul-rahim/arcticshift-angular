@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CATEGORY, COLLECTION } from '@constants/routes';
+import { Subscription } from 'rxjs/internal/Subscription';
+
+import { CATEGORY, COLLECTION, MYORDERS } from '@constants/routes';
 import { CategoryInterface } from '@models/Category';
 import { CollectionInterface } from '@models/Collection';
 import { ProductCondition } from '@models/Product';
@@ -12,7 +14,8 @@ import { NavbarService } from '@services/navbar/navbar.service';
 import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { joinByHyphen } from '@utils/strUtils';
-import { Subscription } from 'rxjs/internal/Subscription';
+import { faListAlt } from '@fortawesome/free-regular-svg-icons/faListAlt';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
 
 type JoinedCategories = CategoryInterface & {
   subCategories: JoinedCategories[];
@@ -24,6 +27,9 @@ type JoinedCategories = CategoryInterface & {
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+
+  faListAlt = faListAlt;
+  faSignOutAlt = faSignOutAlt;
 
   displayCategories: JoinedCategories[];
   prevData: any[] = [];
@@ -158,6 +164,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const linkName = encodeURI(joinByHyphen(name));
     this.router.navigateByUrl(`${COLLECTION}/${linkName}/${id}`);
     this.closeSidnav();
+  }
+
+  navigateToOrders() {
+    this.router.navigateByUrl(`/${MYORDERS}`);
   }
 
   handleError(err: any) {

@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
+
 import { IMAGE_L } from '@constants/imageSize';
 import { COLLECTION } from '@constants/routes';
 import { CollectionInterface } from '@models/Collection';
@@ -7,7 +9,6 @@ import { Content, ContentStorage } from '@models/Common';
 import { AlertService } from '@services/alert/alert.service';
 import { ShopService } from '@services/shop/shop.service';
 import { joinByHyphen } from '@utils/strUtils';
-import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-carousel',

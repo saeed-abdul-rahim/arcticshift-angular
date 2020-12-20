@@ -11,7 +11,7 @@ import { User, UserClaim, UserInterface } from '@models/User';
 import { FirebaseError } from '@utils/FirebaseError';
 import { getDataFromDocument } from '@utils/getFirestoreData';
 import { SuccessResponse } from '@models/Response';
-import * as firebase from 'firebase/app';
+import { auth } from 'firebase/app';
 import { Subscription } from 'rxjs/internal/Subscription';
 
 @Injectable()
@@ -25,14 +25,12 @@ export class AuthService {
   private user = new BehaviorSubject<User>(null);
   private userDoc = new BehaviorSubject<UserInterface>(null);
   private emailPhone = new BehaviorSubject<string>(null);
-  private confirmationResult = new BehaviorSubject<firebase.auth.ConfirmationResult>(null);
+  private confirmationResult = new BehaviorSubject<auth.ConfirmationResult>(null);
 
   confirmationResult$ = this.confirmationResult.asObservable();
   user$: Observable<User> = this.user.asObservable();
   emailPhone$: Observable<string> = this.emailPhone.asObservable();
   userDoc$ = this.userDoc.asObservable();
-
-  firebase = firebase;
 
   private userSubscription: Subscription;
   private userDocSubscription: Subscription;
@@ -114,6 +112,16 @@ export class AuthService {
     }
   }
 
+  async signInWithGoogle() {
+    try {
+      const provider = new auth.GoogleAuthProvider();
+      await this.afAuth.signInWithPopup(provider);
+      await this.getUser();
+    } catch (err) {
+      throw err.message;
+    }
+  }
+
   async verifyOtp(otp: string) {
     try {
       const confirmationResult = await this.getConfirmationResult();
@@ -123,7 +131,7 @@ export class AuthService {
     }
   }
 
-  async signInWithPhone(phone: string, recaptchaVerifier: firebase.auth.RecaptchaVerifier) {
+  async signInWithPhone(phone: string, recaptchaVerifier: auth.RecaptchaVerifier) {
     try {
       this.confirmationResult.next(await this.afAuth.signInWithPhoneNumber(phone, recaptchaVerifier));
     } catch (err) {
@@ -131,7 +139,7 @@ export class AuthService {
     }
   }
 
-  async linkUserToPhone(phoneNumber: string, recaptchaVerifier: firebase.auth.RecaptchaVerifier) {
+  async linkUserToPhone(phoneNumber: string, recaptchaVerifier: auth.RecaptchaVerifier) {
     try {
       const user = await this.getAfsCurrentUser();
       return this.confirmationResult.next(await user.linkWithPhoneNumber(phoneNumber, recaptchaVerifier));
@@ -143,7 +151,7 @@ export class AuthService {
   async linkUserToEmail(email: string, password: string) {
     try {
       const user = await this.getAfsCurrentUser();
-      const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+      const credential = auth.EmailAuthProvider.credential(email, password);
       return user.linkWithCredential(credential);
     } catch (err) {
       throw err;

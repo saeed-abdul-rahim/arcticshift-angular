@@ -1,4 +1,6 @@
 import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/internal/Subscription';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { IMAGE_L, IMAGE_SM, IMAGE_XL } from '@constants/imageSize';
 import { AttributeJoinInterface } from '@models/Attribute';
@@ -9,7 +11,6 @@ import { SeoService } from '@services/seo/seo.service';
 import { CartService } from '@services/cart/cart.service';
 import { ShopService } from '@services/shop/shop.service';
 import { percentIncrease } from '@utils/calculation';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertService } from '@services/alert/alert.service';
 import { getIds } from '@utils/arrUtils';
 import { SaleDiscountInterface } from '@models/SaleDiscount';

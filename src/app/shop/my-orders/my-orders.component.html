@@ -1,1 +1,40 @@
-<p>my-orders works!</p>
+<div class="flex flex-wrap px-3 md:px-10 pb-20 pt-10">
+    <div class="w-full mb-5">
+        <div class="font-light text-2xl mb-3">
+            History
+        </div>
+    </div>
+    <div class="w-full flex justify-center">
+        <app-spinner [size]="5" *ngIf="order.loading | async"></app-spinner>
+        <div class="flex flex-col w-full md:w-1/2">
+            <div *ngFor="let order of orders; trackBy: trackByFn">
+                <ng-template #orderCard>
+                    <div class="flex flex-col p-5 py-3 divide-y">
+                        <label class="text-xl font-light text-gray-900">
+                            {{ order.orderStatus === 'fullfilled' ? 'Order Dispatched' : 'Order Placed' }}
+                        </label>
+                        <div class="py-2">
+                            <div class="flex flex-col pb-2">
+                                <label class="uppercase text-sm font-light text-gray-600">Items</label>
+                                <label class="font-light text-sm text-gray-800">{{getItems(order)}}</label>
+                            </div>
+                            <div class="flex flex-col pb-2">
+                                <label class="uppercase text-sm font-light text-gray-600">Ordered On</label>
+                                <label class="font-light text-sm text-gray-800">{{getDate(order.createdAt)}}</label>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="uppercase text-sm font-light text-gray-600">Total Amount</label>
+                                <label class="font-light text-sm text-gray-800">{{order.total | currency: settings.currency }}</label>
+                            </div>
+                        </div>
+                        <div class="flex pt-2" *ngIf="order.fullfilled.length > 0 && order.fullfilled[0].trackingId">
+                            <label class="text-sm font-light text-gray-600">Tracking ID: &nbsp;</label>
+                            <label class="font-light text-sm text-gray-800">{{getTrackingId(order)}}</label>
+                        </div>
+                    </div>
+                </ng-template>
+                <app-card [body]="orderCard"></app-card>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons/faGoogle';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 
 import { AlertService } from '@services/alert/alert.service';
 import { AuthService } from '@services/auth/auth.service';
@@ -8,7 +10,8 @@ import { countryCallCodes } from '@utils/countryCallCodes';
 import { otpConfig } from '@settings/otpConfig';
 import { ModalService } from '@services/modal/modal.service';
 import { inOutWidth } from '@animations/inOut';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
+import { GeneralSettings } from '@models/GeneralSettings';
+import { auth } from 'firebase/app';
 
 @Component({
   selector: 'app-sign-in',
@@ -22,6 +25,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   @Output() showModalChange = new EventEmitter<boolean>();
   @Output() signedIn = new EventEmitter<boolean>();
 
+  faGoogle = faGoogle;
   faChevronLeft = faChevronLeft;
   countryCallCodes = countryCallCodes;
   selectedCallCode: string;
@@ -36,14 +40,18 @@ export class SignInComponent implements OnInit, OnDestroy {
   isPhone = false;
   validInput = true;
   validPassword = true;
+  passwordResetLoading = false;
   otpConfig = otpConfig;
 
   recaptchaVerifier: any;
 
+  generalSettings: GeneralSettings;
+
   private locationSubscription: Subscription;
   private modalSubscription: Subscription;
+  private settingsSubscription: Subscription;
 
-  constructor(private shop: ShopService, private auth: AuthService, private alert: AlertService,
+  constructor(private shop: ShopService, private authService: AuthService, private alert: AlertService,
               private modal: ModalService) { }
 
   ngOnInit(): void {
@@ -57,12 +65,12 @@ export class SignInComponent implements OnInit, OnDestroy {
         }
       }
     });
-    const { firebase } = this.auth;
-    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    this.recaptchaVerifier = new auth.RecaptchaVerifier('recaptcha-container', {
       size: 'invisible',
       callback: () => {}
     });
     this.modalSubscription = this.modal.getShowSignInModal().subscribe(show => this.showModal = show);
+    this.settingsSubscription = this.shop.getGeneralSettings().subscribe(generalSettings => this.generalSettings = generalSettings);
   }
 
   ngOnDestroy(): void {
@@ -71,6 +79,9 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
     if (this.modalSubscription && !this.modalSubscription.closed) {
       this.modalSubscription.unsubscribe();
+    }
+    if (this.settingsSubscription && !this.settingsSubscription.closed) {
+      this.settingsSubscription.unsubscribe();
     }
     this.showOtp = false;
     this.showPassword = false;
@@ -85,10 +96,20 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
   }
 
+  async signInWithGoogle() {
+    try {
+      await this.authService.signInWithGoogle();
+      this.signedIn.emit(true);
+      this.closeModal();
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
   async fetchEmail() {
     this.loading = true;
     try {
-      const signInMethods = await this.auth.fetchEmail(this.emailPhone);
+      const signInMethods = await this.authService.fetchEmail(this.emailPhone);
       if (signInMethods.length === 0 || !signInMethods.includes('password')) {
         this.showPassword = true;
         this.newPassword = true;
@@ -108,14 +129,14 @@ export class SignInComponent implements OnInit, OnDestroy {
     try {
       const { selectedCallCode, emailPhone } = this;
       const phone = selectedCallCode + emailPhone;
-      const user = await this.auth.getUserByPhone(phone);
+      const user = await this.authService.getUserByPhone(phone);
       if (user) {
         this.newUser = false;
-        await this.auth.signInWithPhone(phone, this.recaptchaVerifier);
+        await this.authService.signInWithPhone(phone, this.recaptchaVerifier);
       }
       else {
         this.newUser = true;
-        await this.auth.linkUserToPhone(phone, this.recaptchaVerifier);
+        await this.authService.linkUserToPhone(phone, this.recaptchaVerifier);
       }
       this.showOtp = true;
     } catch (err) {
@@ -131,11 +152,11 @@ export class SignInComponent implements OnInit, OnDestroy {
         if (!confirmPassword || confirmPassword !== password) {
           return;
         }
-        await this.auth.linkUserToEmail(this.emailPhone, password);
-        await this.auth.createEmailUser();
+        await this.authService.linkUserToEmail(this.emailPhone, password);
+        await this.authService.createEmailUser();
       } else {
-        await this.auth.signIn(this.emailPhone, password);
-        await this.auth.getUser();
+        await this.authService.signIn(this.emailPhone, password);
+        await this.authService.getUser();
       }
       this.signedIn.emit(true);
       this.closeModal();
@@ -153,11 +174,11 @@ export class SignInComponent implements OnInit, OnDestroy {
       return;
     }
     try {
-      await this.auth.verifyOtp(otp);
+      await this.authService.verifyOtp(otp);
       if (newUser) {
-        await this.auth.createPhoneUser();
+        await this.authService.createPhoneUser();
       }
-      await this.auth.getUser();
+      await this.authService.getUser();
       this.signedIn.emit(true);
       this.closeModal();
     } catch (err) {
@@ -166,6 +187,17 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
     this.showOtp = false;
     this.loading = false;
+  }
+
+  async passwordReset() {
+    this.passwordResetLoading = true;
+    try {
+      await this.authService.passwordReset(this.emailPhone);
+      this.alert.alert({ message: 'Password reset request has been sent to your email.' });
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.passwordResetLoading = false;
   }
 
   closeModal() {

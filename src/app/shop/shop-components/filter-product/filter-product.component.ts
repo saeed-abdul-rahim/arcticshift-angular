@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
+
 import { AttributeJoinInterface } from '@models/Attribute';
 import { ProductCondition, ProductOrderBy } from '@models/Product';
 import { ProductService } from '@services/product/product.service';
 import { isColorAttribute } from '@utils/productUtils';
-import { Subscription } from 'rxjs/internal/Subscription';
 
 type SortBy = {
   name: string

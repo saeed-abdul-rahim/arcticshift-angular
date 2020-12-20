@@ -15,7 +15,6 @@ import { VariantComponent } from './variant/variant.component';
 import { CartComponent } from './cart/cart.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { CheckoutComponent } from './checkout/checkout.component';
-import { ProfileComponent } from './profile/profile.component';
 import { CartService } from '@services/cart/cart.service';
 import { FooterComponent } from './footer/footer.component';
 import { SignInComponent } from './sign-in/sign-in.component';
@@ -24,6 +23,7 @@ import { NavbarService } from '@services/navbar/navbar.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ModalService } from '@services/modal/modal.service';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
+import { OrderService } from '@services/order/order.service';
 
 
 @NgModule({
@@ -35,7 +35,6 @@ import { MyOrdersComponent } from './my-orders/my-orders.component';
     CartComponent,
     WishlistComponent,
     CheckoutComponent,
-    ProfileComponent,
     SignInComponent,
     FooterComponent,
     CarouselComponent,
@@ -55,7 +54,8 @@ import { MyOrdersComponent } from './my-orders/my-orders.component';
     NavbarService,
     ModalService,
     CartService,
-    ProductService
+    ProductService,
+    OrderService,
   ]
 })
 export class ShopModule { }

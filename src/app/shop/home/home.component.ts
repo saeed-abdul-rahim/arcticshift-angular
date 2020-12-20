@@ -42,6 +42,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private productService: ProductService, private shop: ShopService, private seo: SeoService,
               private router: Router, private route: ActivatedRoute, private nav: NavbarService) {
+    this.productService.getProducts();
+    this.productService.getAttributesFromDb();
     this.routeSubscription = this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
@@ -98,6 +100,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.scrollSubscription && !this.scrollSubscription.closed) {
       this.scrollSubscription.unsubscribe();
     }
+    this.productService.destroy();
     this.unsubscribeProductList();
   }
 

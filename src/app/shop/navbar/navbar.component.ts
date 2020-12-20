@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons/faShoppingBag';
+
 import { CartService } from '@services/cart/cart.service';
 import { OrderInterface } from '@models/Order';
 import { CART, WISHLIST, shopProductRoute } from '@constants/routes';

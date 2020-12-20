@@ -14,6 +14,7 @@ import { ModalComponent } from './modal/modal.component';
 import { CounterInputComponent } from './counter-input/counter-input.component';
 import { TabComponent } from './tab/tab.component';
 import { AlertComponent } from './alert/alert.component';
+import { CardComponent } from './card/card.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { AlertComponent } from './alert/alert.component';
     ModalComponent,
     CounterInputComponent,
     TabComponent,
-    AlertComponent
+    AlertComponent,
+    CardComponent,
   ],
   imports: [
     CommonModule,
@@ -45,7 +47,8 @@ import { AlertComponent } from './alert/alert.component';
     ModalComponent,
     CounterInputComponent,
     TabComponent,
-    AlertComponent
+    AlertComponent,
+    CardComponent,
   ]
 })
 export class ComponentsModule { }

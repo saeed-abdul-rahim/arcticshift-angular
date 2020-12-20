@@ -12,9 +12,10 @@ export class RequestService {
 
     private async setDefaultHeaders() {
         try {
-            const user = await this.auth.getCurrentUser();
-            if (user.expiry < Date.now()) {
+            let user = await this.auth.getCurrentUser();
+            if (user.expiry <= Date.now()) {
                 await this.auth.getUser();
+                user = await this.auth.getCurrentUser();
             }
             const { token, shopId } = user;
             return {

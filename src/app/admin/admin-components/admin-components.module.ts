@@ -8,7 +8,6 @@ import { DragAndDropDirective } from '@directives/DragAndDrop.directive';
 import { ComponentsModule } from '@components/components.module';
 
 import { TileComponent } from './tile/tile.component';
-import { CardComponent } from './card/card.component';
 import { FooterFormComponent } from './footer-form/footer-form.component';
 import { UploadComponent } from './upload/upload.component';
 import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
@@ -22,7 +21,6 @@ import { AlertService } from '@services/alert/alert.service';
   declarations: [
     DragAndDropDirective,
     TileComponent,
-    CardComponent,
     FooterFormComponent,
     UploadComponent,
     NotificationDropdownComponent,
@@ -41,7 +39,6 @@ import { AlertService } from '@services/alert/alert.service';
     ComponentsModule,
     MatTableModule,
     TileComponent,
-    CardComponent,
     FooterFormComponent,
     UploadComponent,
     NotificationDropdownComponent,

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '@services/auth/auth.service';
 import { CartService } from '@services/cart/cart.service';
 import { NavbarService } from '@services/navbar/navbar.service';
-import { ProductService } from '@services/product/product.service';
 import { ShopService } from '@services/shop/shop.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -17,7 +16,7 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   sidebarOpenedSubscription: Subscription;
 
-  constructor(private auth: AuthService, private product: ProductService, private shop: ShopService,
+  constructor(private auth: AuthService, private shop: ShopService,
               private nav: NavbarService, private cart: CartService) { }
 
   ngOnInit(): void {
@@ -28,13 +27,10 @@ export class ShopComponent implements OnInit, OnDestroy {
     this.shop.setCategories();
     this.shop.setCollections();
     this.shop.setSaleDiscounts();
-    this.product.getProducts();
-    this.product.getAttributesFromDb();
     window.addEventListener('scroll', this.scrollEvent, true);
   }
 
   ngOnDestroy(): void {
-    this.product.destroy();
     this.cart.destroy();
     if (this.sidebarOpenedSubscription && !this.sidebarOpenedSubscription.closed) {
       this.sidebarOpenedSubscription.unsubscribe();

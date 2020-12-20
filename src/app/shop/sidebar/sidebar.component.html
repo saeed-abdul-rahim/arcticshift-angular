@@ -7,9 +7,17 @@
                 <div class="absolute h-full w-full bg-white opacity-50" *ngIf="signLoading"></div>
                 Sign In
             </div>
-            <div class="cursor-pointer px-5 py-2 mx-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2 arc-transition"
-                *ngIf="user && !user.isAnonymous">
-                {{ user.name || user.phone || user.email }}
+            <div *ngIf="user && !user.isAnonymous">
+                <div class="px-5 py-2 mx-2 rounded block mb-2 arc-transition">
+                    {{ user.name || user.phone || user.email }}
+                </div>
+                <div class="cursor-pointer px-5 py-2 mx-2 mt-2 hover:bg-gray-200 hover:text-gray-700 rounded block mb-2 arc-transition"
+                    (click)="navigateToOrders()">
+                    <div class="flex justify-between">
+                        <fa-icon [icon]="faListAlt" size="s" class="w-1/12"></fa-icon>
+                        <span class="w-10/12">My Orders</span>
+                    </div>
+                </div>
             </div>
             <div class="arc-transition">
                 <div *ngIf="backLabels && backLabels.length > 0" (click)="toPrevMenu()"
@@ -38,7 +46,10 @@
                     [ngClass]="signLoading ? 'disabled' : 'cursor-pointer hover:bg-gray-200 hover:text-gray-700'"
                     (click)="signOut()" *ngIf="user && !user.isAnonymous">
                     <div class="absolute h-full w-full bg-white opacity-50" *ngIf="signLoading"></div>
-                    Sign Out
+                    <div class="flex justify-between">
+                        <fa-icon [icon]="faSignOutAlt" size="s" class="w-1/12"></fa-icon>
+                        <span class="w-10/12">Sign Out</span>
+                    </div>
                 </div>
                 <div class="py-3"></div>
             </div>

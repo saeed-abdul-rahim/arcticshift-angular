@@ -24,6 +24,7 @@ type CHECKOUT = 'checkout';
 type CART = 'cart';
 type WISHLIST = 'wishlist';
 type SETTINGS = 'settings';
+type MYORDERS = 'my-orders';
 
 export const ADMIN: ADMIN = 'admin';
 export const LOGIN: LOGIN = 'login';
@@ -51,6 +52,7 @@ export const CHECKOUT: CHECKOUT = 'checkout';
 export const CART: CART = 'cart';
 export const WISHLIST: WISHLIST = 'wishlist';
 export const SETTINGS: SETTINGS = 'settings';
+export const MYORDERS: MYORDERS = 'my-orders';
 
 export const homeRoute = '/';
 export const adminRoute = `${homeRoute}${ADMIN}`;
