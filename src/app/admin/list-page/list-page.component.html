@@ -4,7 +4,11 @@
     <div *ngIf="!loading">
       <div *ngIf="data && data.length === 0" class="data-empty">No data available</div>
       <div *ngIf="data && data.length > 0" class="overflow-x-auto scrollbar">
-        <input class="arc-input w-full" (keyup)="applyFilter($event)" placeholder="Search" #input>
+        <div class="flex items-center">
+          <app-dropdown *ngIf="urlType === 'order'" class="px-1" [buttonTemplate]="filterButton"
+            [bodyTemplate]="{ template: filterBody }"></app-dropdown>
+          <input class="arc-input w-full" (keyup)="applyFilter($event)" placeholder="Search" #input>
+        </div>
         <table mat-table [dataSource]="dataSource">
 
           <ng-container *ngFor="let col of displayedColumns; let i=index" matColumnDef={{col}}>
@@ -13,7 +17,8 @@
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="outline-none" routerLink="{{row.id}}"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="outline-none" routerLink="{{row.id}}">
+          </tr>
 
         </table>
         <mat-paginator [length]="resultLength" [pageSize]="pageSize" [pageIndex]="pageNo" (page)="pageEvents($event)">
@@ -40,3 +45,20 @@
     </div>
   </div>
 </div>
+
+<!-- BUTTON TEMPLATES -->
+
+<ng-template #filterButton>
+  <label class="arc-link-button">FILTER</label>
+</ng-template>
+
+<ng-template #filterBody>
+  <a class="arc-dropdown-item" (click)="clearFilter()">
+    Default
+  </a>
+  <div *ngFor="let filter of filters">
+    <a *ngFor="let value of filter.values" class="arc-dropdown-item uppercase" (click)="setFilter(filter.name, value)">
+      {{ value }}
+    </a>
+  </div>
+</ng-template>

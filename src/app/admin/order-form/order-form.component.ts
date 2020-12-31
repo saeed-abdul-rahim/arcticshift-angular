@@ -32,6 +32,8 @@ export class OrderFormComponent implements OnInit, OnDestroy {
   showRefundModal = false;
   showCaptureModal = false;
   editTrackingModal = false;
+  cancelOrderLoading = false;
+  orderCancelled = false;
   trackingCode = '';
   refundAmount: number;
   captureAmount: number;
@@ -123,6 +125,16 @@ export class OrderFormComponent implements OnInit, OnDestroy {
     this.loadingWarehouseId = '';
   }
 
+  async cancelOrder() {
+    this.cancelOrderLoading = true;
+    try {
+      await this.admin.cancelOrder(this.order.id);
+    } catch (err) {
+      this.handleError(err);
+    }
+    this.cancelOrderLoading = false;
+  }
+
   async addTrackingCode() {
     this.modalLoading = true;
     try {
@@ -166,7 +178,12 @@ export class OrderFormComponent implements OnInit, OnDestroy {
       if (order) {
         this.getTotalQuantity();
         this.calculateBalance();
-        const { data } = order;
+        const { data, orderStatus } = order;
+        if (orderStatus === 'cancelled') {
+          this.orderCancelled = true;
+        } else {
+          this.orderCancelled = false;
+        }
         const { productsData } = data;
         this.getUnFullfilledProducts([...productsData]);
         this.getFullfilledProducts([...productsData]);

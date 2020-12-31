@@ -20,7 +20,8 @@
                         <app-card *ngIf="edit && fullfilledProducts.length > 0" [heading]="'Fullfilled'"
                             [body]="fullfilledCardBody" [actions]="fullfilledCardHead"></app-card>
                     </div>
-                    <app-card *ngIf="edit" [heading]="order.paymentStatus.toUpperCase()" [body]="chargeTemplate">
+                    <app-card *ngIf="edit" [heading]="order.paymentStatus.toUpperCase()" [body]="chargeTemplate"
+                        [actions]="cancelOrderAction">
                     </app-card>
                 </div>
                 <div class="w-full xl:w-4/12 px-4">
@@ -85,11 +86,14 @@
             </div>
         </div>
         <div class="flex border-t border-gray-300 justify-end py-2 px-5">
-            <div class="arc-link-button -mr-3" (click)="toggleRefundModal()" *ngIf="!order.cod">Refund</div>
+            <div class="arc-link-button -mr-3" (click)="toggleRefundModal()" *ngIf="!order.cod  && !orderCancelled">Refund</div>
             <div class="arc-link-button -mr-3" (click)="toggleCaptureModal()" *ngIf="order.cod">
                 <span *ngIf="order.capturedAmount > 0">Edit captured amount</span>
                 <span *ngIf="order.capturedAmount === 0">Capture amount</span>
             </div>
+        </div>
+        <div class="flex flex-wrap flex-col px-4 py-3 text-gray-800" *ngIf="orderCancelled">
+            <label class="font-semibold uppercase">Order Cancelled</label>
         </div>
     </div>
 </ng-template>
@@ -133,7 +137,7 @@
 <!-- BUTTON TEMPLATES -->
 
 <ng-template #unfullfilledActionTemplate>
-    <label class="arc-link-button" type="button" *ngIf="unFullfilledProducts.length > 0">
+    <label class="arc-link-button" type="button" *ngIf="unFullfilledProducts.length > 0 && !orderCancelled">
         <a routerLink="{{fullfillRoute}}">Fullfill</a>
     </label>
 </ng-template>
@@ -142,13 +146,13 @@
     <div class="relative flex justify-end" *ngIf="loadingWarehouseId === fullfilledWarehouse[0].warehouseId">
         <app-spinner [size]="3"></app-spinner>
     </div>
-    <app-dropdown *ngIf="loadingWarehouseId !== fullfilledWarehouse[0].warehouseId" class="flex justify-end"
-        [rightAligned]="true" [buttonTemplate]="fullfilledDropdownButton"
+    <app-dropdown *ngIf="loadingWarehouseId !== fullfilledWarehouse[0].warehouseId && !orderCancelled" class="flex justify-end"
+        [rightAligned]="true" [buttonTemplate]="ellipsis"
         [bodyTemplate]="{ template: fullfilledDropdownBody, context: { warehouseId: fullfilledWarehouse[0].warehouseId } }">
     </app-dropdown>
 </ng-template>
 
-<ng-template #fullfilledDropdownButton>
+<ng-template #ellipsis>
     <fa-icon [icon]="faEllipsisV" class="arc-link-button"></fa-icon>
 </ng-template>
 
@@ -158,19 +162,32 @@
     </a>
 </ng-template>
 
+<ng-template #cancelOrderBody>
+    <a class="arc-dropdown-item" (click)="cancelOrder()">
+        Cancel Order
+    </a>
+</ng-template>
+
+<ng-template #cancelOrderAction>
+    <div class="relative flex justify-end" *ngIf="cancelOrderLoading">
+        <app-spinner [size]="3"></app-spinner>
+    </div>
+    <app-dropdown *ngIf="!cancelOrderLoading && !orderCancelled" class="flex justify-end" [rightAligned]="true" [buttonTemplate]="ellipsis"
+        [bodyTemplate]="{ template: cancelOrderBody }">
+    </app-dropdown>
+</ng-template>
+
 <!-- MODAL TEMPLATES -->
 
 <app-modal [(showModal)]="showTrackingModal" [loading]="modalLoading"
     [heading]="editTrackingModal ? 'Edit' + ' Tracking' : 'Add' + ' Tracking'" [size]="'small'"
     [bodyTemplate]="trackingTemplate" (modalCallback)="addTrackingCode()"></app-modal>
 
-<app-modal [(showModal)]="showRefundModal" [loading]="modalLoading"
-    [heading]="'Refund'" [size]="'small'"
+<app-modal [(showModal)]="showRefundModal" [loading]="modalLoading" [heading]="'Refund'" [size]="'small'"
     [bodyTemplate]="refundTemplate" (modalCallback)="refund()"></app-modal>
 
 
-<app-modal [(showModal)]="showCaptureModal" [loading]="modalLoading"
-    [heading]="'Capture Amount'" [size]="'small'"
+<app-modal [(showModal)]="showCaptureModal" [loading]="modalLoading" [heading]="'Capture Amount'" [size]="'small'"
     [bodyTemplate]="captureTemplate" (modalCallback)="capture()"></app-modal>
 
 <ng-template #trackingTemplate>

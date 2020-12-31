@@ -8,7 +8,7 @@ import { Address } from './User';
 import { VariantInterface } from './Variant';
 import { VoucherInterface } from './Voucher';
 
-export type OrderStatus = 'draft' | 'unfulfilled' | 'partiallyFulfilled' | 'fulfilled' | 'cancelled' | '';
+export type OrderStatus = 'draft' | 'unfullfilled' | 'partiallyFullfilled' | 'fullfilled' | 'cancelled' | '';
 export type PaymentStatus = 'notCharged' | 'partiallyCharged' | 'fullyCharged' | 'partiallyRefunded' | 'fullyRefunded' | '';
 
 export type VariantQuantity = {

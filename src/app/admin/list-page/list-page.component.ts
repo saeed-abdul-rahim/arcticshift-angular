@@ -25,6 +25,17 @@ import {
   VOUCHER,
   WAREHOUSE
 } from '@constants/routes';
+import { OrderFields, OrderStatus } from '@models/Order';
+
+type Filter = {
+  name: string
+  values: string[]
+};
+
+type OrderFilter = Filter & {
+  name: OrderFields
+  values: OrderStatus[]
+};
 
 
 @Component({
@@ -42,6 +53,9 @@ export class ListPageComponent implements OnInit, OnDestroy {
   data: any[];
   resultLength = 0;
   dataLengthKey = 'totalDocs';
+  urlType: string;
+  filters: Filter[] = [];
+  where: Condition[] = [];
 
   userSubscription: Subscription;
   dataSubscription: Subscription;
@@ -231,6 +245,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
     } else if (urlSplit.includes(ORDER)) {
 
+      this.urlType = 'order';
       this.heading = 'Orders';
       this.label = '';
       this.getData(orders, {
@@ -268,6 +283,33 @@ export class ListPageComponent implements OnInit, OnDestroy {
 
     }
 
+    this.setPageFilters();
+
+  }
+
+  setPageFilters() {
+    switch (this.urlType) {
+      case 'order':
+        this.filters = [
+          {
+            name: 'orderStatus',
+            values: ['fullfilled', 'partiallyFullfilled', 'unfullfilled', 'cancelled']
+          },
+        ] as OrderFilter[];
+        break;
+    }
+  }
+
+  setFilter(field: string, value: string) {
+    this.where = [
+      { field, type: '==', value }
+    ];
+    this.initData();
+  }
+
+  clearFilter() {
+    this.where = [];
+    this.initData();
   }
 
   getPageLength(path: string, key: string) {
@@ -287,7 +329,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.getPageLength(path, this.dataLengthKey);
     this.page.init(path, {
       orderBy: orderBy ? orderBy : { field: 'createdAt', direction: 'desc' },
-      where,
+      where: [...where, ...this.where],
       limit: this.pageSize
     });
     Object.entries(displayCols).forEach(([k, v]) => {
