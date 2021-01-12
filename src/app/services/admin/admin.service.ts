@@ -42,6 +42,7 @@ export class AdminService {
   private apiShippingRate: string;
   private apiTax: string;
   private apiSettings: string;
+  private apiUser: string;
 
   private dbShop: AngularFirestoreDocument;
   private dbAnalytics: AngularFirestoreCollection;
@@ -54,6 +55,7 @@ export class AdminService {
     const { api, db } = environment;
     const {
       url,
+      user,
       product,
       productType,
       attribute,
@@ -73,6 +75,7 @@ export class AdminService {
     this.getCurrentUser();
     const { shopId } = this.user;
 
+    this.apiUser = url + user;
     this.apiProduct = url + product;
     this.apiProductType = url + productType;
     this.apiAttribute = url + attribute;
@@ -96,6 +99,15 @@ export class AdminService {
   destroy() {
     if (this.userSubscription && !this.userSubscription.closed) {
       this.userSubscription.unsubscribe();
+    }
+  }
+
+  async updateUser(uid: string, data: UserInterface) {
+    const { apiUser } = this;
+    try {
+      return await this.req.patch(`${apiUser}/${uid}`, { data });
+    } catch (err) {
+      throw err;
     }
   }
 

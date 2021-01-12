@@ -5,9 +5,9 @@ export const taxTypes: {
     id: TaxObjectType,
     label: string
 }[] = [
-    { id: 'shop', label: 'Global'},
+    // { id: 'shop', label: 'Global'},
     { id: 'product', label: 'Product'},
-    { id: 'shipping', label: 'Shipping'},
+    // { id: 'shipping', label: 'Shipping'},
 ];
 
 export interface TaxInterface {

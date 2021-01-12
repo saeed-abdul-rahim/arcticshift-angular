@@ -49,6 +49,7 @@ export class CustomerFormComponent implements OnInit, OnDestroy {
       this.edit = true;
       this.customerSubscription = this.admin.getUserById(customerId).subscribe(customer => {
         this.customer = customer;
+        console.log(this.customer);
         if (customer) {
           this.setForm();
           const { totalOrders } = customer;
@@ -86,24 +87,23 @@ export class CustomerFormComponent implements OnInit, OnDestroy {
   get customerFormControls() { return this.customerForm.controls; }
 
   async onSubmit() {
-    const { name } = this.customerFormControls;
+    const { firstName, lastName, email, phone, phoneCode } = this.customerFormControls;
     if (this.customerForm.invalid) {
-      if (name.errors) {
-      }
       return;
     }
     this.loading = true;
     try {
       if (this.edit) {
-        await this.admin.updateVariant({
-          name: name.value,
-
+        await this.admin.updateUser(this.customer.id, {
+          firstName: firstName.value,
+          lastName: lastName.value,
+          name: firstName.value + ' ' + lastName.value,
+          email: email.value,
+          phone: phone.value,
+          phoneCode: phoneCode.value,
         });
       } else {
-        await this.admin.createVariant({
-          name: name.value,
-
-        });
+        // Create User API
       }
 
       this.success = true;
@@ -134,7 +134,7 @@ export class CustomerFormComponent implements OnInit, OnDestroy {
     this.customerForm.patchValue({
       firstName,
       lastName,
-      phoneCode: phoneCode ? `+${phoneCode}` : null,
+      phoneCode: phoneCode ? phoneCode : null,
       phone,
       email
     });
