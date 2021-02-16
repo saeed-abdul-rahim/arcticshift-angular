@@ -1,4 +1,33 @@
-# ArcticshiftAngular
+# Arcticshift - E-commerce with Angular, Tailwind and Firebase​
+
+![Arcticshift - E-commerce with Angular, Tailwind and Firebase​](/arcticshift-screens.png?raw=true)
+
+This is a skeleton app where you can easily start your e-commerce project. This project only uses Typescript, css and html. It is a mix of HTTPS API and firestore.
+
+Backend is separated so that you can change the business logic without touching any of your front-end applications. All of the models are generated here. It consists mainly of admin APIs.
+
+Frontend uses tailwind to simplify custom UI design. It is easy to modify UI or create components. It has 2 modules (admin and shop). Shop module mainly makes use of firestore and admin module makes use of HTTPS.
+
+# Features
+
+- Dashboard
+- Create products
+- Create multiple variants of product
+- Create categories and sub-categories
+- Create collections (for ads etc)
+- Create Discounts and Vouchers
+- Ability to set publish and expiry date for discounts and vouchers
+- Ability to set conditions for discounts and vouchers to be valid.
+- Create attributes (used for filtering in shop)
+- Create product type (a set of attributes what makes a product) - used for product creation and filtering in shop
+- Create shipping rules (countries to ship)
+- Custom shipping rates for countries (price based and weight based rate supported)
+- Create Warehouses (inventory - used for shipping when order is made)
+- Create tax for products (used in product types)
+- PWA application
+- Tailwind (utility css for easily modifying the UI)
+
+## [Buy me a coffee!](https://www.buymeacoffee.com/saeedar)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.9.
 
@@ -17,26 +46,6 @@ While developing you can turn off the purge settings in `ng-tailwind.js`
 purge: false
 ```
 `Be sure to revert in production`
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
 ## Project structure
 
