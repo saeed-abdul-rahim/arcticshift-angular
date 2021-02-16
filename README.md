@@ -4,7 +4,7 @@
 
 This is a skeleton app where you can easily start your e-commerce project. This project only uses Typescript, css and html. It is a mix of HTTPS API and firestore.
 
-Backend is separated so that you can change the business logic without touching any of your front-end applications. All of the models are generated here. It consists mainly of admin APIs. [Backend Cloud Functions is available here](https://github.com/saeed-abdul-rahim/arcticshift-functions)
+Backend is separated so that you can change the business logic without touching any of your front-end applications. All of the models are generated here. It consists mainly of admin APIs. [Firebase Cloud Functions are available here](https://github.com/saeed-abdul-rahim/arcticshift-functions)
 
 Frontend uses tailwind to simplify custom UI design. It is easy to modify UI or create components. It has 2 modules (admin and shop). Shop module mainly makes use of firestore and admin module makes use of HTTPS.
 
