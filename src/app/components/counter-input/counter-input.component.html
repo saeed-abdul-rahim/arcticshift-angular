@@ -1,8 +1,8 @@
 <div class="flex flex-wrap w-24 md:w-32">
-    <label for="custom-input-number" class="w-full font-light my-auto hidden md:block">
+    <label for="custom-input-number" class="w-full font-light my-auto hidden md:block" *ngIf="label">
         {{label}}
     </label>
-    <div class="flex flex-row h-10 w-full rounded-lg shadow relative bg-transparent mt-1">
+    <div class="flex flex-row h-10 w-full rounded-lg shadow relative bg-transparent my-1">
         <button data-action="decrement" (click)="decrease()"
             class=" bg-white text-gray-600 hover:text-gray-700 hover:bg-gray-100 focus:outline-none h-full w-20 rounded-l cursor-pointer outline-none">
             <span class="m-auto text-2xl font-thin">−</span>

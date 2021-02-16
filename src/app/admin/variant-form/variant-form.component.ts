@@ -68,7 +68,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       attributes: new FormArray([]),
       price: [''],
-      strikePrice: [''],
+      storePrice: [''],
       sku: [''],
       trackInventory: [false],
       warehouses: new FormArray([])
@@ -149,11 +149,11 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   setVariantForm() {
     const { prices, trackInventory, sku, name } = this.variant;
     const price = prices.find(pr => pr.name === 'override');
-    const strikePrice = prices.find(pr => pr.name === 'strike');
+    const storePrice = prices.find(pr => pr.name === 'store');
     this.variantForm.patchValue({
       name, trackInventory, sku,
       price: price?.value,
-      strikePrice: strikePrice?.value
+      storePrice: storePrice?.value
     });
   }
 
@@ -202,7 +202,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
   get warehouseForms() { return this.variantForm.controls.warehouses as FormArray; }
 
   async onSubmit() {
-    const { name, price, strikePrice, sku, trackInventory } = this.variantFormControls;
+    const { name, price, storePrice, sku, trackInventory } = this.variantFormControls;
     if (this.variantForm.invalid) {
       return;
     }
@@ -210,6 +210,10 @@ export class VariantFormComponent implements OnInit, OnDestroy {
     const warehouseQuantity = getFormGroupArrayValues(this.warehouseForms);
 
     this.loading = true;
+    let storePriceValue = price.value;
+    if (storePrice.value && typeof storePrice.value === 'number') {
+      storePriceValue = storePrice.value;
+    }
     try {
       const setData: VariantInterface = {
         productId: this.product.productId,
@@ -217,7 +221,7 @@ export class VariantFormComponent implements OnInit, OnDestroy {
         price: price.value,
         prices: [
           { name: 'override', value: price.value },
-          { name: 'strike', value: strikePrice.value}
+          { name: 'store', value: storePriceValue }
         ],
         sku: sku.value,
         trackInventory: trackInventory.value,

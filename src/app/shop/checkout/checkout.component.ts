@@ -163,7 +163,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   setShippingState(country: CountryListType) {
     this.shippingFormControls.state.patchValue(null);
     if (!country) {
-      this.billingStates = [];
+      this.shippingStates = [];
       this.countryAlpha = '';
       return;
     }

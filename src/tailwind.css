@@ -3,6 +3,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+.dynamic-css-used {
+    @apply bg-gradient-to-br;
+    @apply from-teal-100;
+    @apply to-teal-200;
+    @apply from-pink-100;
+    @apply to-pink-200;
+}
+
 .max-h-64 {
     max-height: 16rem;
 }

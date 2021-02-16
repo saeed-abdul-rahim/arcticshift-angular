@@ -102,6 +102,42 @@ export class AdminService {
     }
   }
 
+  async createDraft() {
+    const { req, apiOrder } = this;
+    try {
+      return await req.post(apiOrder, {});
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async addVariants(id: string, draft: OrderInterface) {
+    const { req, apiOrder } = this;
+    try {
+      return await req.put(`${apiOrder}/${id}/variant`, { data: { ...draft } });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getCartTotal(id: string, data: any) {
+    const { req, apiOrder } = this;
+    try {
+      return await req.post(`${apiOrder}/total/${id}`, { data });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createOrder(id: string) {
+    const { req, apiOrder } = this;
+    try {
+      return await req.patch(`${apiOrder}/${id}/create`, {});
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async updateUser(uid: string, data: UserInterface) {
     const { apiUser } = this;
     try {
@@ -600,7 +636,7 @@ export class AdminService {
   async cancelOrder(id: string) {
     const { apiOrder } = this;
     try {
-      return await this.req.delete(`${apiOrder}/${id}/cancel`);
+      return await this.req.delete(`${apiOrder}/${id}`);
     } catch (err) {
       throw err;
     }
@@ -647,6 +683,12 @@ export class AdminService {
     return getDataFromDocument(customer);
   }
 
+  getDraftById(id: string): Observable<OrderInterface> {
+    const { db, dbDraftsRoute } = this.dbS;
+    const draft = db.collection(dbDraftsRoute).doc(id);
+    return getDataFromDocument(draft);
+  }
+
   getOrderById(id: string): Observable<OrderInterface> {
     const { db, dbOrdersRoute } = this.dbS;
     const order = db.collection(dbOrdersRoute).doc(id);
@@ -670,6 +712,11 @@ export class AdminService {
   getProductTypesByShopId(shopId: string): Observable<ProductTypeInterface[]> {
     const productTypes = this.dbS.queryProductTypes([{ field: 'shopId', type: '==', value: shopId }]);
     return getDataFromCollection(productTypes);
+  }
+
+  searchVariantsByKeyword(keyword: string): Observable<VariantInterface[]> {
+    const variants = this.dbS.queryVariants([{ field: 'keywords', type: 'array-contains', value: keyword }]);
+    return getDataFromCollection(variants);
   }
 
   getAttributesByShopId(shopId: string): Observable<AttributeInterface[]> {

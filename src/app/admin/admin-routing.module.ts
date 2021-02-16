@@ -93,7 +93,7 @@ const routes: Routes = [
         path: ORDER,
         children: [
           { path: '', component: ListPageComponent },
-          // { path: 'add' },
+          { path: ADD, component: OrderFormComponent },
           { path: ':id', component: OrderFormComponent },
           { path: `:id/${FULLFILL}`, component: FullfillFormComponent }
         ]

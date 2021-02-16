@@ -162,6 +162,15 @@ export class ShopService {
     }
   }
 
+  async removeVoucher(orderId: string) {
+    const { req, apiOrder } = this;
+    try {
+      return await req.delete(`${apiOrder}/${orderId}/voucher`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   destroy(): void {
     if (this.generalSettingsSubscription && !this.generalSettingsSubscription.closed) {
       this.generalSettingsSubscription.unsubscribe();

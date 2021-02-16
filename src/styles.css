@@ -745,6 +745,11 @@ video {
   margin-bottom: 0;
 }
 
+.my-1{
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
 .mx-1{
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -1761,6 +1766,16 @@ video {
 .animate-spin{
   -webkit-animation: spin 1s linear infinite;
           animation: spin 1s linear infinite;
+}
+
+.dynamic-css-used {
+  background-image: linear-gradient(to bottom right, var(--gradient-color-stops));
+  --gradient-from-color: #e6fffa;
+  --gradient-color-stops: var(--gradient-from-color), var(--gradient-to-color, rgba(230, 255, 250, 0));
+  --gradient-to-color: #b2f5ea;
+  --gradient-from-color: #fff5f7;
+  --gradient-color-stops: var(--gradient-from-color), var(--gradient-to-color, rgba(255, 245, 247, 0));
+  --gradient-to-color: #fed7e2;
 }
 
 .max-h-64 {

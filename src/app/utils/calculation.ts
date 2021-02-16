@@ -1,4 +1,7 @@
 export function percentIncrease(original: number, newNumber: number) {
+    if (original === 0) {
+        return 0;
+    }
     return Number((100 * ((newNumber - original) / original)).toFixed(2));
 }
 

@@ -27,6 +27,7 @@ export interface VariantInterface extends CommonInterface {
 export interface VariantExtended extends VariantInterface {
     discountPrice?: number;
     available?: boolean;
+    [key: string]: any;
 }
 
 export type VariantCondition = Condition & {
